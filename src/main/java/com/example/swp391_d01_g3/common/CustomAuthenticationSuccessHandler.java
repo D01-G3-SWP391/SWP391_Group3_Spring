@@ -17,21 +17,37 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException {
+        
+        // Debug: In ra authorities để kiểm tra
+        System.out.println("User authorities: " + authentication.getAuthorities());
+        
         String targetUrl = (String) request.getSession().getAttribute("REDIRECT_URL");
-        System.out.println("REDIRECT_URL: " + targetUrl);
+        System.out.println("REDIRECT_URL from session: " + targetUrl);
         request.getSession().removeAttribute("REDIRECT_URL");
 
+        // Nếu không có redirect URL hoặc URL không hợp lệ, xác định URL dựa trên role
         if (targetUrl == null || targetUrl.isEmpty() || targetUrl.contains("favicon.ico") ||
                 targetUrl.contains("error") || targetUrl.startsWith("/.well-known") ||
                 targetUrl.endsWith(".css") || targetUrl.endsWith(".js") || targetUrl.endsWith(".json")) {
-            if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-                targetUrl = "/dashboard";
+            
+            // Kiểm tra role và redirect phù hợp (chú ý Spring Security tự động thêm ROLE_ prefix)
+            if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_admin"))) {
+                targetUrl = "/HomePage"; // Redirect admin đến homepage tạm thời
+                System.out.println("Redirecting admin to: " + targetUrl);
+            } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_employer"))) {
+                targetUrl = "/HomePage"; // Redirect employer đến homepage tạm thời
+                System.out.println("Redirecting employer to: " + targetUrl);
+            } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_student"))) {
+                targetUrl = "/HomePage"; // Redirect student đến homepage
+                System.out.println("Redirecting student to: " + targetUrl);
             } else {
-                targetUrl = "/";
+                // Default redirect cho tất cả roles khác
+                targetUrl = "/HomePage";
+                System.out.println("Default redirect to: " + targetUrl);
             }
         }
 
-
+        System.out.println("Final redirect URL: " + targetUrl);
         clearAuthenticationAttributes(request);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }

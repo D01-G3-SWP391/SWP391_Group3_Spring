@@ -9,8 +9,8 @@ public class MessageSourceConfig {
     @Bean
     public ResourceBundleMessageSource messageSource() {
         ResourceBundleMessageSource source = new ResourceBundleMessageSource();
-        source.setBasename("messages"); // Base name of the properties files
-        source.setDefaultEncoding("UTF-8"); // Ensure UTF-8 for Vietnamese characters
+        source.setBasename("messages");
+        source.setDefaultEncoding("UTF-8");
         return source;
     }
 }

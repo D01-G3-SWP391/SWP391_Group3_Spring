@@ -117,6 +117,15 @@
     color: #fff;
     border-color: #e67e22;
 }
+.navbar-right .nav-logout-btn {
+    background-color: #716d6b; /* Carrot orange */
+    color: #fff;
+    border-color: #716d6b;
+}
+.navbar-right .nav-logout-btn:hover, .navbar-right .nav-logout-btn:focus {
+    background-color: #c9bcbc;
+    border-color: #c9bcbc;
+}
 
 .navbar-right .nav-login-btn:hover, .navbar-right .nav-login-btn:focus {
     background-color: #d35400;

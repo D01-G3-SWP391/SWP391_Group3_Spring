@@ -54,10 +54,9 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/Login", "/*.css","/HomePage","/Register").permitAll()
-                        .requestMatchers("/dashboard/**","/rooms","/finance","/hotel-inf","/list_booking","/show-form-add").hasRole("ADMIN") // Yêu cầu role ADMIN
-                        .requestMatchers("/user/**").hasRole("CUSTOMER") // Yêu cầu Role CUSTOMER
-                        .requestMatchers("/staff/**").hasRole("STAFF") // Yêu cầu Role STAFF
-                        .requestMatchers("/add_booking").hasAnyRole("ADMIN", "CUSTOMER") // Cho phép cả ADMIN và CUSTOMER
+                        .requestMatchers("/admin/**").hasRole("admin")
+                        .requestMatchers("/employer/**").hasRole("employer")
+                        .requestMatchers("/student/**").hasRole("student")
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
@@ -67,20 +66,21 @@ public class SecurityConfig {
                         .usernameParameter("email")
                         .passwordParameter("password")
                         .successHandler(customAuthenticationSuccessHandler)
+                        .failureUrl("/Login?error")
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/Login")
+                        .logoutSuccessUrl("/Login?logout")
                         .deleteCookies("JSESSIONID")
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
                         .permitAll()
                 )
                 .sessionManagement(session -> session
-                        .invalidSessionUrl("/")
+                        .invalidSessionUrl("/Login")
                         .maximumSessions(1)
-                        .expiredUrl("/")
+                        .expiredUrl("/Login")
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(customAuthenticationEntryPoint)

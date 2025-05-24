@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,10 +27,13 @@
             <a href="#" class="nav-link">Blogs</a>
             <a href="#" class="nav-link">Events</a>
         </div>
-        <div class="navbar-right">
-            <a th:href="@{/Register}" class="nav-action-btn nav-register-btn"><span class="icon">📝</span> Đăng ký</a>
-            <a th:href="@{/Login}" class="nav-action-btn nav-login-btn"><span class="icon">👤</span> Đăng nhập</a>
-        </div>
+            <div sec:authorize="isAuthenticated()" class="navbar-right">
+                <a th:href="@{/logout}" class="nav-action-btn nav-logout-btn"><span class="icon">👤</span>Logout</a>
+            </div>
+            <div sec:authorize="isAnonymous()" class="navbar-right">
+                <a th:href="@{/Register}" class="nav-action-btn nav-register-btn"><span class="icon">📝</span> Đăng ký</a>
+                <a th:href="@{/Login}" class="nav-action-btn nav-login-btn"><span class="icon">👤</span> Đăng nhập</a>
+            </div>
     </div>
 </div>
 </body>
