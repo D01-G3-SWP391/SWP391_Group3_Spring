@@ -1,4 +1,4 @@
-package com.example.swp391_d01_g3.controller.HomePage;
+package com.example.swp391_d01_g3.controller.homePage;
 
 
 import org.springframework.stereotype.Controller;
@@ -11,6 +11,6 @@ public class HomePage {
 
     @GetMapping("")
     public String showHomePage (){
-        return "HomePage/HomePage";
+        return "homePage/homePage";
     }
 }

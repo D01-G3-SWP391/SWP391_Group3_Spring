@@ -1,7 +1,6 @@
 package com.example.swp391_d01_g3.model;
 
 import jakarta.persistence.*;
-import lombok.*;
 
 @Entity
 @Table(name = "Job_fields")

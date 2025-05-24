@@ -1,0 +1,145 @@
+/* login.css - Page-specific styles for Login page */
+
+.login-container {
+    max-width: 480px; /* Slightly adjusted max-width */
+    padding: 30px 35px; /* Adjusted padding */
+}
+
+.login-container h2 {
+    font-size: 1.8rem; /* Consistent with register page h1 if it's the main title */
+    font-weight: 600;
+    margin-bottom: 35px;
+}
+
+.login-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* .form-group, .form-group label, .form-group input styles are inherited from home.css */
+
+.login-form label {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.login-form input {
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
+    background-color: #f9f9f9;
+}
+
+.login-form input::placeholder {
+    color: #999;
+}
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px; /* More space before login button */
+    font-size: 0.9rem;
+}
+
+.form-options .checkbox {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #333;
+}
+
+.form-options input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.form-options .forgot-password {
+    /* Link styles inherited from home.css */
+}
+
+/* .login-page-btn uses .content-btn .content-btn-primary */
+.login-page-btn {
+    width: 100%; /* Full width login button */
+    padding-top: 15px; /* Larger padding for main action */
+    padding-bottom: 15px;
+    font-size: 1.05rem;
+}
+
+.social-login {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.social-login p {
+    font-size: 0.9rem;
+    color: #6c757d; /* Softer text color */
+    margin-bottom: 15px;
+}
+
+.social-login-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    /* margin-top is handled by p margin-bottom */
+}
+
+.social-login-buttons .social-btn {
+    flex-grow: 1;
+    max-width: 180px;
+    font-size: 0.9rem; /* Consistent font size for social buttons */
+    padding-top: 10px; /* Adjust padding for consistency */
+    padding-bottom: 10px;
+}
+
+.social-btn.google-btn {
+    background-color: #fff;
+    color: #444;
+    border: 1px solid #ced4da; /* Consistent with form input borders */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* padding handled by .social-login-buttons .social-btn or specific overrides if needed */
+}
+
+.social-btn.google-btn img {
+    height: 18px;
+    width: auto;
+    margin-right: 8px;
+}
+
+.social-btn.google-btn:hover {
+    background-color: #f8f9fa;
+    border-color: #adb5bd;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}
+
+/* Facebook button inherits .content-btn and .content-btn-secondary */
+.social-btn.facebook-btn {
+    /* Ensure it aligns well with Google button, padding might need adjustment if icons differ */
+}
+
+.login-links {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.login-links a {
+    font-size: 0.95rem;
+    margin: 0 10px;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .login-container h2 {
+        font-size: 1.6rem;
+    }
+    .login-page-btn, .social-login-buttons .social-btn {
+        font-size: 0.95rem;
+    }
+}

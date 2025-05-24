@@ -1,0 +1,147 @@
+/* Global Styles */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa; /* Slightly lighter grey background */
+    color: #343a40; /* Slightly softer dark grey text */
+    padding-top: 80px; /* Adjust this value based on the actual height of your navbar */
+    line-height: 1.6; /* Improved line height for readability */
+    -webkit-font-smoothing: antialiased; /* Smoother fonts on Mac */
+    -moz-osx-font-smoothing: grayscale; /* Smoother fonts on Firefox */
+}
+
+/* Common Container Styling */
+.page-container {
+    padding: 25px 30px; /* Slightly more padding */
+    margin: 30px auto; /* More margin top/bottom */
+    background-color: #fff;
+    border-radius: 10px; /* Softer border radius */
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08); /* Softer, more diffused shadow */
+    max-width: 1140px; /* Adjusted max-width for better large screen layout */
+}
+
+.page-container h1, .page-container h2 {
+    color: #2c3e50; /* A more refined dark blue/grey */
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 35px; /* More space below headings */
+    letter-spacing: 0.5px; /* Subtle letter spacing for uppercase */
+}
+
+.page-container h1 {
+    font-size: 2rem; /* Responsive font size */
+}
+
+.page-container h2 {
+    font-size: 1.75rem;
+}
+
+/* Common Button Styling */
+.content-btn {
+    padding: 12px 28px;
+    margin: 10px 5px;
+    border: none;
+    border-radius: 6px; /* Slightly softer radius */
+    font-size: 1rem; /* Adjusted font size */
+    font-weight: 500; /* Slightly less bold, more modern */
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.25s ease-out;
+    color: #fff;
+    letter-spacing: 0.3px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.content-btn:hover, .content-btn:focus {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.content-btn:focus {
+    outline: none; /* Remove default outline, rely on box-shadow or custom outline */
+}
+
+.content-btn-primary {
+    background-color: #ff7f50; /* Coral - a bit more vibrant orange */
+}
+
+.content-btn-primary:hover, .content-btn-primary:focus {
+    background-color: #ff6a36;
+}
+
+.content-btn-secondary {
+    background-color: #007bff; /* Standard Blue */
+}
+
+.content-btn-secondary:hover, .content-btn-secondary:focus {
+    background-color: #0056b3;
+}
+
+/* Link Styling */
+a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+a:hover, a:focus {
+    text-decoration: none; /* Often prefer no underline on hover for modern look */
+    color: #0056b3;
+}
+
+/* Form Styling */
+.form-group {
+    margin-bottom: 25px; /* More space between form groups */
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.9rem;
+    color: #495057; /* Softer label color */
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group input[type="email"] {
+    width: 100%;
+    padding: 12px 15px; /* More horizontal padding */
+    border: 1px solid #ced4da; /* Softer border color */
+    border-radius: 6px; /* Softer radius */
+    font-size: 1rem;
+    color: #495057;
+    background-color: #fff; /* Cleaner background */
+    box-sizing: border-box;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.form-group input::placeholder {
+    color: #adb5bd; /* Lighter placeholder */
+}
+
+.form-group input:focus {
+    border-color: #80bdff; /* Blue border on focus, common pattern */
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25); /* Subtle glow effect */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .page-container {
+        margin: 15px;
+        padding: 20px;
+    }
+
+    .page-container h1 {
+        font-size: 1.75rem;
+    }
+    .page-container h2 {
+        font-size: 1.5rem;
+    }
+
+    .content-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+}

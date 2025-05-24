@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar</title>
+    <!-- Link to global styles (home.css) -->
+    <link rel="stylesheet" th:href="@{/css/home.css}" />
+    <!-- Link to specific navbar styles -->
+    <link rel="stylesheet" th:href="@{/css/navbar.css}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+</head>
+<body>
+<!-- Navbar Fragment -->
+<div class="navbar-container" th:fragment="home">
+    <div class="navbar">
+        <div class="navbar-left">
+            <div class="logo">
+                <a th:href="@{/HomePage}">
+                    <img src="https://res.cloudinary.com/dd8ryf97c/image/upload/v1748067091/dwmfdx6rncsojcbs3ad3.jpg" alt="StudentJob Logo">
+                </a>
+            </div>
+            <a href="#" class="nav-link">Việc làm</a>
+            <a href="#" class="nav-link">Tạo CV</a>
+            <a href="#" class="nav-link">Công cụ</a>
+            <a href="#" class="nav-link">Cẩm nang nghề nghiệp</a>
+            <a href="#" class="nav-link">Blogs</a>
+            <a href="#" class="nav-link">Events</a>
+        </div>
+        <div class="navbar-right">
+            <a th:href="@{/Register}" class="nav-action-btn nav-register-btn"><span class="icon">📝</span> Đăng ký</a>
+            <a th:href="@{/Login}" class="nav-action-btn nav-login-btn"><span class="icon">👤</span> Đăng nhập</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

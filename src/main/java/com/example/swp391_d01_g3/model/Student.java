@@ -1,7 +1,6 @@
 package com.example.swp391_d01_g3.model;
 
 import jakarta.persistence.*;
-import lombok.*;
 
 @Entity
 @Table(name = "Student")
@@ -12,7 +11,7 @@ public class Student {
 
     @OneToOne
     @JoinColumn(name = "user_id", unique = true)
-    private User user;
+    private Account account;
 
     @Column(length = 255)
     private String address;

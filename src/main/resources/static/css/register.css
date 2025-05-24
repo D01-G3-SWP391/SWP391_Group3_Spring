@@ -1,0 +1,99 @@
+/* register.css - Page-specific styles for Register page */
+
+.register-container {
+    /* Inherits padding, margin, background-color, border-radius, box-shadow from .page-container */
+    /* Add any register-container specific styles if needed, e.g., different min-height */
+    min-height: calc(100vh - 80px - 60px); /* navbar height - page-container vertical margins */
+}
+
+.register-container h1 {
+    /* Inherits color, text-transform, text-align from .page-container h1 */
+    font-size: 1.8rem; /* Adjusted to match h2 more closely if it's the main title */
+    font-weight: 600;
+    margin-bottom: 40px;
+}
+
+.register-content {
+    display: flex;
+    justify-content: space-around; /* Better spacing for two items */
+    align-items: flex-start;
+    width: 100%;
+    /* max-width is handled by .page-container */
+    flex-wrap: wrap;
+    gap: 30px; /* Increased gap */
+}
+
+.register-section {
+    flex: 1;
+    min-width: 300px;
+    max-width: 400px; /* Max width for sections */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 25px 20px; /* More padding */
+    background-color: #fdfdfd; /* Very light grey, almost white */
+    border-radius: 8px; /* Consistent with global form elements */
+    border: 1px solid #e9ecef; /* Subtle border */
+    transition: all 0.3s ease-in-out;
+}
+
+.register-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    border-color: #dee2e6;
+}
+
+.register-illustration {
+    margin-bottom: 25px;
+}
+
+.register-illustration img {
+    width: 100%;
+    max-width: 200px; /* Slightly smaller for balance */
+    height: auto;
+    border-radius: 6px; /* Rounded corners for illustration */
+    transition: transform 0.3s ease;
+}
+
+.register-section:hover .register-illustration img {
+    transform: scale(1.05);
+}
+
+/* Buttons .job-btn, .employer-btn use .content-btn .content-btn-primary from home.css */
+/* And have their specific classes if any further distinction is needed */
+.job-btn, .employer-btn {
+    width: 100%; /* Make buttons full width of their section */
+    padding-top: 15px; /* Larger padding for main action buttons */
+    padding-bottom: 15px;
+    font-size: 1.05rem;
+}
+
+.register-links {
+    margin-top: 35px;
+    text-align: center;
+}
+
+.register-links a {
+    /* Inherits link styles from global home.css */
+    font-size: 0.95rem;
+    margin: 0 10px;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .register-content {
+        flex-direction: column;
+        align-items: center; /* Center sections on mobile */
+    }
+    .register-section {
+        min-width: 90%; /* Wider on mobile */
+        margin-bottom: 25px;
+    }
+    .register-container h1 {
+        font-size: 1.6rem;
+    }
+    .job-btn, .employer-btn {
+        font-size: 1rem;
+    }
+}
