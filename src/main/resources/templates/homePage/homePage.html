@@ -2,21 +2,183 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Student Jobs</title>
-  <link rel="stylesheet" th:href="@{/css/home.css}" />
-  <link rel="stylesheet" th:href="@{/css/navbar.css}" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job4You - Trang Tìm Việc Số 1 Việt Nam</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-<div th:replace="~{navbar/home :: home}"></div>
+    <!-- Navbar -->
+    <div th:replace="~{navbar/home}"></div>
 
-<!-- Example Page Content -->
-<div class="page-container">
-  <h1>Welcome to Student Jobs!</h1>
-  <p>This is the homepage content. You can add more sections, job listings, etc., here.</p>
-  <button class="content-btn content-btn-primary">Find a Job</button>
-  <button class="content-btn content-btn-secondary">Post a Job</button>
-</div>
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>Tìm việc làm mơ ước của bạn</h1>
+                <p>Kết nối với hàng nghìn cơ hội việc làm tuyệt vời từ các nhà tuyển dụng hàng đầu</p>
+                <div class="search-container">
+                    <div class="search-box">
+                        <input type="text" placeholder="Nhập tên công việc, kỹ năng..." class="search-input">
+                        <button class="search-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
 
+        <!-- Featured Jobs Section -->
+        <section class="featured-jobs">
+            <div class="section-header">
+                <h2>Việc làm nổi bật</h2>
+                <p>Những cơ hội việc làm tốt nhất dành cho bạn</p>
+            </div>
+
+            <!-- Job Listings -->
+            <div class="jobs-container">
+                <div th:each="job : ${jobPosts}" class="job-card">
+                    <div class="job-card-header">
+                        <div class="company-logo">
+                            <img th:src="${job.employer.logoUrl}" 
+                                 th:alt="${job.employer.companyName}"
+                                 onerror="this.style.display='none'; this.parentElement.classList.add('default-logo'); this.parentElement.innerHTML='<span>' + this.alt.charAt(0).toUpperCase() + '</span>';">
+                        </div>
+                        <div class="job-info">
+                            <h3 class="job-title" th:text="${job.jobTitle}">Tiêu đề công việc</h3>
+                            <p class="company-name" th:text="${job.employer.companyName}">Tên công ty</p>
+                        </div>
+                        <div class="job-type">
+                            <span class="job-type-badge" 
+                                  th:classappend="${job.jobType != null and job.jobType.name() == 'FULL_TIME' ? 'full-time' : 'part-time'}"
+                                  th:text="${job.jobType != null and job.jobType.name() == 'FULL_TIME' ? 'Toàn thời gian' : 'Bán thời gian'}">
+                                Loại việc làm
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="job-card-body">
+                        <div class="job-details">
+                            <div class="job-detail-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span th:text="${job.jobLocation}">Địa điểm</span>
+                            </div>
+                            <div class="job-detail-item">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span th:text="${job.jobSalary}">Mức lương</span>
+                            </div>
+                            <div class="job-detail-item">
+                                <i class="fas fa-clock"></i>
+                                <span th:text="${#temporals.format(job.createdAt, 'dd/MM/yyyy')}">Ngày đăng</span>
+                            </div>
+                        </div>
+                        
+                        <div class="job-description">
+                            <p th:text="${job.jobDescription != null ? #strings.abbreviate(job.jobDescription, 150) : 'Không có mô tả'}">Mô tả công việc...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="job-card-footer">
+                        <button class="apply-btn">
+                            <i class="fas fa-paper-plane"></i>
+                            Ứng tuyển ngay
+                        </button>
+                        <button class="save-btn">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Load More Button -->
+            <div class="load-more-container">
+                <button class="load-more-btn">
+                    Xem thêm việc làm
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Why Choose Us Section -->
+        <section class="why-choose-us">
+            <div class="section-header">
+                <h2>Tại sao chọn Job4You?</h2>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h3>Hàng nghìn việc làm</h3>
+                    <p>Cơ hội việc làm đa dạng từ các công ty hàng đầu</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Nhà tuyển dụng uy tín</h3>
+                    <p>Kết nối với các công ty được xác minh và đáng tin cậy</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Phát triển sự nghiệp</h3>
+                    <p>Công cụ và tài nguyên hỗ trợ phát triển nghề nghiệp</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>An toàn & bảo mật</h3>
+                    <p>Thông tin cá nhân được bảo vệ tuyệt đối</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Job4You</h3>
+                <p>Nền tảng tìm việc làm hàng đầu Việt Nam</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Dành cho ứng viên</h4>
+                <ul>
+                    <li><a href="#">Tìm việc làm</a></li>
+                    <li><a href="#">Tạo CV</a></li>
+                    <li><a href="#">Hướng dẫn nghề nghiệp</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Dành cho nhà tuyển dụng</h4>
+                <ul>
+                    <li><a href="#">Đăng tin tuyển dụng</a></li>
+                    <li><a href="#">Tìm ứng viên</a></li>
+                    <li><a href="#">Gói dịch vụ</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Hỗ trợ</h4>
+                <ul>
+                    <li><a href="#">Liên hệ</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Chính sách bảo mật</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Job4You. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>

@@ -12,7 +12,7 @@
 <div th:replace="~{navbar/home :: home}"></div>
 <div class="page-container login-container">
     <h2>Đăng nhập</h2>
-    <div class="login-form">
+    <form class="login-form" method="post" action="/Login" >
         <div class="form-group">
             <label for="email">Email/Số điện thoại</label>
             <input type="text" id="email" placeholder="Nhập email, số điện thoại...">
@@ -35,7 +35,7 @@
                 <button class="content-btn social-btn google-btn"><img src="/images/google.png" alt="Google icon">Google</button>
             </div>
         </div>
-    </div>
+    </form>
 </div>
 </body>
 </html>

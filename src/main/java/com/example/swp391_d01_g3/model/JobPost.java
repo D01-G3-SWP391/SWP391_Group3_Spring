@@ -88,4 +88,109 @@ public class JobPost {
 
     public JobPost() {
     }
+
+    // Getter and Setter methods
+    public Integer getJobPostId() {
+        return jobPostId;
+    }
+
+    public void setJobPostId(Integer jobPostId) {
+        this.jobPostId = jobPostId;
+    }
+
+    public JobField getJobField() {
+        return jobField;
+    }
+
+    public void setJobField(JobField jobField) {
+        this.jobField = jobField;
+    }
+
+    public Employer getEmployer() {
+        return employer;
+    }
+
+    public void setEmployer(Employer employer) {
+        this.employer = employer;
+    }
+
+    public String getJobTitle() {
+        return jobTitle;
+    }
+
+    public void setJobTitle(String jobTitle) {
+        this.jobTitle = jobTitle;
+    }
+
+    public String getJobDescription() {
+        return jobDescription;
+    }
+
+    public void setJobDescription(String jobDescription) {
+        this.jobDescription = jobDescription;
+    }
+
+    public String getJobSalary() {
+        return jobSalary;
+    }
+
+    public void setJobSalary(String jobSalary) {
+        this.jobSalary = jobSalary;
+    }
+
+    public String getJobRequirements() {
+        return jobRequirements;
+    }
+
+    public void setJobRequirements(String jobRequirements) {
+        this.jobRequirements = jobRequirements;
+    }
+
+    public String getJobLocation() {
+        return jobLocation;
+    }
+
+    public void setJobLocation(String jobLocation) {
+        this.jobLocation = jobLocation;
+    }
+
+    public Integer getAppliedQuality() {
+        return appliedQuality;
+    }
+
+    public void setAppliedQuality(Integer appliedQuality) {
+        this.appliedQuality = appliedQuality;
+    }
+
+    public JobType getJobType() {
+        return jobType;
+    }
+
+    public void setJobType(JobType jobType) {
+        this.jobType = jobType;
+    }
+
+    public ApprovalStatus getApprovalStatus() {
+        return approvalStatus;
+    }
+
+    public void setApprovalStatus(ApprovalStatus approvalStatus) {
+        this.approvalStatus = approvalStatus;
+    }
+
+    public DisplayStatus getDisplayStatus() {
+        return displayStatus;
+    }
+
+    public void setDisplayStatus(DisplayStatus displayStatus) {
+        this.displayStatus = displayStatus;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }
