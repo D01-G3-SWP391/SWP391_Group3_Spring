@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Navbar</title>
+    <!-- Link to the new CSS file for the vertical navbar -->
+    <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}" />
+    <!-- Optional: Link to a general icon library if needed (e.g., Bootstrap Icons) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <!-- Import Montserrat font, as used in previous logo styling -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+<!-- Vertical Navbar Fragment -->
+<nav class="admin-vertical-navbar" th:fragment="verticalNavbar">
+    <div class="admin-logo-area">
+        <a th:href="@{/HomePage}" class="admin-text-logo-link">
+            <div class="admin-text-logo">THCLT JOBS</div>
+        </a>
+    </div>
+    <ul class="admin-nav-links">
+        <li><a th:href="@{/Dashboard}"><i class="bi bi-house-door-fill"></i> Dashboard</a></li>
+        <li><a th:href="@{/Dashboard}"><i class="bi bi-people-fill"></i> Users</a></li>
+        <li><a th:href="@{/Dashboard}"><i class="bi bi-briefcase-fill"></i> Jobs</a></li>
+        <li><a th:href="@{/Dashboard}"><i class="bi bi-gear-fill"></i> Settings</a></li>
+        <li><a th:href="@{/logout}"><i class="bi bi-box-arrow-left"></i> Logout</a></li>
+    </ul>
+</nav>
+
+</body>
+</html>

@@ -26,9 +26,8 @@ public class AccountDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("Không tìm thấy người dùng với email: " + email);
         }
 
-        // Tạo quyền dựa trên role
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + account.getRole().name().toUpperCase()));
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + account.getRole().name()));
 
         // Tạo UserDetails object
         return new org.springframework.security.core.userdetails.User(

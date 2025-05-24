@@ -1,15 +1,15 @@
-package com.example.swp391_d01_g3.controller.admin;
+package com.example.swp391_d01_g3.controller.student;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/Dashboard")
-public class Dashboard {
+@RequestMapping("/Student")
+public class StudentDashboard {
 
     @GetMapping("")
-    public String showDashboard(){
-        return "admin/dashboardPage";
+    public String showStudentDashboard(){
+        return "student/dashboardStudent";
     }
 }

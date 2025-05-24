@@ -15,17 +15,6 @@ public class Login {
 
     @GetMapping("")
     public String login(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()
-                && !(authentication instanceof AnonymousAuthenticationToken)) {
-            String redirectUrl;
-            if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("admin"))) {
-                redirectUrl = "/HomePage";
-            } else {
-                redirectUrl = "/Login";
-            }
-            return "redirect:" + redirectUrl;
-        }
         return "login/loginPage";
     }
 }

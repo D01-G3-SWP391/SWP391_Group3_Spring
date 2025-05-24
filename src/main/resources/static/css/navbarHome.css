@@ -179,6 +179,7 @@ body {
     font-weight: 700;
     margin-bottom: 1rem;
     text-transform: none;
+    animation: fadeInDown 1s ease-out; /* Added animation */
 }
 
 .hero-content p {
@@ -202,7 +203,7 @@ body {
 
 .search-input {
     flex: 1;
-    padding: 18px 25px;
+    padding: 20px 25px; /* Increased padding for height */
     border: none;
     font-size: 1rem;
     outline: none;
@@ -213,13 +214,22 @@ body {
     background: #4f46e5;
     color: white;
     border: none;
-    padding: 18px 25px;
+    padding: 20px 30px; /* Increased padding for height and width */
     cursor: pointer;
-    transition: background 0.3s;
+    transition: background 0.3s, transform 0.3s; /* Added transform transition */
 }
 
 .search-btn:hover {
     background: #3730a3;
+    transform: scale(1.05); /* Slight scale on hover */
+}
+
+.search-btn i { /* For icon animation if needed later */
+    transition: transform 0.3s ease-in-out;
+}
+
+.search-btn:hover i {
+    /* transform: rotate(10deg); Example */
 }
 
 /* ===== FEATURED JOBS SECTION ===== */
@@ -257,151 +267,186 @@ body {
 
 .job-card {
     background: white;
-    border-radius: 16px;
-    padding: 30px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease;
-    border: 1px solid #e5e7eb;
+    border-radius: 16px; /* Increased border-radius for a softer look */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08); /* Slightly adjusted shadow */
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+    overflow: hidden;
+    padding: 24px; /* Added consistent padding */
+    border: 1px solid #eef0f2; /* Subtle border */
 }
 
 .job-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    transform: translateY(-8px);
+    box-shadow: 0 14px 30px rgba(44,62,80,0.12); /* Enhanced hover shadow */
+    border-color: #e0e4e8; /* Slightly darker border on hover for definition */
 }
 
 .job-card-header {
     display: flex;
-    align-items: flex-start;
-    gap: 15px;
-    margin-bottom: 20px;
+    align-items: center; /* Changed from flex-start to center */
+    gap: 20px;
+    margin-bottom: 16px;
 }
 
 .company-logo {
-    width: 60px;
-    height: 60px;
-    border-radius: 12px;
+    width: 56px; /* Slightly adjusted size */
+    height: 56px;
+    border-radius: 10px; /* Softer radius */
     overflow: hidden;
     flex-shrink: 0;
-    border: 2px solid #f3f4f6;
+    border: 1px solid #f0f0f0;
 }
 
-.company-logo img {    width: 100%;    height: 100%;    object-fit: cover;}.company-logo.default-logo {    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);    display: flex;    align-items: center;    justify-content: center;}.company-logo.default-logo span {    color: white;    font-size: 1.5rem;    font-weight: 700;}
+.company-logo img {    width: 100%;    height: 100%;    object-fit: cover;}.company-logo.default-logo {    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);    display: flex;    align-items: center;    justify-content: center;    border-radius: 50%; /* Make fallback logo circular */}.company-logo.default-logo span {    color: white;    font-size: 1.8rem; /* Increased font size for the initial */    font-weight: 700;}
 
 .job-info {
     flex: 1;
 }
 
 .job-title {
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: #1f2937;
-    margin-bottom: 8px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 6px;
     line-height: 1.3;
+    word-break: break-word; /* Add word-break for very long words if necessary */
 }
 
 .company-name {
-    color: #6b7280;
-    font-size: 1rem;
+    color: #5a6472; /* Softer color for company name */
+    font-size: 0.95rem; /* Slightly smaller */
     font-weight: 500;
+    margin-bottom: 12px; /* Space before job type badge if it were below */
 }
 
 .job-type {
     display: flex;
     align-items: center;
+    flex-shrink: 0; /* Prevent badge from shrinking */
 }
 
 .job-type-badge {
-    padding: 6px 12px;
+    padding: 8px 16px; /* Increased padding */
     border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 500;
+    font-size: 0.8rem; /* Slightly adjusted font size */
+    font-weight: 600; /* Bolder text on badge */
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    color: white; /* White text for all badges */
 }
 
 .job-type-badge.full-time {
-    background: #dcfce7;
-    color: #166534;
+    background: #22c55e; /* Vibrant Green */
+    color: white;
 }
 
 .job-type-badge.part-time {
-    background: #fef3c7;
-    color: #92400e;
+    background: #f59e0b; /* Vibrant Amber */
+    color: white;
 }
 
 .job-card-body {
-    margin-bottom: 25px;
+    margin-bottom: 20px; /* Adjusted margin */
+    flex-grow: 1; /* Allow body to grow and push footer down */
 }
 
 .job-details {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
-    margin-bottom: 20px;
+    gap: 12px 20px; /* Adjusted row and column gap */
+    margin-bottom: 16px; /* Adjusted margin */
 }
 
 .job-detail-item {
     display: flex;
     align-items: center;
-    gap: 8px;
-    color: #6b7280;
-    font-size: 0.95rem;
+    gap: 10px; /* Increased gap */
+    color: #4a5568; /* Slightly adjusted color */
+    font-size: 0.9rem; /* Adjusted font size */
 }
 
 .job-detail-item i {
     color: #4f46e5;
     width: 16px;
+    text-align: center; /* Ensure icon is centered if its width is fixed */
 }
 
 .job-description {
-    color: #4b5563;
-    line-height: 1.6;
+    color: #4a5568; /* Harmonized color with details */
+    line-height: 1.65; /* Slightly improved line height */
+    font-size: 0.95rem; /* Consistent font size */
 }
 
 .job-card-footer {
     display: flex;
     gap: 15px;
     align-items: center;
+    margin-top: auto; /* Pushes footer to the bottom if card heights vary */
+    padding-top: 20px; /* Space above buttons */
+    border-top: 1px solid #f0f2f5; /* Subtle separator line */
 }
 
 .apply-btn {
-    flex: 1;
-    background: #4f46e5;
+    background: #4f46e5; /* Consistent with search button */
     color: white;
+    padding: 12px 20px;
     border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
+    border-radius: 25px; /* Pill shape */
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s;
-    display: flex;
+    transition: background-color 0.3s, transform 0.3s;
+    display: inline-flex; /* Align icon and text */
     align-items: center;
-    justify-content: center;
-    gap: 8px;
+    gap: 8px; /* Space between icon and text */
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
 }
 
 .apply-btn:hover {
-    background: #3730a3;
-    transform: translateY(-1px);
+    background-color: #3730a3;
+    transform: translateY(-2px) scale(1.03); /* Lift and slight scale */
+    box-shadow: 0 6px 15px rgba(79, 70, 229, 0.3);
+}
+
+.apply-btn i {
+    transition: transform 0.3s ease-in-out;
+}
+
+.apply-btn:hover i {
+    transform: translateX(3px); /* Icon moves slightly to the right */
 }
 
 .save-btn {
-    width: 48px;
-    height: 48px;
-    border: 2px solid #e5e7eb;
-    background: white;
-    border-radius: 8px;
+    background: #f0f0f0; /* Lighter background */
+    color: #555; /* Darker icon for contrast */
+    border: 1px solid #ddd; /* Subtle border */
+    padding: 10px; /* Adjust padding for a good size */
+    width: 44px; /* Fixed width */
+    height: 44px; /* Fixed height for a circular feel with border-radius */
+    border-radius: 50%; /* Circular button */
     cursor: pointer;
-    transition: all 0.3s;
+    transition: background-color 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #6b7280;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 .save-btn:hover {
-    border-color: #ef4444;
-    color: #ef4444;
+    background-color: #e0e0e0;
+    color: #ef4444; /* Red heart on hover */
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.save-btn i {
+    font-size: 1.1rem; /* Ensure icon is well-sized */
+    transition: transform 0.2s cubic-bezier(0.68, -0.55, 0.27, 1.55); /* Fun bounce effect */
+}
+
+.save-btn:hover i {
+    transform: scale(1.2); /* Icon pulse */
 }
 
 /* ===== LOAD MORE BUTTON ===== */
@@ -430,9 +475,10 @@ body {
 
 /* ===== WHY CHOOSE US SECTION ===== */
 .why-choose-us {
-    background: white;
     padding: 80px 20px;
-    margin-top: 40px;
+    background-color: #ffffff; /* Changed to white for contrast with feature cards */
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .features-grid {
@@ -444,21 +490,38 @@ body {
 }
 
 .feature-card {
+    background: #f8fafc; /* Light background for the card */
+    padding: 30px; /* Increased padding */
+    border-radius: 12px; /* Consistent border radius */
     text-align: center;
-    padding: 30px 20px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.05); /* Softer shadow */
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(44,62,80,0.1);
 }
 
 .feature-icon {
-    width: 80px;
-    height: 80px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 20px;
-    color: white;
-    font-size: 1.8rem;
+    font-size: 2.5rem; /* Larger icon size */
+    color: #4f46e5; /* Icon color consistent with buttons */
+    margin-bottom: 20px;
+    display: inline-block; /* Allows for transform and other properties */
+    transition: transform 0.3s ease-in-out;
+    /* Optional: Add a background shape to the icon */
+    /* background: linear-gradient(135deg, #667eea, #764ba2); */
+    /* width: 80px; */
+    /* height: 80px; */
+    /* border-radius: 50%; */
+    /* display: inline-flex; */
+    /* align-items: center; */
+    /* justify-content: center; */
+    /* color: white; */ /* If using a dark background for the shape */
+}
+
+.feature-card:hover .feature-icon {
+    transform: scale(1.1) rotate(5deg); /* Icon scales and slightly rotates on card hover */
 }
 
 .feature-card h3 {
@@ -620,5 +683,29 @@ body {
         grid-template-columns: 1fr;
         gap: 30px;
         text-align: center;
+    }
+}
+
+/* Added Keyframes for animations */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulseIcon {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
     }
 }

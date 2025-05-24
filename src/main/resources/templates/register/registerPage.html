@@ -3,31 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
-    <link rel="stylesheet" th:href="@{/css/home.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
     <link rel="stylesheet" th:href="@{/css/navbar.css}" />
     <link rel="stylesheet" th:href="@{/css/register.css}" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
 <body>
-<div th:replace="~{navbar/home :: home}"></div>
+<div th:replace="~{navbar/navbarHome :: home}"></div>
 <div class="page-container register-container">
-    <h1>Đăng ký</h1>
-    <div class="register-content">
-        <div class="register-section left">
-            <div class="register-illustration">
-                <img src="/images/register_student.png" alt="Illustration 1">
+    <div class="register-header">
+        <img src="https://res.cloudinary.com/dd8ryf97c/image/upload/v1748103497/tc1zhb2l3qzdijyyuubo.jpg" alt="TIC Jobs Logo" class="tic-logo">
+        <h2>Tham gia cộng đồng Job4You</h2>
+        <p>Chọn loại tài khoản bạn muốn để bắt đầu hành trình của mình.</p>
+    </div>
+    <div class="register-options">
+        <div class="register-option candidate">
+            <div class="option-icon">
+                <img src="/images/student.jpeg" alt="Ứng viên icon">
             </div>
-            <button class="content-btn content-btn-primary job-btn" onclick="animateButton(this)">Đăng ký tìm việc</button>
+            <h3>Tôi là Ứng viên</h3>
+            <p>Tìm kiếm hàng ngàn cơ hội việc làm, tạo CV chuyên nghiệp và phát triển sự nghiệp.</p>
+            <a th:href="@{/register-candidate}" class="content-btn content-btn-primary">Đăng ký tìm việc </a>
         </div>
-        <div class="register-section right">
-            <div class="register-illustration">
-                <img src="/images/register_employee.png" alt="Illustration 2">
+        <div class="register-option employer">
+            <div class="option-icon">
+                <img src="/images/employee.jpeg" alt="Nhà tuyển dụng icon">
             </div>
-            <button class="content-btn content-btn-primary employer-btn" onclick="animateButton(this)">Đăng ký nhà tuyển dụng</button>
+            <h3>Tôi là Nhà tuyển dụng</h3>
+            <p>Đăng tin tuyển dụng miễn phí, tiếp cận ứng viên tài năng và xây dựng đội ngũ vững mạnh.</p>
+            <a th:href="@{/register-employer}" class="content-btn content-btn-primary">Đăng ký tuyển dụng</a>
         </div>
     </div>
-    <div class="register-links">
-        <a th:href="@{/Login}">Đăng nhập ngay!</a>
+    <div class="login-prompt">
+        <span>Bạn đã có tài khoản? </span><a th:href="@{/Login}">Đăng nhập ngay!</a>
     </div>
 </div>
 </body>

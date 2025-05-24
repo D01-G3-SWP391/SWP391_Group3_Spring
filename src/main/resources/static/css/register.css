@@ -1,99 +1,161 @@
-/* register.css - Page-specific styles for Register page */
+/* registerPage.css */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7f6;
+    display: flex;
+    flex-direction: column; /* Allow navbar and then content */
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding-top: 0; /* Override if needed */
+}
 
 .register-container {
-    /* Inherits padding, margin, background-color, border-radius, box-shadow from .page-container */
-    /* Add any register-container specific styles if needed, e.g., different min-height */
-    min-height: calc(100vh - 80px - 60px); /* navbar height - page-container vertical margins */
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px; /* Slightly more rounded */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px; /* Wider for the two-column layout */
+    text-align: center;
+    margin-top: 100px; /* Margin from navbar */
+    margin-bottom: 30px;
 }
 
-.register-container h1 {
-    /* Inherits color, text-transform, text-align from .page-container h1 */
-    font-size: 1.8rem; /* Adjusted to match h2 more closely if it's the main title */
+.register-header {
+    margin-bottom: 30px;
+}
+
+.register-header .tic-logo {
+    max-width: 150px; /* Adjust as needed */
+    margin-bottom: 10px;
+    margin-top: -20px;
+}
+
+.register-header h2 {
+    color: #2c3e50; /* Dark blue/grey */
+    font-size: 26px;
     font-weight: 600;
-    margin-bottom: 40px;
+    margin-bottom: 8px;
 }
 
-.register-content {
+.register-header p {
+    color: #555;
+    font-size: 16px;
+    margin-bottom: 0;
+}
+
+.register-options {
     display: flex;
-    justify-content: space-around; /* Better spacing for two items */
-    align-items: flex-start;
-    width: 100%;
-    /* max-width is handled by .page-container */
-    flex-wrap: wrap;
-    gap: 30px; /* Increased gap */
+    justify-content: space-around; /* Space out the two options */
+    gap: 30px; /* Gap between the two options */
+    margin-bottom: 30px;
 }
 
-.register-section {
-    flex: 1;
-    min-width: 300px;
-    max-width: 400px; /* Max width for sections */
+.register-option {
+    flex-basis: 45%; /* Each option takes roughly half the space */
+    padding: 30px;
+    border-radius: 8px;
     text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 25px 20px; /* More padding */
-    background-color: #fdfdfd; /* Very light grey, almost white */
-    border-radius: 8px; /* Consistent with global form elements */
-    border: 1px solid #e9ecef; /* Subtle border */
-    transition: all 0.3s ease-in-out;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.register-section:hover {
+.register-option:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    border-color: #dee2e6;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 }
 
-.register-illustration {
+.register-option.candidate {
+    background-color: #e9f2ff; /* Light blue background */
+    border: 1px solid #bad6ff;
+}
+
+.register-option.employer {
+    background-color: #e8f5e9; /* Light green background */
+    border: 1px solid #b8e0b9;
+}
+
+.register-option .option-icon img {
+    width: 130px; /* Adjust icon size */
+    height: 100px;
+    margin-bottom: 20px;
+}
+
+.register-option h3 {
+    color: #333;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.register-option p {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.6;
     margin-bottom: 25px;
+    min-height: 60px; /* Ensure consistent height for p tags */
 }
 
-.register-illustration img {
-    width: 100%;
-    max-width: 200px; /* Slightly smaller for balance */
-    height: auto;
-    border-radius: 6px; /* Rounded corners for illustration */
-    transition: transform 0.3s ease;
+.register-option .content-btn {
+    background-color: #ffc107; /* Yellow button as in image */
+    color: #333; /* Darker text for yellow button */
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease;
 }
 
-.register-section:hover .register-illustration img {
-    transform: scale(1.05);
+.register-option .content-btn .arrow-icon {
+    margin-left: 8px;
+    font-weight: bold;
 }
 
-/* Buttons .job-btn, .employer-btn use .content-btn .content-btn-primary from home.css */
-/* And have their specific classes if any further distinction is needed */
-.job-btn, .employer-btn {
-    width: 100%; /* Make buttons full width of their section */
-    padding-top: 15px; /* Larger padding for main action buttons */
-    padding-bottom: 15px;
-    font-size: 1.05rem;
+.register-option .content-btn:hover {
+    background-color: #e0a800; /* Darker yellow on hover */
 }
 
-.register-links {
-    margin-top: 35px;
-    text-align: center;
+.login-prompt {
+    margin-top: 25px;
+    font-size: 15px;
+    color: #555;
 }
 
-.register-links a {
-    /* Inherits link styles from global home.css */
-    font-size: 0.95rem;
-    margin: 0 10px;
-    font-weight: 500;
+.login-prompt a {
+    color: #007bff;
+    font-weight: bold;
+    text-decoration: none;
 }
 
+.login-prompt a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive adjustments for register page */
 @media (max-width: 768px) {
-    .register-content {
-        flex-direction: column;
-        align-items: center; /* Center sections on mobile */
+    .register-container {
+        max-width: 90%;
+        padding: 25px;
     }
-    .register-section {
-        min-width: 90%; /* Wider on mobile */
-        margin-bottom: 25px;
+    .register-options {
+        flex-direction: column; /* Stack options on smaller screens */
+        gap: 20px;
     }
-    .register-container h1 {
-        font-size: 1.6rem;
+    .register-option {
+        flex-basis: 100%; /* Full width when stacked */
+        padding: 20px;
     }
-    .job-btn, .employer-btn {
-        font-size: 1rem;
+    .register-header h2 {
+        font-size: 22px;
     }
-}
+    .register-option h3 {
+        font-size: 18px;
+    }
+    .register-option p {
+        font-size: 13px;
+        min-height: auto; /* Allow height to adjust on mobile */
+    }
+} 

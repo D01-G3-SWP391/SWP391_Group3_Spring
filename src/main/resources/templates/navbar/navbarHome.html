@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Navbar</title>
-    <!-- Link to global styles (home.css) -->
-    <link rel="stylesheet" th:href="@{/css/home.css}" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Link to global styles (navbarHome.css) -->
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
     <!-- Link to specific navbar styles -->
     <link rel="stylesheet" th:href="@{/css/navbar.css}" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
@@ -16,8 +17,8 @@
     <div class="navbar">
         <div class="navbar-left">
             <div class="logo">
-                <a th:href="@{/HomePage}">
-                    <img src="https://res.cloudinary.com/dd8ryf97c/image/upload/v1748067091/dwmfdx6rncsojcbs3ad3.jpg" alt="StudentJob Logo">
+                <a th:href="@{/HomePage}" class="text-logo-link">
+                    <div class="text-logo">THCLT JOBS</div>
                 </a>
             </div>
             <a href="#" class="nav-link">Việc làm</a>
@@ -28,11 +29,11 @@
             <a href="#" class="nav-link">Events</a>
         </div>
             <div sec:authorize="isAuthenticated()" class="navbar-right">
-                <a th:href="@{/logout}" class="nav-action-btn nav-logout-btn"><span class="icon">👤</span>Logout</a>
+                <a th:href="@{/logout}" class="nav-action-btn nav-logout-btn"><i class="bi bi-box-arrow-in-right"></i> Logout</a>
             </div>
             <div sec:authorize="isAnonymous()" class="navbar-right">
-                <a th:href="@{/Register}" class="nav-action-btn nav-register-btn"><span class="icon">📝</span> Đăng ký</a>
-                <a th:href="@{/Login}" class="nav-action-btn nav-login-btn"><span class="icon">👤</span> Đăng nhập</a>
+                <a th:href="@{/Register}" class="nav-action-btn nav-register-btn"><i class="bi bi-person-plus-fill"></i> Đăng ký</a>
+                <a th:href="@{/Login}" class="nav-action-btn nav-login-btn"><i class="bi bi-box-arrow-in-right"></i> Đăng nhập</a>
             </div>
     </div>
 </div>

@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
-    <link rel="stylesheet" th:href="@{/css/home.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
     <link rel="stylesheet" th:href="@{/css/navbar.css}" />
     <link rel="stylesheet" th:href="@{/css/login.css}" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
 <body>
-    <div th:replace="~{navbar/home :: home}"></div>
+    <div th:replace="~{navbar/navbarHome :: home}"></div>
     <div class="page-container login-container">
-        <h2>Đăng nhập</h2>
-        
+        <h2>ĐĂNG NHẬP TÀI KHOẢN</h2>
+        <p class="subtitle">Hoặc <a th:href="@{/Register}">đăng ký NGAY</a> nếu bạn chưa có.</p>
+
         <!-- Hiển thị lỗi nếu có -->
         <div th:if="${param.error}" class="error-message">
             <p>Email hoặc mật khẩu không đúng!</p>
@@ -23,25 +24,22 @@
         </div>
         <form class="login-form" method="post" th:action="@{/Login}">
             <div class="form-group">
-                <label for="email">Email/Số điện thoại</label>
-                <input type="text" id="email" name="email" placeholder="Nhập email, số điện thoại..." required>
+                <input type="text" id="email" name="email" placeholder="Email hoặc Số điện thoại" required>
             </div>
             <div class="form-group">
-                <label for="password">Mật khẩu</label>
-                <input type="password" id="password" name="password" placeholder="Nhập mật khẩu..." required>
+                <input type="password" id="password" name="password" placeholder="Mật khẩu" required>
             </div>
             <div class="form-options">
                 <a href="#" class="forgot-password">Quên mật khẩu?</a>
-                <a th:href="@{/Register}" class="forgot-password">Đăng ký ngay!</a>
             </div>
-            <button type="submit" class="content-btn content-btn-primary login-page-btn">Đăng nhập</button>
-    
-            <div class="social-login">
-                <p>Đăng nhập bằng:</p>
-                <div class="social-login-buttons">
-                    <button type="button" class="content-btn content-btn-secondary social-btn facebook-btn">Facebook</button>
-                    <button type="button" class="content-btn social-btn google-btn"><img src="/images/google.png" alt="Google icon">Google</button>
-                </div>
+            <button type="submit" class="content-btn content-btn-primary login-page-btn"><span class="icon-lock"></span>Đăng nhập</button>
+
+            <div class="social-login-divider">
+                <span>Hoặc đăng nhập bằng</span>
+            </div>
+            <div class="social-login-buttons">
+                <button type="button" class="content-btn social-btn facebook-btn"><img src="/images/communication.png" alt="Facebook icon">Facebook</button>
+                <button type="button" class="content-btn social-btn google-btn"><img src="/images/google.png" alt="Google icon">Google</button>
             </div>
         </form>
     </div>

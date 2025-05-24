@@ -1,23 +1,209 @@
-/* login.css - Page-specific styles for Login page */
+/* loginPage.css */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7f6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Ensure it takes at least full viewport height */
+    margin: 0; /* Remove default body margin */
+    padding-top: 0; /* Override general padding-top from navbarHome.css if present for body */
+}
 
 .login-container {
-    max-width: 480px; /* Slightly adjusted max-width */
-    padding: 30px 35px; /* Adjusted padding */
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 450px; /* Increased max-width slightly */
+    text-align: center;
+    margin-top: 100px; /* Add some margin from the navbar */
+    margin-bottom: 20px;
 }
 
 .login-container h2 {
-    font-size: 1.8rem; /* Consistent with register page h1 if it's the main title */
-    font-weight: 600;
-    margin-bottom: 35px;
+    color: #333;
+    font-size: 24px; /* Adjusted font size */
+    font-weight: 600; /* Slightly bolder */
+    margin-bottom: 10px; /* Reduced margin */
+    text-transform: uppercase;
 }
 
-/* Error and Success Messages */
-.error-message, .success-message {
-    padding: 12px 16px;
-    border-radius: 6px;
+.login-container .subtitle {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+.login-container .subtitle a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-container .subtitle a:hover {
+    text-decoration: underline;
+}
+
+.login-form .form-group {
     margin-bottom: 20px;
-    font-size: 0.9rem;
+    text-align: left;
+}
+
+.login-form .form-group input[type="text"],
+.login-form .form-group input[type="password"] {
+    width: 100%;
+    padding: 12px 15px; /* Consistent padding */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box; /* Important for width calculation */
+    font-size: 16px;
+}
+
+.login-form .form-group input[type="text"]:focus,
+.login-form .form-group input[type="password"]:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+    outline: none;
+}
+
+.login-form .form-options {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 25px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.login-form .form-options .remember-me {
+    display: flex;
+    align-items: center;
+}
+
+.login-form .form-options .remember-me input[type="checkbox"] {
+    margin-right: 8px;
+    width: auto; /* Override default width if any */
+}
+
+.login-form .form-options .remember-me label {
+    color: #555;
+    font-weight: normal; /* Override general label bolding if any */
+    margin-bottom: 0; /* Reset margin if inherited */
+}
+
+.login-form .form-options .forgot-password {
+    color: #007bff;
+    text-decoration: none;
+    text-align: center;
+    justify-content: center;
+}
+
+.login-form .form-options .forgot-password:hover {
+    text-decoration: underline;
+    text-align: center;
+}
+
+.login-page-btn {
+    background-color: #007bff; /* Blue button */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    width: 100%;
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase; /* Match design */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex; /* For icon alignment */
+    align-items: center;
+    justify-content: center;
+}
+
+.login-page-btn .icon-lock {
+    /* Assuming you'll use a font icon or SVG. This is a placeholder. */
+    /* If using Bootstrap Icons, you might not need a separate span if you put <i> inside button */
+    margin-right: 8px;
+    /* Example with BI: <i class="bi bi-lock-fill"></i> */
+}
+
+.login-page-btn:hover {
+    background-color: #0056b3;
+}
+
+.social-login-divider {
+    margin: 30px 0;
+    text-align: center;
+    color: #777;
+    font-size: 14px;
+    position: relative;
+}
+
+.social-login-divider span {
+    background-color: #fff;
+    padding: 0 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.social-login-divider::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: #ddd;
+    z-index: 0;
+}
+
+.social-login-buttons {
+    display: flex;
+    justify-content: space-between; /* Distribute buttons */
+    gap: 15px; /* Add gap between buttons */
+}
+
+.social-login-buttons .social-btn {
+    flex-grow: 1; /* Make buttons take equal width */
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #555;
+    font-size: 14px;
     font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.social-login-buttons .social-btn img {
+    width: 20px; /* Adjust icon size as needed */
+    height: 20px;
+    margin-right: 10px;
+}
+
+.social-login-buttons .facebook-btn:hover {
+    background-color: #f0f2f5; /* Light grey for Facebook hover */
+    border-color: #ccc;
+}
+
+.social-login-buttons .google-btn:hover {
+    background-color: #f0f2f5; /* Light grey for Google hover */
+    border-color: #ccc;
+}
+
+/* Error and Success Messages - general styling, can be enhanced */
+.error-message, .success-message {
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 14px;
 }
 
 .error-message {
@@ -32,135 +218,16 @@
     border: 1px solid #c3e6cb;
 }
 
-.login-form {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
+/* Ensure login container is above navbar if navbar has fixed/absolute positioning */
+/* This might not be needed depending on your navbar.css */
+.navbar-container + .login-container {
+   margin-top: 20px; /* Adjust if navbar height changes */
 }
 
-/* .form-group, .form-group label, .form-group input styles are inherited from home.css */
-
-.login-form label {
-    font-size: 14px;
-    color: #333;
-    margin-bottom: 8px;
-}
-
-.login-form input {
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-    color: #333;
-    background-color: #f9f9f9;
-}
-
-.login-form input::placeholder {
-    color: #999;
-}
-
-.form-options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px; /* More space before login button */
-    font-size: 0.9rem;
-}
-
-.form-options .checkbox {
-    display: flex;
-    align-items: center;
-    font-size: 14px;
-    color: #333;
-}
-
-.form-options input[type="checkbox"] {
-    margin-right: 8px;
-}
-
-.form-options .forgot-password {
-    /* Link styles inherited from home.css */
-}
-
-/* .login-page-btn uses .content-btn .content-btn-primary */
-.login-page-btn {
-    width: 100%; /* Full width login button */
-    padding-top: 15px; /* Larger padding for main action */
-    padding-bottom: 15px;
-    font-size: 1.05rem;
-}
-
-.social-login {
-    margin-top: 30px;
-    text-align: center;
-}
-
-.social-login p {
-    font-size: 0.9rem;
-    color: #6c757d; /* Softer text color */
-    margin-bottom: 15px;
-}
-
-.social-login-buttons {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    /* margin-top is handled by p margin-bottom */
-}
-
-.social-login-buttons .social-btn {
-    flex-grow: 1;
-    max-width: 180px;
-    font-size: 0.9rem; /* Consistent font size for social buttons */
-    padding-top: 10px; /* Adjust padding for consistency */
-    padding-bottom: 10px;
-}
-
-.social-btn.google-btn {
-    background-color: #fff;
-    color: #444;
-    border: 1px solid #ced4da; /* Consistent with form input borders */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* padding handled by .social-login-buttons .social-btn or specific overrides if needed */
-}
-
-.social-btn.google-btn img {
-    height: 18px;
-    width: auto;
-    margin-right: 8px;
-}
-
-.social-btn.google-btn:hover {
-    background-color: #f8f9fa;
-    border-color: #adb5bd;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
-}
-
-/* Facebook button inherits .content-btn and .content-btn-secondary */
-.social-btn.facebook-btn {
-    /* Ensure it aligns well with Google button, padding might need adjustment if icons differ */
-}
-
-.login-links {
-    margin-top: 30px;
-    text-align: center;
-}
-
-.login-links a {
-    font-size: 0.95rem;
-    margin: 0 10px;
-    font-weight: 500;
-}
-
-@media (max-width: 768px) {
-    .login-container h2 {
-        font-size: 1.6rem;
-    }
-    .login-page-btn, .social-login-buttons .social-btn {
-        font-size: 0.95rem;
-    }
-}
+/* Add specific icon styling for the lock icon if you use a span as in HTML */
+/* For example, if using Bootstrap Icons and placed <i> inside button, this won't be needed */
+.icon-lock::before {
+ content: "\F41B"; /* Example: Bootstrap Icons lock-fill unicode, ensure font family is set */
+ font-family: "bootstrap-icons";
+ /* Adjust font size and alignment as needed */
+} 
