@@ -17,7 +17,9 @@ public class Student {
     @Column(length = 255)
     private String address;
 
-    private Integer jobs;
+    @ManyToOne
+    @JoinColumn(name = "job_field_id", nullable = false)
+    private JobField jobField;
 
     @Column(length = 100)
     private String university;
