@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register Student</title>
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbar.css}" />
+    <link rel="stylesheet" th:href="@{/css/login.css}" />
+    <link rel="stylesheet" th:href="@{/css/registerEnhanced.css}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+</head>
+<body>
+<div th:replace="~{navbar/navbarHome :: home}"></div>
+<div class="page-container login-container">
+    <h2>ĐĂNG KÝ NGƯỜI TÌM VIỆC</h2>
+    <form class="login-form" method="post" th:action="@{/Login}">
+        <p class="subtitle">Hoặc <a th:href="@{/Register}">đăng nhập NGAY</a> nếu bạn đã có.</p>
+        <div class="form-group">
+            <input type="text" id="full_name" name="fullname" placeholder="Nhập họ và tên" required>
+        </div>
+        <div class="form-group">
+            <input type="text" id="email" name="email" placeholder="Nhập Email hoặc Số điện thoại" required>
+        </div>
+        <div class="form-group">
+            <input type="text" id="phone" name="phone" placeholder="Nhập Số điện thoại" required>
+        </div>
+        <div class="form-group">
+            <input type="password" id="password" name="password" placeholder="Nhập Mật khẩu" required>
+        </div>
+        <button type="submit" class="content-btn content-btn-primary login-page-btn"><span class="icon-lock"></span>Đăng ký</button>
+    </form>
+</div>
+</body>
+</html>
