@@ -162,7 +162,7 @@ body {
 
 /* ===== MAIN CONTENT ===== */
 .main-content {
-    padding-top: 0px; /* Reset for homepage */
+    padding-top: 20px; /* Reset for homepage */
     background-color: #f8fafc;
 }
 

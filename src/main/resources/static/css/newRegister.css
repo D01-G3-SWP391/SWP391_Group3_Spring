@@ -1,0 +1,232 @@
+/* newRegister.css */
+
+/* Body styling to match the theme */
+body {
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff 0%, #e6e9ff 100%); /* Gradient background */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    padding-top: 90px; /* Account for navbar height (70px) + extra space */
+    overflow-x: hidden;
+}
+
+/* Register container */
+.register-container {
+    background: #ffffff;
+    padding: 50px 40px;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    width: 100%;
+    max-width: 800px;
+    text-align: center;
+    margin: 20px auto;
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Animated background effect for container */
+.register-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(255, 255, 255, 0));
+    z-index: -1;
+}
+
+/* Register header */
+.register-header {
+    margin-bottom: 30px;
+}
+
+.register-header .tic-logo {
+    max-width: 150px;
+    margin-bottom: 10px;
+    margin-top: -20px;
+}
+
+.register-header h2 {
+    color: #1f2937;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+}
+
+.register-header h2::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: #4f46e5;
+    margin: 10px auto;
+    border-radius: 2px;
+}
+
+.register-header p {
+    color: #6b7280;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+/* Register options */
+.register-options {
+    display: flex;
+    justify-content: space-around;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.register-option {
+    flex-basis: 45%;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+}
+
+.register-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.register-option.candidate {
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.05), rgba(255, 255, 255, 0.1));
+}
+
+.register-option.employer {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.05), rgba(255, 255, 255, 0.1));
+}
+
+.register-option .option-icon img {
+    width: 130px;
+    height: 100px;
+    margin-bottom: 20px;
+}
+
+.register-option h3 {
+    color: #1f2937;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.register-option p {
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    min-height: 60px;
+}
+
+/* Register buttons */
+.register-option .content-btn {
+    background: linear-gradient(135deg, #4f46e5 0%, #7e6bff 100%);
+    color: #fff;
+    padding: 14px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    transition: all 0.3s ease;
+}
+
+.register-option .content-btn:hover {
+    background: linear-gradient(135deg, #3730a3 0%, #5b47d5 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+}
+
+.register-option .content-btn .arrow-icon {
+    font-size: 18px;
+}
+
+/* Login prompt */
+.login-prompt {
+    margin-top: 25px;
+    font-size: 15px;
+    color: #6b7280;
+}
+
+.login-prompt a {
+    color: #4f46e5;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.login-prompt a:hover {
+    color: #3730a3;
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+/* Animation keyframes */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    body {
+        padding-top: 70px; /* Match navbar height on mobile */
+    }
+
+    .register-container {
+        max-width: 90%;
+        padding: 30px 20px;
+        margin: 20px 15px;
+    }
+
+    .register-options {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .register-option {
+        flex-basis: 100%;
+        padding: 20px;
+    }
+
+    .register-header h2 {
+        font-size: 24px;
+    }
+
+    .register-option h3 {
+        font-size: 18px;
+    }
+
+    .register-option p {
+        font-size: 13px;
+        min-height: auto;
+    }
+
+    .register-option .content-btn {
+        padding: 12px 20px;
+        font-size: 15px;
+    }
+}

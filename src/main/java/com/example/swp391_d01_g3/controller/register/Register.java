@@ -12,4 +12,12 @@ public class Register {
     public String showRegister (){
         return "register/registerPage";
     }
+    @GetMapping("/Student")
+    public String showRegisterStudent(){
+        return "register/registerStudentPage";
+    }
+    @GetMapping("/Employer")
+    public String showRegisterEmployer(){
+        return "register/registerEmployerPage";
+    }
 }
