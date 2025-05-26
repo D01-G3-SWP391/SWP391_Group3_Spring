@@ -1,4 +1,4 @@
-/* navbarStudentEmployerEnhanced.css */
+/* navbarAdminEnhanced.css */
 
 /* Body styling to account for vertical navbar */
 body {
@@ -13,14 +13,14 @@ body.collapsed {
     margin-left: 80px; /* Adjust body margin when navbar is collapsed */
 }
 
-/* Admin vertical navbar (renamed for student/employer context) */
+/* Admin vertical navbar */
 .admin-vertical-navbar {
     width: 250px; /* Expanded width */
     height: 100vh;
     position: fixed;
     top: 0;
     left: 0;
-    background: linear-gradient(135deg, #c7d2fe 0%, #EAEDFF 100%); /* Lavender gradient based on #EAEDFF */
+    background: linear-gradient(135deg, #4f46e5 0%, #1f2937 100%); /* Gradient to match theme */
     padding-top: 20px;
     box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15); /* Softer shadow */
     overflow-y: auto;
@@ -46,7 +46,7 @@ body.collapsed {
 }
 
 .admin-text-logo {
-    color: #1f2937; /* Dark gray for contrast */
+    color: #e6e9ff; /* Light text for contrast on dark background */
     font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
     font-size: 24px;
     font-weight: 600;
@@ -64,7 +64,7 @@ body.collapsed {
 .toggle-btn {
     background: none;
     border: none;
-    color: #1f2937;
+    color: #e6e9ff;
     font-size: 1.5em;
     position: absolute;
     right: 10px;
@@ -74,7 +74,7 @@ body.collapsed {
 }
 
 .toggle-btn:hover {
-    color: #4f46e5; /* Indigo on hover for consistency */
+    color: #ffffff;
     transform: rotate(90deg); /* Subtle rotation on hover */
 }
 
@@ -90,7 +90,7 @@ body.collapsed {
     align-items: center;
     padding: 15px 25px;
     text-decoration: none;
-    color: #1f2937; /* Dark gray text */
+    color: #e6e9ff; /* Light text */
     font-size: 16px;
     font-weight: 500;
     transition: background-color 0.3s ease, color 0.3s ease, padding-left 0.3s ease;
@@ -113,8 +113,8 @@ body.collapsed {
 
 .admin-nav-links li a:hover,
 .admin-nav-links li a.active {
-    background: rgba(165, 180, 252, 0.2); /* Subtle lavender overlay on hover */
-    color: #4f46e5; /* Indigo on hover */
+    background: rgba(255, 255, 255, 0.1); /* Subtle overlay on hover */
+    color: #ffffff;
 }
 
 .admin-nav-links li a:hover .bi {
@@ -123,18 +123,17 @@ body.collapsed {
 
 /* Special styling for Logout link to match theme's button style */
 .admin-nav-links li a[href*="Logout"] {
-    background: linear-gradient(135deg, #4f46e5 0%, #7e6bff 100%); /* Indigo gradient for logout, consistent with theme */
+    background: linear-gradient(135deg, #dc3545 0%, #ff4d4f 100%); /* Red gradient for logout */
     border-radius: 8px;
     margin: 10px 20px;
     justify-content: center; /* Center icon and text */
-    box-shadow: 0 2px 6px rgba(79, 70, 229, 0.2);
-    color: #fff; /* White text for contrast on indigo */
+    box-shadow: 0 2px 6px rgba(220, 53, 69, 0.2);
 }
 
 .admin-nav-links li a[href*="Logout"]:hover {
-    background: linear-gradient(135deg, #3730a3 0%, #5b47d5 100%);
+    background: linear-gradient(135deg, #c82333 0%, #e63946 100%);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
 }
 
 /* Animation keyframes */
