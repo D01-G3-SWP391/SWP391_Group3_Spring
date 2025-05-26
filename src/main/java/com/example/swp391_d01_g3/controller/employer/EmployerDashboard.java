@@ -1,4 +1,4 @@
-package com.example.swp391_d01_g3.controller.employee;
+package com.example.swp391_d01_g3.controller.employer;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

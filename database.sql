@@ -13,7 +13,7 @@ INSERT INTO Job_fields (job_field_name) VALUES
 ('Automotive');
 
 -- Insert into User (30 records: 25 employers + 5 candidates)
-INSERT INTO User (full_name, email, password, phone, role, avatar_url, status) VALUES
+INSERT INTO Account (full_name, email, password, phone, role, avatar_url, status) VALUES
 ('ACORP Representative', 'acorp@email.com', 'hashed_password6', '0975079095', 'employer', 'https://static.ybox.vn/2021/8/0/1628391947898-Thi%E1%BA%BFt%20k%E1%BA%BF%20kh%C3%B4ng%20t%C3%AAn%20-%202021-08-08T100539.319.png', 'active'),
 ('The Fan Representative', 'thefan@email.com', 'hashed_password7', '5551112222', 'employer', 'https://aleagues.com.au/wp-content/uploads/sites/17/2024/06/FRG_Header_1250x625.png?w=1200', 'active'),
 ('DatVietVAC Representative', 'datvietvac@email.com', 'hashed_password8', '5553334444', 'employer', 'https://agency.brvn.vn/u/datvietvaclogo_1424838404.jpg', 'active'),
