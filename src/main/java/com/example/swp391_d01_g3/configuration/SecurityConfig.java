@@ -53,8 +53,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/Login", "/*.css","/HomePage","/Register").permitAll()
-                        .requestMatchers("/Dashboard/**").hasRole("admin")
+                        .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/Login", "/*.css","/HomePage/**","/Register").permitAll()
+                        .requestMatchers("/Admin/**").hasRole("admin")
                         .requestMatchers("/Employee/**").hasRole("employer")
                         .requestMatchers("/Student/**").hasRole("student")
                         .anyRequest().authenticated()
@@ -78,12 +78,15 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .sessionManagement(session -> session
-                        .invalidSessionUrl("/Login")
+                        .invalidSessionUrl("/")
                         .maximumSessions(1)
-                        .expiredUrl("/Login")
+                        .expiredUrl("/")
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.sendRedirect("/");
+                        })
                 )
                 .requestCache(RequestCacheConfigurer::disable
                 );

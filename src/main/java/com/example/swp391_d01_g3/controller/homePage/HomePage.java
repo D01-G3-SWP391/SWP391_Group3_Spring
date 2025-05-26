@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-@RequestMapping("/HomePage")
+@RequestMapping("/")
 public class HomePage {
 
    @Autowired
    private IJobpostService iJobpostService;
 
-    @GetMapping("")
+    @GetMapping()
     public String showHomePage (Model model){
         List<JobPost> jobPosts = iJobpostService.findAll();
         model.addAttribute("jobPosts", jobPosts);

@@ -24,22 +24,15 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 targetUrl.contains("error") || targetUrl.startsWith("/.well-known") ||
                 targetUrl.endsWith(".css") || targetUrl.endsWith(".js") || targetUrl.endsWith(".json")) {
             if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_admin"))) {
-                targetUrl = "/Dashboard";
-                System.out.println("Redirecting admin to: " + targetUrl);
+                targetUrl = "/Admin";
             } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_employer"))) {
-                targetUrl = "/HomePage"; // Redirect employer đến homepage tạm thời
-                System.out.println("Redirecting employer to: " + targetUrl);
+                targetUrl = "/Employer";
             } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_student"))) {
-                targetUrl = "/HomePage"; // Redirect student đến homepage
-                System.out.println("Redirecting student to: " + targetUrl);
+                targetUrl = "/Student";
             } else {
-                // Default redirect cho tất cả roles khác
                 targetUrl = "/HomePage";
-                System.out.println("Default redirect to: " + targetUrl);
             }
         }
-
-        System.out.println("Final redirect URL: " + targetUrl);
         clearAuthenticationAttributes(request);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }

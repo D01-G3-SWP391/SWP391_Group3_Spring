@@ -1,33 +1,55 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Navbar</title>
-    <!-- Link to the new CSS file for the vertical navbar -->
-    <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}" />
-    <!-- Optional: Link to a general icon library if needed (e.g., Bootstrap Icons) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <!-- Import Montserrat font, as used in previous logo styling -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="navbarAdmin.css">
 </head>
 <body>
-
-<!-- Vertical Navbar Fragment -->
-<nav class="admin-vertical-navbar" th:fragment="verticalNavbar">
+<nav class="admin-vertical-navbar" id="adminNavbar">
     <div class="admin-logo-area">
-        <a th:href="@{/HomePage}" class="admin-text-logo-link">
-            <div class="admin-text-logo">THCLT JOBS</div>
+        <a href="#" class="admin-text-logo-link">
+            <span class="admin-text-logo">THCLT JOBS</span>
         </a>
+        <button class="toggle-btn" id="toggleBtn">
+            <i class="bi bi-list"></i>
+        </button>
     </div>
     <ul class="admin-nav-links">
-        <li><a th:href="@{/Dashboard}"><i class="bi bi-house-door-fill"></i> Dashboard</a></li>
-        <li><a th:href="@{/Dashboard}"><i class="bi bi-people-fill"></i> Users</a></li>
-        <li><a th:href="@{/Dashboard}"><i class="bi bi-briefcase-fill"></i> Jobs</a></li>
-        <li><a th:href="@{/Dashboard}"><i class="bi bi-gear-fill"></i> Settings</a></li>
-        <li><a th:href="@{/logout}"><i class="bi bi-box-arrow-left"></i> Logout</a></li>
+        <li>
+            <a href="#" class="active">
+                <i class="bi bi-house-door"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="bi bi-people"></i>
+                <span>Users</span>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="bi bi-briefcase"></i>
+                <span>Jobs</span>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="bi bi-gear"></i>
+                <span>Settings</span>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+            </a>
+        </li>
     </ul>
 </nav>
-
+<script src="navbarAdmin.js"></script>
 </body>
 </html>
