@@ -1,0 +1,193 @@
+/* profileStudent.css */
+
+/* General body styling to match the navbar theme */
+body {
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff 0%, #e6e9ff 100%);
+    margin: 0;
+    padding: 20px;
+    margin-left: 250px; /* Match the navbar's default margin */
+    transition: margin-left 0.3s ease;
+}
+
+/* Adjust body margin when navbar is collapsed */
+body.collapsed {
+    margin-left: 80px;
+}
+
+/* Container for the profile section */
+.profile-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Profile card styling */
+.profile-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* Avatar styling */
+.avatar {
+    width: 100px; /* Larger size */
+    height: 100px; /* Square shape */
+    border-radius: 8px; /* Square with slight rounding */
+    object-fit: cover;
+}
+
+/* Profile info styling */
+.profile-info {
+    flex: 1;
+}
+
+.profile-name {
+    margin: 0;
+    font-size: 28px; /* Larger font for better readability */
+    font-weight: 700; /* Bolder for emphasis */
+    color: #1f2937;
+    /* Removed the yellow background to match the new screenshot */
+}
+
+.profile-role {
+    margin: 5px 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: #4b5563;
+    text-transform: capitalize; /* Capitalize the role for better presentation */
+}
+
+/* Form styling */
+.profile-form {
+    margin-top: 10px;
+}
+
+.form-group {
+    margin-bottom: 12px; /* Slightly more spacing for better readability */
+    display: flex;
+    align-items: center;
+}
+
+.form-label {
+    font-weight: 600; /* Bolder labels */
+    color: #1f2937;
+    width: 120px;
+    font-size: 15px; /* Slightly smaller for balance */
+}
+
+.form-value {
+    font-size: 15px; /* Adjusted for better proportion */
+    color: #4b5563;
+    line-height: 1.5; /* Better line spacing */
+}
+
+/* Buttons container */
+.profile-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Button styling to match the new screenshot and navbar theme */
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* "Sửa thông tin" button */
+.btn-edit {
+    background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%); /* Adjusted to match the new screenshot's blue */
+    color: #ffffff;
+}
+
+.btn-edit:hover {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+/* "Đổi mật khẩu" button */
+.btn-password {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%); /* Kept the green to match the screenshot */
+    color: #ffffff;
+}
+
+.btn-password:hover {
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* Section styling for "Giới thiệu bản thân" and "Kinh nghiệm" */
+.section {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    animation: fadeIn 0.6s ease-out;
+}
+
+.section-title {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.section-content {
+    margin: 0;
+    font-size: 15px; /* Slightly smaller for better proportion */
+    color: #6b7280;
+    line-height: 1.6; /* Improved readability with better line spacing */
+}
+
+/* Animation for smooth entrance */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    body {
+        margin-left: 80px; /* Match collapsed navbar on mobile */
+        padding: 10px;
+    }
+
+    .profile-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .profile-buttons {
+        justify-content: center;
+    }
+
+    .form-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .form-label {
+        width: auto;
+        margin-bottom: 5px;
+    }
+}
