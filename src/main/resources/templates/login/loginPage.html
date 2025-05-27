@@ -14,6 +14,7 @@
     <div th:replace="~{navbar/navbarHome :: home}"></div>
     <div class="page-container login-container">
         <h2>ĐĂNG NHẬP TÀI KHOẢN</h2>
+        <h3 th:text="${messages}"> </h3>
         <p class="subtitle">Hoặc <a th:href="@{/Register}">đăng ký NGAY</a> nếu bạn chưa có.</p>
 
         <!-- Hiển thị lỗi nếu có -->

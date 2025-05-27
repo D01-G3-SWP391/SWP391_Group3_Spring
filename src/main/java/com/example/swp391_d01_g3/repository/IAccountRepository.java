@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface AccountRepository extends JpaRepository<Account,Long> {
+public interface IAccountRepository extends JpaRepository<Account,Long> {
     Account findByEmail (String email);
     Account findByRole (Account.Role role);
     List<Account> findAll();

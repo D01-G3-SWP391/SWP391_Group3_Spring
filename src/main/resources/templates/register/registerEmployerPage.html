@@ -5,10 +5,53 @@
     <title>Register Employer</title>
     <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
     <link rel="stylesheet" th:href="@{/css/navbar.css}" />
+    <link rel="stylesheet" th:href="@{/css/login.css}" />
+    <link rel="stylesheet" th:href="@{/css/registerEnhanced.css}" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
 </head>
 <body>
 <div th:replace="~{navbar/navbarHome :: home}"></div>
+<div class="page-container login-container">
+    <h2>ĐĂNG KÝ NHÀ TUYỂN DỤNG</h2>
+    <form class="login-form" method="post" th:action="@{/Register/registerEmployer}" th:object="${accountEmployerDTO}">
+        <p class="subtitle">Hoặc <a th:href="@{/Login}">đăng nhập NGAY</a> nếu bạn đã có.</p>
+        <h3>Thông tin đăng nhập</h3>
+        <div class="form-group">
+            <input type="text" id="email" name="email" placeholder="Nhập Email " th:field="*{email}" required>
+        </div>
+        <div class="form-group">
+            <input type="password" id="password" name="password" placeholder="Nhập Mật khẩu" th:field="*{password}" required>
+        </div>
+        <h3>Thông tin liên hệ</h3>
+        <div class="form-group">
+            <input type="text" id="full_name" name="fullname" placeholder="Nhập họ và tên" th:field="*{fullName}" required>
+        </div>
+        <div class="form-group">
+            <input type="text" id="phone" name="phone" placeholder="Nhập Số điện thoại" th:field="*{phone}" required>
+        </div>
+        <div class="form-group">
+            <input type="text" id="company_name" name="company_name" placeholder="Tên công ty" th:field="*{companyName}" required>
+        </div>
+        <div class="form-group">
+            <input type="text" id="company_address" name="company_address" placeholder="Địa chỉ công ty" th:field="*{companyAddress}" required>
+        </div>
+        <div class="form-group">
+            <input type="text" id="company_des" name="company_des" placeholder="Mô tả công ty" th:field="*{companyDescription}" required>
+        </div>
+        <div class="form-group">
+            <label for="jobsFieldId">Lĩnh vực công việc:</label>
+            <select id="jobsFieldId" class="form-control" th:field="*{jobsFieldId}" required>
+                <option value="">-- Chọn lĩnh vực --</option>
+                <option th:each="field : ${jobFields}"
+                        th:value="${field.jobFieldId}"
+                        th:text="${field.jobFieldName}">
+                    <!-- Tên lĩnh vực sẽ được hiển thị ở đây -->
+                </option>
+            </select>
+        </div>
+        <button type="submit" class="content-btn content-btn-primary login-page-btn"><span class="icon-lock"></span>Đăng ký</button>
+    </form>
+</div>
 </body>
 </html>

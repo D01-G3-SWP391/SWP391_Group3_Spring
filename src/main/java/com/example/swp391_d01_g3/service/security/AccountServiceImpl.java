@@ -2,16 +2,16 @@ package com.example.swp391_d01_g3.service.security;
 
 
 import com.example.swp391_d01_g3.model.Account;
-import com.example.swp391_d01_g3.repository.AccountRepository;
+import com.example.swp391_d01_g3.repository.IAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
+@Service()
 public class AccountServiceImpl implements AccountService {
     @Autowired
-    AccountRepository accountRepository;
+    IAccountRepository accountRepository;
 
     @Override
     public Account findByEmail(String email) {

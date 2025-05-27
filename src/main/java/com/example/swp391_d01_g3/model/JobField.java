@@ -14,4 +14,26 @@ public class JobField {
 
     public JobField() {
     }
+
+    public JobField(Integer jobFieldId, String jobFieldName) {
+        this.jobFieldId = jobFieldId;
+        this.jobFieldName = jobFieldName;
+    }
+
+    // Getters and Setters
+    public Integer getJobFieldId() {
+        return jobFieldId;
+    }
+
+    public void setJobFieldId(Integer jobFieldId) {
+        this.jobFieldId = jobFieldId;
+    }
+
+    public String getJobFieldName() {
+        return jobFieldName;
+    }
+
+    public void setJobFieldName(String jobFieldName) {
+        this.jobFieldName = jobFieldName;
+    }
 } 

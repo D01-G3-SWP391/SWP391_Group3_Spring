@@ -13,19 +13,19 @@
 <div th:replace="~{navbar/navbarHome :: home}"></div>
 <div class="page-container login-container">
     <h2>ĐĂNG KÝ NGƯỜI TÌM VIỆC</h2>
-    <form class="login-form" method="post" th:action="@{/Login}">
-        <p class="subtitle">Hoặc <a th:href="@{/Register}">đăng nhập NGAY</a> nếu bạn đã có.</p>
+    <form class="login-form" method="post" th:action="@{/Register/registerStudent}" th:object="${accountDTO}">
+        <p class="subtitle">Hoặc <a th:href="@{/Login}">đăng nhập NGAY</a> nếu bạn đã có.</p>
         <div class="form-group">
-            <input type="text" id="full_name" name="fullname" placeholder="Nhập họ và tên" required>
+            <input type="text" id="full_name" name="fullname" placeholder="Nhập họ và tên" th:field="*{fullName}" required>
         </div>
         <div class="form-group">
-            <input type="text" id="email" name="email" placeholder="Nhập Email hoặc Số điện thoại" required>
+            <input type="text" id="email" name="email" placeholder="Nhập Email " th:field="*{email}" required>
         </div>
         <div class="form-group">
-            <input type="text" id="phone" name="phone" placeholder="Nhập Số điện thoại" required>
+            <input type="text" id="phone" name="phone" placeholder="Nhập Số điện thoại" th:field="*{phone}" required>
         </div>
         <div class="form-group">
-            <input type="password" id="password" name="password" placeholder="Nhập Mật khẩu" required>
+            <input type="password" id="password" name="password" placeholder="Nhập Mật khẩu" th:field="*{password}" required>
         </div>
         <button type="submit" class="content-btn content-btn-primary login-page-btn"><span class="icon-lock"></span>Đăng ký</button>
     </form>
