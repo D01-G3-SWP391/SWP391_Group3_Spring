@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface IStudentService {
     Account save(Account account);
+    Student saveStudent(Student student);
     List<Student> findAll();
     Student findByAccountUserId(Integer userId);
 }

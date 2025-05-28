@@ -30,7 +30,8 @@
             <a href="#" class="nav-link">Events</a>
         </div>
         <div  class="navbar-right">
-            <a class="nav-action-btn nav-logout-btn">Hi <p th:text=""></p></a>
+            <a class="nav-action-btn nav-logout-btn">Hi </a>
+
         </div>
             <div sec:authorize="isAuthenticated()" class="navbar-right">
                 <a th:href="@{/logout}" class="nav-action-btn nav-logout-btn"><i class="bi bi-box-arrow-in-right"></i> Logout</a>

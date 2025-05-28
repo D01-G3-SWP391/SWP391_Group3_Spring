@@ -22,6 +22,11 @@ public class StudentServiceImpl implements IStudentService {
     }
 
     @Override
+    public Student saveStudent(Student student) {
+        return iStudentRepository.save(student);
+    }
+
+    @Override
     public List<Student> findAll() {
         return iStudentRepository.findAll();
     }

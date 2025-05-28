@@ -22,4 +22,10 @@ public class EmployerServiceImpl implements IEmployerService {
     public void saveEmployer(Employer employer) {
         iEmployerRepository.save(employer);
     }
+
+
+    @Override
+    public Employer findByUserId(Integer userId) {
+        return iEmployerRepository.findByAccount_UserId(userId);
+    }
 }

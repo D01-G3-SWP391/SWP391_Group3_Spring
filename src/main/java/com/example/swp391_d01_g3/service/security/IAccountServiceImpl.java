@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service()
-public class AccountServiceImpl implements AccountService {
+public class IAccountServiceImpl implements IAccountService {
     @Autowired
     IAccountRepository accountRepository;
 
@@ -20,11 +20,16 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account findByRole(Account.Role role) {
-        return accountRepository.findByRole(role);
+        return (Account) accountRepository.findByRole(role);
     }
 
     @Override
     public List<Account> findAll() {
         return accountRepository.findAll();
+    }
+
+    @Override
+    public Account save(Account account) {
+        return accountRepository.save(account);
     }
 }
