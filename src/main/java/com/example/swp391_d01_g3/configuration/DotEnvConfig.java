@@ -5,10 +5,18 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class DotEnvConfig {
-    public DotEnvConfig() {
+
+    static {
+        // Load .env file before Spring starts
         Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
-        dotenv.entries().forEach(entry -> {
-            System.setProperty(entry.getKey(), entry.getValue());
-        });
+        
+        if (dotenv != null) {
+            dotenv.entries().forEach(entry -> {
+                System.setProperty(entry.getKey(), entry.getValue());
+                System.out.println("Loaded env var: " + entry.getKey() + " = " + entry.getValue());
+            });
+        } else {
+            System.out.println("No .env file found");
+        }
     }
 }
