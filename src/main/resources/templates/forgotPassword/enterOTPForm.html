@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbar.css}" />
+    <link rel="stylesheet" th:href="@{/css/login.css}" />
+    <link rel="stylesheet" th:href="@{/css/registerEnhanced.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+</head>
+<body>
+<div th:replace="~{navbar/navbarHome :: home}"></div>
+<div class="page-container login-container">
+    <h2>Quên mật khẩu?</h2>
+<form class="login-form" method="post" th:action="@{/ForgotPassword/VerifyOTP}">
+    <input type="hidden" id="email" name="email" th:value="${account.email}" />
+    <div class="form-group">
+        <p> Vui lòng nhập otp của bạn để đặt lại mật khẩu.</p>
+        <input type="text" id="otp" name="otp" placeholder="otp" required>
+    </div>
+    <button type="submit" class="content-btn content-btn-primary login-page-btn"><span class="icon-lock"></span>Xác nhận</button>
+</form>
+</div>
+</body>
+</html>
