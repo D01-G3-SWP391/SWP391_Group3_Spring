@@ -27,7 +27,7 @@ public class Register {
     private IJobfieldService iJobfieldService;
 
     @Autowired
-    private IStudentService iAccountService;
+    private IStudentService iStudentService;
 
     @Autowired
     private IEmployerService iEmployerService;
@@ -57,7 +57,12 @@ public class Register {
         account.setRole(Account.Role.student);
         account.setStatus(Account.Status.active);
         account.setPassword(passwordEncoder.encode(accountDTO.getPassword()));
-        iAccountService.save(account);
+        Account saveAcount = iStudentService.saveAccount(account);
+        if (saveAcount != null && saveAcount.getUserId()!= null){
+            Student student = new Student();
+            student.setAccount(saveAcount);
+            iStudentService.saveStudent(student);
+        }
         redirectAttributes.addFlashAttribute("messages", "Registration successful!");
         return "redirect:/Login";
     }
@@ -80,7 +85,7 @@ public class Register {
         account.setRole(Account.Role.employer);
         account.setStatus(Account.Status.active);
         account.setPassword(passwordEncoder.encode(accountEmployerDTO.getPassword()));
-        Account savedAccount = iAccountService.save(account);
+        Account savedAccount = iEmployerService.saveAccount(account);
 
         if (savedAccount == null || savedAccount.getUserId() == null) {
             model.addAttribute("accountEmployerDTO", accountEmployerDTO);

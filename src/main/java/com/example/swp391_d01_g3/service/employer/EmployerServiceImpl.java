@@ -14,12 +14,13 @@ public class EmployerServiceImpl implements IEmployerService {
     @Autowired
     IEmployerRepository iEmployerRepository;
     @Override
-    public void save(Account account) {
-        iAccountRepository.save(account);
+    public Account saveAccount(Account account) {
+
+        return iAccountRepository.save(account);
     }
 
     @Override
-    public void saveEmployer(Employer employer) {
-        iEmployerRepository.save(employer);
+    public Employer saveEmployer(Employer employer) {
+        return iEmployerRepository.save(employer);
     }
 }

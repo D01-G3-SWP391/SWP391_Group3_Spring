@@ -4,6 +4,6 @@ import com.example.swp391_d01_g3.model.Account;
 import com.example.swp391_d01_g3.model.Employer;
 
 public interface IEmployerService {
-    void save (Account account);
-    void saveEmployer(Employer employer);
+    Account saveAccount (Account account);
+    Employer saveEmployer(Employer employer);
 }

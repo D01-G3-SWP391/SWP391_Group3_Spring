@@ -17,13 +17,18 @@ public class StudentServiceImpl implements IStudentService {
     private IStudentRepository iStudentRepository;
 
     @Override
-    public Account save(Account account) {
+    public Account saveAccount(Account account) {
         return iAccountRepository.save(account);
     }
 
     @Override
     public List<Student> findAll() {
         return iStudentRepository.findAll();
+    }
+
+    @Override
+    public Student saveStudent(Student student) {
+        return iStudentRepository.save(student);
     }
 
     @Override
