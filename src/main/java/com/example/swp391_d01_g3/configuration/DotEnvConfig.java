@@ -13,7 +13,7 @@ public class DotEnvConfig {
         if (dotenv != null) {
             dotenv.entries().forEach(entry -> {
                 System.setProperty(entry.getKey(), entry.getValue());
-                System.out.println("Loaded env var: " + entry.getKey() + " = " + entry.getValue());
+//                System.out.println("Loaded env var: " + entry.getKey() + " = " + entry.getValue());
             });
         } else {
             System.out.println("No .env file found");

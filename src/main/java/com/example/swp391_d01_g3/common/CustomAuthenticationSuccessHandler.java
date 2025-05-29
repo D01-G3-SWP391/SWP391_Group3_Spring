@@ -52,7 +52,7 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             
             // CHỈ gửi email cho tài khoản MỚI
             if (isNewUser) {
-                sendWelcomeEmail(email, fullName, "Google");
+                emailService.sendWelcomeEmail(email, fullName, "Google");
             }
             
             // Tạo Authentication object đúng cách
@@ -80,33 +80,5 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         }
         clearAuthenticationAttributes(request);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
-    }
-    
-    /**
-     * Gửi email chào mừng cho tài khoản mới (chỉ dùng cho Google login)
-     */
-    private void sendWelcomeEmail(String email, String fullName, String loginMethod) {
-        try {
-            String subject = "🎉 Chào mừng bạn đến với SWP391 Job Portal!";
-            String body = "Xin chào " + fullName + ",\n\n" +
-                         "🎉 Chào mừng bạn đã gia nhập cộng đồng SWP391 Job Portal!\n\n" +
-                         "✅ Tài khoản của bạn đã được tạo thành công thông qua " + loginMethod + "\n" +
-                         "📧 Email đăng nhập: " + email + "\n\n" +
-                         "🚀 Bạn có thể bắt đầu:\n" +
-                         "   • Tìm kiếm việc làm phù hợp\n" +
-                         "   • Cập nhật hồ sơ cá nhân\n" +
-                         "   • Tham gia các sự kiện tuyển dụng\n\n" +
-                         "💬 Nếu có bất kỳ thắc mắc nào, đừng ngại liên hệ với chúng tôi.\n\n" +
-                         "Trân trọng,\n" +
-                         "🏢 Đội ngũ SWP391 Job Portal\n" +
-                         "📞 Hotline: 1900-xxxx\n" +
-                         "🌐 Website: http://localhost:8080";
-            
-            emailService.sendEmail(email, subject, body);
-            System.out.println("✅ Welcome email sent to NEW user: " + email + " via " + loginMethod);
-            
-        } catch (Exception e) {
-            System.err.println("❌ Failed to send welcome email to: " + email + " - Error: " + e.getMessage());
-        }
     }
 }
