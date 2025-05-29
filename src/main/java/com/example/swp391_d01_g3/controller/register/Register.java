@@ -73,7 +73,7 @@ public class Register {
             iStudentService.saveStudent(student);
             
             // Gửi email chào mừng
-            sendWelcomeEmail(savedAccount.getEmail(), savedAccount.getFullName(), "Student");
+            emailService.sendWelcomeEmail(savedAccount.getEmail(), savedAccount.getFullName(), "Student");
         }
         
         redirectAttributes.addFlashAttribute("messages", "Registration successful!");
@@ -127,52 +127,9 @@ public class Register {
         iEmployerService.saveEmployer(employer);
         
         // Gửi email chào mừng
-        sendWelcomeEmail(savedAccount.getEmail(), savedAccount.getFullName(), "Employer");
+        emailService.sendWelcomeEmail(savedAccount.getEmail(), savedAccount.getFullName(), "Employer");
 
         redirectAttributes.addFlashAttribute("messages", "Registration successful!");
         return "redirect:/Login";
-    }
-    
-    /**
-     * Gửi email chào mừng cho thành viên mới đăng ký
-     */
-    private void sendWelcomeEmail(String email, String fullName, String role) {
-        try {
-            String subject = "🎉 Chào mừng bạn đến với SWP391 Job Portal!";
-            String roleText = role.equals("Student") ? "Sinh viên" : "Nhà tuyển dụng";
-            
-            String body = "Xin chào " + fullName + ",\n\n" +
-                         "🎉 Chào mừng bạn đã gia nhập cộng đồng SWP391 Job Portal với vai trò " + roleText + "!\n\n" +
-                         "✅ Tài khoản của bạn đã được tạo thành công\n" +
-                         "📧 Email đăng nhập: " + email + "\n" +
-                         "👤 Vai trò: " + roleText + "\n\n";
-            
-            if (role.equals("Student")) {
-                body += "🚀 Bạn có thể bắt đầu:\n" +
-                       "   • Tìm kiếm việc làm phù hợp\n" +
-                       "   • Cập nhật hồ sơ cá nhân\n" +
-                       "   • Tham gia các sự kiện tuyển dụng\n" +
-                       "   • Nộp đơn ứng tuyển trực tuyến\n\n";
-            } else {
-                body += "🚀 Bạn có thể bắt đầu:\n" +
-                       "   • Đăng tin tuyển dụng\n" +
-                       "   • Quản lý hồ sơ công ty\n" +
-                       "   • Tổ chức sự kiện tuyển dụng\n" +
-                       "   • Tìm kiếm ứng viên phù hợp\n\n";
-            }
-            
-            body += "💬 Nếu có bất kỳ thắc mắc nào, đừng ngại liên hệ với chúng tôi.\n\n" +
-                   "Chúc bạn có trải nghiệm tuyệt vời!\n\n" +
-                   "Trân trọng,\n" +
-                   "🏢 Đội ngũ SWP391 Job Portal\n" +
-                   "📞 Hotline: 1900-xxxx\n" +
-                   "🌐 Website: http://localhost:8080";
-            
-            emailService.sendEmail(email, subject, body);
-            System.out.println("✅ Welcome email sent to: " + email + " (Role: " + role + ")");
-            
-        } catch (Exception e) {
-            System.err.println("❌ Failed to send welcome email to: " + email + " - Error: " + e.getMessage());
-        }
     }
 }
