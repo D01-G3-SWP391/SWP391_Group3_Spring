@@ -1,4 +1,4 @@
-package com.example.swp391_d01_g3.model;
+package com.example.swp391_d01_g3.dto;
 
 // Không cần import JobField ở đây nếu chúng ta chỉ lưu trữ ID
 // import com.example.swp391_d01_g3.model.JobField;

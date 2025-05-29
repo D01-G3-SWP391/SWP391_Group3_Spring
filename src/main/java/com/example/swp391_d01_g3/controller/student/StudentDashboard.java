@@ -18,10 +18,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
-import com.example.swp391_d01_g3.model.JobField;
-
 // Import the DTO
-import com.example.swp391_d01_g3.model.StudentProfileDTO;
+import com.example.swp391_d01_g3.dto.StudentProfileDTO;
 
 @Controller
 @RequestMapping("/Student")

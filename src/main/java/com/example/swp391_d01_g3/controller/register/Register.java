@@ -1,5 +1,7 @@
 package com.example.swp391_d01_g3.controller.register;
 
+import com.example.swp391_d01_g3.dto.AccountDTO;
+import com.example.swp391_d01_g3.dto.AccountEmployerDTO;
 import com.example.swp391_d01_g3.model.*;
 import com.example.swp391_d01_g3.service.email.EmailService;
 import com.example.swp391_d01_g3.service.employer.IEmployerService;
