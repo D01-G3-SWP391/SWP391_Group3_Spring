@@ -39,8 +39,19 @@ public class EmailService {
         if (account == null) {
             System.err.println("Attempted to send forgot password email to non-existent account: " + to);
             // Optionally, you might want to throw an exception or handle this case differently
-            // rather than silently returning, depending on your application's error handling strategy.
+            // rather tha n silently returning, depending on your application's error handling strategy.
             return; 
+        }
+
+        // Xóa bản ghi ForgotPassword hiện có cho tài khoản này
+        ForgotPassword existingForgotPassword = forgotPasswordRepository.findByAccount(account);
+        if (existingForgotPassword != null) {
+            // Hủy bỏ liên kết trong Tài khoản để ngăn chặn TransientObjectException
+            if (account.getForgotPassword() != null && account.getForgotPassword().equals(existingForgotPassword)) {
+                account.setForgotPassword(null);
+            // Tùy chọn lưu tài khoản nếu cần lưu lại những thay đổi ngay lập tức, mặc dù không nhất thiết phải thực hiện trước khi xóa ForgotPassword            \
+            }
+            forgotPasswordRepository.delete(existingForgotPassword);
         }
 
         simpleMailMessage.setTo(to);

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<link rel="stylesheet" th:href="@{/css/navbarStudent_Employer.css}" />
+<link rel="stylesheet" th:href="@{/css/editStudent.css}" />
+<body>
+<div th:replace="~{navbar/navbarStudent :: navbarAdmin}"></div>
+<div class="profile-container">
+  <div class="edit-profile-card">
+    <h2 class="edit-profile-title">Chỉnh sửa hồ sơ</h2>
+    <form th:action="@{/Student/EditProfile}" method="post" class="edit-profile-form" th:object="${studentProfileDTO}">
+      <div class="form-group">
+        <label class="form-label" for="fullName">Họ và tên:</label>
+        <input type="text" id="fullName" th:field="*{fullName}" class="form-input" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="phone">Số điện thoại:</label>
+        <input type="text" id="phone" th:field="*{phone}" class="form-input" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="address">Địa chỉ:</label>
+        <input type="text" id="address" th:field="*{address}" class="form-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="university">Trường học:</label>
+        <input type="text" id="university" th:field="*{university}" class="form-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="preferredJobAddress">Địa chỉ làm việc mong muốn:</label>
+        <input type="text" id="preferredJobAddress" th:field="*{preferredJobAddress}" class="form-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="profileDescription">Giới thiệu bản thân:</label>
+        <input type="text" id="profileDescription" th:field="*{profileDescription}" class="form-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="experience">Kinh nghiệm:</label>
+        <input type="text" id="experience" th:field="*{experience}" class="form-input">
+      </div>
+
+      <div class="form-buttons">
+        <button type="submit" class="btn btn-save">Lưu</button>
+        <a th:href="@{/profile}" class="btn btn-cancel">Hủy</a>
+      </div>
+    </form>
+  </div>
+</div>
+<script th:src="@{/js/navbarAdmin.js}"></script>
+</body>
+</html>

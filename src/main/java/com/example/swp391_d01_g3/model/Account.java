@@ -121,5 +121,13 @@ public class Account {
     public void setStatus(Status status) {
         this.status = status;
     }
+
+    public ForgotPassword getForgotPassword() {
+        return forgotPassword;
+    }
+
+    public void setForgotPassword(ForgotPassword forgotPassword) {
+        this.forgotPassword = forgotPassword;
+    }
 }
 

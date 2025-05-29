@@ -40,15 +40,17 @@ public class ForgotPasswordController {
         Account account = iAccountRepository.findByEmail(email);
         if (account != null) {
             emailService.sendForgotPassEmail(email);
-            model.addAttribute("message", "OTP đã được gửi tới email của bạn.");
+            model.addAttribute("sendOtp", "OTP đã được gửi tới email của bạn.");
             model.addAttribute("account",account);
         } else {
-            model.addAttribute("message", "Không tìm thấy email.");
+            model.addAttribute("emailNotFound", "Không tìm thấy email.");
+            model.addAttribute("reEnterEmail", "Vui lòng nhập địa chỉ email hợp lệ.");
+            return "forgotPassword/enterMailForm";
         }
         return "forgotPassword/enterOTPForm";
     }
     @PostMapping("/VerifyOTP")
-    public String verifyOTP(@RequestParam Integer otp, Model model, RedirectAttributes redirectAttributes) {
+    public String verifyOTP(@RequestParam Integer otp, Model model) {
         try {
             ForgotPassword fp = forgotPasswordRepository.findByOtpAndAccount(otp)
                     .orElseThrow(() -> new RuntimeException("OTP không hợp lệ cho email"));
@@ -58,7 +60,7 @@ public class ForgotPasswordController {
                 model.addAttribute("otp_failed", "OTP đã hết hạn!");
                 return "forgotPassword/enterOTPForm";
             }
-            redirectAttributes.addFlashAttribute("otp_success","OTP đã xác thực thành công");
+            model.addAttribute("otpSuccess", "OTP đã xác thực thành công");
             model.addAttribute("accountEmail", fp.getAccount().getEmail());
             return "forgotPassword/enterNewPassword";
         } catch (RuntimeException e) {
@@ -78,7 +80,7 @@ public class ForgotPasswordController {
         }
         account.setPassword(passwordEncoder.encode(newPassword));
         iAccountRepository.save(account);
-        model.addAttribute("changepass", "Đổi mật khẩu thành công.");
+        model.addAttribute("changePass", "Đổi mật khẩu thành công.");
         return "login/loginPage";
     }
     }

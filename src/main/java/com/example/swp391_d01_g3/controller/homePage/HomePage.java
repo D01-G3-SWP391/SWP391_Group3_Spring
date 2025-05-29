@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -19,9 +20,12 @@ public class HomePage {
    private IJobpostService iJobpostService;
 
     @GetMapping()
-    public String showHomePage (Model model){
+    public String showHomePage (Model model, Principal principal){
         List<JobPost> jobPosts = iJobpostService.findAll();
         model.addAttribute("jobPosts", jobPosts);
+        if (principal != null) {
+            model.addAttribute("userEmail", principal.getName());
+        }
         return "homePage/homePage";
     }
 }

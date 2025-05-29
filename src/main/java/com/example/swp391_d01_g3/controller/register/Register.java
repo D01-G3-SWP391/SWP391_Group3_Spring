@@ -55,7 +55,7 @@ public class Register {
     }
     @PostMapping("/registerStudent")
     public String registerStudent(@Valid @ModelAttribute("accountDTO") AccountDTO accountDTO, BindingResult bindingResult,
-                                  RedirectAttributes redirectAttributes, Model model){
+                                  RedirectAttributes redirectAttributes){
         new AccountDTO().validate(accountDTO,bindingResult);
         if (bindingResult.hasErrors()){
             return "register/registerStudentPage";
