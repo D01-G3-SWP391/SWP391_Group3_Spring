@@ -12,13 +12,11 @@ import java.util.List;
 @Service
 public class StudentServiceImpl implements IStudentService {
     @Autowired
-    private IAccountRepository iAccountRepository;
-    @Autowired
     private IStudentRepository iStudentRepository;
 
     @Override
-    public Account saveAccount(Account account) {
-        return iAccountRepository.save(account);
+    public Student save(Student student) {
+        return iStudentRepository.save(student);
     }
 
     @Override
@@ -26,10 +24,6 @@ public class StudentServiceImpl implements IStudentService {
         return iStudentRepository.findAll();
     }
 
-    @Override
-    public Student saveStudent(Student student) {
-        return iStudentRepository.save(student);
-    }
 
     @Override
     public Student findByAccountUserId(Integer userId) {

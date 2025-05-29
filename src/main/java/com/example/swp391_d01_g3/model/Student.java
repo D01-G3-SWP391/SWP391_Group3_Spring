@@ -17,7 +17,7 @@ public class Student {
     private String address;
 
     @ManyToOne
-    @JoinColumn(name = "job_field_id", nullable = false)
+    @JoinColumn(name = "job_field_id", nullable = true)
     private JobField jobField;
 
     @Column(length = 100)

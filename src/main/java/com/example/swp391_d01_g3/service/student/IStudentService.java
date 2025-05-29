@@ -6,8 +6,7 @@ import com.example.swp391_d01_g3.model.Student;
 import java.util.List;
 
 public interface IStudentService {
-    Account saveAccount(Account account);
+    Student save(Student student);
     List<Student> findAll();
-    Student saveStudent(Student student);
     Student findByAccountUserId(Integer userId);
 }

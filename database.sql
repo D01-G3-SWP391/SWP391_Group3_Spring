@@ -13,7 +13,7 @@ INSERT INTO Job_fields (job_field_name) VALUES
 ('Automotive');
 
 -- Insert into User (30 records: 25 employers + 5 candidates)
-INSERT INTO account (full_name, email, password, phone, role, avatar_url, status) VALUES
+INSERT INTO Account (full_name, email, password, phone, role, avatar_url, status) VALUES
 ('ACORP Representative', 'acorp@email.com', 'hashed_password6', '0975079095', 'employer', 'https://static.ybox.vn/2021/8/0/1628391947898-Thi%E1%BA%BFt%20k%E1%BA%BF%20kh%C3%B4ng%20t%C3%AAn%20-%202021-08-08T100539.319.png', 'active'),
 ('The Fan Representative', 'thefan@email.com', 'hashed_password7', '5551112222', 'employer', 'https://aleagues.com.au/wp-content/uploads/sites/17/2024/06/FRG_Header_1250x625.png?w=1200', 'active'),
 ('DatVietVAC Representative', 'datvietvac@email.com', 'hashed_password8', '5553334444', 'employer', 'https://agency.brvn.vn/u/datvietvaclogo_1424838404.jpg', 'active'),
@@ -39,7 +39,12 @@ INSERT INTO account (full_name, email, password, phone, role, avatar_url, status
 ('InteriorCorp Representative', 'interiorcorp@email.com', 'hashed_password28', '5553336666', 'employer', 'https://th.bing.com/th/id/OIP.FuvmYMVortSMSmyX3JATnwHaEK?cb=iwp2&rs=1&pid=ImgDetMain', 'active'),
 ('RealEstateVN Representative', 'realestatevn@email.com', 'hashed_password29', '5554447777', 'employer', 'https://th.bing.com/th/id/OIP.As117lLTrcyzKDpPAxmlxAHaHa?cb=iwp2&rs=1&pid=ImgDetMain', 'active'),
 ('BankVN Representative', 'bankvn@email.com', 'hashed_password30', '5555558888', 'employer', 'https://th.bing.com/th/id/OIP.71yIH0XXG4B-BP7eeH_IwQHaFj?cb=iwp2&rs=1&pid=ImgDetMain', 'active'),
-('Admin','admin@gmail.com','admin','0905777999','admin','https://t3.ftcdn.net/jpg/00/65/75/68/360_F_65756860_GUZwzOKNMUU3HldFoIA44qss7ZIrCG8I.jpg','active');
+('Admin','admin@gmail.com','admin','0905777999','admin','https://t3.ftcdn.net/jpg/00/65/75/68/360_F_65756860_GUZwzOKNMUU3HldFoIA44qss7ZIrCG8I.jpg','active'),
+('Nguyen Van An', 'nguyenvanan@gmail.com', 'hashed_password1', '0905123456', 'student', 'https://example.com/avatar1.jpg', 'active'),
+('Tran Thi Binh', 'tranbinh123@gmail.com', 'hashed_password2', '0916234567', 'student', 'https://example.com/avatar2.jpg', 'active'),
+('Le Hoang Nam', 'lehoangnam@gmail.com', 'hashed_password3', '0927345678', 'student', 'https://example.com/avatar3.jpg', 'active'),
+('Pham Thi Cuc', 'phamthicuc@gmail.com', 'hashed_password4', '0938456789', 'student', 'https://example.com/avatar4.jpg', 'active'),
+('Hoang Van Dung', 'hoangvandung@gmail.com', 'hashed_password5', '0949567890', 'student', 'https://example.com/avatar5.jpg', 'active');
 -- Insert into Employer (25 records)
 INSERT INTO Employer (jobs_field_id, user_id, company_name, company_address, logo_url, company_description) VALUES
 (2, 1, 'Công ty Cổ phần Đầu Tư ACORP', '35 Thái Phiên, Phước Ninh, Hải Châu, Đà Nẵng', 'https://static.ybox.vn/2021/8/0/1628391947898-Thi%E1%BA%BFt%20k%E1%BA%BF%20kh%C3%B4ng%20t%C3%AAn%20-%202021-08-08T100539.319.png', 'Investment company focusing on real estate and business services.'),
@@ -67,6 +72,15 @@ INSERT INTO Employer (jobs_field_id, user_id, company_name, company_address, log
 (8, 23, 'Interior Corp', 'Hà Nội', 'https://th.bing.com/th/id/OIP.FuvmYMVortSMSmyX3JATnwHaEK?cb=iwp2&rs=1&pid=ImgDetMain', 'Interior design and furnishing company.'),
 (2, 24, 'Real Estate VN', 'Hà Nội', 'https://th.bing.com/th/id/OIP.As117lLTrcyzKDpPAxmlxAHaHa?cb=iwp2&rs=1&pid=ImgDetMain', 'Real estate consultancy and sales agency.'),
 (6, 25, 'Bank VN', 'TP.HCM', 'https://th.bing.com/th/id/OIP.71yIH0XXG4B-BP7eeH_IwQHaFj?cb=iwp2&rs=1&pid=ImgDetMain', 'Commercial banking services provider.');
+
+-- Insert into Student (5 records matching user_id 26-30 and Job_application)
+INSERT INTO Student (user_id, address, job_field_id, university, preferred_job_address, profile_description, experience) VALUES
+(27, '123 Nguyen Hue, District 1, Ho Chi Minh City', 4, 'Ho Chi Minh City University of Technology', 'Ho Chi Minh City', 'Third-year Marketing student, passionate about content creation and market analysis. Seeking internship opportunities in digital marketing to gain practical experience.', 'Marketing intern at a startup company (3 months), supported social media content creation.'),
+(28, '456 Le Loi, Ba Dinh, Hanoi', 4, 'National Economics University', 'Hanoi', 'Fourth-year Business Administration student with strong communication skills and customer service experience. Seeking internship opportunities in customer service.', 'Part-time salesperson at a retail store (6 months).'),
+(29, '789 Tran Hung Dao, Hai Chau, Da Nang', 5, 'University of Foreign Languages', 'Da Nang', 'Third-year English Language student, passionate about teaching and working with children. Aspiring to become an English teaching assistant to develop pedagogical skills.', 'Private English tutor for students since the first year of university.'),
+(30, '101 Pham Van Dong, Cau Giay, Hanoi', 3, 'Hanoi University of Industry', 'Hanoi', 'Fourth-year Chemistry student with sales and customer consulting skills. Seeking job opportunities in technical sales.', 'Sales intern at a chemical company (4 months).'),
+(31, '202 Vo Van Tan, District 3, Ho Chi Minh City', 5, 'Ho Chi Minh City University of Foreign Languages', 'Ho Chi Minh City', 'Third-year English Language student with strong English communication skills (IELTS 7.0). Seeking part-time opportunities in education to develop teaching skills.', 'English teaching assistant at a language center (3 months).');
+
 
 -- Insert into Jobs_post (30 records with corrected job_field_id)
 INSERT INTO Jobs_post (job_field_id, employer_id, job_title, job_description, job_salary, job_requirements, job_location, applied_quality, job_type, approval_status, display_status, created_at) VALUES
@@ -102,20 +116,15 @@ INSERT INTO Jobs_post (job_field_id, employer_id, job_title, job_description, jo
 (6, 25, 'Bank Credit Officer', 'Recruiting Bank Credit Officers\nJob Description:\n- Review loan applications for individual and corporate clients.\n- Consult on suitable credit products.\n- Monitor and manage credit debt.\nRequirements:\n- University graduate in Finance, Banking.\n- Financial analysis and risk assessment skills.\n- Credit experience is an advantage.\nBenefits:\n- Salary: 12 - 20 million VND/month.\n- Performance bonuses, premium insurance.\n- Career advancement opportunities in banking.\nHow to Apply:\nSend CV to: hr@bank.vn\nSubject: [Bank] Credit Officer – Full Name', '12 - 20 million VND', 'Finance/Banking graduate, financial analysis skills', 'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 15:00:00');
 
 INSERT INTO Job_application (student_id, job_post_id, full_name, email, phone, description, cv_url, status) VALUES
-(26, 1, 'Nguyen Van An', 'nguyenvanan@gmail.com', '0905123456', 'I am a third-year Marketing student, eager to intern at ACORP to gain practical experience.', 'https://drive.google.com/file/d/1psr6tFDTNx9H9iVr50YzW2Z5VD1ajmK9/view?usp=sharing', 'SUBMITTED'),
-(27, 1, 'Tran Thi Binh', 'tranbinh123@gmail.com', '0916234567', 'I am passionate about human resources and want to experience a professional environment at ACORP.', 'https://drive.google.com/file/d/155TMxfmv7gBRd74ZH1c2ODaqIgqscyFx/view?usp=sharing', 'SUBMITTED'),
-(28, 3, 'Le Hoang Nam', 'lehoangnam@gmail.com', '0927345678', 'I have 5 years of experience in DevOps and would like to apply for the Senior SRE Manager position.', 'https://drive.google.com/file/d/1R2dhoq3l45z0O06acot--gdsFI3dQ64k/view?usp=sharing', 'SUBMITTED'),
-(29, 7, 'Pham Thi Cuc', 'phamthicuc@gmail.com', '0938456789', 'I am a software engineer with Full Stack experience, proficient in JavaScript and React, and eager to join FPT Software.', 'https://drive.google.com/file/d/1pX7voFfWJNVVkxMXIGcrWioTqvXTot3v/view?usp=sharing', 'SUBMITTED'),
-(30, 11, 'Hoang Van Dung', 'hoangvandung@gmail.com', '0949567890', 'I am a final-year IT student, passionate about game programming, and want to intern at VNG.', 'https://drive.google.com/file/d/1LAQOw5iJ29jCToyUyDp83Rh8TOcXEyqQ/view?usp=sharing', 'SUBMITTED');
+(1, 1, 'Nguyen Van An', 'nguyenvanan@gmail.com', '0905123456', 'I am a third-year Marketing student, eager to intern at ACORP to gain practical experience.', 'https://drive.google.com/file/d/1psr6tFDTNx9H9iVr50YzW2Z5VD1ajmK9/view?usp=sharing', 'SUBMITTED'),
+(2, 1, 'Tran Thi Binh', 'tranbinh123@gmail.com', '0916234567', 'I am passionate about human resources and want to experience a professional environment at ACORP.', 'https://drive.google.com/file/d/155TMxfmv7gBRd74ZH1c2ODaqIgqscyFx/view?usp=sharing', 'SUBMITTED'),
+(3, 3, 'Le Hoang Nam', 'lehoangnam@gmail.com', '0927345678', 'I have 5 years of experience in DevOps and would like to apply for the Senior SRE Manager position.', 'https://drive.google.com/file/d/1R2dhoq3l45z0O06acot--gdsFI3dQ64k/view?usp=sharing', 'SUBMITTED'),
+(4, 7, 'Pham Thi Cuc', 'phamthicuc@gmail.com', '0938456789', 'I am a software engineer with Full Stack experience, proficient in JavaScript and React, and eager to join FPT Software.', 'https://drive.google.com/file/d/1pX7voFfWJNVVkxMXIGcrWioTqvXTot3v/view?usp=sharing', 'SUBMITTED'),
+(5, 11, 'Hoang Van Dung', 'hoangvandung@gmail.com', '0949567890', 'I am a final-year IT student, passionate about game programming, and want to intern at VNG.', 'https://drive.google.com/file/d/1LAQOw5iJ29jCToyUyDp83Rh8TOcXEyqQ/view?usp=sharing', 'SUBMITTED');
 
 
--- Insert into Student (5 records matching user_id 26-30 and Job_application)
-INSERT INTO Student (student_id, address, job_field_id, university, preferred_job_address, profile_description, experience) VALUES
-(26, '123 Nguyen Hue, District 1, Ho Chi Minh City', 4, 'Ho Chi Minh City University of Technology', 'Ho Chi Minh City', 'Third-year Marketing student, passionate about content creation and market analysis. Seeking internship opportunities in digital marketing to gain practical experience.', 'Marketing intern at a startup company (3 months), supported social media content creation.'),
-(27, '456 Le Loi, Ba Dinh, Hanoi', 4, 'National Economics University', 'Hanoi', 'Fourth-year Business Administration student with strong communication skills and customer service experience. Seeking internship opportunities in customer service.', 'Part-time salesperson at a retail store (6 months).'),
-(28, '789 Tran Hung Dao, Hai Chau, Da Nang', 5, 'University of Foreign Languages', 'Da Nang', 'Third-year English Language student, passionate about teaching and working with children. Aspiring to become an English teaching assistant to develop pedagogical skills.', 'Private English tutor for students since the first year of university.'),
-(29, '101 Pham Van Dong, Cau Giay, Hanoi', 3, 'Hanoi University of Industry', 'Hanoi', 'Fourth-year Chemistry student with sales and customer consulting skills. Seeking job opportunities in technical sales.', 'Sales intern at a chemical company (4 months).'),
-(30, '202 Vo Van Tan, District 3, Ho Chi Minh City', 5, 'Ho Chi Minh City University of Foreign Languages', 'Ho Chi Minh City', 'Third-year English Language student with strong English communication skills (IELTS 7.0). Seeking part-time opportunities in education to develop teaching skills.', 'English teaching assistant at a language center (3 months).');
-
+DELETE FROM Job_application;
 
 SHOW CREATE TABLE Job_post;
+
+ALTER TABLE student MODIFY COLUMN job_field_id INT NULL;

@@ -32,6 +32,9 @@ public class Account {
     @Column(length = 10)
     private Status status;
 
+    @OneToOne(mappedBy = "account")
+    private ForgotPassword forgotPassword;
+
     public Account() {
 
     }

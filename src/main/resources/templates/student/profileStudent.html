@@ -9,6 +9,8 @@
 </head>
 <body>
 <div th:replace="~{navbar/navbarStudent :: navbarAdmin}"></div>
+
+<body>
 <div class="profile-container">
     <!-- Profile Card -->
     <div class="profile-card">
@@ -44,13 +46,13 @@
     <!-- Giới thiệu bản thân Section -->
     <div class="section intro-section">
         <h3 class="section-title">Giới thiệu bản thân</h3>
-        <p th:text="${studentDetails != null ? studentDetails.profileDescription : 'Chưa cập nhật'}" class="section-content">.</p>
+        <p th:text="${studentDetails != null ? studentDetails.profileDescription : 'Chưa có thông tin giới thiệu'}" class="section-content">.</p>
     </div>
 
     <!-- Kinh nghiệm Section -->
     <div class="section experience-section">
         <h3 class="section-title">Kinh nghiệm</h3>
-        <p th:text="${studentDetails != null ? studentDetails.experience : 'Chưa cập nhật'}" class="section-content">.</p>
+        <p th:text="${studentDetails != null ? studentDetails.experience : 'Chưa có thông tin kinh nghiệm'}" class="section-content">.</p>
     </div>
 </div>
 </body>
