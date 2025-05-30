@@ -7,4 +7,7 @@ public interface IEmployerService {
     void save (Account account);
     void saveEmployer(Employer employer);
     Employer findByUserId(Integer userId);
+    Employer findById(Integer employerId);
+    void updateEmployer(Employer employer);
+
 }

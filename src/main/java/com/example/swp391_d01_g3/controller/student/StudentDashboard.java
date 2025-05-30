@@ -41,4 +41,5 @@ public class StudentDashboard {
         }
         return "student/profileStudent";
     }
+
 }

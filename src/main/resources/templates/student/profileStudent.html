@@ -14,13 +14,13 @@
 <div class="profile-container">
     <!-- Profile Card -->
     <div class="profile-card">
-        <img src="/images/employee.jpeg" alt="Avatar" class="avatar">
+        <img src="/images/student.jpeg" alt="Avatar" class="avatar">
         <div class="profile-info">
             <h2 class="profile-name" th:text="${account.fullName}"></h2>
             <p th:text="${account.role}" class="profile-role"></p>
             <form class="profile-form">
                 <div class="form-group">
-                    <label class="form-label">Số điện thoại:</label>
+                    <label class="form-label">Phone number:</label>
                     <span th:text="${account.phone}" class="form-value"></span>
                 </div>
                 <div class="form-group">
@@ -28,30 +28,30 @@
                     <span th:text="${account.email}" class="form-value"></span>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Địa chỉ:</label>
+                    <label class="form-label">Address:</label>
                     <span th:text="${studentDetails != null ? studentDetails.address : 'Chưa cập nhật'}" class="form-value"></span>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Trường học:</label>
+                    <label class="form-label">University name:</label>
                     <span th:text="${studentDetails != null ? studentDetails.university : 'Chưa cập nhật'}" class="form-value"></span>
                 </div>
             </form>
         </div>
         <div class="profile-buttons">
-            <button class="btn btn-edit">Sửa thông tin</button>
-            <button class="btn btn-password">Đổi mật khẩu</button>
+            <button class="btn btn-edit">Edit information</button>
+            <button class="btn btn-password">Change password</button>
         </div>
     </div>
 
     <!-- Giới thiệu bản thân Section -->
     <div class="section intro-section">
-        <h3 class="section-title">Giới thiệu bản thân</h3>
+        <h3 class="section-title">Introduce yourself</h3>
         <p th:text="${studentDetails != null ? studentDetails.profileDescription : 'Chưa có thông tin giới thiệu'}" class="section-content">.</p>
     </div>
 
     <!-- Kinh nghiệm Section -->
     <div class="section experience-section">
-        <h3 class="section-title">Kinh nghiệm</h3>
+        <h3 class="section-title">Experience</h3>
         <p th:text="${studentDetails != null ? studentDetails.experience : 'Chưa có thông tin kinh nghiệm'}" class="section-content">.</p>
     </div>
 </div>
