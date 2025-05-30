@@ -1,24 +1,80 @@
 package com.example.swp391_d01_g3.service.email;
 
+import com.example.swp391_d01_g3.model.ForgotPassword;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import java.util.Date;
+import java.util.Random;
+import com.example.swp391_d01_g3.model.Account;
+import com.example.swp391_d01_g3.repository.ForgotPasswordRepository;
+import com.example.swp391_d01_g3.repository.IAccountRepository;
 
 @Service
 public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
     
+    @Autowired
+    private ForgotPasswordRepository forgotPasswordRepository;
+
+    @Autowired
+    private IAccountRepository accountRepository;
+    
     public void sendEmail(String to, String subject, String body) {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(to);
-        simpleMailMessage.setCc("trantafi204@gmail.com");
         simpleMailMessage.setSubject(subject);
         simpleMailMessage.setText(body);
-        simpleMailMessage.setFrom("vantai04102004@gmail.com");
+        simpleMailMessage.setFrom("viettaifptudn@gmail.com");
         mailSender.send(simpleMailMessage);
         System.out.println("Email sent" + to);
+    }
+    public void sendForgotPassEmail(String to){
+        SimpleMailMessage  simpleMailMessage = new SimpleMailMessage();
+        int otp = otpGenerator();
+
+        Account account = accountRepository.findByEmail(to);
+        if (account == null) {
+            System.err.println("Attempted to send forgot password email to non-existent account: " + to);
+            // Optionally, you might want to throw an exception or handle this case differently
+            // rather tha n silently returning, depending on your application's error handling strategy.
+            return; 
+        }
+
+        // Xóa bản ghi ForgotPassword hiện có cho tài khoản này
+        ForgotPassword existingForgotPassword = forgotPasswordRepository.findByAccount(account);
+        if (existingForgotPassword != null) {
+            // Hủy bỏ liên kết trong Tài khoản để ngăn chặn TransientObjectException
+            if (account.getForgotPassword() != null && account.getForgotPassword().equals(existingForgotPassword)) {
+                account.setForgotPassword(null);
+            // Tùy chọn lưu tài khoản nếu cần lưu lại những thay đổi ngay lập tức, mặc dù không nhất thiết phải thực hiện trước khi xóa ForgotPassword            \
+            }
+            forgotPasswordRepository.delete(existingForgotPassword);
+        }
+
+        simpleMailMessage.setTo(to);
+        simpleMailMessage.setText("This is OTP for your Forgot Password request: "+ otp +
+                " OTP sẽ hết hạn trong 60 giây"
+        );
+        simpleMailMessage.setSubject("OTP for Forgot Password request");
+        simpleMailMessage.setFrom("viettaifptudn@gmail.com");
+
+        ForgotPassword forgotPasswordEntity = ForgotPassword.builder()
+                .otp(otp)
+                .expirationTime(new Date(System.currentTimeMillis() + 60 * 1000)) // OTP valid for 5 minutes (70*1000ms is 70 seconds)
+                .account(account)
+                .build();
+        forgotPasswordRepository.save(forgotPasswordEntity);
+
+        // Actually send the email
+        mailSender.send(simpleMailMessage);
+        System.out.println("Forgot password Email sent to " + to + " with OTP: " + otp);
+    }
+    private Integer otpGenerator(){
+        Random random = new Random();
+        return random.nextInt(100_000,999_999);
     }
     
     /**

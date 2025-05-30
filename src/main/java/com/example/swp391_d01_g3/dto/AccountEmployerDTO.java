@@ -1,4 +1,4 @@
-package com.example.swp391_d01_g3.model;
+package com.example.swp391_d01_g3.dto;
 
 // Add imports for validation if needed, e.g., javax.validation.constraints.* or jakarta.validation.constraints.*
 

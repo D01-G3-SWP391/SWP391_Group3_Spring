@@ -1,5 +1,7 @@
 package com.example.swp391_d01_g3.controller.register;
 
+import com.example.swp391_d01_g3.dto.AccountDTO;
+import com.example.swp391_d01_g3.dto.AccountEmployerDTO;
 import com.example.swp391_d01_g3.model.*;
 import com.example.swp391_d01_g3.service.email.EmailService;
 import com.example.swp391_d01_g3.service.employer.IEmployerService;
@@ -55,7 +57,7 @@ public class Register {
     }
     @PostMapping("/registerStudent")
     public String registerStudent(@Valid @ModelAttribute("accountDTO") AccountDTO accountDTO, BindingResult bindingResult,
-                                  RedirectAttributes redirectAttributes, Model model){
+                                  RedirectAttributes redirectAttributes){
         new AccountDTO().validate(accountDTO,bindingResult);
         if (bindingResult.hasErrors()){
             return "register/registerStudentPage";
@@ -70,7 +72,7 @@ public class Register {
         if (savedAccount != null && savedAccount.getUserId() != null) {
             Student student = new Student();
             student.setAccount(savedAccount);
-            iStudentService.saveStudent(student);
+            iStudentService.save(student);
             
             // Gửi email chào mừng
             emailService.sendWelcomeEmail(savedAccount.getEmail(), savedAccount.getFullName(), "Student");

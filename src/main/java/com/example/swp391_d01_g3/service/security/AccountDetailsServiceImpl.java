@@ -59,7 +59,7 @@ public class AccountDetailsServiceImpl implements UserDetailsService {
             // Tạo Student record
             Student student = new Student();
             student.setAccount(savedAccount);
-            iStudentService.saveStudent(student);
+            iStudentService.save(student);
         }
     }
 }

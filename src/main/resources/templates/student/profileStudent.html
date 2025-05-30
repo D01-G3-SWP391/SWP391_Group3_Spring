@@ -10,7 +10,6 @@
 <body>
 <div th:replace="~{navbar/navbarStudent :: navbarAdmin}"></div>
 
-<body>
 <div class="profile-container">
     <!-- Profile Card -->
     <div class="profile-card">
@@ -35,10 +34,14 @@
                     <label class="form-label">University name:</label>
                     <span th:text="${studentDetails != null ? studentDetails.university : 'Chưa cập nhật'}" class="form-value"></span>
                 </div>
+                <div class="form-group">
+                    <label class="form-label">Địa chỉ làm việc mong muốn:</label>
+                    <span th:text="${studentDetails.preferredJobAddress}" class="form-value"></span>
+                </div>
             </form>
         </div>
         <div class="profile-buttons">
-            <button class="btn btn-edit">Edit information</button>
+            <a th:href="@{/Student/EditProfile}"><button  class="btn btn-edit">Edit information</button></a>
             <button class="btn btn-password">Change password</button>
         </div>
     </div>
@@ -54,6 +57,8 @@
         <h3 class="section-title">Experience</h3>
         <p th:text="${studentDetails != null ? studentDetails.experience : 'Chưa có thông tin kinh nghiệm'}" class="section-content">.</p>
     </div>
+    <p th:text="${successMessage}"></p>
+    <p th:text="${errorMessage}"></p>
 </div>
 </body>
 <script th:src="@{/js/navbarAdmin.js}"></script>

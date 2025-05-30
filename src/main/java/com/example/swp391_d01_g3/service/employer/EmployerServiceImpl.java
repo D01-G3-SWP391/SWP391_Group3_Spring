@@ -10,17 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmployerServiceImpl implements IEmployerService {
     @Autowired
-    private IAccountRepository iAccountRepository;
-    @Autowired
     IEmployerRepository iEmployerRepository;
-    @Override
-    public void save(Account account) {
-        iAccountRepository.save(account);
-    }
 
     @Override
     public void saveEmployer(Employer employer) {
-        iEmployerRepository.save(employer);
+         iEmployerRepository.save(employer);
     }
 
 
