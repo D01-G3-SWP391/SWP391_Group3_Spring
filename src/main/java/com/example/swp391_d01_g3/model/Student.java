@@ -17,7 +17,7 @@ public class Student {
     private String address;
 
     @ManyToOne
-    @JoinColumn(name = "job_field_id", nullable = false)
+    @JoinColumn(name = "job_field_id", nullable = true)
     private JobField jobField;
 
     @Column(length = 100)
@@ -33,6 +33,71 @@ public class Student {
     private String experience;
 
     public Student() {
+    }
+
+    // Getters and Setters
+    public Integer getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(Integer studentId) {
+        this.studentId = studentId;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public JobField getJobField() {
+        return jobField;
+    }
+
+    public void setJobField(JobField jobField) {
+        this.jobField = jobField;
+    }
+
+    public String getUniversity() {
+        return university;
+    }
+
+    public void setUniversity(String university) {
+        this.university = university;
+    }
+
+    public String getPreferredJobAddress() {
+        return preferredJobAddress;
+    }
+
+    public void setPreferredJobAddress(String preferredJobAddress) {
+        this.preferredJobAddress = preferredJobAddress;
+    }
+
+    public String getProfileDescription() {
+        return profileDescription;
+    }
+
+    public void setProfileDescription(String profileDescription) {
+        this.profileDescription = profileDescription;
+    }
+
+    public String getExperience() {
+        return experience;
+    }
+
+    public void setExperience(String experience) {
+        this.experience = experience;
     }
 }
 

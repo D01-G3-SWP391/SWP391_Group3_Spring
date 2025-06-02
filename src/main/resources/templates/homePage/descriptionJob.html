@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
+<link rel="stylesheet" th:href="@{/css/navbar.css}" />
+<link rel="stylesheet" th:href="@{/css/job-des.css}" />
+<body>
+<div th:replace="~{navbar/navbarHome}"></div>
+<div class="job-card" th:each="job : ${jobPosts}">
+    <div class="job-card-header">
+        <div class="company-logo default-logo">
+            <span th:text="${job.employer.logoUrl != null ? job.employer.logoUrl : 'PHY'}"></span>
+        </div>
+        <div class="job-info">
+            <h3 class="job-title" th:text="${job.jobTitle}"></h3>
+            <p class="company-name" th:text="${job.employer.companyName}"></p>
+            <div class="job-type">
+                <span class="job-type-badge full-time" th:text="${job.jobType}"></span>
+            </div>
+        </div>
+    </div>
+    <div class="job-card-body">
+        <div class="tab-buttons">
+            <button class="tab-button active" onclick="openTab('info')">THÔNG TIN</button>
+            <button class="tab-button" onclick="openTab('company')">CÔNG TY</button>
+            <button class="tab-button" onclick="openTab('job')">VIỆC LÀM</button>
+        </div>
+
+        <div id="info-tab" class="tab-content active">
+            <div class="job-details">
+                <div class="job-detail-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span th:text="${job.jobLocation}"></span>
+                </div>
+                <div class="job-detail-item">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+            </div>
+        </div>
+
+        <div id="company-tab" class="tab-content">
+            <div class="company_description">
+                <h2>Thông tin công ty</h2>
+                <p th:text="${job.employer.companyDescription}"></p>
+            </div>
+        </div>
+
+        <div id="job-tab" class="tab-content">
+            <div class="jobs_description">
+                <h2>Mô tả công việc</h2>
+                <p th:text="${job.jobDescription}"></p>
+            </div>
+        </div>
+    </div>
+    <div class="job-card-footer">
+        <button class="apply-btn">Apply <i class="fas fa-arrow-right"></i></button>
+        <button class="save-btn"><i class="far fa-heart"></i></button>
+    </div>
+</div>
+<script>
+    function openTab(tabName) {
+        var tabContents = document.getElementsByClassName('tab-content');
+        for (var i = 0; i < tabContents.length; i++) {
+            tabContents[i].classList.remove('active');
+        }
+        var tabButtons = document.getElementsByClassName('tab-button');
+        for (var i = 0; i < tabButtons.length; i++) {
+            tabButtons[i].classList.remove('active');
+        }
+        document.getElementById(tabName + '-tab').classList.add('active');
+        event.target.classList.add('active');
+    }
+</script>
+</body>
+</html>

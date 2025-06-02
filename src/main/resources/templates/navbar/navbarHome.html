@@ -30,6 +30,16 @@
             <a href="#" class="nav-link">Events</a>
         </div>
             <div sec:authorize="isAuthenticated()" class="navbar-right">
+                <div th:if="${userEmail}" class="dropdown">
+                    <input type="checkbox" id="dropdown-toggle" class="dropdown-toggle">
+                    <label for="dropdown-toggle" class="nav-link user-greeting">
+                        Hi <span th:text="${userEmail}"></span>
+                        <i class="bi bi-caret-down-fill"></i>
+                    </label>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" th:href="@{/Student}">Tài khoản</a>
+                    </div>
+                </div>
                 <a th:href="@{/logout}" class="nav-action-btn nav-logout-btn"><i class="bi bi-box-arrow-in-right"></i> Logout</a>
             </div>
             <div sec:authorize="isAnonymous()" class="navbar-right">

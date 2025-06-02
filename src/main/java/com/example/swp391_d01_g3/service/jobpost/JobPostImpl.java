@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class JobPostImpl implements IJobpostService {
@@ -16,5 +17,15 @@ public class JobPostImpl implements IJobpostService {
     @Override
     public List<JobPost> findAll() {
         return iJobPostRepository.findAll();
+    }
+
+    @Override
+    public Optional<JobPost> findById(Long id) {
+        return iJobPostRepository.findById(id);
+    }
+
+    @Override
+    public List<JobPost> findAllWithEmployer(Long id) {
+        return iJobPostRepository.findAllWithEmployer(id);
     }
 }

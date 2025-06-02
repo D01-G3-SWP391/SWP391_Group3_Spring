@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -33,7 +34,7 @@ public class SecurityConfig {
 
     @Bean
     public static PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -53,7 +54,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/Login", "/*.css","/*.js","/HomePage/**","/Register/**").permitAll()
+                        .requestMatchers("/","/JobDescription/**", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/Login", "/*.css","/*.js","/HomePage/**","/Register/**","/ForgotPassword/**").permitAll()
                         .requestMatchers("/Admin/**").hasRole("admin")
                         .requestMatchers("/Employee/**").hasRole("employer")
                         .requestMatchers("/Student/**").hasRole("student")
@@ -65,6 +66,12 @@ public class SecurityConfig {
                         .loginProcessingUrl("/Login")
                         .usernameParameter("email")
                         .passwordParameter("password")
+                        .successHandler(customAuthenticationSuccessHandler)
+                        .failureUrl("/Login?error")
+                        .permitAll()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/Login")
                         .successHandler(customAuthenticationSuccessHandler)
                         .failureUrl("/Login?error")
                         .permitAll()

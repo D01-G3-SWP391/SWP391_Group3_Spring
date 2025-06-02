@@ -165,21 +165,16 @@
                   >
                 </div>
               </div>
-
-              <div class="job-description">
-                <p
-                  th:text="${job.jobDescription != null ? #strings.abbreviate(job.jobDescription, 150) : 'Không có mô tả'}"
-                >
-                  Mô tả công việc...
-                </p>
-              </div>
             </div>
 
             <div class="job-card-footer">
+              <form method="get" th:action="@{/JobDescription}" >
+                <input type="hidden" name="id" th:value="${job.jobPostId}" >
               <button class="apply-btn">
                 <i class="fas fa-paper-plane"></i>
-                Ứng tuyển ngay
+                  Xem chi tiết
               </button>
+              </form>
               <button class="save-btn">
                 <i class="far fa-heart"></i>
               </button>
