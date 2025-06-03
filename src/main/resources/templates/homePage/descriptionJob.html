@@ -33,7 +33,7 @@
             <div class="job-details">
                 <div class="job-detail-item">
                     <i class="fas fa-map-marker-alt"></i>
-                    <span th:text="${job.jobLocation}"></span>
+                    <span th:utext="${job.jobLocation}"></span>
                 </div>
                 <div class="job-detail-item">
                     <i class="fas fa-calendar-alt"></i>
@@ -51,7 +51,7 @@
         <div id="job-tab" class="tab-content">
             <div class="jobs_description">
                 <h2>Mô tả công việc</h2>
-                <p th:text="${job.jobDescription}"></p>
+                <p th:utext="${#strings.replace(job.jobDescription,'\n','<br />')}"></p>
             </div>
         </div>
     </div>
