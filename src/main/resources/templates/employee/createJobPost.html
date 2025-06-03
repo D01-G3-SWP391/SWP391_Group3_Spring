@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<!--
+    /*@thymesVar id="jobPost" type="com.example.swp391_d01_g3.model.JobPost" */
+-->
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng Tin Tuyển Dụng</title>
+    <!-- Nếu bạn dùng Bootstrap, giữ nguyên link sau -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2 class="mb-4">Đăng Tin Tuyển Dụng</h2>
+
+    <!-- Bắt buộc: form phải có th:object="${jobPost}" để các th:field="*{...}" biết biến gốc -->
+    <form th:action="@{/employer/jobpost/create}"
+          th:object="${jobPost}"
+          method="post">
+
+        <!-- 1. Tiêu đề tin tuyển dụng -->
+        <div class="mb-3">
+            <label for="jobTitle" class="form-label">Tiêu đề tuyển dụng</label>
+            <input type="text"
+                   th:field="*{jobTitle}"
+                   class="form-control"
+                   id="jobTitle"
+                   placeholder="Nhập tiêu đề tin tuyển dụng"
+                   required />
+        </div>
+
+        <!-- 2. Lĩnh vực (jobField) và Loại công việc (jobType) -->
+        <div class="row mb-3">
+            <!-- Dropdown JobField -->
+            <div class="col-md-6">
+                <label for="jobFieldId" class="form-label">Lĩnh vực tuyển dụng</label>
+                <select class="form-select"
+                        id="jobFieldId"
+                        name="jobFieldId"
+                        required>
+                    <option value="" disabled selected>-- Chọn lĩnh vực --</option>
+                    <option th:each="field : ${jobFields}"
+                            th:value="${field.jobFieldId}"
+                            th:text="${field.jobFieldName}">
+                        <!-- Hiển thị tên lĩnh vực -->
+                    </option>
+                </select>
+            </div>
+
+            <!-- Dropdown JobType -->
+            <div class="col-md-6">
+                <label for="jobType" class="form-label">Loại công việc</label>
+                <select class="form-select"
+                        th:field="*{jobType}"
+                        id="jobType"
+                        required>
+                    <option value="" disabled>-- Chọn loại công việc --</option>
+                    <option th:each="type : ${jobTypes}"
+                            th:value="${type}"
+                            th:text="${type}">
+                        <!-- Hiển thị JobType enum -->
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 3. Khu vực (jobLocation) -->
+        <div class="mb-3">
+            <label for="jobLocation" class="form-label">Khu vực</label>
+            <input type="text"
+                   th:field="*{jobLocation}"
+                   class="form-control"
+                   id="jobLocation"
+                   placeholder="Nhập khu vực/địa điểm"
+                   required />
+        </div>
+
+        <!-- 4. Lương thỏa thuận (jobSalary) -->
+        <div class="mb-3">
+            <label for="jobSalary" class="form-label">Lương thỏa thuận</label>
+            <input type="text"
+                   th:field="*{jobSalary}"
+                   class="form-control"
+                   id="jobSalary"
+                   placeholder="Ví dụ: 7–10 triệu VNĐ" />
+        </div>
+
+        <!-- 5. Yêu cầu công việc (jobRequirements) -->
+        <div class="mb-3">
+            <label for="jobRequirements" class="form-label">Yêu cầu công việc</label>
+            <textarea th:field="*{jobRequirements}"
+                      class="form-control"
+                      id="jobRequirements"
+                      rows="3"
+                      placeholder="Nhập yêu cầu (kinh nghiệm, kỹ năng…)"></textarea>
+        </div>
+
+        <!-- 6. Thông tin bổ sung / mô tả chi tiết (jobDescription) -->
+        <div class="mb-3">
+            <label for="jobDescription" class="form-label">Thông tin bổ sung</label>
+            <textarea th:field="*{jobDescription}"
+                      class="form-control"
+                      id="jobDescription"
+                      rows="5"
+                      placeholder="Nhập mô tả chi tiết về công việc, phúc lợi,…"></textarea>
+        </div>
+
+        <!-- Nút Hủy và Đăng việc -->
+        <div class="d-flex justify-content-end">
+            <a th:href="@{/employer/dashboard}" class="btn btn-secondary me-2">Hủy</a>
+            <button type="submit" class="btn btn-primary">Đăng việc</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface IJobPostRepository extends JpaRepository<JobPost,Long> {
+public interface IJobPostRepository extends JpaRepository<JobPost,Integer> {
 }

@@ -17,4 +17,9 @@ public class JobPostImpl implements IJobpostService {
     public List<JobPost> findAll() {
         return iJobPostRepository.findAll();
     }
+
+    @Override
+    public void save(JobPost jobPost) {
+        iJobPostRepository.save(jobPost);
+    }
 }

@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface IJobpostService  {
     List<JobPost> findAll();
+    void save(JobPost jobPost);
 }
