@@ -24,11 +24,6 @@ public class EmployerServiceImpl implements IEmployerService {
     }
 
     @Override
-    public Employer findById(Integer employerId) {
-        return iEmployerRepository.findById(employerId).orElse(null);
-    }
-
-    @Override
     public void updateEmployer(Employer employer) {
         iEmployerRepository.save(employer);
     }

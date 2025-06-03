@@ -12,40 +12,40 @@
 <div th:replace="~{navbar/navbarStudent :: navbarAdmin}"></div>
 <div class="profile-container">
   <div class="edit-profile-card">
-    <h2 class="edit-profile-title">Chỉnh sửa hồ sơ</h2>
+    <h2 class="edit-profile-title">Edit Profile</h2>
     <form th:action="@{/Student/EditProfile}" method="post" class="edit-profile-form" th:object="${studentProfileDTO}">
       <div class="form-group">
-        <label class="form-label" for="fullName">Họ và tên:</label>
+        <label class="form-label" for="fullName">Full name: </label>
         <input type="text" id="fullName" th:field="*{fullName}" class="form-input" required>
       </div>
       <div class="form-group">
-        <label class="form-label" for="phone">Số điện thoại:</label>
+        <label class="form-label" for="phone">Phone number: </label>
         <input type="text" id="phone" th:field="*{phone}" class="form-input" required>
       </div>
       <div class="form-group">
-        <label class="form-label" for="address">Địa chỉ:</label>
+        <label class="form-label" for="address">Address: </label>
         <input type="text" id="address" th:field="*{address}" class="form-input">
       </div>
       <div class="form-group">
-        <label class="form-label" for="university">Trường học:</label>
+        <label class="form-label" for="university">University: </label>
         <input type="text" id="university" th:field="*{university}" class="form-input">
       </div>
       <div class="form-group">
-        <label class="form-label" for="preferredJobAddress">Địa chỉ làm việc mong muốn:</label>
+        <label class="form-label" for="preferredJobAddress">Desired work address: </label>
         <input type="text" id="preferredJobAddress" th:field="*{preferredJobAddress}" class="form-input">
       </div>
       <div class="form-group">
-        <label class="form-label" for="profileDescription">Giới thiệu bản thân:</label>
+        <label class="form-label" for="profileDescription">Introduce: </label>
         <input type="text" id="profileDescription" th:field="*{profileDescription}" class="form-input">
       </div>
       <div class="form-group">
-        <label class="form-label" for="experience">Kinh nghiệm:</label>
+        <label class="form-label" for="experience">Experience: </label>
         <input type="text" id="experience" th:field="*{experience}" class="form-input">
       </div>
 
       <div class="form-buttons">
-        <button type="submit" class="btn btn-save">Lưu</button>
-        <a th:href="@{/profile}" class="btn btn-cancel">Hủy</a>
+        <button type="submit" class="btn btn-save">Save</button>
+        <a th:href="@{/profile}" class="btn btn-cancel">Cancel</a>
       </div>
     </form>
   </div>

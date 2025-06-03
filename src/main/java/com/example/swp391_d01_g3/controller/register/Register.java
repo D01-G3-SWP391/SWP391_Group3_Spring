@@ -74,7 +74,6 @@ public class Register {
             student.setAccount(savedAccount);
             iStudentService.save(student);
             
-            // Gửi email chào mừng
             emailService.sendWelcomeEmail(savedAccount.getEmail(), savedAccount.getFullName(), "Student");
         }
         
