@@ -1,0 +1,446 @@
+/* profileStudent.css */
+
+/* General body styling to match the navbar theme */
+body {
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(135deg, #f0f4ff 0%, #e6e9ff 100%);
+  margin: 0;
+  padding: 20px;
+  margin-left: 250px; /* Match the navbar's default margin */
+  transition: margin-left 0.3s ease;
+}
+
+/* Adjust body margin when navbar is collapsed */
+body.collapsed {
+  margin-left: 80px;
+}
+
+/* Container for the profile section */
+.profile-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Profile card styling */
+.profile-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  animation: fadeIn 0.6s ease-out;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Avatar styling */
+.avatar {
+  width: 100px; /* Larger size */
+  height: 100px; /* Square shape */
+  border-radius: 8px; /* Square with slight rounding */
+  object-fit: cover;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-radius 0.3s ease;
+  cursor: pointer;
+}
+
+.avatar:hover {
+  transform: scale(1.05) rotate(2deg);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+}
+
+/* Profile info styling */
+.profile-info {
+  flex: 1;
+}
+
+.profile-name {
+  margin: 0;
+  font-size: 28px; /* Larger font for better readability */
+  font-weight: 700; /* Bolder for emphasis */
+  color: #1f2937;
+  transition: color 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+}
+
+.profile-name:hover {
+  color: #4f46e5;
+  transform: translateX(5px);
+}
+
+.profile-role {
+  margin: 5px 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #4b5563;
+  text-transform: capitalize; /* Capitalize the role for better presentation */
+  transition: color 0.3s ease;
+}
+
+.profile-role:hover {
+  color: #3b82f6;
+}
+
+/* Form styling */
+.profile-form {
+  margin-top: 10px;
+}
+
+.form-group {
+  margin-bottom: 12px; /* Slightly more spacing for better readability */
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.form-group:hover {
+  background-color: #f9fafb;
+  transform: translateX(5px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-group::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  background: #4f46e5;
+  transform: scaleY(0);
+  transition: transform 0.3s ease;
+}
+
+.form-group:hover::before {
+  transform: scaleY(1);
+}
+
+.form-label {
+  font-weight: 600; /* Bolder labels */
+  color: #1f2937;
+  width: 120px;
+  font-size: 15px; /* Slightly smaller for balance */
+  transition: color 0.3s ease;
+}
+
+.form-group:hover .form-label {
+  color: #4f46e5;
+}
+
+.form-value {
+  font-size: 15px; /* Adjusted for better proportion */
+  color: #4b5563;
+  line-height: 1.5; /* Better line spacing */
+  transition: color 0.3s ease;
+}
+
+.form-group:hover .form-value {
+  color: #1f2937;
+}
+
+/* Buttons container */
+.profile-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+/* Button styling to match the new screenshot and navbar theme */
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+/* "Sửa thông tin" button */
+.btn-edit {
+  background: linear-gradient(
+    135deg,
+    #4f46e5 0%,
+    #3b82f6 100%
+  ); /* Adjusted to match the new screenshot's blue */
+  color: #ffffff;
+}
+
+.btn-edit:hover {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+}
+
+.btn-edit:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+/* "Đổi mật khẩu" button */
+.btn-password {
+  background: linear-gradient(
+    135deg,
+    #10b981 0%,
+    #059669 100%
+  ); /* Kept the green to match the screenshot */
+  color: #ffffff;
+}
+
+.btn-password:hover {
+  background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.btn-password:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+/* Section styling for "Giới thiệu bản thân" and "Kinh nghiệm" */
+.section {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+  animation: fadeIn 0.6s ease-out;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.section:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.section::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(79, 70, 229, 0.05),
+    transparent
+  );
+  transition: left 0.6s;
+}
+
+.section:hover::after {
+  left: 100%;
+}
+
+.section-title {
+  margin: 0 0 10px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+  transition: color 0.3s ease, transform 0.3s ease;
+  position: relative;
+}
+
+.section-title:hover {
+  color: #4f46e5;
+  transform: translateX(5px);
+}
+
+.section-title::before {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #4f46e5;
+  transition: width 0.3s ease;
+}
+
+.section:hover .section-title::before {
+  width: 60px;
+}
+
+.section-content {
+  margin: 0;
+  font-size: 15px; /* Slightly smaller for better proportion */
+  color: #6b7280;
+  line-height: 1.6; /* Improved readability with better line spacing */
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.section:hover .section-content {
+  color: #374151;
+  transform: translateX(3px);
+}
+
+/* Pulse animation for focus states */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(79, 70, 229, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(79, 70, 229, 0);
+  }
+}
+
+.btn:focus {
+  animation: pulse 1.5s infinite;
+}
+
+/* Floating animation for avatar */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.avatar:hover {
+  animation: float 2s ease-in-out infinite;
+}
+
+/* Shimmer effect for sections */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.section:hover {
+  background: linear-gradient(90deg, #ffffff 25%, #f9fafb 50%, #ffffff 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Animation for smooth entrance */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scale animation for interactive elements */
+.profile-card:hover .avatar {
+  animation: none;
+  transform: scale(1.05) rotate(2deg);
+}
+
+/* Glow effect for important elements */
+.profile-name:hover {
+  text-shadow: 0 0 10px rgba(79, 70, 229, 0.3);
+}
+
+/* Ripple effect for buttons */
+.btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn:active::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  body {
+    margin-left: 80px; /* Match collapsed navbar on mobile */
+    padding: 10px;
+  }
+
+  .profile-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .profile-buttons {
+    justify-content: center;
+  }
+
+  .form-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .form-label {
+    width: auto;
+    margin-bottom: 5px;
+  }
+
+  .form-group:hover {
+    transform: translateY(-2px) translateX(0);
+  }
+
+  .section:hover {
+    transform: translateY(-2px);
+  }
+
+  .avatar:hover {
+    transform: scale(1.03);
+  }
+}

@@ -1,42 +1,89 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html
+  lang="vi"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.w3.org/1999/xhtml"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Navbar</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <!-- Link to global styles (navbarHome.css) -->
     <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
     <!-- Link to specific navbar styles -->
     <link rel="stylesheet" th:href="@{/css/navbar.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-</head>
-<body>
-<!-- Navbar Fragment -->
-<div class="navbar-container" th:fragment="home">
-    <div class="navbar">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    />
+  </head>
+  <body>
+    <!-- Navbar Fragment -->
+    <div class="navbar-container" th:fragment="home">
+      <div class="navbar">
         <div class="navbar-left">
-            <div class="logo">
-                <a th:href="@{/}" class="text-logo-link">
-                    <div class="text-logo">JOB4YOU</div>
-                </a>
-            </div>
-            <a href="#" class="nav-link">Việc làm</a>
-            <a href="#" class="nav-link">Tạo CV</a>
-            <a href="#" class="nav-link">Công cụ</a>
-            <a href="#" class="nav-link">Cẩm nang nghề nghiệp</a>
-            <a href="#" class="nav-link">Blogs</a>
-            <a href="#" class="nav-link">Events</a>
+          <div class="logo">
+            <a th:href="@{/}" class="text-logo-link">
+              <div class="text-logo">JOB4YOU</div>
+            </a>
+          </div>
+          <a href="#" class="nav-link">Việc làm</a>
+          <a href="#" class="nav-link">Tạo CV</a>
+          <a href="#" class="nav-link">Công cụ</a>
+          <a href="#" class="nav-link">Cẩm nang nghề nghiệp</a>
+          <a href="#" class="nav-link">Blogs</a>
+          <a href="#" class="nav-link">Events</a>
         </div>
-            <div sec:authorize="isAuthenticated()" class="navbar-right">
-                <a th:href="@{/logout}" class="nav-action-btn nav-logout-btn"><i class="bi bi-box-arrow-in-right"></i> Logout</a>
+        <div sec:authorize="isAuthenticated()" class="navbar-right">
+          <div th:if="${userEmail}" class="dropdown">
+            <input
+              type="checkbox"
+              id="dropdown-toggle"
+              class="dropdown-toggle"
+            />
+            <label for="dropdown-toggle" class="nav-link user-greeting">
+              Hi <span th:text="${userEmail}"></span>
+              <i class="bi bi-caret-down-fill"></i>
+            </label>
+            <div class="dropdown-menu">
+              <a
+                class="dropdown-item"
+                th:href="@{/Student}"
+                sec:authorize="hasRole('student')"
+                >Tài khoản</a
+              >
+              <a
+                class="dropdown-item"
+                th:href="@{/Employer}"
+                sec:authorize="hasRole('employer')"
+                >Tài khoản</a
+              >
+              <a
+                class="dropdown-item"
+                th:href="@{/Admin}"
+                sec:authorize="hasRole('admin')"
+                >Tài khoản</a
+              >
             </div>
-            <div sec:authorize="isAnonymous()" class="navbar-right">
-                <a th:href="@{/Register}" class="nav-action-btn nav-register-btn"><i class="bi bi-person-plus-fill"></i> Đăng ký</a>
-                <a th:href="@{/Login}" class="nav-action-btn nav-login-btn"><i class="bi bi-box-arrow-in-right"></i> Đăng nhập</a>
-            </div>
+          </div>
+          <a th:href="@{/logout}" class="nav-action-btn nav-logout-btn"
+            ><i class="bi bi-box-arrow-in-right"></i> Logout</a
+          >
+        </div>
+        <div sec:authorize="isAnonymous()" class="navbar-right">
+          <a th:href="@{/Register}" class="nav-action-btn nav-register-btn"
+            ><i class="bi bi-person-plus-fill"></i> Đăng ký</a
+          >
+          <a th:href="@{/Login}" class="nav-action-btn nav-login-btn"
+            ><i class="bi bi-box-arrow-in-right"></i> Đăng nhập</a
+          >
+        </div>
+      </div>
     </div>
-</div>
-</body>
+  </body>
 </html>

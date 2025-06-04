@@ -1,8 +1,12 @@
 package com.example.swp391_d01_g3.controller.register;
 
+import com.example.swp391_d01_g3.dto.AccountDTO;
+import com.example.swp391_d01_g3.dto.AccountEmployerDTO;
 import com.example.swp391_d01_g3.model.*;
+import com.example.swp391_d01_g3.service.email.EmailService;
 import com.example.swp391_d01_g3.service.employer.IEmployerService;
 import com.example.swp391_d01_g3.service.student.IStudentService;
+import com.example.swp391_d01_g3.service.security.IAccountService;
 import com.example.swp391_d01_g3.service.jobfield.IJobfieldService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
@@ -27,13 +31,19 @@ public class Register {
     private IJobfieldService iJobfieldService;
 
     @Autowired
-    private IStudentService iAccountService;
+    private IStudentService iStudentService;
 
     @Autowired
     private IEmployerService iEmployerService;
 
     @Autowired
+    private IAccountService iAccountService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping("")
     public String showRegister (){
@@ -47,7 +57,7 @@ public class Register {
     }
     @PostMapping("/registerStudent")
     public String registerStudent(@Valid @ModelAttribute("accountDTO") AccountDTO accountDTO, BindingResult bindingResult,
-                                  RedirectAttributes redirectAttributes, Model model){
+                                  RedirectAttributes redirectAttributes){
         new AccountDTO().validate(accountDTO,bindingResult);
         if (bindingResult.hasErrors()){
             return "register/registerStudentPage";
@@ -57,7 +67,16 @@ public class Register {
         account.setRole(Account.Role.student);
         account.setStatus(Account.Status.active);
         account.setPassword(passwordEncoder.encode(accountDTO.getPassword()));
-        iAccountService.save(account);
+        Account savedAccount = iAccountService.save(account);
+
+        if (savedAccount != null && savedAccount.getUserId() != null) {
+            Student student = new Student();
+            student.setAccount(savedAccount);
+            iStudentService.save(student);
+            
+            emailService.sendWelcomeEmail(savedAccount.getEmail(), savedAccount.getFullName(), "Student");
+        }
+        
         redirectAttributes.addFlashAttribute("messages", "Registration successful!");
         return "redirect:/Login";
     }
@@ -96,17 +115,21 @@ public class Register {
         employer.setLogoUrl(accountEmployerDTO.getLogoUrl());
 
         Optional<JobField> jobFieldOptional = iJobfieldService.findById(accountEmployerDTO.getJobsFieldId());
-
-        if (!jobFieldOptional.isPresent()) {
+        if (jobFieldOptional.isPresent()) {
+            employer.setJobField(jobFieldOptional.get());
+        } else {
             model.addAttribute("accountEmployerDTO", accountEmployerDTO);
             model.addAttribute("jobFields",iJobfieldService.findAll());
             model.addAttribute("errorMessage", "Lĩnh vực công việc không hợp lệ.");
             return "register/registerEmployerPage";
         }
-        JobField actualJobField = jobFieldOptional.get();
-        employer.setJobField(actualJobField);
-        employer.setAccount(account);
+
+        employer.setAccount(savedAccount);
         iEmployerService.saveEmployer(employer);
+        
+        // Gửi email chào mừng
+        emailService.sendWelcomeEmail(savedAccount.getEmail(), savedAccount.getFullName(), "Employer");
+
         redirectAttributes.addFlashAttribute("messages", "Registration successful!");
         return "redirect:/Login";
     }

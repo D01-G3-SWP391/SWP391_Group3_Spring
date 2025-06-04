@@ -1,55 +1,52 @@
-package com.example.swp391_d01_g3.model;
+package com.example.swp391_d01_g3.dto;
 
-import jakarta.persistence.*;
+// Không cần import JobField ở đây nếu chúng ta chỉ lưu trữ ID
+// import com.example.swp391_d01_g3.model.JobField;
 
-@Entity
-@Table(name = "Student")
-public class Student {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer studentId;
+public class StudentProfileDTO {
 
-    @OneToOne
-    @JoinColumn(name = "user_id", unique = true)
-    private Account account;
+    // Fields from Account
+    private String fullName;
+    private String phone;
 
-    @Column(length = 255)
+    // Fields from Student
     private String address;
-
-    @ManyToOne
-    @JoinColumn(name = "job_field_id", nullable = true)
-    private JobField jobField;
-
-    @Column(length = 100)
     private String university;
-
-    @Column(name = "preferred_job_address", length = 255)
     private String preferredJobAddress;
-
-    @Column(name = "profile_description", columnDefinition = "TEXT")
     private String profileDescription;
-
-    @Column(columnDefinition = "TEXT")
     private String experience;
 
-    public Student() {
+    // Constructors
+    public StudentProfileDTO() {
+    }
+
+    public StudentProfileDTO(String fullName, String phone,  String address, String university, String preferredJobAddress, String profileDescription, String experience) {
+        this.fullName = fullName;
+        this.phone = phone;
+
+        this.address = address;
+        this.university = university;
+        this.preferredJobAddress = preferredJobAddress;
+        this.profileDescription = profileDescription;
+        this.experience = experience;
+
     }
 
     // Getters and Setters
-    public Integer getStudentId() {
-        return studentId;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setStudentId(Integer studentId) {
-        this.studentId = studentId;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
-    public Account getAccount() {
-        return account;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getAddress() {
@@ -58,14 +55,6 @@ public class Student {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public JobField getJobField() {
-        return jobField;
-    }
-
-    public void setJobField(JobField jobField) {
-        this.jobField = jobField;
     }
 
     public String getUniversity() {
@@ -99,5 +88,4 @@ public class Student {
     public void setExperience(String experience) {
         this.experience = experience;
     }
-}
-
+} 

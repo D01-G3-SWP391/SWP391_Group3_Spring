@@ -1,4 +1,4 @@
-package com.example.swp391_d01_g3.model;
+package com.example.swp391_d01_g3.dto;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
