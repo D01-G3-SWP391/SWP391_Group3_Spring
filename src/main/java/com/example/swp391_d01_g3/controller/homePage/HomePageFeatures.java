@@ -4,17 +4,15 @@ import com.example.swp391_d01_g3.model.JobPost;
 import com.example.swp391_d01_g3.service.jobfield.IJobfieldService;
 import com.example.swp391_d01_g3.service.jobpost.IJobpostService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
-@RequestMapping("/searchJob")
-public class SearchJob {
+@RequestMapping("/HomePage")
+public class HomePageFeatures {
 
     @Autowired
     private IJobpostService jobpostService;
@@ -42,6 +40,6 @@ public class SearchJob {
         );
 
         model.addAttribute("searchJob", jobPosts);
-        return "homePage/homePage";
+        return "homePage/showSearchJob";
     }
 }

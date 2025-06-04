@@ -188,18 +188,18 @@ body {
     opacity: 0.9;
 }
 
-.search-container {
-    max-width: 600px;
-    margin: 0 auto;
-}
+/*.search-container {*/
+/*    max-width: 600px;*/
+/*    margin: 0 auto;*/
+/*}*/
 
-.search-box {
-    display: flex;
-    background: white;
-    border-radius: 50px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-}
+/*.search-box {*/
+/*    display: flex;*/
+/*    background: white;*/
+/*    border-radius: 50px;*/
+/*    overflow: hidden;*/
+/*    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);*/
+/*}*/
 
 .search-input {
     flex: 1;

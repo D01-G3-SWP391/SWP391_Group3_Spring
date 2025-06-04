@@ -1,10 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" >
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+    />
+    <link
+            rel="stylesheet"
+            th:href="@{/css/owlcarousel/assets/owl.carousel.min.css}"
+    />
+    <link rel="stylesheet" th:href="@{/css/index.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
 </head>
 <body>
+<div th:replace="~{navbar/navbarHome}"></div>
+<!--    //Div vong lap chay ket qua-->
+    <div class="jobs-container">
+        <div th:if="${searchJob == null or #lists.isEmpty(searchJob)}">
+            <p>Không có việc làm nào phù hợp với tiêu chí tìm kiếm.</p>
+        </div>
+
+        <div th:each="job : ${searchJob}" class="job-card">
+            <div class="job-card-header">
+                <div class="company-logo">
+                    <img th:src="${job.employer.logoUrl}"
+                         th:alt="${job.employer.companyName}"
+                         onerror="this.style.display='none'; this.parentElement.classList.add('default-logo'); this.parentElement.innerHTML='<span>' + this.alt.charAt(0).toUpperCase() + '</span>';"/>
+                </div>
+                <div class="job-info">
+                    <h3 class="job-title" th:text="${job.jobTitle}">Tiêu đề công việc</h3>
+                    <p class="company-name" th:text="${job.employer.companyName}">Tên công ty</p>
+                </div>
+                <div class="job-type">
+        <span class="job-type-badge"
+              th:classappend="${job.jobType?.name() == 'FULL_TIME' ? 'full-time' : 'part-time'}"
+              th:text="${job.jobType?.name() == 'FULL_TIME' ? 'Toàn thời gian' : 'Bán thời gian'}">
+          Loại việc làm
+        </span>
+                </div>
+            </div>
+
+            <div class="job-card-body">
+                <div class="job-details">
+                    <div class="job-detail-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span th:text="${job.jobLocation}">Địa điểm</span>
+                    </div>
+                    <div class="job-detail-item">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span th:text="${job.jobSalary}">Mức lương</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="job-card-footer">
+                <form method="get" th:action="@{/JobDescription}">
+                    <input type="hidden" name="id" th:value="${job.jobPostId}"/>
+                    <button class="apply-btn">
+                        <i class="fas fa-paper-plane"></i> Xem chi tiết
+                    </button>
+                </form>
+                <button class="save-btn">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+        </div>
+    </div>
 
 </body>
 </html>

@@ -1,14 +1,97 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Chi tiết công việc</title>-->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">-->
+<!--    <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />-->
+<!--    <link rel="stylesheet" th:href="@{/css/navbar.css}" />-->
+<!--    <link rel="stylesheet" th:href="@{/css/job-des.css}" />-->
+<!--</head>-->
+<!--<body>-->
+<!--<div th:replace="~{navbar/navbarHome}"></div>-->
+
+<!--<div class="job-card" th:each="job : ${jobPosts}">-->
+<!--    <div class="job-card-header">-->
+<!--        <div class="company-logo default-logo">-->
+<!--            <span th:text="${job.employer.logoUrl != null ? job.employer.logoUrl : 'PHY'}"></span>-->
+<!--        </div>-->
+<!--        <div class="job-info">-->
+<!--            <h3 class="job-title" th:text="${job.jobTitle}"></h3>-->
+<!--            <p class="company-name" th:text="${job.employer.companyName}"></p>-->
+<!--            <div class="job-type">-->
+<!--                <span class="job-type-badge full-time" th:text="${job.jobType}"></span>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="job-card-body">-->
+<!--        <div class="tab-buttons">-->
+<!--            <button class="tab-button" onclick="openTab('job')">VIỆC LÀM</button>-->
+<!--            <button class="tab-button active" onclick="openTab('info')">THÔNG TIN</button>-->
+<!--            <button class="tab-button" onclick="openTab('company')">CÔNG TY</button>-->
+<!--        </div>-->
+
+<!--        <div id="info-tab" class="tab-content active">-->
+<!--            <div class="job-details">-->
+<!--                <div class="job-detail-item">-->
+<!--                    <i class="fas fa-map-marker-alt"></i>-->
+<!--                    <span th:text="${job.jobLocation}"></span>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div id="company-tab" class="tab-content">-->
+<!--            <div class="company_description">-->
+<!--                <h2>Thông tin công ty</h2>-->
+<!--                <p th:text="${job.employer.companyDescription}"></p>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div id="job-tab" class="tab-content">-->
+<!--            <div class="jobs_description">-->
+<!--                <h2>Mô tả công việc</h2>-->
+<!--                <div th:utext="${#strings.replace(job.jobDescription,'\n','<br />')}"></div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="job-card-footer">-->
+<!--        <button class="apply-btn">Apply <i class="fas fa-arrow-right"></i></button>-->
+<!--        <button class="save-btn"><i class="far fa-heart"></i></button>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--    function openTab(tabName) {-->
+<!--        const tabContents = document.getElementsByClassName('tab-content');-->
+<!--        const tabButtons = document.getElementsByClassName('tab-button');-->
+<!--        for (let i = 0; i < tabContents.length; i++) {-->
+<!--            tabContents[i].classList.remove('active');-->
+<!--            tabButtons[i].classList.remove('active');-->
+<!--        }-->
+<!--        document.getElementById(tabName + '-tab').classList.add('active');-->
+<!--        event.target.classList.add('active');-->
+<!--    }-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Chi tiết công việc</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/job-des.css}"/>
+    <link rel="stylesheet" th:href="@{/css/apply-form.css}"/> <!-- Thêm file CSS cho form -->
 </head>
-<link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
-<link rel="stylesheet" th:href="@{/css/navbar.css}" />
-<link rel="stylesheet" th:href="@{/css/job-des.css}" />
 <body>
 <div th:replace="~{navbar/navbarHome}"></div>
+
 <div class="job-card" th:each="job : ${jobPosts}">
     <div class="job-card-header">
         <div class="company-logo default-logo">
@@ -22,21 +105,19 @@
             </div>
         </div>
     </div>
+
     <div class="job-card-body">
         <div class="tab-buttons">
+            <button class="tab-button" onclick="openTab('job')">VIỆC LÀM</button>
             <button class="tab-button active" onclick="openTab('info')">THÔNG TIN</button>
             <button class="tab-button" onclick="openTab('company')">CÔNG TY</button>
-            <button class="tab-button" onclick="openTab('job')">VIỆC LÀM</button>
         </div>
 
         <div id="info-tab" class="tab-content active">
             <div class="job-details">
                 <div class="job-detail-item">
                     <i class="fas fa-map-marker-alt"></i>
-                    <span th:utext="${job.jobLocation}"></span>
-                </div>
-                <div class="job-detail-item">
-                    <i class="fas fa-calendar-alt"></i>
+                    <span th:text="${job.jobLocation}"></span>
                 </div>
             </div>
         </div>
@@ -51,23 +132,78 @@
         <div id="job-tab" class="tab-content">
             <div class="jobs_description">
                 <h2>Mô tả công việc</h2>
-                <p th:utext="${#strings.replace(job.jobDescription,'\n','<br />')}"></p>
+                <div th:utext="${#strings.replace(job.jobDescription,'\n','<br />')}"></div>
             </div>
         </div>
     </div>
+
     <div class="job-card-footer">
-        <button class="apply-btn">Apply <i class="fas fa-arrow-right"></i></button>
+        <!-- Apply Button -->
+        <button class="apply-btn" onclick="showApplyForm()">Apply <i class="fas fa-arrow-right"></i></button>
         <button class="save-btn"><i class="far fa-heart"></i></button>
     </div>
 </div>
+
+<!-- Apply Form Popup -->
+<div id="applyForm" class="apply-form-container hidden">
+    <h2>Ứng tuyển công việc</h2>
+<!--        <form action="/apply" method="POST" enctype="multipart/form-data">-->
+    <form th:action="" method="" th:object="${jobApplications}">
+        <div class="form-group">
+            <label for="fullName">Họ và tên *</label>
+            <input type="text" id="fullName" name="fullName" th:field="*{}" placeholder="Nhập họ tên của bạn" required/>
+        </div>
+        <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" placeholder="Nhập email của bạn" required/>
+        </div>
+        <div class="form-group">
+            <label for="phone">SĐT *</label>
+            <input type="text" id="phone" name="phone" placeholder="Nhập số điện thoại của bạn" required/>
+        </div>
+        <div class="form-group">
+        <input type="text" placeholder="Moi nhap truong dai hoc" required/>
+        </div>
+        <div class="form-group">
+            <select name="fieldId" class="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">-- Chọn ngành nghề --</option>
+                <option th:each="field : ${jobfields}"
+                        th:value="${field.jobFieldId}"
+                        th:text="${field.jobFieldName}">
+                </option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="content">Nội dung *</label>
+            <textarea id="content" name="content" rows="4" placeholder="Nhập nội dung ứng tuyển" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="cv">Hồ sơ ứng viên (CV)</label>
+            <input type="file" id="cv" name="cv" accept=".doc,.docx,.pdf,.png,.jpeg"/>
+            <p class="file-info">Hỗ trợ định dạng doc, docx, pdf, png, jpeg nhỏ hơn 2MB</p>
+        </div>
+        <button type="submit" class="submit-btn">Gửi</button>
+        <button type="button" class="close-btn" onclick="closeApplyForm()">Đóng</button>
+    </form>
+</div>
+
 <script>
+    // Show Apply Form
+    function showApplyForm() {
+        document.getElementById("applyForm").style.display = "block";
+    }
+
+    // Close Apply Form
+    function closeApplyForm() {
+        document.getElementById("applyForm").style.display = "none";
+    }
+
+    // Tab Navigation
     function openTab(tabName) {
-        var tabContents = document.getElementsByClassName('tab-content');
-        for (var i = 0; i < tabContents.length; i++) {
+        const tabContents = document.getElementsByClassName('tab-content');
+        const tabButtons = document.getElementsByClassName('tab-button');
+        for (let i = 0; i < tabContents.length; i++) {
             tabContents[i].classList.remove('active');
-        }
-        var tabButtons = document.getElementsByClassName('tab-button');
-        for (var i = 0; i < tabButtons.length; i++) {
             tabButtons[i].classList.remove('active');
         }
         document.getElementById(tabName + '-tab').classList.add('active');

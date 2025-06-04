@@ -5,6 +5,7 @@ import com.example.swp391_d01_g3.model.JobPost;
 
 import com.example.swp391_d01_g3.service.jobfield.IJobfieldService;
 import com.example.swp391_d01_g3.service.jobpost.IJobpostService;
+import com.example.swp391_d01_g3.service.student.IStudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

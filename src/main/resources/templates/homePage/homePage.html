@@ -86,106 +86,43 @@
 </div>
 
 <!-- Main Content -->
+
+<!--Search Job-->
 <div class="main-content">
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="hero-content">
-            <h1>Tìm việc làm mơ ước của bạn</h1>
-            <p>
-                Kết nối với hàng nghìn cơ hội việc làm tuyệt vời từ các nhà tuyển
-                dụng hàng đầu
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">Tìm việc làm mơ ước của bạn</h1>
+            <p class="text-lg text-gray-600 mb-6">
+                Kết nối với hàng nghìn cơ hội việc làm tuyệt vời từ các nhà tuyển dụng hàng đầu
             </p>
-            <div class="search-container">
+            <div class="search-container bg-white p-6 rounded-lg shadow-lg">
                 <div class="search-box">
-                    <form th:action="@{/searchJob/search}" method="post">
-                        <input type="text" name="keyword" placeholder="Từ khóa..."/>
-
-                        <input type="text" name="location" placeholder="Địa điểm..."/>
-
-                        <select name="jobType">
+                    <form th:action="@{/HomePage/search}" method="post" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" name="keyword" placeholder="Từ khóa..." class="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                        <input type="text" name="location" placeholder="Địa điểm..." class="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                        <select name="jobType" class="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">-- Chọn loại việc làm --</option>
                             <option value="FULL_TIME">Toàn thời gian</option>
                             <option value="PART_TIME">Bán thời gian</option>
                         </select>
-
-                        <select name="fieldId">
+                        <select name="fieldId" class="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">-- Chọn ngành nghề --</option>
                             <option th:each="field : ${jobField}"
                                     th:value="${field.jobFieldId}"
                                     th:text="${field.jobFieldName}">
                             </option>
                         </select>
-
-
-
-                        <input type="number" name="salary" placeholder="Mức lương tối thiểu"/>
-
-
-                        <input type="text" name="companyName" placeholder="Tên công ty"/>
-
-                        <button type="submit">Tìm kiếm</button>
+                        <input type="number" name="salary" placeholder="Mức lương tối thiểu" class="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                        <input type="text" name="companyName" placeholder="Tên công ty" class="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                        <button type="submit" class="md:col-span-2 bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition duration-300">Tìm kiếm</button>
                     </form>
                 </div>
             </div>
         </div>
     </section>
 
-<!--    //Div vong lap chay ket qua-->
-    <div class="jobs-container">
-        <div th:if="${searchJob == null or #lists.isEmpty(searchJob)}">
-            <p>Không có việc làm nào phù hợp với tiêu chí tìm kiếm.</p>
-        </div>
 
-        <div th:each="job : ${searchJob}" class="job-card">
-            <div class="job-card-header">
-                <div class="company-logo">
-                    <img th:src="${job.employer.logoUrl}"
-                         th:alt="${job.employer.companyName}"
-                         onerror="this.style.display='none'; this.parentElement.classList.add('default-logo'); this.parentElement.innerHTML='<span>' + this.alt.charAt(0).toUpperCase() + '</span>';"/>
-                </div>
-                <div class="job-info">
-                    <h3 class="job-title" th:text="${job.jobTitle}">Tiêu đề công việc</h3>
-                    <p class="company-name" th:text="${job.employer.companyName}">Tên công ty</p>
-                </div>
-                <div class="job-type">
-        <span class="job-type-badge"
-              th:classappend="${job.jobType?.name() == 'FULL_TIME' ? 'full-time' : 'part-time'}"
-              th:text="${job.jobType?.name() == 'FULL_TIME' ? 'Toàn thời gian' : 'Bán thời gian'}">
-          Loại việc làm
-        </span>
-                </div>
-            </div>
-
-            <div class="job-card-body">
-                <div class="job-details">
-                    <div class="job-detail-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span th:text="${job.jobLocation}">Địa điểm</span>
-                    </div>
-                    <div class="job-detail-item">
-                        <i class="fas fa-money-bill-wave"></i>
-                        <span th:text="${job.jobSalary}">Mức lương</span>
-                    </div>
-                    <div class="job-detail-item">
-                        <i class="fas fa-clock"></i>
-                        <span th:text="${#temporals.format(job.createdAt, 'dd/MM/yyyy')}">Ngày đăng</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="job-card-footer">
-                <form method="get" th:action="@{/JobDescription}">
-                    <input type="hidden" name="id" th:value="${job.jobPostId}"/>
-                    <button class="apply-btn">
-                        <i class="fas fa-paper-plane"></i> Xem chi tiết
-                    </button>
-                </form>
-                <button class="save-btn">
-                    <i class="far fa-heart"></i>
-                </button>
-            </div>
-        </div>
-    </div>
 
 
     <!-- Featured Jobs Section -->
@@ -245,6 +182,7 @@
                     </div>
                 </div>
 
+                <!--  Xem chi tiết của nghề-->
                 <div class="job-card-footer">
                     <form method="get" th:action="@{/JobDescription}">
                         <input type="hidden" name="id" th:value="${job.jobPostId}">
