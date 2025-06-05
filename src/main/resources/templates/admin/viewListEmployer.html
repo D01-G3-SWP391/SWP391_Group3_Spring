@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employer Management - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/navbarAdmin.css">
+    <link rel="stylesheet" href="/css/ListEmployer.css">
+
+</head>
+<body>
+
+<div th:replace="~{navbar/navbarAdmin :: navbarAdmin}"></div>
+
+<div class="container mt-4">
+    <h2 class="mb-4">User Management</h2>
+
+    <!-- Filter Form -->
+    <form method="get" class="row g-2 mb-4 filter-form">
+        <div class="col-md-4">
+            <input class="form-control" name="keyword" placeholder="Tìm theo tên">
+        </div>
+
+        <div class="col-auto">
+            <button class="btn btn-primary" type="submit">Lọc</button>
+        </div>
+    </form>
+
+    <!-- User List -->
+    <div class="row">
+        <div class="col-md-6 mb-4" th:each="employer : ${employerList}">
+            <div class="user-card d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <img class="avatar" th:src="${employer.avatarUrl}" alt="${employer.fullName}" />
+                    <div class="ms-3">
+                        <h5 class="mb-1" th:text="${employer.fullName}"></h5>
+                        <p class="mb-1">Email: <span th:text="${employer.email}"></span></p>
+                        <p class="mb-1">Phone: <span th:text="${employer.phone}"></span></p>
+                        <p class="mb-0">
+                            Status: <span th:class="${employer.status == 'active' ? 'status-active' : 'status-banned'}" th:text="${employer.status}"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!--&lt;!&ndash;     Pagination&ndash;&gt;-->
+<!--    &lt;!&ndash; Pagination &ndash;&gt;-->
+<!--    <nav class="pagination mt-4">-->
+<!--        <ul class="pagination justify-content-center">-->
+<!--            &lt;!&ndash; Previous Page &ndash;&gt;-->
+<!--            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">-->
+<!--                <a class="page-link" th:href="@{/admin/ListEmployer(page=${currentPage - 1})}" th:text="'Previous'"></a>-->
+<!--            </li>-->
+
+<!--            &lt;!&ndash; Page Numbers &ndash;&gt;-->
+<!--            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">-->
+<!--                <a class="page-link" th:href="@{/admin/ListEmployer(page=${i})}" th:text="${i + 1}"></a>-->
+<!--            </li>-->
+
+<!--            &lt;!&ndash; Next Page &ndash;&gt;-->
+<!--            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">-->
+<!--                <a class="page-link" th:href="@{/admin/ListEmployer(page=${currentPage + 1})}" th:text="'Next'"></a>-->
+<!--            </li>-->
+<!--        </ul>-->
+<!--    </nav>-->
+
+</div>
+
+<script th:src="@{/js/navbarAdmin.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
