@@ -14,7 +14,7 @@
 <div th:replace="~{navbar/navbarHome :: home}"></div>
 <div class="page-container login-container">
     <h2>ĐĂNG KÝ NHÀ TUYỂN DỤNG</h2>
-    <form class="login-form" method="post" th:action="@{/Register/registerEmployer}" th:object="${accountEmployerDTO}">
+    <form class="login-form" method="post" th:action="@{/Register/registerEmployer}" th:object="${employerDTO}">
         <p class="subtitle">Hoặc <a th:href="@{/Login}">đăng nhập NGAY</a> nếu bạn đã có.</p>
         <h3>Thông tin đăng nhập</h3>
         <div class="form-group">

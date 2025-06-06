@@ -42,4 +42,9 @@ public class JobPostImpl implements IJobpostService {
                 (companyName == null || companyName.isEmpty()) ? null : companyName
         );
     }
+
+    @Override
+    public void save(JobPost jobPost) {
+        iJobPostRepository.save(jobPost);
+    }
 }

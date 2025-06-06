@@ -5,7 +5,7 @@ package com.example.swp391_d01_g3.dto;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-public class AccountEmployerDTO implements Validator {
+public class EmployerDTO implements Validator {
 
     // Account fields
     private String fullName;
@@ -22,10 +22,10 @@ public class AccountEmployerDTO implements Validator {
     private Integer jobsFieldId; // Đổi sang Integer
 
     // Constructors
-    public AccountEmployerDTO() {
+    public EmployerDTO() {
     }
 
-    public AccountEmployerDTO(String fullName, String email, String phone, String password, String companyName, String companyAddress, String companyDescription, String logoUrl, Integer jobsFieldId) { // Đổi sang Integer
+    public EmployerDTO(String fullName, String email, String phone, String password, String companyName, String companyAddress, String companyDescription, String logoUrl, Integer jobsFieldId) { // Đổi sang Integer
         this.fullName = fullName;
         this.email = email;
         this.phone = phone;

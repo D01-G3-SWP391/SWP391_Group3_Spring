@@ -139,64 +139,20 @@
 
     <div class="job-card-footer">
         <!-- Apply Button -->
-        <button class="apply-btn" onclick="showApplyForm()">Apply <i class="fas fa-arrow-right"></i></button>
+        <form method="get" th:action="@{/JobDescription/Apply}">
+            <input type="hidden" name="id" th:value="${job.jobPostId}">
+            <button class="apply-btn" >Apply <i class="fas fa-arrow-right"></i></button>
+        </form>
+
         <button class="save-btn"><i class="far fa-heart"></i></button>
     </div>
 </div>
 
 <!-- Apply Form Popup -->
-<div id="applyForm" class="apply-form-container hidden">
-    <h2>Ứng tuyển công việc</h2>
-<!--        <form action="/apply" method="POST" enctype="multipart/form-data">-->
-    <form th:action="" method="" th:object="${jobApplications}">
-        <div class="form-group">
-            <label for="fullName">Họ và tên *</label>
-            <input type="text" id="fullName" name="fullName" th:field="*{}" placeholder="Nhập họ tên của bạn" required/>
-        </div>
-        <div class="form-group">
-            <label for="email">Email *</label>
-            <input type="email" id="email" name="email" placeholder="Nhập email của bạn" required/>
-        </div>
-        <div class="form-group">
-            <label for="phone">SĐT *</label>
-            <input type="text" id="phone" name="phone" placeholder="Nhập số điện thoại của bạn" required/>
-        </div>
-        <div class="form-group">
-        <input type="text" placeholder="Moi nhap truong dai hoc" required/>
-        </div>
-        <div class="form-group">
-            <select name="fieldId" class="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">-- Chọn ngành nghề --</option>
-                <option th:each="field : ${jobfields}"
-                        th:value="${field.jobFieldId}"
-                        th:text="${field.jobFieldName}">
-                </option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="content">Nội dung *</label>
-            <textarea id="content" name="content" rows="4" placeholder="Nhập nội dung ứng tuyển" required></textarea>
-        </div>
-        <div class="form-group">
-            <label for="cv">Hồ sơ ứng viên (CV)</label>
-            <input type="file" id="cv" name="cv" accept=".doc,.docx,.pdf,.png,.jpeg"/>
-            <p class="file-info">Hỗ trợ định dạng doc, docx, pdf, png, jpeg nhỏ hơn 2MB</p>
-        </div>
-        <button type="submit" class="submit-btn">Gửi</button>
-        <button type="button" class="close-btn" onclick="closeApplyForm()">Đóng</button>
-    </form>
-</div>
+
 
 <script>
     // Show Apply Form
-    function showApplyForm() {
-        document.getElementById("applyForm").style.display = "block";
-    }
-
-    // Close Apply Form
-    function closeApplyForm() {
-        document.getElementById("applyForm").style.display = "none";
-    }
 
     // Tab Navigation
     function openTab(tabName) {

@@ -22,4 +22,9 @@ public class EmployerServiceImpl implements IEmployerService {
     public Employer findByUserId(Integer userId) {
         return iEmployerRepository.findByAccount_UserId(userId);
     }
+
+    @Override
+    public void updateEmployer(Employer employer) {
+        iEmployerRepository.save(employer);
+    }
 }

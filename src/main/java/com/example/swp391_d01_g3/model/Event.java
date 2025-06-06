@@ -16,16 +16,9 @@ public class Event {
     @Column(name = "event_description", columnDefinition = "TEXT")
     private String eventDescription;
     
-    @Enumerated(EnumType.STRING)
-    @Column(name = "event_type", length = 50)
-    private EventType eventType;
-
     @Column(name = "event_date", nullable = false)
     private LocalDateTime eventDate;
     
-    @Column(name = "event_end_date")
-    private LocalDateTime eventEndDate;
-
     @Column(name = "event_location", length = 255)
     private String eventLocation;
     
@@ -40,18 +33,6 @@ public class Event {
     
     @Column(name = "contact_email", length = 255)
     private String contactEmail;
-    
-    @Column(name = "contact_phone", length = 20)
-    private String contactPhone;
-    
-    @Column(name = "requirements", columnDefinition = "TEXT")
-    private String requirements;
-    
-    @Column(name = "benefits", columnDefinition = "TEXT")
-    private String benefits;
-    
-    @Column(name = "image_url", length = 500)
-    private String imageUrl;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "event_status", length = 20)
@@ -69,25 +50,13 @@ public class Event {
     @JoinColumn(name = "approved_by")
     private Account approvedBy;
 
-    // Only keep approved_at for approval workflow
     @Column(name = "approved_at")
     private LocalDateTime approvedAt;
     
-    // Enums
-    public enum EventType {
-        WORKSHOP,           // Workshop kỹ năng
-        COMPANY_TOUR,       // Tham quan công ty
-        RECRUITMENT_EVENT,  // Sự kiện tuyển dụng
-        CAREER_FAIR,        // Ngày hội việc làm
-        NETWORKING,         // Gặp gỡ kết nối
-        SEMINAR,           // Hội thảo
-        INTERNSHIP_FAIR    // Ngày hội thực tập
-    }
-    
+    // Enums - chỉ giữ lại những cái cần thiết
     public enum EventStatus {
         ACTIVE,     // Đang mở đăng ký
         FULL,       // Đã đủ người
-        COMPLETED,  // Đã hoàn thành
         CANCELLED   // Đã hủy
     }
     
@@ -101,11 +70,10 @@ public class Event {
     public Event() {
     }
     
-    public Event(String eventTitle, String eventDescription, EventType eventType,
-                LocalDateTime eventDate, String eventLocation, Employer employer) {
+    public Event(String eventTitle, String eventDescription, LocalDateTime eventDate, 
+                String eventLocation, Employer employer) {
         this.eventTitle = eventTitle;
         this.eventDescription = eventDescription;
-        this.eventType = eventType;
         this.eventDate = eventDate;
         this.eventLocation = eventLocation;
         this.employer = employer;
@@ -136,28 +104,12 @@ public class Event {
         this.eventDescription = eventDescription;
     }
     
-    public EventType getEventType() {
-        return eventType;
-    }
-    
-    public void setEventType(EventType eventType) {
-        this.eventType = eventType;
-    }
-    
     public LocalDateTime getEventDate() {
         return eventDate;
     }
     
     public void setEventDate(LocalDateTime eventDate) {
         this.eventDate = eventDate;
-    }
-    
-    public LocalDateTime getEventEndDate() {
-        return eventEndDate;
-    }
-    
-    public void setEventEndDate(LocalDateTime eventEndDate) {
-        this.eventEndDate = eventEndDate;
     }
     
     public String getEventLocation() {
@@ -200,38 +152,6 @@ public class Event {
         this.contactEmail = contactEmail;
     }
     
-    public String getContactPhone() {
-        return contactPhone;
-    }
-    
-    public void setContactPhone(String contactPhone) {
-        this.contactPhone = contactPhone;
-    }
-    
-    public String getRequirements() {
-        return requirements;
-    }
-    
-    public void setRequirements(String requirements) {
-        this.requirements = requirements;
-    }
-    
-    public String getBenefits() {
-        return benefits;
-    }
-    
-    public void setBenefits(String benefits) {
-        this.benefits = benefits;
-    }
-    
-    public String getImageUrl() {
-        return imageUrl;
-    }
-    
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-    
     public EventStatus getEventStatus() {
         return eventStatus;
     }
@@ -263,16 +183,7 @@ public class Event {
     public void setApprovedBy(Account approvedBy) {
         this.approvedBy = approvedBy;
     }
-    
 
-    
-    public LocalDateTime getApprovedAt() {
-        return approvedAt;
-    }
-    
-    public void setApprovedAt(LocalDateTime approvedAt) {
-        this.approvedAt = approvedAt;
-    }
     
     // Business methods
     public boolean canRegister() {

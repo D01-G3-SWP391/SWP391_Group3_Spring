@@ -16,5 +16,7 @@ public interface IJobpostService  {
                              Integer fieldId, Integer salary,
                              String companyName);
 
+    void save(JobPost jobPost);
+
 
 }

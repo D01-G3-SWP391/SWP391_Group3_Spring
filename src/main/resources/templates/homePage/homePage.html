@@ -134,6 +134,8 @@
 
         <!-- Job Listings -->
         <div class="jobs-container">
+            <p th:text="${error}"></p>
+            <p th:text="${success}"></p>
             <div th:each="job : ${jobPosts}" class="job-card">
                 <div class="job-card-header">
                     <div class="company-logo">
@@ -184,7 +186,7 @@
 
                 <!--  Xem chi tiết của nghề-->
                 <div class="job-card-footer">
-                    <form method="get" th:action="@{/JobDescription}">
+                    <form method="get" th:action="@{/JobDescription/JobPost}">
                         <input type="hidden" name="id" th:value="${job.jobPostId}">
                         <button class="apply-btn">
                             <i class="fas fa-paper-plane"></i>

@@ -6,4 +6,6 @@ import com.example.swp391_d01_g3.model.Employer;
 public interface IEmployerService {
     void saveEmployer(Employer employer);
     Employer findByUserId(Integer userId);
+    void updateEmployer(Employer employer);
+
 }

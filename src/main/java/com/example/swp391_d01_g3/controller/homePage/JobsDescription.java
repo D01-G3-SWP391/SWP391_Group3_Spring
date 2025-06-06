@@ -1,5 +1,6 @@
 package com.example.swp391_d01_g3.controller.homePage;
 
+import com.example.swp391_d01_g3.dto.JobApplicationDTO;
 import com.example.swp391_d01_g3.model.Account;
 import com.example.swp391_d01_g3.model.JobApplication;
 import com.example.swp391_d01_g3.model.JobPost;
@@ -39,12 +40,21 @@ public class JobsDescription {
     @Autowired
     private IStudentService studentService;
 
-    @GetMapping("")
+    @GetMapping("/JobPost")
     public String showDescription(@RequestParam("id") Long id, Model model, Principal principal) {
         List<JobPost> jobPosts = iJobpostService.findAllWithEmployer(id);
         model.addAttribute("jobPosts", jobPosts);
-        model.addAttribute("students", iStudentService.findAll());
         model.addAttribute("jobfields", iJobfieldService.findAll());
+        System.out.println(jobPosts);
+        return "homePage/descriptionJob";
+    }
+    @GetMapping("/Apply")
+    public String showApply(@RequestParam("id") Long id, Model model, Principal principal) {
+        List<JobPost> jobPosts = iJobpostService.findAllWithEmployer(id);
+        model.addAttribute("jobPosts", jobPosts);
+        JobApplicationDTO jobApplicationDTO = new JobApplicationDTO();
+        model.addAttribute("jobApplicationDTO",jobApplicationDTO);
+        model.addAttribute("students", iStudentService.findAll());
         if (principal != null) {
             String email = principal.getName();
             Account studentAccount = iAccountService.findByEmail(email);
@@ -54,10 +64,8 @@ public class JobsDescription {
                 model.addAttribute("studentDetails", studentDetails);
                 System.out.println(studentDetails.getStudentId());
             }
-            System.out.println(email);
-
+//            System.out.println(email);
         }
-
-        return "homePage/descriptionJob";
+        return "homePage/applyForm";
     }
 }
