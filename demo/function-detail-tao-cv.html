@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Function Detail - Tạo CV - Job4You</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        margin: 20px;
+        background-color: #f5f5f5;
+      }
+      .header {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        text-align: center;
+      }
+      .section-header {
+        background: #f8fafc;
+        padding: 15px 20px;
+        border-left: 4px solid #6366f1;
+        margin: 30px 0 20px 0;
+        border-radius: 5px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        margin-bottom: 30px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      th {
+        background: #6366f1;
+        color: white;
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+      }
+      td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e5e7eb;
+        vertical-align: top;
+      }
+      tr:hover {
+        background-color: #f9fafb;
+      }
+      .section-1 {
+        background-color: #fff7ed;
+      }
+      .section-2 {
+        background-color: #f0f9ff;
+      }
+      .section-3 {
+        background-color: #f0fdf4;
+      }
+      .section-4 {
+        background-color: #fdf4ff;
+      }
+      .section-5 {
+        background-color: #fffbeb;
+      }
+      .section-6 {
+        background-color: #f3f4f6;
+      }
+
+      .use-case {
+        background: #e0e7ff;
+        color: #3730a3;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.8em;
+        margin: 0 2px;
+      }
+      .type-badge {
+        background: #10b981;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8em;
+      }
+      .required {
+        color: #dc2626;
+        font-weight: bold;
+      }
+      .optional {
+        color: #059669;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Function Detail - Trang Tạo CV</h1>
+      <p>Chi tiết các thành phần và chức năng của trang Tạo CV chuyên nghiệp</p>
+    </div>
+
+    <div class="section-header">
+      <h2>📝 3.2.3 Trang Tạo CV (tao-cv.html)</h2>
+      <p>
+        Trang cho phép người dùng tạo CV chuyên nghiệp với các template và công
+        cụ hỗ trợ
+      </p>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 5%">#</th>
+          <th style="width: 20%">Component Name</th>
+          <th style="width: 10%">Type</th>
+          <th style="width: 8%">Editable</th>
+          <th style="width: 8%">Mandatory</th>
+          <th style="width: 15%">Default Value</th>
+          <th style="width: 34%">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Section 1: Header -->
+        <tr class="section-1">
+          <td>1</td>
+          <td>Header Navigation</td>
+          <td><span class="type-badge">Container</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Static header</td>
+          <td>
+            Navigation bar cố định với logo JOB4YOU và menu chính. Highlight
+            "Tạo CV" as active. <span class="use-case">UC-03</span>
+          </td>
+        </tr>
+        <tr class="section-1">
+          <td>1</td>
+          <td>Logo Link</td>
+          <td><span class="type-badge">Link</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>JOB4YOU</td>
+          <td>
+            Logo redirect về trang chủ khi click.
+            <span class="use-case">UC-01</span>
+          </td>
+        </tr>
+        <tr class="section-1">
+          <td>1</td>
+          <td>Menu Navigation</td>
+          <td><span class="type-badge">List</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>6 menu items</td>
+          <td>
+            Menu items: Việc làm, Tạo CV (active), Công cụ, Cẩm nang nghề
+            nghiệp, Blogs, Events. <span class="use-case">UC-01</span>
+          </td>
+        </tr>
+        <tr class="section-1">
+          <td>1</td>
+          <td>Auth Buttons</td>
+          <td><span class="type-badge">Button Group</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Đăng ký, Đăng nhập</td>
+          <td>
+            Authentication buttons cho user chưa login.
+            <span class="use-case">UC-02</span>
+            <span class="use-case">UC-04</span>
+          </td>
+        </tr>
+
+        <!-- Section 2: Page Header -->
+        <tr class="section-2">
+          <td>2</td>
+          <td>Page Title</td>
+          <td><span class="type-badge">Heading</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Tạo CV chuyên nghiệp</td>
+          <td>
+            Main heading với gradient background tím. SEO optimized.
+            <span class="use-case">UC-20</span>
+          </td>
+        </tr>
+        <tr class="section-2">
+          <td>2</td>
+          <td>Page Subtitle</td>
+          <td><span class="type-badge">Text</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Xây dựng CV ấn tượng với các mẫu thiết kế hiện đại</td>
+          <td>Mô tả ngắn gọn về trang. <span class="use-case">UC-20</span></td>
+        </tr>
+
+        <!-- Section 3: CV Builder Options -->
+        <tr class="section-3">
+          <td>3</td>
+          <td>Section Title</td>
+          <td><span class="type-badge">Heading</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Chọn cách tạo CV</td>
+          <td>
+            Tiêu đề section để user chọn phương thức tạo CV.
+            <span class="use-case">UC-20</span>
+          </td>
+        </tr>
+        <tr class="section-3">
+          <td>3</td>
+          <td>Create From Scratch Card</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Feature card</td>
+          <td>
+            Card với icon 📝, title "Tạo CV từ đầu", description và button "Bắt
+            đầu". <span class="use-case">UC-20</span>
+          </td>
+        </tr>
+        <tr class="section-3">
+          <td>3</td>
+          <td>Quick Create Card</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Feature card</td>
+          <td>
+            Card với icon ⚡, title "Tạo CV nhanh", AI-powered description và
+            button "Tạo ngay". <span class="use-case">UC-20</span>
+          </td>
+        </tr>
+        <tr class="section-3">
+          <td>3</td>
+          <td>Start Buttons</td>
+          <td><span class="type-badge">Button</span></td>
+          <td>Yes</td>
+          <td class="required">Yes</td>
+          <td>Bắt đầu, Tạo ngay</td>
+          <td>
+            Action buttons để bắt đầu tạo CV. Link to CV builder interface.
+            <span class="use-case">UC-20</span>
+          </td>
+        </tr>
+
+        <!-- Section 4: CV Templates -->
+        <tr class="section-4">
+          <td>4</td>
+          <td>Templates Section Title</td>
+          <td><span class="type-badge">Heading</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Mẫu CV chuyên nghiệp</td>
+          <td>
+            Tiêu đề section templates với subtitle mô tả.
+            <span class="use-case">UC-20</span>
+          </td>
+        </tr>
+        <tr class="section-4">
+          <td>4</td>
+          <td>Template Cards Grid</td>
+          <td><span class="type-badge">Grid</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>6 template cards</td>
+          <td>
+            Grid 3 cột hiển thị 6 CV templates: Modern, Classic, Creative,
+            Executive, Fresh Graduate, Professional.
+            <span class="use-case">UC-20</span>
+          </td>
+        </tr>
+        <tr class="section-4">
+          <td>4</td>
+          <td>Template Preview</td>
+          <td><span class="type-badge">Image</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Gradient placeholder</td>
+          <td>
+            Visual preview của từng template với gradient background khác nhau.
+            Clickable preview. <span class="use-case">UC-20</span>
+          </td>
+        </tr>
+        <tr class="section-4">
+          <td>4</td>
+          <td>Template Name</td>
+          <td><span class="type-badge">Text</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>CV [Type]</td>
+          <td>
+            Tên template: CV Modern, CV Classic, CV Creative, etc.
+            <span class="use-case">UC-20</span>
+          </td>
+        </tr>
+        <tr class="section-4">
+          <td>4</td>
+          <td>Template Description</td>
+          <td><span class="type-badge">Text</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Phù hợp cho...</td>
+          <td>
+            Mô tả ngắn gọn về template phù hợp với ngành nghề nào.
+            <span class="use-case">UC-20</span>
+          </td>
+        </tr>
+        <tr class="section-4">
+          <td>4</td>
+          <td>Use Template Button</td>
+          <td><span class="type-badge">Button</span></td>
+          <td>Yes</td>
+          <td class="required">Yes</td>
+          <td>Sử dụng</td>
+          <td>
+            Button để chọn template và bắt đầu customize.
+            <span class="use-case">UC-20</span>
+          </td>
+        </tr>
+        <tr class="section-4">
+          <td>4</td>
+          <td>View All Templates Link</td>
+          <td><span class="type-badge">Link</span></td>
+          <td>Yes</td>
+          <td class="optional">No</td>
+          <td>Xem tất cả mẫu CV</td>
+          <td>
+            Link để xem thêm templates. Pagination support.
+            <span class="use-case">UC-20</span>
+          </td>
+        </tr>
+
+        <!-- Section 5: CV Tips -->
+        <tr class="section-5">
+          <td>5</td>
+          <td>Tips Section Title</td>
+          <td><span class="type-badge">Heading</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Mẹo viết CV hiệu quả</td>
+          <td>
+            Tiêu đề section tips và best practices.
+            <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+        <tr class="section-5">
+          <td>5</td>
+          <td>CV Structure Card</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Info card</td>
+          <td>
+            Card với icon 📋 và list cấu trúc CV chuẩn: Thông tin cá nhân, Mục
+            tiêu, Kinh nghiệm, etc. <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+        <tr class="section-5">
+          <td>5</td>
+          <td>CV Guidelines Card</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Info card</td>
+          <td>
+            Card với icon ✨ và list những lưu ý quan trọng khi viết CV.
+            <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+        <tr class="section-5">
+          <td>5</td>
+          <td>Tips Content List</td>
+          <td><span class="type-badge">List</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Bullet points</td>
+          <td>
+            Danh sách tips được organize thành bullet points dễ đọc. Static
+            content. <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+
+        <!-- Section 6: CV Services -->
+        <tr class="section-6">
+          <td>6</td>
+          <td>Services Section Title</td>
+          <td><span class="type-badge">Heading</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Dịch vụ CV chuyên nghiệp</td>
+          <td>
+            Tiêu đề section các dịch vụ premium.
+            <span class="use-case">UC-20</span>
+          </td>
+        </tr>
+        <tr class="section-6">
+          <td>6</td>
+          <td>Professional Writing Service</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Service card</td>
+          <td>
+            Card dịch vụ viết CV chuyên nghiệp, icon 📝, price 299,000đ, button
+            "Đặt dịch vụ". <span class="use-case">UC-20</span>
+          </td>
+        </tr>
+        <tr class="section-6">
+          <td>6</td>
+          <td>Free Review Service</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Service card</td>
+          <td>
+            Card review CV miễn phí, icon ✅, free pricing, button "Gửi CV".
+            <span class="use-case">UC-20</span>
+          </td>
+        </tr>
+        <tr class="section-6">
+          <td>6</td>
+          <td>Premium CV Service</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Service card</td>
+          <td>
+            Card CV Premium với ATS-friendly, icon 🌟, price 499,000đ, button
+            "Đặt dịch vụ". <span class="use-case">UC-20</span>
+          </td>
+        </tr>
+        <tr class="section-6">
+          <td>6</td>
+          <td>Service Pricing</td>
+          <td><span class="type-badge">Text</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Price display</td>
+          <td>
+            Hiển thị giá dịch vụ rõ ràng với styling nổi bật. VNĐ currency.
+            <span class="use-case">UC-20</span>
+          </td>
+        </tr>
+        <tr class="section-6">
+          <td>6</td>
+          <td>Service Action Buttons</td>
+          <td><span class="type-badge">Button</span></td>
+          <td>Yes</td>
+          <td class="required">Yes</td>
+          <td>Đặt dịch vụ, Gửi CV</td>
+          <td>
+            CTA buttons cho từng service. Link to booking/upload flow.
+            <span class="use-case">UC-20</span>
+          </td>
+        </tr>
+
+        <!-- Section 7: Footer -->
+        <tr class="section-1">
+          <td>7</td>
+          <td>Footer Container</td>
+          <td><span class="type-badge">Container</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Standard footer</td>
+          <td>
+            Footer với dark background, company info, links và copyright.
+            <span class="use-case">UC-01</span>
+          </td>
+        </tr>
+        <tr class="section-1">
+          <td>7</td>
+          <td>Company Info</td>
+          <td><span class="type-badge">Text</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Job4You description</td>
+          <td>
+            Company description: "Nền tảng tìm việc làm hàng đầu Việt Nam".
+            <span class="use-case">UC-01</span>
+          </td>
+        </tr>
+        <tr class="section-1">
+          <td>7</td>
+          <td>Footer Links</td>
+          <td><span class="type-badge">Link Group</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>4 link groups</td>
+          <td>
+            Links organized by categories: Ứng viên, Nhà tuyển dụng, Hỗ trợ.
+            <span class="use-case">UC-01</span>
+          </td>
+        </tr>
+        <tr class="section-1">
+          <td>7</td>
+          <td>Copyright</td>
+          <td><span class="type-badge">Text</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>© 2025 Job4You</td>
+          <td>
+            Copyright notice với current year. Auto-update year.
+            <span class="use-case">UC-01</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div
+      style="
+        background: #f0f9ff;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 30px;
+      "
+    >
+      <h3>📋 Technical Notes:</h3>
+      <ul>
+        <li>
+          <strong>Responsive Design:</strong> Mobile-first approach với
+          breakpoints tại 768px và 1024px
+        </li>
+        <li>
+          <strong>Performance:</strong> Lazy loading cho template previews,
+          image optimization
+        </li>
+        <li>
+          <strong>Accessibility:</strong> Keyboard navigation, screen reader
+          support, alt texts
+        </li>
+        <li><strong>SEO:</strong> Meta tags, structured data, semantic HTML</li>
+        <li>
+          <strong>Security:</strong> CSRF protection cho forms, input validation
+        </li>
+        <li>
+          <strong>Analytics:</strong> Event tracking cho template selection,
+          service clicks
+        </li>
+        <li>
+          <strong>Integrations:</strong> Payment gateway cho services, file
+          upload cho CV review
+        </li>
+      </ul>
+    </div>
+
+    <div
+      style="
+        background: #ecfdf5;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+      "
+    >
+      <h3>🔗 Use Case References:</h3>
+      <p>
+        <strong>UC-01:</strong> Homepage Navigation |
+        <strong>UC-02:</strong> User Registration |
+        <strong>UC-03:</strong> Login with Email | <strong>UC-04:</strong> Login
+        with Gmail
+      </p>
+      <p>
+        <strong>UC-20:</strong> Create/Edit CV | <strong>UC-48:</strong> Career
+        Resources and Blogs
+      </p>
+    </div>
+  </body>
+</html>

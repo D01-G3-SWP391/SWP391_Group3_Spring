@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Function Detail - Cẩm nang nghề nghiệp - Job4You</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        margin: 20px;
+        background-color: #f5f5f5;
+      }
+      .header {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        text-align: center;
+      }
+      .section-header {
+        background: #f8fafc;
+        padding: 15px 20px;
+        border-left: 4px solid #6366f1;
+        margin: 30px 0 20px 0;
+        border-radius: 5px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        margin-bottom: 30px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      th {
+        background: #6366f1;
+        color: white;
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+      }
+      td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e5e7eb;
+        vertical-align: top;
+      }
+      tr:hover {
+        background-color: #f9fafb;
+      }
+      .section-1 {
+        background-color: #fff7ed;
+      }
+      .section-2 {
+        background-color: #f0f9ff;
+      }
+      .section-3 {
+        background-color: #f0fdf4;
+      }
+      .section-4 {
+        background-color: #fdf4ff;
+      }
+      .section-5 {
+        background-color: #fffbeb;
+      }
+      .section-6 {
+        background-color: #f3f4f6;
+      }
+      .section-7 {
+        background-color: #fef3c7;
+      }
+
+      .use-case {
+        background: #e0e7ff;
+        color: #3730a3;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.8em;
+        margin: 0 2px;
+      }
+      .type-badge {
+        background: #10b981;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8em;
+      }
+      .required {
+        color: #dc2626;
+        font-weight: bold;
+      }
+      .optional {
+        color: #059669;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Function Detail - Cẩm nang nghề nghiệp</h1>
+      <p>
+        Chi tiết các thành phần và chức năng của trang hướng dẫn nghề nghiệp
+      </p>
+    </div>
+
+    <div class="section-header">
+      <h2>📚 3.2.4 Trang Cẩm nang nghề nghiệp (cam-nang-nghe-nghiep.html)</h2>
+      <p>
+        Trang cung cấp hướng dẫn toàn diện về phát triển sự nghiệp và kỹ năng
+        nghề nghiệp
+      </p>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 5%">#</th>
+          <th style="width: 20%">Component Name</th>
+          <th style="width: 10%">Type</th>
+          <th style="width: 8%">Editable</th>
+          <th style="width: 8%">Mandatory</th>
+          <th style="width: 15%">Default Value</th>
+          <th style="width: 34%">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Section 1: Header -->
+        <tr class="section-1">
+          <td>1</td>
+          <td>Header Navigation</td>
+          <td><span class="type-badge">Container</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Static header</td>
+          <td>
+            Navigation bar với logo và menu. "Cẩm nang nghề nghiệp" highlighted
+            as active. <span class="use-case">UC-03</span>
+          </td>
+        </tr>
+
+        <!-- Section 2: Page Header -->
+        <tr class="section-2">
+          <td>2</td>
+          <td>Page Title</td>
+          <td><span class="type-badge">Heading</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Cẩm nang nghề nghiệp</td>
+          <td>
+            Main heading với gradient background. SEO optimized title.
+            <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+        <tr class="section-2">
+          <td>2</td>
+          <td>Page Subtitle</td>
+          <td><span class="type-badge">Text</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Hướng dẫn toàn diện để phát triển sự nghiệp thành công</td>
+          <td>
+            Subtitle mô tả mục đích của trang.
+            <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+
+        <!-- Section 3: Quick Guide Categories -->
+        <tr class="section-3">
+          <td>3</td>
+          <td>Categories Section Title</td>
+          <td><span class="type-badge">Heading</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Danh mục hướng dẫn</td>
+          <td>
+            Tiêu đề section categories với 3 chủ đề chính.
+            <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+        <tr class="section-3">
+          <td>3</td>
+          <td>CV Writing Category</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>Yes</td>
+          <td class="required">Yes</td>
+          <td>Feature card</td>
+          <td>
+            Card với icon 📝, title "Viết CV & Cover Letter", description và
+            anchor link "#cv-guide". <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+        <tr class="section-3">
+          <td>3</td>
+          <td>Interview Category</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>Yes</td>
+          <td class="required">Yes</td>
+          <td>Feature card</td>
+          <td>
+            Card với icon 💼, title "Phỏng vấn thành công", anchor link
+            "#interview-guide". <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+        <tr class="section-3">
+          <td>3</td>
+          <td>Career Development Category</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>Yes</td>
+          <td class="required">Yes</td>
+          <td>Feature card</td>
+          <td>
+            Card với icon 🚀, title "Phát triển sự nghiệp", anchor link
+            "#career-guide". <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+
+        <!-- Section 4: CV Guide -->
+        <tr class="section-4">
+          <td>4</td>
+          <td>CV Guide Section</td>
+          <td><span class="type-badge">Section</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Content section</td>
+          <td>
+            Section với ID "cv-guide" cho anchor navigation. Background #F9FAFB.
+            <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+        <tr class="section-4">
+          <td>4</td>
+          <td>CV Structure Card</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Info card</td>
+          <td>
+            Card "Cấu trúc CV hoàn hảo" với 5 bước structured list. Static
+            educational content. <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+        <tr class="section-4">
+          <td>4</td>
+          <td>CV Tips Card</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Info card</td>
+          <td>
+            Card "Mẹo viết CV hiệu quả" với bullet points tips. Left-aligned
+            text. <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+        <tr class="section-4">
+          <td>4</td>
+          <td>CV Mistakes Card</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Info card</td>
+          <td>
+            Card "Những điều tránh trong CV" với 2-column layout các lỗi thường
+            gặp. <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+
+        <!-- Section 5: Interview Guide -->
+        <tr class="section-5">
+          <td>5</td>
+          <td>Interview Guide Section</td>
+          <td><span class="type-badge">Section</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Content section</td>
+          <td>
+            Section với ID "interview-guide" cho anchor navigation.
+            <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+        <tr class="section-5">
+          <td>5</td>
+          <td>Interview Preparation Card</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Info card</td>
+          <td>
+            Card "Chuẩn bị trước phỏng vấn" với checklist 6 items.
+            <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+        <tr class="section-5">
+          <td>5</td>
+          <td>Common Questions Card</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Info card</td>
+          <td>
+            Card "Câu hỏi phỏng vấn phổ biến" với 4 câu hỏi và gợi ý trả lời.
+            <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+        <tr class="section-5">
+          <td>5</td>
+          <td>Interview Tips Card</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Info card</td>
+          <td>
+            Card "Trong buổi phỏng vấn" với 7 tips hành vi và cách ứng xử.
+            <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+        <tr class="section-5">
+          <td>5</td>
+          <td>Online Interview Card</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Info card</td>
+          <td>
+            Card "Phỏng vấn online" với 2-column layout: technical setup và
+            environment tips. <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+
+        <!-- Section 6: Career Development -->
+        <tr class="section-6">
+          <td>6</td>
+          <td>Career Guide Section</td>
+          <td><span class="type-badge">Section</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Content section</td>
+          <td>
+            Section với ID "career-guide", background #F9FAFB.
+            <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+        <tr class="section-6">
+          <td>6</td>
+          <td>Career Orientation Card</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Info card</td>
+          <td>
+            Card "Định hướng nghề nghiệp" với 2 bước: Tự đánh giá và Khám phá
+            ngành nghề. <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+        <tr class="section-6">
+          <td>6</td>
+          <td>Career Planning Card</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Info card</td>
+          <td>
+            Card "Lập kế hoạch sự nghiệp" với mục tiêu ngắn hạn và dài hạn.
+            <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+
+        <!-- Section 7: Additional Resources -->
+        <tr class="section-7">
+          <td>7</td>
+          <td>Resources Section Title</td>
+          <td><span class="type-badge">Heading</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Tài nguyên bổ sung</td>
+          <td>
+            Tiêu đề section tài nguyên miễn phí và có phí.
+            <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+        <tr class="section-7">
+          <td>7</td>
+          <td>E-book Resource Card</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>Yes</td>
+          <td class="required">Yes</td>
+          <td>Tool card</td>
+          <td>
+            Card với icon 📚, title "E-book miễn phí", description và button
+            "Tải về". <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+        <tr class="section-7">
+          <td>7</td>
+          <td>Video Tutorial Card</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>Yes</td>
+          <td class="required">Yes</td>
+          <td>Tool card</td>
+          <td>
+            Card với icon 🎥, title "Video hướng dẫn", button "Xem ngay".
+            <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+        <tr class="section-7">
+          <td>7</td>
+          <td>1-on-1 Consultation Card</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>Yes</td>
+          <td class="required">Yes</td>
+          <td>Tool card</td>
+          <td>
+            Card với icon 💬, title "Tư vấn 1-1", description và button "Đặt
+            lịch". <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+        <tr class="section-7">
+          <td>7</td>
+          <td>Community Card</td>
+          <td><span class="type-badge">Card</span></td>
+          <td>Yes</td>
+          <td class="required">Yes</td>
+          <td>Tool card</td>
+          <td>
+            Card với icon 👥, title "Cộng đồng", button "Tham gia".
+            <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+        <tr class="section-7">
+          <td>7</td>
+          <td>Resource Action Buttons</td>
+          <td><span class="type-badge">Button</span></td>
+          <td>Yes</td>
+          <td class="required">Yes</td>
+          <td>CTA buttons</td>
+          <td>
+            Various CTA buttons: Tải về, Xem ngay, Đặt lịch, Tham gia. Link to
+            respective services. <span class="use-case">UC-48</span>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr class="section-1">
+          <td>8</td>
+          <td>Footer Container</td>
+          <td><span class="type-badge">Container</span></td>
+          <td>No</td>
+          <td class="required">Yes</td>
+          <td>Standard footer</td>
+          <td>
+            Consistent footer across all pages với company info và links.
+            <span class="use-case">UC-01</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div
+      style="
+        background: #f0f9ff;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 30px;
+      "
+    >
+      <h3>📋 Technical Notes:</h3>
+      <ul>
+        <li>
+          <strong>Navigation:</strong> Smooth scroll anchor links với offset for
+          fixed header
+        </li>
+        <li>
+          <strong>Content Structure:</strong> Hierarchical headings (h2, h3, h4)
+          for SEO
+        </li>
+        <li>
+          <strong>Responsive Design:</strong> Stacked layout on mobile, grid on
+          desktop
+        </li>
+        <li>
+          <strong>Accessibility:</strong> Skip links, focus management, semantic
+          markup
+        </li>
+        <li>
+          <strong>Performance:</strong> Static content with CSS-only animations
+        </li>
+        <li>
+          <strong>SEO:</strong> Rich snippets, FAQ schema markup for Q&A
+          sections
+        </li>
+      </ul>
+    </div>
+
+    <div
+      style="
+        background: #ecfdf5;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+      "
+    >
+      <h3>🔗 Use Case References:</h3>
+      <p>
+        <strong>UC-01:</strong> Homepage Navigation |
+        <strong>UC-03:</strong> Login with Email
+      </p>
+      <p>
+        <strong>UC-48:</strong> Career Resources and Blogs - Main use case for
+        this page
+      </p>
+    </div>
+  </body>
+</html>

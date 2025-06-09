@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Profile - Employer</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" th:href="@{/css/navbarStudent_Employer.css}" />
+    <link rel="stylesheet" th:href="@{/css/profileEmployer.css}" />
+    <link rel="stylesheet" th:href="@{/css/registerEnhanced.css}" />
+  </head>
+  <body>
+    <div th:replace="~{navbar/navbarEmployee :: navbarAdmin}"></div>
+    <div class="main-content">
+      <div class="profile-container">
+        <!-- Error Alert -->
+        <div
+          th:if="${error}"
+          class="alert alert-danger alert-dismissible fade show"
+          role="alert"
+        >
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          <span th:text="${error}">Error message</span>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+          ></button>
+        </div>
+
+        <div class="profile-card">
+          <div class="profile-header">
+            <h2 class="profile-title">
+              <i class="bi bi-pencil-square me-2"></i>Edit Information
+            </h2>
+          </div>
+
+          <form
+            class="edit-form"
+            method="post"
+            th:action="@{/Employer/EditProfile}"
+            th:object="${employerProfileDTO}"
+            enctype="multipart/form-data"
+          >
+            <!-- Logo Upload Section - Full Width At Top -->
+            <div class="info-section logo-section-full">
+              <h3 class="section-title">
+                <i class="bi bi-image"></i> Company Logo
+              </h3>
+              <div class="logo-upload-container">
+                <!-- Current logo preview -->
+                <div
+                  class="current-logo"
+                  th:if="${employerProfileDTO.logoUrl != null and employerProfileDTO.logoUrl != ''}"
+                >
+                  <img
+                    th:src="${employerProfileDTO.logoUrl}"
+                    alt="Current Logo"
+                    class="logo-preview-current"
+                  />
+                  <p class="text-muted">Current Logo</p>
+                </div>
+
+                <!-- File input -->
+                <div class="file-input-container">
+                  <input
+                    type="file"
+                    id="logoFile"
+                    name="logoFile"
+                    class="form-control"
+                    accept="image/*"
+                    onchange="previewLogo(this)"
+                  />
+                  <div class="file-input-help">
+                    <i class="bi bi-cloud-upload"></i>
+                    <span>Choose image from computer (JPG, PNG, GIF)</span>
+                  </div>
+                </div>
+
+                <!-- New logo preview -->
+                <div
+                  class="new-logo-preview"
+                  id="newLogoPreview"
+                  style="display: none"
+                >
+                  <img
+                    id="logoPreviewImage"
+                    alt="Logo Preview"
+                    class="logo-preview-new"
+                  />
+                  <p class="text-success">New logo will be updated</p>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-secondary"
+                    onclick="clearLogoPreview()"
+                  >
+                    <i class="bi bi-x"></i> Remove
+                  </button>
+                </div>
+
+                <!-- Hidden field to keep current logo URL -->
+                <input type="hidden" name="logoUrl" th:field="*{logoUrl}" />
+              </div>
+            </div>
+
+            <!-- Two Column Layout Below Logo -->
+            <div class="form-grid">
+              <!-- Left Column: Personal Information -->
+              <div class="form-column">
+                <div class="info-section">
+                  <h3 class="section-title">
+                    <i class="bi bi-person"></i> Personal Information
+                  </h3>
+
+                  <div class="form-group">
+                    <label for="fullName" class="form-label">Full Name</label>
+                    <input
+                      type="text"
+                      id="fullName"
+                      name="fullName"
+                      class="form-control"
+                      th:field="*{fullName}"
+                      placeholder="Enter full name"
+                      required
+                    />
+                    <div
+                      th:if="${#fields.hasErrors('fullName')}"
+                      class="text-danger"
+                      th:errors="*{fullName}"
+                    ></div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input
+                      type="text"
+                      id="phone"
+                      name="phone"
+                      class="form-control"
+                      th:field="*{phone}"
+                      placeholder="Enter phone number"
+                      required
+                    />
+                    <div
+                      th:if="${#fields.hasErrors('phone')}"
+                      class="text-danger"
+                      th:errors="*{phone}"
+                    ></div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      class="form-control"
+                      th:field="*{email}"
+                      placeholder="Enter email"
+                      readonly
+                    />
+                    <small class="form-text text-muted"
+                      >Email cannot be changed</small
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column: Company Information -->
+              <div class="form-column">
+                <div class="info-section">
+                  <h3 class="section-title">
+                    <i class="bi bi-building"></i> Company Information
+                  </h3>
+
+                  <div class="form-group">
+                    <label for="companyName" class="form-label"
+                      >Company Name</label
+                    >
+                    <input
+                      type="text"
+                      id="companyName"
+                      name="companyName"
+                      class="form-control"
+                      th:field="*{companyName}"
+                      placeholder="Enter company name"
+                      required
+                    />
+                    <div
+                      th:if="${#fields.hasErrors('companyName')}"
+                      class="text-danger"
+                      th:errors="*{companyName}"
+                    ></div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="jobsFieldId" class="form-label"
+                      >Industry Field</label
+                    >
+                    <select
+                      id="jobsFieldId"
+                      name="jobsFieldId"
+                      class="form-control"
+                      th:field="*{jobsFieldId}"
+                      required
+                    >
+                      <option value="">-- Select Industry --</option>
+                      <option
+                        th:each="field : ${jobFields}"
+                        th:value="${field.jobFieldId}"
+                        th:text="${field.jobFieldName}"
+                      ></option>
+                    </select>
+                    <div
+                      th:if="${#fields.hasErrors('jobsFieldId')}"
+                      class="text-danger"
+                      th:errors="*{jobsFieldId}"
+                    ></div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="companyAddress" class="form-label"
+                      >Company Address</label
+                    >
+                    <textarea
+                      id="companyAddress"
+                      name="companyAddress"
+                      class="form-control"
+                      rows="3"
+                      th:field="*{companyAddress}"
+                      placeholder="Enter company address"
+                      required
+                    ></textarea>
+                    <div
+                      th:if="${#fields.hasErrors('companyAddress')}"
+                      class="text-danger"
+                      th:errors="*{companyAddress}"
+                    ></div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="companyDescription" class="form-label"
+                      >Company Description</label
+                    >
+                    <textarea
+                      id="companyDescription"
+                      name="companyDescription"
+                      class="form-control"
+                      rows="5"
+                      th:field="*{companyDescription}"
+                      placeholder="Enter company description..."
+                    ></textarea>
+                    <div
+                      th:if="${#fields.hasErrors('companyDescription')}"
+                      class="text-danger"
+                      th:errors="*{companyDescription}"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="bi bi-check-circle me-2"></i>Update Information
+              </button>
+              <a
+                th:href="@{/Employer/Profile}"
+                class="btn btn-secondary btn-lg"
+              >
+                <i class="bi bi-x-circle me-2"></i>Cancel
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      function previewLogo(input) {
+        const file = input.files[0];
+        if (file) {
+          // Validate file type
+          const allowedTypes = [
+            "image/jpeg",
+            "image/jpg",
+            "image/png",
+            "image/gif",
+            "image/webp",
+          ];
+          if (!allowedTypes.includes(file.type)) {
+            alert("Please select an image file (JPG, PNG, GIF, WEBP)");
+            input.value = "";
+            return;
+          }
+
+          // Validate file size (5MB max)
+          if (file.size > 5 * 1024 * 1024) {
+            alert("File size must not exceed 5MB");
+            input.value = "";
+            return;
+          }
+
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            document.getElementById("logoPreviewImage").src = e.target.result;
+            document.getElementById("newLogoPreview").style.display = "block";
+
+            // Add smooth animation
+            const preview = document.getElementById("newLogoPreview");
+            preview.style.opacity = "0";
+            preview.style.transform = "scale(0.8)";
+            setTimeout(() => {
+              preview.style.transition = "all 0.3s ease";
+              preview.style.opacity = "1";
+              preview.style.transform = "scale(1)";
+            }, 10);
+          };
+          reader.readAsDataURL(file);
+        }
+      }
+
+      function clearLogoPreview() {
+        const preview = document.getElementById("newLogoPreview");
+        preview.style.transition = "all 0.3s ease";
+        preview.style.opacity = "0";
+        preview.style.transform = "scale(0.8)";
+
+        setTimeout(() => {
+          document.getElementById("logoFile").value = "";
+          preview.style.display = "none";
+          document.getElementById("logoPreviewImage").src = "";
+        }, 300);
+      }
+
+      // Form submission with loading state
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector(".edit-form");
+        const submitBtn = document.querySelector(".btn-primary");
+
+        form.addEventListener("submit", function () {
+          submitBtn.classList.add("loading");
+          submitBtn.innerHTML =
+            '<i class="bi bi-arrow-clockwise me-2"></i>Updating...';
+        });
+
+        // Add smooth focus transitions
+        const inputs = document.querySelectorAll(".form-control");
+        inputs.forEach((input) => {
+          input.addEventListener("focus", function () {
+            this.parentElement.style.transform = "translateY(-1px)";
+          });
+
+          input.addEventListener("blur", function () {
+            this.parentElement.style.transform = "translateY(0)";
+          });
+        });
+
+        // Auto-resize textareas
+        const textareas = document.querySelectorAll("textarea");
+        textareas.forEach((textarea) => {
+          textarea.addEventListener("input", function () {
+            this.style.height = "auto";
+            this.style.height = this.scrollHeight + "px";
+          });
+        });
+      });
+    </script>
+
+    <style>
+      /* Reset body and main-content spacing */
+      body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #f8fafc;
+      }
+
+      .main-content {
+        margin-top: 0 !important;
+        padding-top: 20px !important;
+        background: #f8fafc;
+      }
+
+      /* Main container adjustments */
+      .profile-container {
+        max-width: 1400px !important;
+        width: 95% !important;
+        margin: 0px auto !important;
+        min-height: 100vh;
+      }
+
+      .profile-card {
+        background: white;
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e5e7eb;
+        overflow: hidden;
+        position: relative;
+        min-height: calc(100vh - 80px);
+      }
+
+      .profile-header {
+        text-align: center;
+        margin-bottom: 32px;
+        position: relative;
+        z-index: 2;
+        padding-bottom: 24px;
+        border-bottom: 2px solid #e5e7eb;
+      }
+
+      .profile-title {
+        color: #1f2937;
+        font-size: 2.25rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+
+      .profile-subtitle {
+        color: #6b7280;
+        font-size: 1.1rem;
+        margin-bottom: 0;
+      }
+
+      /* Two column grid layout */
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        position: relative;
+        z-index: 2;
+      }
+
+      .form-column {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .edit-form {
+        padding: 0;
+        background: transparent;
+      }
+
+      .info-section {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        height: fit-content;
+      }
+
+      .info-section:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Logo section full width */
+      .logo-section-full {
+        margin-bottom: 32px;
+        grid-column: 1 / -1;
+        background: white;
+      }
+
+      .logo-section-full .logo-upload-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 32px;
+        min-height: 200px;
+        flex-wrap: wrap;
+      }
+
+      .logo-section-full .current-logo,
+      .logo-section-full .new-logo-preview {
+        margin-bottom: 0;
+        flex: 0 0 auto;
+      }
+
+      .logo-section-full .file-input-container {
+        flex: 1;
+        max-width: 400px;
+        margin-bottom: 0;
+      }
+
+      .section-title {
+        color: #1a1a2e;
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 3px solid #667eea;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .section-title i {
+        color: #667eea;
+        font-size: 1.5rem;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 8px;
+        font-size: 14px;
+        letter-spacing: 0.025em;
+        display: block;
+      }
+
+      .form-control {
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 14px 16px;
+        font-size: 15px;
+        transition: all 0.3s ease;
+        background: white;
+        width: 100%;
+        font-family: "Inter", system-ui, sans-serif;
+      }
+
+      .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        outline: none;
+        background: #fafbfc;
+      }
+
+      .form-control[readonly] {
+        background: #f7fafc;
+        color: #718096;
+        border-color: #e2e8f0;
+      }
+
+      textarea.form-control {
+        resize: vertical;
+        min-height: 80px;
+        line-height: 1.6;
+      }
+
+      select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 12px center;
+        background-repeat: no-repeat;
+        background-size: 16px;
+        padding-right: 40px;
+      }
+
+      /* Logo Upload Styles */
+      .logo-upload-container {
+        border: 3px dashed #cbd5e0;
+        border-radius: 16px;
+        padding: 24px;
+        background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .logo-upload-container:hover {
+        border-color: #667eea;
+        background: linear-gradient(135deg, #ebf4ff 0%, #dbeafe 100%);
+        transform: translateY(-1px);
+      }
+
+      .current-logo,
+      .new-logo-preview {
+        text-align: center;
+        margin-bottom: 20px;
+        padding: 16px;
+        background: white;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+
+      .logo-preview-current,
+      .logo-preview-new {
+        max-width: 120px;
+        max-height: 120px;
+        object-fit: contain;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        margin-bottom: 8px;
+      }
+
+      .file-input-container {
+        position: relative;
+        margin-bottom: 16px;
+      }
+
+      .file-input-help {
+        text-align: center;
+        padding: 32px 20px;
+        color: #4a5568;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .file-input-help i {
+        font-size: 42px;
+        color: #667eea;
+        display: block;
+        margin-bottom: 12px;
+        transition: all 0.3s ease;
+      }
+
+      .logo-upload-container:hover .file-input-help i {
+        transform: scale(1.1);
+        color: #5a67d8;
+      }
+
+      input[type="file"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 2;
+      }
+
+      /* Action buttons */
+      .form-actions {
+        margin-top: 32px;
+        padding-top: 24px;
+        border-top: 2px solid #e5e7eb;
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        position: relative;
+        z-index: 2;
+        grid-column: 1 / -1;
+      }
+
+      .btn-lg {
+        padding: 12px 24px;
+        font-size: 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-primary {
+        background: #3b82f6;
+        color: white;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn-primary:hover {
+        background: #2563eb;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn-secondary {
+        background: white;
+        color: #374151;
+        border: 1px solid #d1d5db;
+      }
+
+      .btn-secondary:hover {
+        background: #ef4444;
+        color: white;
+        border-color: #dc2626;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3);
+      }
+
+      .text-danger {
+        font-size: 13px;
+        margin-top: 6px;
+        color: #e53e3e;
+        font-weight: 500;
+      }
+
+      .form-text {
+        font-size: 13px;
+        color: #718096;
+        margin-top: 4px;
+      }
+
+      /* Responsive design */
+      @media (max-width: 1024px) {
+        .form-grid {
+          grid-template-columns: 1fr;
+          gap: 24px;
+        }
+
+        .profile-container {
+          width: 98% !important;
+          margin: 5px auto !important;
+        }
+
+        .profile-card {
+          padding: 24px;
+        }
+
+        .profile-title {
+          font-size: 2rem;
+        }
+
+        .logo-section-full .logo-upload-container {
+          flex-direction: column;
+          gap: 20px;
+          min-height: auto;
+        }
+
+        .logo-section-full .file-input-container {
+          max-width: 100%;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .info-section {
+          padding: 20px;
+        }
+
+        .section-title {
+          font-size: 1.2rem;
+        }
+
+        .form-actions {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .btn-lg {
+          width: 100%;
+          max-width: 300px;
+        }
+
+        .logo-section-full .logo-upload-container {
+          padding: 16px;
+        }
+
+        .file-input-help {
+          padding: 20px 16px;
+        }
+
+        .file-input-help i {
+          font-size: 32px;
+        }
+      }
+
+      /* Loading animation for form submission */
+      .btn-primary.loading {
+        pointer-events: none;
+        opacity: 0.8;
+      }
+
+      .btn-primary.loading::after {
+        content: "";
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        margin: auto;
+        border: 2px solid transparent;
+        border-top-color: white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </body>
+</html>

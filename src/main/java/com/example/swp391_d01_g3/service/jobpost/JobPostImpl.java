@@ -17,4 +17,5 @@ public class JobPostImpl implements IJobpostService {
     public List<JobPost> findAll() {
         return iJobPostRepository.findAll();
     }
+
 }
