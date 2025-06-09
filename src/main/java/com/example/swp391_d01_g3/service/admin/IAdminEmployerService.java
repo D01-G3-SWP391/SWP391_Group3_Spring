@@ -15,4 +15,8 @@ public interface IAdminEmployerService {
 
     // Unban nhà tuyển dụng (thay đổi trạng thái thành ACTIVE)
     void unbanEmployer(Integer userId);
+
+    Account getEmployerById(Integer userId);
+
+    Employer getEmployerDetailsById(Integer userId);
 }

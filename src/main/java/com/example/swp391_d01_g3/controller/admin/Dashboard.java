@@ -1,6 +1,8 @@
 package com.example.swp391_d01_g3.controller.admin;
 
 import com.example.swp391_d01_g3.model.Account;
+import com.example.swp391_d01_g3.model.Employer;
+import com.example.swp391_d01_g3.model.Student;
 import com.example.swp391_d01_g3.service.admin.IAdminEmployerService;
 import com.example.swp391_d01_g3.service.admin.IAdminStudentService;
 import org.slf4j.Logger;
@@ -112,4 +114,50 @@ public class Dashboard {
             return "redirect:/Admin/ListEmployer";
         }
     }
+    @GetMapping("/employer/{id}")
+    public String viewEmployerDetails(@PathVariable("id") Integer userId, Model model) {
+        try {
+            logger.info("Viewing employer details for ID: {}", userId);
+
+            // SỬA: Sử dụng getEmployerDetailsById() để lấy object Employer
+            Employer employer = adminEmployerService.getEmployerDetailsById(userId);
+            if (employer != null) {
+                model.addAttribute("employer", employer);
+                return "admin/viewEmployerDetails";
+            } else {
+                logger.error("Employer details not found for user ID: {}", userId);
+                model.addAttribute("error", "Employer details not found. This user may not have completed employer profile.");
+                return "redirect:/Admin/ListEmployer";
+            }
+        } catch (Exception e) {
+            logger.error("Error loading employer details for ID: {}", userId, e);
+            model.addAttribute("error", "Error loading employer details: " + e.getMessage());
+            return "redirect:/Admin/ListEmployer";
+        }
+    }
+
+
+    // View Student Details
+    @GetMapping("/student/{id}")
+    public String viewStudentDetails(@PathVariable("id") Integer userId, Model model) {
+        try {
+            logger.info("Viewing student details for ID: {}", userId);
+
+            // Lấy thông tin Student với relationship Account
+            Student student = adminStudentService.getStudentDetailsById(userId);
+            if (student != null) {
+                model.addAttribute("student", student);
+                return "admin/viewStudentDetails";
+            } else {
+                logger.error("Student details not found for user ID: {}", userId);
+                model.addAttribute("error", "Student details not found. This user may not have completed student profile.");
+                return "redirect:/Admin/ListStudent";
+            }
+        } catch (Exception e) {
+            logger.error("Error loading student details: ", e);
+            model.addAttribute("error", "Error loading student details: " + e.getMessage());
+            return "redirect:/Admin/ListStudent";
+        }
+    }
+
 }
