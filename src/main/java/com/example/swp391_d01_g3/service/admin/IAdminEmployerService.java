@@ -9,4 +9,10 @@ import java.util.List;
 
 public interface IAdminEmployerService {
     List<Account> getEmployers();
+
+    // Ban nhà tuyển dụng (thay đổi trạng thái thành INACTIVE)
+    void banEmployer(Integer userId);
+
+    // Unban nhà tuyển dụng (thay đổi trạng thái thành ACTIVE)
+    void unbanEmployer(Integer userId);
 }

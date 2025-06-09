@@ -10,9 +10,16 @@ import java.util.List;
 @Repository
 public interface IAdminRepository extends JpaRepository<Account, Integer> {
 
-    @Query("select student from Account student where student.role = student")
+    @Query("SELECT a FROM Account a WHERE a.role = 'student'")
     List<Account> getAllStudent();
 
-    @Query("select employer from Account employer where employer.role = employer")
+    @Query("SELECT a FROM Account a WHERE a.role = 'employer'")
     List<Account> getAllEmployer();
+
+    @Query("SELECT a FROM Account a WHERE a.status = 'active'")
+    List<Account> getAllActiveAccounts();
+
+    @Query("SELECT a FROM Account a WHERE a.status = 'inactive'")
+    List<Account> getAllInactiveAccounts();
 }
+
