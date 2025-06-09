@@ -28,7 +28,7 @@
         </div>
         <form class="login-form" method="post" th:action="@{/Login}">
             <div class="form-group">
-                <input type="text" id="email" name="email" placeholder="Email hoặc Số điện thoại" required>
+                <input type="text" id="email" name="email" placeholder="Email" required>
             </div>
             <div class="form-group">
                 <input type="password" id="password" name="password" placeholder="Mật khẩu" required>
@@ -42,7 +42,6 @@
                 <span>Hoặc đăng nhập bằng</span>
             </div>
             <div class="social-login-buttons">
-                <button type="button" class="content-btn social-btn facebook-btn"><img src="/images/communication.png" alt="Facebook icon">Facebook</button>
                 <button type="button" class="content-btn social-btn google-btn">
                     <a href="/oauth2/authorization/google" style="text-decoration: none; color: inherit;">
                         <img src="/images/google.png" alt="Google icon">Google

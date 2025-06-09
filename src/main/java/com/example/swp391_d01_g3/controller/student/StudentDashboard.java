@@ -53,8 +53,10 @@ public class StudentDashboard {
             model.addAttribute("account", studentAccount);
             if (studentAccount != null) {
                 Student studentDetails = studentService.findByAccountUserId(studentAccount.getUserId());
+                System.out.println(studentDetails.getStudentId());
                 model.addAttribute("studentDetails", studentDetails);
             }
+
             System.out.println(email);
 
         }
