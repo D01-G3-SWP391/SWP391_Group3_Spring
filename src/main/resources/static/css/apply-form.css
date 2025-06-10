@@ -1,0 +1,53 @@
+/* === Form Apply Popup === */
+.apply-form-container {
+    display: none; /* Ẩn đi ban đầu */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    width: 80%;
+    max-width: 500px; /* Giữ chiều rộng nhỏ */
+    max-height: 500px; /* Giảm chiều cao tối đa */
+    z-index: 1000;
+    overflow-y: auto; /* Nếu nội dung vượt quá sẽ có thanh cuộn */
+    height: auto;
+}
+
+/* === Form Input Styles === */
+.form-group {
+    margin-bottom: 10px; /* Giảm khoảng cách giữa các trường */
+}
+
+.form-group label {
+    font-size: 0.9rem;
+    color: #333;
+    margin-bottom: 4px; /* Giảm khoảng cách giữa label và input */
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 8px; /* Giảm padding cho các trường nhập liệu */
+    font-size: 0.9rem; /* Giảm kích thước chữ */
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background-color: #f7f7f7;
+    height: 36px; /* Giảm chiều cao các input */
+}
+
+.form-group textarea {
+    height: 80px; /* Giảm chiều cao của textarea */
+    resize: none; /* Không cho phép thay đổi kích thước */
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+    .apply-form-container {
+        width: 90%;
+        padding: 12px;
+    }
+}

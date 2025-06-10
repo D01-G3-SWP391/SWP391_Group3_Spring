@@ -1,98 +1,202 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Job4You - Trang Tìm Việc Số 1 Việt Nam</title>
     <!-- Bootstrap CSS -->
     <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
     />
-    <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
-    <link rel="stylesheet" th:href="@{/css/navbar.css}" />
-    <link rel="stylesheet" th:href="@{/css/index.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/index.css}"/>
     <link
-      rel="stylesheet"
-      th:href="@{/css/owlcarousel/assets/owl.carousel.min.css}"
+            rel="stylesheet"
+            th:href="@{/css/owlcarousel/assets/owl.carousel.min.css}"
     />
-    <link rel="stylesheet" th:href="@{/css/animate/animate.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/animate/animate.min.css}"/>
     <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
-  </head>
-  <body>
-    <!-- Navbar -->
-    <div th:replace="~{navbar/navbarHome}"></div>
-    <!--Carousel-->
-    <div class="container-fluid p-0">
-      <div class="owl-carousel header-carousel position-relative">
+</head>
+<body>
+<!-- Navbar -->
+<div th:replace="~{navbar/navbarHome}"></div>
+<!--Carousel-->
+<div class="container-fluid p-0">
+    <div class="owl-carousel header-carousel position-relative">
         <div class="owl-carousel-item position-relative">
-          <img class="img-fluid" th:src="@{/images/carousel-1.jpg}" alt="" />
-          <div
-            class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center"
-            style="background: rgba(43, 57, 64, 0.5)"
-          >
-            <div class="container">
-              <div class="row justify-content-start">
-                <div class="col-10 col-lg-8">
-                  <h1 class="display-3 text-white animated slideInDown mb-4">
-                    Find The Perfect Job That You Deserved
-                  </h1>
+            <img class="img-fluid" th:src="@{/images/carousel-1.jpg}" alt=""/>
+            <div
+                    class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center"
+                    style="background: rgba(43, 57, 64, 0.5)"
+            >
+                <div class="container">
+                    <div class="row justify-content-start">
+                        <div class="col-10 col-lg-8">
+                            <h1 class="display-3 text-white animated slideInDown mb-4">
+                                Find The Perfect Job That You Deserved
+                            </h1>
+                            <p class="fs-5 fw-medium text-white mb-4 pb-2">
+                                Vero elitr justo clita lorem. Ipsum dolor at sed stet sit
+                                diam no. Kasd rebum ipsum et diam justo clita et kasd rebum
+                                sea elitr.
+                            </p>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
         <div class="owl-carousel-item position-relative">
-          <img class="img-fluid" th:src="@{/images/carousel-2.jpg}" alt="" />
-          <div
-            class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center"
-            style="background: rgba(43, 57, 64, 0.5)"
-          >
-            <div class="container">
-              <div class="row justify-content-start">
-                <div class="col-10 col-lg-8">
-                  <h1 class="display-3 text-white animated slideInDown mb-4">
-                    Find The Best Startup Job That Fit You
-                  </h1>
-                  <p class="fs-5 fw-medium text-white mb-4 pb-2">
-                  </p>
+            <img class="img-fluid" th:src="@{/images/carousel-2.jpg}" alt=""/>
+            <div
+                    class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center"
+                    style="background: rgba(43, 57, 64, 0.5)"
+            >
+                <div class="container">
+                    <div class="row justify-content-start">
+                        <div class="col-10 col-lg-8">
+                            <h1 class="display-3 text-white animated slideInDown mb-4">
+                                Find The Best Startup Job That Fit You
+                            </h1>
+                            <p class="fs-5 fw-medium text-white mb-4 pb-2">
+                                Vero elitr justo clita lorem. Ipsum dolor at sed stet sit
+                                diam no. Kasd rebum ipsum et diam justo clita et kasd rebum
+                                sea elitr.
+                            </p>
+                            <a
+                                    href=""
+                                    class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft"
+                            >Search A Job</a
+                            >
+                            <a
+                                    href=""
+                                    class="btn btn-secondary py-md-3 px-md-5 animated slideInRight"
+                            >Find A Talent</a
+                            >
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
+</div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-      <!-- Hero Section -->
+<!-- Main Content -->
+
+<!--Search Job-->
+<div class="main-content">
+          <!-- Hero Section -->
       <section class="hero-section">
         <div class="hero-content">
           <h1>Tìm việc làm mơ ước của bạn</h1>
           <p>
-            Kết nối với hàng nghìn cơ hội việc làm tuyệt vời từ các nhà tuyển
-            dụng hàng đầu
+            Kết nối với hàng nghìn cơ hội việc làm tuyệt vời từ các nhà tuyển dụng hàng đầu
           </p>
-          <div class="search-container">
-            <div class="search-box">
-              <input
-                type="text"
-                placeholder="Nhập tên công việc, kỹ năng..."
-                class="search-input"
-              />
-              <button class="search-btn">
-                <i class="fas fa-search"></i>
+          
+          <!-- Advanced Search Container -->
+          <div class="advanced-search-container">
+            <!-- Search Tabs -->
+            <div class="search-tabs">
+              <button type="button" class="search-tab active" onclick="switchTab('job')" id="jobTab">
+                Find a Job
               </button>
+              <button type="button" class="search-tab" onclick="switchTab('candidate')" id="candidateTab">
+                Find a Candidate
+              </button>
+            </div>
+            
+            <!-- Search Forms -->
+            <div class="search-forms">
+              <!-- Find a Job Form -->
+              <form th:action="@{/search}" method="post" class="search-form active" id="jobForm">
+                <div class="search-fields">
+                  <div class="search-field">
+                    <i class="fas fa-search field-icon"></i>
+                    <input 
+                      type="text" 
+                      name="keyword" 
+                      placeholder="eg. Graphic, Web Developer..." 
+                      class="search-input"
+                    />
+                  </div>
+                  
+                  <div class="search-field">
+                    <i class="fas fa-list field-icon"></i>
+                    <select name="fieldId" class="search-select">
+                      <option value="">Category</option>
+                      <option th:each="field : ${jobField}"
+                              th:value="${field.jobFieldId}"
+                              th:text="${field.jobFieldName}">
+                      </option>
+                    </select>
+                  </div>
+                  
+                  <div class="search-field">
+                    <i class="fas fa-map-marker-alt field-icon"></i>
+                    <input 
+                      type="text" 
+                      name="location" 
+                      placeholder="Location" 
+                      class="search-input"
+                    />
+                  </div>
+                  
+                  <button type="submit" class="search-button">
+                    Search
+                  </button>
+                </div>
+              </form>
+              
+              <!-- Find a Candidate Form -->
+              <form th:action="@{/search}" method="post" class="search-form" id="candidateForm">
+                <div class="search-fields">
+                  <div class="search-field">
+                    <i class="fas fa-dollar-sign field-icon"></i>
+                    <input 
+                      type="number" 
+                      name="salary" 
+                      placeholder="Minimum Salary..." 
+                      class="search-input"
+                    />
+                  </div>
+                  
+                  <div class="search-field">
+                    <i class="fas fa-briefcase field-icon"></i>
+                    <select name="jobType" class="search-select">
+                      <option value="">Job Type</option>
+                      <option value="FULL_TIME">Full Time</option>
+                      <option value="PART_TIME">Part Time</option>
+                    </select>
+                  </div>
+                  
+                  <div class="search-field">
+                    <i class="fas fa-building field-icon"></i>
+                    <input 
+                      type="text" 
+                      name="companyName" 
+                      placeholder="Company Name..." 
+                      class="search-input"
+                    />
+                  </div>
+                  
+                  <button type="submit" class="search-button">
+                    Search
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Featured Jobs Section -->
+
+
+
+          <!-- Featured Jobs Section -->
       <section class="featured-jobs">
         <div class="section-header">
           <h2>Việc làm nổi bật</h2>
@@ -112,66 +216,70 @@
 
         <!-- Job Listings -->
         <div class="jobs-container">
-          <div th:each="job : ${jobPosts}" class="job-card">
-            <div class="job-card-header">
-              <div class="company-logo">
-                <img
-                  th:src="${job.employer.logoUrl}"
-                  th:alt="${job.employer.companyName}"
-                  onerror="this.style.display='none'; this.parentElement.classList.add('default-logo'); this.parentElement.innerHTML='<span>' + this.alt.charAt(0).toUpperCase() + '</span>';"
-                />
-              </div>
-              <div class="job-info">
-                <h3 class="job-title" th:text="${job.jobTitle}">
-                  Tiêu đề công việc
-                </h3>
-                <p class="company-name" th:text="${job.employer.companyName}">
-                  Tên công ty
-                </p>
-              </div>
-              <div class="job-type">
+            <p th:text="${error}"></p>
+            <p th:text="${success}"></p>
+            <div th:each="job : ${jobPostsPage}" class="job-card">
+                <div class="job-card-header">
+                    <div class="company-logo">
+                        <img
+                                th:src="${job.employer.logoUrl}"
+                                th:alt="${job.employer.companyName}"
+                                onerror="this.style.display='none'; this.parentElement.classList.add('default-logo'); this.parentElement.innerHTML='<span>' + this.alt.charAt(0).toUpperCase() + '</span>';"
+                        />
+                    </div>
+                    <div class="job-info">
+                        <h3 class="job-title" th:text="${job.jobTitle}">
+                            Tiêu đề công việc
+                        </h3>
+                        <p class="company-name" th:text="${job.employer.companyName}">
+                            Tên công ty
+                        </p>
+                    </div>
+                    <div class="job-type">
                 <span
-                  class="job-type-badge"
-                  th:classappend="${job.jobType?.name() == 'FULL_TIME' ? 'full-time' : 'part-time'}"
-                  th:text="${job.jobType?.name() == 'FULL_TIME' ? 'Toàn thời gian' : 'Bán thời gian'}"
+                        class="job-type-badge"
+                        th:classappend="${job.jobType?.name() == 'FULL_TIME' ? 'full-time' : 'part-time'}"
+                        th:text="${job.jobType?.name() == 'FULL_TIME' ? 'Toàn thời gian' : 'Bán thời gian'}"
                 >
                   Loại việc làm
                 </span>
-              </div>
-            </div>
+                    </div>
+                </div>
 
-            <div class="job-card-body">
-              <div class="job-details">
-                <div class="job-detail-item">
-                  <i class="fas fa-map-marker-alt"></i>
-                  <span th:text="${job.jobLocation}">Địa điểm</span>
+                <div class="job-card-body">
+                    <div class="job-details">
+                        <div class="job-detail-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span th:text="${job.jobLocation}">Địa điểm</span>
+                        </div>
+                        <div class="job-detail-item">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span th:text="${job.jobSalary}">Mức lương</span>
+                        </div>
+                        <div class="job-detail-item">
+                            <i class="fas fa-clock"></i>
+                            <span
+                                    th:text="${#temporals.format(job.createdAt, 'dd/MM/yyyy')}"
+                            >Ngày đăng</span
+                            >
+                        </div>
+                    </div>
                 </div>
-                <div class="job-detail-item">
-                  <i class="fas fa-money-bill-wave"></i>
-                  <span th:text="${job.jobSalary}">Mức lương</span>
-                </div>
-                <div class="job-detail-item">
-                  <i class="fas fa-clock"></i>
-                  <span
-                    th:text="${#temporals.format(job.createdAt, 'dd/MM/yyyy')}"
-                    >Ngày đăng</span
-                  >
-                </div>
-              </div>
-            </div>
 
-            <div class="job-card-footer">
-              <a th:href="@{/Login}">
-              <button class="apply-btn">
-                <i class="fas fa-paper-plane"></i>
-                  Xem chi tiết
-              </button>
-              </a>
-              <button class="save-btn">
-                <i class="far fa-heart"></i>
-              </button>
+                <!--  Xem chi tiết của nghề-->
+                <div class="job-card-footer">
+                    <form method="get" th:action="@{/JobDescription/JobPost}">
+                        <input type="hidden" name="id" th:value="${job.jobPostId}">
+                        <button class="apply-btn">
+                            <i class="fas fa-paper-plane"></i>
+                            Xem chi tiết
+                        </button>
+                    </form>
+                    <button class="save-btn">
+                        <i class="far fa-heart"></i>
+                    </button>
+                </div>
             </div>
-          </div>
         </div>
 
         <!-- Pagination -->
@@ -180,7 +288,7 @@
             <ul class="pagination justify-content-center">
               <!-- Previous Page -->
               <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{/(page=${currentPage - 1}, size=${size})}" 
+                <a class="page-link" th:href="@{/(page=${currentPage - 1}, size=${size})}"
                    th:if="${currentPage > 0}">
                   <i class="fas fa-chevron-left"></i> Trước
                 </a>
@@ -190,18 +298,18 @@
               </li>
 
               <!-- Page Numbers -->
-              <li class="page-item" 
+              <li class="page-item"
                   th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
                   th:if="${pageNum >= currentPage - 2 && pageNum <= currentPage + 2}"
                   th:classappend="${pageNum == currentPage} ? 'active'">
-                <a class="page-link" th:href="@{/(page=${pageNum}, size=${size})}" 
+                <a class="page-link" th:href="@{/(page=${pageNum}, size=${size})}"
                    th:text="${pageNum + 1}" th:if="${pageNum != currentPage}">1</a>
                 <span class="page-link" th:if="${pageNum == currentPage}" th:text="${pageNum + 1}">1</span>
               </li>
 
               <!-- Next Page -->
               <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
-                <a class="page-link" th:href="@{/(page=${currentPage + 1}, size=${size})}" 
+                <a class="page-link" th:href="@{/(page=${currentPage + 1}, size=${size})}"
                    th:if="${currentPage < totalPages - 1}">
                   Sau <i class="fas fa-chevron-right"></i>
                 </a>
@@ -211,138 +319,138 @@
               </li>
             </ul>
           </nav>
-          
+
           <!-- Page Info -->
           <div class="page-info text-center mt-3">
             <p class="text-muted">
-              Hiển thị <span th:text="${currentPage * size + 1}">1</span> - 
-              <span th:text="${(currentPage * size + size) > totalElements ? totalElements : (currentPage * size + size)}">8</span> 
+              Hiển thị <span th:text="${currentPage * size + 1}">1</span> -
+              <span th:text="${(currentPage * size + size) > totalElements ? totalElements : (currentPage * size + size)}">8</span>
               trong tổng số <span th:text="${totalElements}">0</span> việc làm
             </p>
           </div>
         </div>
-      </section>
+    </section>
 
-      <!-- Why Choose Us Section -->
-      <section class="why-choose-us">
+    <!-- Why Choose Us Section -->
+    <section class="why-choose-us">
         <div class="section-header">
-          <h2>Tại sao chọn Job4You?</h2>
+            <h2>Tại sao chọn Job4You?</h2>
         </div>
         <div class="features-grid">
-          <div class="feature-card">
-            <div class="feature-icon">
-              <i class="fas fa-briefcase"></i>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <h3>Hàng nghìn việc làm</h3>
+                <p>Cơ hội việc làm đa dạng từ các công ty hàng đầu</p>
             </div>
-            <h3>Hàng nghìn việc làm</h3>
-            <p>Cơ hội việc làm đa dạng từ các công ty hàng đầu</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">
-              <i class="fas fa-users"></i>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>Nhà tuyển dụng uy tín</h3>
+                <p>Kết nối với các công ty được xác minh và đáng tin cậy</p>
             </div>
-            <h3>Nhà tuyển dụng uy tín</h3>
-            <p>Kết nối với các công ty được xác minh và đáng tin cậy</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">
-              <i class="fas fa-chart-line"></i>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Phát triển sự nghiệp</h3>
+                <p>Công cụ và tài nguyên hỗ trợ phát triển nghề nghiệp</p>
             </div>
-            <h3>Phát triển sự nghiệp</h3>
-            <p>Công cụ và tài nguyên hỗ trợ phát triển nghề nghiệp</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-icon">
-              <i class="fas fa-shield-alt"></i>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>An toàn & bảo mật</h3>
+                <p>Thông tin cá nhân được bảo vệ tuyệt đối</p>
             </div>
-            <h3>An toàn & bảo mật</h3>
-            <p>Thông tin cá nhân được bảo vệ tuyệt đối</p>
-          </div>
         </div>
-      </section>
+    </section>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h3>Job4You</h3>
+            <p>Nền tảng tìm việc làm hàng đầu Việt Nam</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+        <div class="footer-section">
+            <h4>Dành cho ứng viên</h4>
+            <ul>
+                <li><a href="#">Tìm việc làm</a></li>
+                <li><a href="#">Tạo CV</a></li>
+                <li><a href="#">Hướng dẫn nghề nghiệp</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Dành cho nhà tuyển dụng</h4>
+            <ul>
+                <li><a href="#">Đăng tin tuyển dụng</a></li>
+                <li><a href="#">Tìm ứng viên</a></li>
+                <li><a href="#">Gói dịch vụ</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Hỗ trợ</h4>
+            <ul>
+                <li><a href="#">Liên hệ</a></li>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">Chính sách bảo mật</a></li>
+            </ul>
+        </div>
     </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="footer-content">
-        <div class="footer-section">
-          <h3>Job4You</h3>
-          <p>Nền tảng tìm việc làm hàng đầu Việt Nam</p>
-          <div class="social-links">
-            <a href="#"><i class="fab fa-facebook"></i></a>
-            <a href="#"><i class="fab fa-linkedin"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-          </div>
-        </div>
-        <div class="footer-section">
-          <h4>Dành cho ứng viên</h4>
-          <ul>
-            <li><a href="#">Tìm việc làm</a></li>
-            <li><a href="#">Tạo CV</a></li>
-            <li><a href="#">Hướng dẫn nghề nghiệp</a></li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h4>Dành cho nhà tuyển dụng</h4>
-          <ul>
-            <li><a href="#">Đăng tin tuyển dụng</a></li>
-            <li><a href="#">Tìm ứng viên</a></li>
-            <li><a href="#">Gói dịch vụ</a></li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h4>Hỗ trợ</h4>
-          <ul>
-            <li><a href="#">Liên hệ</a></li>
-            <li><a href="#">FAQ</a></li>
-            <li><a href="#">Chính sách bảo mật</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
+    <div class="footer-bottom">
         <p>&copy; 2025 Job4You. All rights reserved.</p>
-      </div>
-    </footer>
+    </div>
+</footer>
 
-    <!-- jQuery phải load trước -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script th:src="@{/css/wow/wow.min.js}"></script>
-    <script th:src="@{/css/owlcarousel/owl.carousel.min.js}"></script>
-    <!-- Template Javascript -->
-    <script th:src="@{/js/main.js}"></script>
+<!-- jQuery phải load trước -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/css/wow/wow.min.js}"></script>
+<script th:src="@{/css/owlcarousel/owl.carousel.min.js}"></script>
+<!-- Template Javascript -->
+<script th:src="@{/js/main.js}"></script>
 
-    <!-- Debug script -->
-    <script>
-      $(document).ready(function () {
+<!-- Debug script -->
+<script>
+    $(document).ready(function () {
         console.log("jQuery loaded:", typeof $ !== "undefined");
         console.log(
-          "Owl Carousel loaded:",
-          typeof $.fn.owlCarousel !== "undefined"
+            "Owl Carousel loaded:",
+            typeof $.fn.owlCarousel !== "undefined"
         );
         console.log(
-          "Header carousel element found:",
-          $(".header-carousel").length
+            "Header carousel element found:",
+            $(".header-carousel").length
         );
 
         // Force initialize carousel if not working
         if (typeof $.fn.owlCarousel !== "undefined") {
-          setTimeout(function () {
-            if (!$(".header-carousel").hasClass("owl-loaded")) {
-              console.log("Force initializing carousel...");
-              $(".header-carousel").owlCarousel({
-                autoplay: true,
-                smartSpeed: 1500,
-                items: 1,
-                dots: true,
-                loop: true,
-                nav: true,
-                navText: [
-                  '<i class="bi bi-chevron-left"></i>',
-                  '<i class="bi bi-chevron-right"></i>',
-                ],
-              });
-            }
-          }, 1000);
+            setTimeout(function () {
+                if (!$(".header-carousel").hasClass("owl-loaded")) {
+                    console.log("Force initializing carousel...");
+                    $(".header-carousel").owlCarousel({
+                        autoplay: true,
+                        smartSpeed: 1500,
+                        items: 1,
+                        dots: true,
+                        loop: true,
+                        nav: true,
+                        navText: [
+                            '<i class="bi bi-chevron-left"></i>',
+                            '<i class="bi bi-chevron-right"></i>',
+                        ],
+                    });
+                }
+            }, 1000);
         }
       });
 
@@ -352,6 +460,26 @@
         urlParams.set('size', newSize);
         urlParams.set('page', '0'); // Reset to first page when changing size
         window.location.search = urlParams.toString();
+      }
+
+      // Function to switch between search tabs
+      function switchTab(tabType) {
+        // Remove active class from all tabs and forms
+        document.querySelectorAll('.search-tab').forEach(tab => {
+          tab.classList.remove('active');
+        });
+        document.querySelectorAll('.search-form').forEach(form => {
+          form.classList.remove('active');
+        });
+
+        // Add active class to selected tab and form
+        if (tabType === 'job') {
+          document.getElementById('jobTab').classList.add('active');
+          document.getElementById('jobForm').classList.add('active');
+        } else if (tabType === 'candidate') {
+          document.getElementById('candidateTab').classList.add('active');
+          document.getElementById('candidateForm').classList.add('active');
+        }
       }
     </script>
   </body>
