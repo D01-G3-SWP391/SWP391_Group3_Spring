@@ -36,7 +36,7 @@ public class AddJobApplication {
 
     @GetMapping("/JobDescription/Apply")
     public String showApplyForm(@RequestParam("id") Long jobPostId, Model model) {
-        Optional<JobPost> jobPost = iJobpostService.findById(jobPostId);
+        Optional<JobPost> jobPost = iJobpostService.findByIdJobPost(jobPostId);
         if (jobPost.isEmpty()) {
             return "redirect:/";
         }
@@ -71,7 +71,7 @@ public class AddJobApplication {
 
         // Truy xuất student và jobPost từ cơ sở dữ liệu
         Optional<Student> student = studentService.findById(jobApplicationDTO.getStudentId());
-        Optional<JobPost> jobPost = iJobpostService.findById(jobApplicationDTO.getJobPostId());
+        Optional<JobPost> jobPost = iJobpostService.findByIdJobPost(jobApplicationDTO.getJobPostId());
 
         System.out.println(student);
         System.out.println(jobPost);

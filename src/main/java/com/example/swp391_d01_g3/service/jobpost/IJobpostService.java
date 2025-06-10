@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface IJobpostService  {
     List<JobPost> findAll();
-    Optional<JobPost> findById(Long id);
+    Optional<JobPost> findByIdJobPost(Long id);
     List<JobPost> findAllWithEmployer(Long id);
 
     // Hàm search với đầy đủ các tiêu chí
