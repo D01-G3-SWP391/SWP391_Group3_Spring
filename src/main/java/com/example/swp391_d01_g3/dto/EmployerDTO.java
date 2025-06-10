@@ -3,6 +3,8 @@ package com.example.swp391_d01_g3.dto;
 import jakarta.validation.constraints.*;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+import com.example.swp391_d01_g3.model.Account;
+import com.example.swp391_d01_g3.model.Employer;
 
 public class EmployerDTO implements Validator {
 
@@ -62,6 +64,23 @@ public class EmployerDTO implements Validator {
 //        this.companyDescription = companyDescription;
         this.logoUrl = logoUrl;
         this.jobsFieldId = jobsFieldId; 
+    }
+
+    // Constructor for edit profile - tạo từ Account và Employer
+    public EmployerDTO(Account account, Employer employer) {
+        if (account != null) {
+            this.fullName = account.getFullName();
+            this.email = account.getEmail();
+            this.phone = account.getPhone();
+        }
+        if (employer != null) {
+            this.companyName = employer.getCompanyName();
+            this.companyAddress = employer.getCompanyAddress();
+            this.logoUrl = employer.getLogoUrl();
+            if (employer.getJobField() != null) {
+                this.jobsFieldId = employer.getJobField().getJobFieldId();
+            }
+        }
     }
 
     // Getters and Setters

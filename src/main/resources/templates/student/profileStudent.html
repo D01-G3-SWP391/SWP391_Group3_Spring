@@ -28,11 +28,11 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label" th:text="#{profile.address} + ': '">Address: </label>
-                    <span th:text="${studentDetails != null ? studentDetails.address : #{profile.notUpdated}}" class="form-value"></span>
+                    <span th:text="${studentDetails != null and studentDetails.address != null and studentDetails.address != ''} ? ${studentDetails.address} : #{profile.notUpdated}" class="form-value"></span>
                 </div>
                 <div class="form-group">
                     <label class="form-label" th:text="#{profile.university} + ': '">University: </label>
-                    <span th:text="${studentDetails != null ? studentDetails.university : #{profile.notUpdated}}" class="form-value"></span>
+                    <span th:text="${studentDetails != null and studentDetails.university != null and studentDetails.university != ''} ? ${studentDetails.university} : #{profile.notUpdated}" class="form-value"></span>
                 </div>
                 <div class="form-group">
                     <label class="form-label" th:text="#{profile.desiredWorkAddress} + ': '">Desired work address: </label>
@@ -48,13 +48,13 @@
     <!-- Giới thiệu bản thân Section -->
     <div class="section intro-section">
         <h3 class="section-title" th:text="#{profile.introduction} + ': '">Introduce: </h3>
-        <p th:text="${studentDetails != null ? studentDetails.profileDescription : #{profile.noIntroduction}}" class="section-content">.</p>
+        <p th:text="${studentDetails != null and studentDetails.profileDescription != null and studentDetails.profileDescription != ''} ? ${studentDetails.profileDescription} : #{profile.noIntroduction}" class="section-content">.</p>
     </div>
 
     <!-- Kinh nghiệm Section -->
     <div class="section experience-section">
         <h3 class="section-title" th:text="#{profile.experience}">Experience</h3>
-        <p th:text="${studentDetails != null ? studentDetails.experience : #{profile.noExperience}}" class="section-content">.</p>
+        <p th:text="${studentDetails != null and studentDetails.experience != null and studentDetails.experience != ''} ? ${studentDetails.experience} : #{profile.noExperience}" class="section-content">.</p>
     </div>
     <p th:text="${successMessage}"></p>
     <p th:text="${errorMessage}"></p>

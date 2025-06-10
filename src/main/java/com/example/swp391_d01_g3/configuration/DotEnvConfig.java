@@ -9,7 +9,7 @@ public class DotEnvConfig {
     static {
         // Load .env file before Spring starts
         Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
-        
+
         if (dotenv != null) {
             dotenv.entries().forEach(entry -> {
                 System.setProperty(entry.getKey(), entry.getValue());

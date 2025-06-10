@@ -20,9 +20,9 @@
     </div>
     <ul class="admin-nav-links">
         <li>
-            <a href="#" class="active">
+            <a th:href="@{/Notification}" class="active">
                 <i class="bi bi-house-door"></i>
-                <span>Dashboard</span>
+                <span>Notification</span>
             </a>
         </li>
         <li>
@@ -42,19 +42,6 @@
                 <i class="bi bi-gear"></i>
                 <span>Change Password</span>
             </a>
-        </li>
-        <li class="language-nav-item">
-            <div class="language-switcher-container">
-                <button class="language-switcher sidebar-lang-btn" th:text="#{app.language}">LANGUAGE</button>
-                <div class="language-dropdown">
-                    <a href="?lang=en" class="language-option" th:classappend="${#locale.language == 'en'} ? 'active'">
-                        <span class="flag">🇺🇸</span> English
-                    </a>
-                    <a href="?lang=vi" class="language-option" th:classappend="${#locale.language == 'vi'} ? 'active'">
-                        <span class="flag">🇻🇳</span> Tiếng Việt
-                    </a>
-                </div>
-            </div>
         </li>
         <li>
             <a th:href="@{/logout}">

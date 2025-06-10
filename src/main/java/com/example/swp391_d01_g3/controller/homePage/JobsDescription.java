@@ -42,7 +42,7 @@ public class JobsDescription {
 
     @GetMapping("/JobPost")
     public String showDescription(@RequestParam("id") Long id, Model model, Principal principal) {
-        List<JobPost> jobPosts = iJobpostService.findAllWithEmployer(id);
+        List<JobPost> jobPosts = iJobpostService.findAllWithEmployer(id.intValue());
         model.addAttribute("jobPosts", jobPosts);
         model.addAttribute("jobfields", iJobfieldService.findAll());
         System.out.println(jobPosts);
@@ -50,7 +50,7 @@ public class JobsDescription {
     }
     @GetMapping("/Apply")
     public String showApply(@RequestParam("id") Long id, Model model, Principal principal) {
-        List<JobPost> jobPosts = iJobpostService.findAllWithEmployer(id);
+        List<JobPost> jobPosts = iJobpostService.findAllWithEmployer(id.intValue());
         model.addAttribute("jobPosts", jobPosts);
         JobApplicationDTO jobApplicationDTO = new JobApplicationDTO();
         model.addAttribute("jobApplicationDTO",jobApplicationDTO);
