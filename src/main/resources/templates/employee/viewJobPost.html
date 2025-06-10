@@ -7,56 +7,9 @@
     <link rel="stylesheet" th:href="@{/css/navbarViewJobPost.css}" />
 </head>
 <body>
+<div th:replace="~{navbar/navbarEmployee :: navbarAdmin}"></div>
 <!-- Keep existing navbar exactly as is -->
-<nav class="admin-vertical-navbar" id="adminNavbar" th:fragment="navbarAdmin">
-    <div class="admin-logo-area">
-        <a th:href="@{/}" class="admin-text-logo-link">
-            <span class="admin-text-logo">JOB4YOU</span>
-        </a>
-        <button class="toggle-btn" id="toggleBtn">
-            <i class="bi bi-list"></i>
-        </button>
-    </div>
-    <ul class="admin-nav-links">
-        <li>
-            <a href="#" class="active">
-                <i class="bi bi-house-door"></i>
-                <span>Dashboard</span>
-            </a>
-        </li>
-        <li>
-            <a th:href="@{/Employer/Profile}">
-                <i class="bi bi-people"></i>
-                <span>Profile Employer</span>
-            </a>
-        </li>
-        <li>
-            <a th:href="@{/Employer/CreateJobPost}">
-                <i class="bi bi-briefcase"></i>
-                <span>Jobs</span>
-            </a>
-        </li>
-        <li>
-<!--            <a th:href="@{/Employer/JobPosts(email=${employerEmail})}">-->
-            <a th:href="@{/Employer/JobPosts}">
-                <i class="bi bi-briefcase"></i>
-                <span>Danh sách tuyển dụng</span>
-            </a>
-        </li>
-        <li>
-            <a href="#">
-                <i class="bi bi-gear"></i>
-                <span>Settings</span>
-            </a>
-        </li>
-        <li>
-            <a th:href="@{/logout}">
-                <i class="bi bi-box-arrow-right"></i>
-                <span>Logout</span>
-            </a>
-        </li>
-    </ul>
-</nav>
+
 
 <!-- Main content area -->
 <div class="main-content">

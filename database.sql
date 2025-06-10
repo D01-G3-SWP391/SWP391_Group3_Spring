@@ -123,8 +123,3 @@ INSERT INTO Job_application (student_id, job_post_id, full_name, email, phone, d
 (5, 11, 'Hoang Van Dung', 'hoangvandung@gmail.com', '0949567890', 'I am a final-year IT student, passionate about game programming, and want to intern at VNG.', 'https://drive.google.com/file/d/1LAQOw5iJ29jCToyUyDp83Rh8TOcXEyqQ/view?usp=sharing', 'SUBMITTED');
 
 
-DELETE FROM Job_application;
-
-SHOW CREATE TABLE Job_post;
-
-ALTER TABLE student MODIFY COLUMN job_field_id INT NULL;

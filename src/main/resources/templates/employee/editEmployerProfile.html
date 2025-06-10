@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Profile - Employer</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <link rel="stylesheet" th:href="@{/css/navbarStudent_Employer.css}"/>
+  <link rel="stylesheet" th:href="@{/css/profileEmployer.css}"/>
+  <link rel="stylesheet" th:href="@{/css/registerEnhanced.css}"/>
+  <link rel="stylesheet" th:href="@{/css/editEmployerProfile.css}"/>
+</head>
+<body>
+  <div th:replace="~{navbar/navbarEmployee :: navbarAdmin}"></div>
+  
+  <div class="main-content">
+    <div class="profile-container">
+      <!-- Error Alert -->
+      <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        <span th:text="${error}">Error message</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <h2 class="page-title">
+          <i class="bi bi-pencil-square me-2"></i>Edit Information
+        </h2>
+        <p class="page-subtitle">Update your profile information</p>
+      </div>
+
+      <form class="edit-form" method="post" th:action="@{/Employer/EditProfile}" th:object="${employerProfileDTO}" enctype="multipart/form-data">
+        <!-- Two Column Layout: Left (Logo + Personal) | Right (Company) -->
+        <div class="main-form-grid">
+          <!-- Left Column: Logo + Personal Information -->
+          <div class="left-column">
+            <!-- Logo Upload Section -->
+            <div class="info-section logo-section">
+              <h3 class="section-title">
+                <i class="bi bi-image"></i> Company Logo
+              </h3>
+              <div class="logo-upload-container">
+                <!-- Current logo preview -->
+                <div class="current-logo" th:if="${employerProfileDTO.logoUrl != null and employerProfileDTO.logoUrl != ''}">
+                  <img th:src="${employerProfileDTO.logoUrl}" alt="Current Logo" class="logo-preview-current"/>
+                  <p class="text-muted">Current Logo</p>
+                </div>
+
+                <!-- File input -->
+                <div class="file-input-container">
+                  <input type="file" id="logoFile" name="logoFile" class="form-control" accept="image/*" onchange="previewLogo(this)"/>
+                  <div class="file-input-help">
+                    <i class="bi bi-cloud-upload"></i>
+                    <span>Choose image from computer (JPG, PNG, GIF)</span>
+                  </div>
+                </div>
+
+                <!-- New logo preview -->
+                <div class="new-logo-preview" id="newLogoPreview" style="display: none">
+                  <img id="logoPreviewImage" alt="Logo Preview" class="logo-preview-new"/>
+                  <p class="text-success">New logo will be updated</p>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" onclick="clearLogoPreview()">
+                    <i class="bi bi-x"></i> Remove
+                  </button>
+                </div>
+
+                <!-- Hidden field to keep current logo URL -->
+                <input type="hidden" name="logoUrl" th:field="*{logoUrl}"/>
+              </div>
+            </div>
+
+                    <!-- Personal Information Section -->
+                    <div class="info-section">
+                        <h3 class="section-title">
+                            <i class="bi bi-person"></i> Personal Information
+                        </h3>
+
+                        <div class="form-group">
+                            <label for="fullName" class="form-label">Full Name</label>
+                            <input
+                                    type="text"
+                                    id="fullName"
+                                    name="fullName"
+                                    class="form-control"
+                                    th:field="*{fullName}"
+                                    placeholder="Enter full name"
+                                    required
+                            />
+                            <div
+                                    th:if="${#fields.hasErrors('fullName')}"
+                                    class="text-danger"
+                                    th:errors="*{fullName}"
+                            ></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input
+                                    type="text"
+                                    id="phone"
+                                    name="phone"
+                                    class="form-control"
+                                    th:field="*{phone}"
+                                    placeholder="Enter phone number"
+                                    required
+                            />
+                            <div
+                                    th:if="${#fields.hasErrors('phone')}"
+                                    class="text-danger"
+                                    th:errors="*{phone}"
+                            ></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email</label>
+                            <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    class="form-control"
+                                    th:field="*{email}"
+                                    placeholder="Enter email"
+                                    readonly
+                            />
+                            <small class="form-text text-muted"
+                            >Email cannot be changed</small
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Company Information -->
+                <div class="right-column">
+                    <div class="info-section">
+                        <h3 class="section-title">
+                            <i class="bi bi-building"></i> Company Information
+                        </h3>
+
+                        <div class="form-group">
+                            <label for="companyName" class="form-label"
+                            >Company Name</label
+                            >
+                            <input
+                                    type="text"
+                                    id="companyName"
+                                    name="companyName"
+                                    class="form-control"
+                                    th:field="*{companyName}"
+                                    placeholder="Enter company name"
+                                    required
+                            />
+                            <div
+                                    th:if="${#fields.hasErrors('companyName')}"
+                                    class="text-danger"
+                                    th:errors="*{companyName}"
+                            ></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="jobsFieldId" class="form-label"
+                            >Industry Field</label
+                            >
+                            <select
+                                    id="jobsFieldId"
+                                    name="jobsFieldId"
+                                    class="form-control"
+                                    th:field="*{jobsFieldId}"
+                                    required
+                            >
+                                <option value="">-- Select Industry --</option>
+                                <option
+                                        th:each="field : ${jobFields}"
+                                        th:value="${field.jobFieldId}"
+                                        th:text="${field.jobFieldName}"
+                                ></option>
+                            </select>
+                            <div
+                                    th:if="${#fields.hasErrors('jobsFieldId')}"
+                                    class="text-danger"
+                                    th:errors="*{jobsFieldId}"
+                            ></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="companyAddress" class="form-label"
+                            >Company Address</label
+                            >
+                            <textarea
+                                    id="companyAddress"
+                                    name="companyAddress"
+                                    class="form-control"
+                                    rows="3"
+                                    th:field="*{companyAddress}"
+                                    placeholder="Enter company address"
+                                    required
+                            ></textarea>
+                            <div
+                                    th:if="${#fields.hasErrors('companyAddress')}"
+                                    class="text-danger"
+                                    th:errors="*{companyAddress}"
+                            ></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="companyDescription" class="form-label"
+                            >Company Description</label
+                            >
+                            <!-- Hidden input để lưu data cho Thymeleaf -->
+                            <input
+                                    type="hidden"
+                                    id="companyDescriptionHidden"
+                                    name="companyDescription"
+                                    th:field="*{companyDescription}"
+                            />
+                            <!-- CKEditor container -->
+                            <div id="companyDescriptionEditor"></div>
+                            <div
+                                    th:if="${#fields.hasErrors('companyDescription')}"
+                                    class="text-danger"
+                                    th:errors="*{companyDescription}"
+                            ></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="bi bi-check-circle me-2"></i>Update Information
+                </button>
+                <a th:href="@{/Employer/Profile}" class="btn btn-secondary btn-lg">
+                    <i class="bi bi-x-circle me-2"></i>Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- CKEditor 5 -->
+<script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
+
+<script>
+    function previewLogo(input) {
+        const file = input.files[0];
+        if (file) {
+            // Validate file type
+            const allowedTypes = [
+                "image/jpeg",
+                "image/jpg",
+                "image/png",
+                "image/gif",
+                "image/webp",
+            ];
+            if (!allowedTypes.includes(file.type)) {
+                alert("Please select an image file (JPG, PNG, GIF, WEBP)");
+                input.value = "";
+                return;
+            }
+
+            // Validate file size (5MB max)
+            if (file.size > 5 * 1024 * 1024) {
+                alert("File size must not exceed 5MB");
+                input.value = "";
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById("logoPreviewImage").src = e.target.result;
+                document.getElementById("newLogoPreview").style.display = "block";
+
+                // Add smooth animation
+                const preview = document.getElementById("newLogoPreview");
+                preview.style.opacity = "0";
+                preview.style.transform = "scale(0.8)";
+                setTimeout(() => {
+                    preview.style.transition = "all 0.3s ease";
+                    preview.style.opacity = "1";
+                    preview.style.transform = "scale(1)";
+                }, 10);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function clearLogoPreview() {
+        const preview = document.getElementById("newLogoPreview");
+        preview.style.transition = "all 0.3s ease";
+        preview.style.opacity = "0";
+        preview.style.transform = "scale(0.8)";
+
+        setTimeout(() => {
+            document.getElementById("logoFile").value = "";
+            preview.style.display = "none";
+            document.getElementById("logoPreviewImage").src = "";
+        }, 300);
+    }
+
+    // CKEditor và Form submission
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector(".edit-form");
+        const submitBtn = document.querySelector(".btn-primary");
+
+        // Khởi tạo CKEditor
+        let editorInstance;
+        const hiddenInput = document.getElementById("companyDescriptionHidden");
+        const initialContent = hiddenInput.value || "";
+
+        ClassicEditor.create(
+            document.querySelector("#companyDescriptionEditor"),
+            {
+                toolbar: [
+                    "heading",
+                    "|",
+                    "bold",
+                    "italic",
+                    "underline",
+                    "|",
+                    "bulletedList",
+                    "numberedList",
+                    "|",
+                    "outdent",
+                    "indent",
+                    "|",
+                    "blockQuote",
+                    "insertTable",
+                    "|",
+                    "undo",
+                    "redo",
+                ],
+                placeholder: "Enter company description...",
+            }
+        )
+            .then((editor) => {
+                editorInstance = editor;
+
+                // Set initial content
+                editor.setData(initialContent);
+
+                // Sync CKEditor content với hidden input khi có thay đổi
+                editor.model.document.on("change:data", () => {
+                    hiddenInput.value = editor.getData();
+                });
+
+                console.log("✅ CKEditor initialized successfully");
+            })
+            .catch((error) => {
+                console.error("❌ CKEditor initialization failed:", error);
+            });
+
+        form.addEventListener("submit", function (e) {
+            console.log("🔥 Form submit event triggered");
+
+            // Sync CKEditor data với hidden input trước khi submit
+            if (editorInstance) {
+                const editorData = editorInstance.getData();
+                hiddenInput.value = editorData;
+                console.log("📝 CKEditor data synced:");
+                console.log("📄 HTML content: [" + editorData + "]");
+                console.log("📏 Length: " + editorData.length);
+            }
+
+            // Không preventDefault(), cho phép form submit bình thường
+            submitBtn.classList.add("loading");
+            submitBtn.innerHTML =
+                '<i class="bi bi-arrow-clockwise me-2"></i>Updating...';
+            submitBtn.disabled = true;
+        });
+
+        // Add smooth focus transitions
+        const inputs = document.querySelectorAll(".form-control");
+        inputs.forEach((input) => {
+            input.addEventListener("focus", function () {
+                this.parentElement.style.transform = "translateY(-1px)";
+            });
+
+            input.addEventListener("blur", function () {
+                this.parentElement.style.transform = "translateY(0)";
+            });
+        });
+
+        // Auto-resize textareas
+        const textareas = document.querySelectorAll("textarea");
+        textareas.forEach((textarea) => {
+            textarea.addEventListener("input", function () {
+                this.style.height = "auto";
+                this.style.height = this.scrollHeight + "px";
+            });
+        });
+    });
+</script>
+</body>
+</html>

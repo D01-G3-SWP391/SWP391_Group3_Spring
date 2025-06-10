@@ -44,4 +44,9 @@ public class EmployerServiceImpl implements IEmployerService {
     }
 
 
+
+    @Override
+    public void updateEmployer(Employer employer) {
+        iEmployerRepository.save(employer);
+    }
 }

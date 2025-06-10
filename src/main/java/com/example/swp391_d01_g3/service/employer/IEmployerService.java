@@ -12,4 +12,6 @@ public interface IEmployerService {
     Employer findByAccount(Account account);
     Employer findByEmail(String email);
 
+    void updateEmployer(Employer employer);
+
 }
