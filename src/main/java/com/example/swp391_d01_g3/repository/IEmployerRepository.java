@@ -8,5 +8,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IEmployerRepository extends JpaRepository<Employer, Integer> {
+    Employer findByAccount_UserId(Integer userId);
+
     Employer findByAccount(Account account);
+    Employer findByAccount_Email(String email);
 }

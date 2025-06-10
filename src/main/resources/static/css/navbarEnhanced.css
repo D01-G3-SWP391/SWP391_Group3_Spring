@@ -130,6 +130,70 @@
     box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
 }
 
+/* Dropdown styles */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    display: none; /* Hide checkbox */
+}
+
+.user-greeting {
+    cursor: pointer; /* Indicate interactivity */
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between text and caret */
+    padding: 10px 15px;
+    border-radius: 6px; /* Softer radius */
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.user-greeting:hover {
+    background-color: rgba(79, 70, 229, 0.05); /* Subtle hover background */
+    color: #4f46e5; /* Match nav-link hover */
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15); /* Enhanced shadow for depth */
+    min-width: 160px; /* Comfortable width */
+    z-index: 1000;
+    margin-top: 8px; /* Spacing from label */
+    opacity: 0; /* For animation */
+    transform: translateY(-10px); /* Start slightly above */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth animation */
+}
+
+.dropdown-toggle:checked ~ .dropdown-menu {
+    display: block;
+    opacity: 1;
+    transform: translateY(0); /* Slide into place */
+}
+
+.dropdown-item {
+    display: block;
+    padding: 12px 20px; /* Comfortable padding */
+    color: #1f2937;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(79, 70, 229, 0.1);
+    color: #4f46e5;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .navbar-left .nav-link {
@@ -145,6 +209,18 @@
         padding: 6px 12px;
         font-size: 14px;
     }
+    .dropdown-menu {
+        min-width: 140px; /* Smaller for mobile */
+        right: 5px; /* Adjust for padding */
+    }
+    .user-greeting {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+    .dropdown-item {
+        padding: 10px 15px;
+        font-size: 13px;
+    }
 }
 
 /* Animation keyframes */
@@ -152,6 +228,17 @@
     from {
         opacity: 0;
         transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
     }
     to {
         opacity: 1;

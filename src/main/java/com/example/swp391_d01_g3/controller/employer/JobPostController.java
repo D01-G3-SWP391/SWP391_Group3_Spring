@@ -1,80 +1,237 @@
 package com.example.swp391_d01_g3.controller.employer;
 
+import com.example.swp391_d01_g3.dto.JobPostDTO;
 import com.example.swp391_d01_g3.model.*;
 import com.example.swp391_d01_g3.repository.IEmployerRepository;
+import com.example.swp391_d01_g3.service.employer.IEmployerService;
 import com.example.swp391_d01_g3.service.jobfield.IJobfieldService;
 import com.example.swp391_d01_g3.service.jobpost.IJobpostService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
-@RequestMapping("/employer/jobpost")
+@RequestMapping("/Employer")
 public class JobPostController {
 
     @Autowired
-    private IJobfieldService jobfieldService;
+    private IJobfieldService iJobfieldService;
 
     @Autowired
-    private IJobpostService jobpostService;
+    private IJobpostService iJobpostService;
 
     @Autowired
-    private IEmployerRepository employerRepository;
+    private IEmployerService iEmployerService;
 
-    /**
-     * Hiển thị trang form để Employer tạo bài đăng
-     */
-    @GetMapping("/create")
-    public String showCreateForm(Model model) {
-        // Lấy danh sách jobField để đổ vào dropdown
-        List<JobField> jobFields = jobfieldService.findAll();
-        model.addAttribute("jobFields", jobFields);
+//    @GetMapping("/CreateJobPost")
+//    public String showCreateForm(Model model, Authentication authentication) {
+//        // Lấy email của Employer từ Authentication
+//        String employerEmail = authentication.getName();  // Lấy tên đăng nhập (email) của user đã đăng nhập
+//
+//        // Thêm email vào model để sử dụng trong HTML
+//        model.addAttribute("employerEmail", employerEmail);
+//
+//        List<JobField> jobFields = iJobfieldService.findAll();
+//        model.addAttribute("jobFields", jobFields);
+//        model.addAttribute("jobTypes", JobPost.JobType.values());
+//        model.addAttribute("jobPost", new JobPost());
+//        return "employee/createJobPost";
+//    }
 
-        // Lấy enum JobType (FULL_TIME, PART_TIME, v.v.) để đổ dropdown
+//    @PostMapping("/CreateJobPost")
+//    public String createJobPost(
+//            @ModelAttribute("jobPost") JobPost jobPost,
+//            @RequestParam("jobFieldId") Integer jobFieldId,
+//            Authentication authentication) {
+//        String employerEmail = authentication.getName();
+//        Employer employer = iEmployerService.findByEmail(employerEmail);
+//        jobPost.setEmployer(employer);
+//
+//        JobField jobField = iJobfieldService.findById(jobFieldId)
+//                .orElseThrow(() -> new IllegalArgumentException("Invalid JobField Id: " + jobFieldId));
+//
+//        jobPost.setJobField(jobField);
+//
+//        jobPost.setCreatedAt(LocalDateTime.now());
+//        jobPost.setApprovalStatus(JobPost.ApprovalStatus.PENDING); // Giả sử mặc định là chờ duyệt
+//
+//        iJobpostService.save(jobPost);
+//
+//        return "redirect:/Employer/JobPosts";  // Redirect đến endpoint mới
+//    }
+//@PostMapping("/CreateJobPost")
+//public String createJobPost(
+//        @ModelAttribute("jobPostDTO") @Valid JobPostDTO dto,
+//        BindingResult result,
+//        Authentication authentication,
+//        Model model) {
+//
+//    // Nếu có lỗi validate, trả về trang form với danh sách jobFields và jobTypes
+//    if (result.hasErrors()) {
+//        model.addAttribute("jobFields", iJobfieldService.findAll());
+//        model.addAttribute("jobTypes", JobPost.JobType.values());
+//        return "employee/createJobPost";
+//    }
+//
+//    // Lấy employer hiện tại
+//    String email = authentication.getName();
+//    Employer employer = iEmployerService.findByEmail(email);
+//
+//    // Lấy JobField
+//    JobField jobField = iJobfieldService.findById(dto.getJobFieldId())
+//            .orElseThrow(() -> new IllegalArgumentException("Invalid JobField Id: " + dto.getJobFieldId()));
+//
+//    // Map DTO → Entity
+//    JobPost jobPost = new JobPost();
+//    jobPost.setEmployer(employer);
+//    jobPost.setJobField(jobField);
+//    jobPost.setJobTitle(dto.getJobTitle());
+//    jobPost.setJobDescription(dto.getJobDescription());
+//    jobPost.setJobLocation(dto.getJobLocation());
+//    jobPost.setJobSalary(dto.getJobSalary());
+//    jobPost.setJobRequirements(dto.getJobRequirements());
+//    jobPost.setJobType(JobPost.JobType.valueOf(dto.getJobType()));
+////    jobPost.setExpirationDate(dto.getExpirationDate());
+//    // approvalStatus mặc định PENDING (theo field initializer)
+//    // displayStatus mặc định ACTIVE (theo field initializer)
+//    // createdAt do DB tự gán (insertable = false)
+//
+//    // Lưu vào CSDL
+//    iJobpostService.save(jobPost);
+//
+//    return "redirect:/Employer/JobPosts";
+//}
+@PostMapping("/CreateJobPost")
+public String createJobPost(
+        @ModelAttribute("jobPostDTO") @Valid JobPostDTO dto,
+        BindingResult result,
+        Model model,
+        Principal principal,
+        RedirectAttributes ra
+) {
+    // 1) Nếu lỗi validate, trả về form với error + dropdown data
+    if (result.hasErrors()) {
+        model.addAttribute("jobFields", iJobfieldService.findAll());
         model.addAttribute("jobTypes", JobPost.JobType.values());
-
-        // Tạo 1 đối tượng rỗng để bind form
-        model.addAttribute("jobPost", new JobPost());
-
         return "employee/createJobPost";
     }
 
-    /**
-     * Xử lý POST khi Employer submit form
-     */
-    @PostMapping("/create")
-    public String createJobPost(
+    // 2) Lấy employer và jobField
+    Employer emp = iEmployerService.findByEmail(principal.getName());
+    JobField field = iJobfieldService.findById(dto.getJobFieldId())
+            .orElseThrow(() -> new IllegalArgumentException("Invalid JobField Id: " + dto.getJobFieldId()));
+
+    // 3) Map DTO → Entity
+    JobPost job = new JobPost();
+    job.setEmployer(emp);
+    job.setJobField(field);
+    job.setJobTitle(dto.getJobTitle());
+    job.setJobLocation(dto.getJobLocation());
+    job.setJobSalary(dto.getJobSalary());
+    job.setJobRequirements(dto.getJobRequirements());
+    job.setJobDescription(dto.getJobDescription());
+    job.setJobType(JobPost.JobType.valueOf(dto.getJobType()));
+    // createdAt, approvalStatus, displayStatus dùng mặc định
+
+    // 4) Lưu và thông báo thành công
+    iJobpostService.save(job);
+    ra.addFlashAttribute("successMsg", "Đăng việc thành công!");
+    return "redirect:/Employer/JobPosts";
+}
+    @GetMapping("/CreateJobPost")
+    public String showCreateForm(Model model) {
+        // Khởi tạo DTO để Thymeleaf binding
+        model.addAttribute("jobPostDTO", new JobPostDTO());
+        // Đổ data cho select
+        model.addAttribute("jobFields", iJobfieldService.findAll());
+        model.addAttribute("jobTypes", JobPost.JobType.values());
+        return "employee/createJobPost";
+    }
+
+    // Endpoint mới - không cần parameter email
+    @GetMapping("/JobPosts")
+    public String viewJobPosts(Model model, Authentication authentication) {
+        String employerEmail = authentication.getName();
+        Employer employer = iEmployerService.findByEmail(employerEmail);
+        List<JobPost> jobPosts = iJobpostService.findJobPostsByEmployerEmail(employerEmail);
+        model.addAttribute("jobPosts", jobPosts);
+        model.addAttribute("employerEmail", employerEmail);
+        return "employee/viewJobPost";
+    }
+
+    // Giữ lại endpoint cũ để tương thích ngược (nếu cần)
+    @GetMapping("/JobPostsByEmail")
+    public String viewJobPostsByEmail(@RequestParam("email") String email, Model model) {
+        Employer employer = iEmployerService.findByEmail(email);
+        List<JobPost> jobPosts = iJobpostService.findJobPostsByEmployerEmail(email);
+        model.addAttribute("jobPosts", jobPosts);
+        model.addAttribute("employerEmail", email);
+        return "employee/viewJobPost";
+    }
+
+    @GetMapping("/EditJobPost/{jobPostId}")
+    public String showEditForm(@PathVariable("jobPostId") Integer jobPostId, Model model) {
+        JobPost jobPost = iJobpostService.findById(jobPostId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid JobPost Id: " + jobPostId));
+
+        List<JobField> jobFields = iJobfieldService.findAll();
+        model.addAttribute("jobFields", jobFields);
+        model.addAttribute("jobTypes", JobPost.JobType.values());
+
+        model.addAttribute("jobPost", jobPost);
+
+        return "employee/editJobPost";
+    }
+
+    @PostMapping("/EditJobPost/{jobPostId}")
+    public String updateJobPost(
+            @PathVariable("jobPostId") Integer jobPostId,
             @ModelAttribute("jobPost") JobPost jobPost,
-            @RequestParam("jobFieldId") Integer jobFieldId) {
+            @RequestParam("jobFieldId") Integer jobFieldId,
+            Authentication authentication) {
 
-        // 1. Thiết lập JobField (chọn từ dropdown)
-        JobField selectedField = jobfieldService.findById(jobFieldId).orElse(null);
-        jobPost.setJobField(selectedField);
-
-        // 2. Lấy Employer hiện tại (dựa vào Account trong Context)
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        // Giả sử Principal chính là instance của Account (được load bởi AccountDetailsServiceImpl)
-        Account currentAccount = (Account) auth.getPrincipal();
-        // Tìm Employer tương ứng
-        Employer employer = employerRepository.findByAccount(currentAccount);
+        String employerEmail = authentication.getName();
+        Employer employer = iEmployerService.findByEmail(employerEmail);
         jobPost.setEmployer(employer);
 
-        // 3. Khởi tạo các trường mặc định
-        jobPost.setAppliedQuality(0);
-        jobPost.setApprovalStatus(JobPost.ApprovalStatus.PENDING);
-        jobPost.setDisplayStatus(JobPost.DisplayStatus.ACTIVE);
+        JobField jobField = iJobfieldService.findById(jobFieldId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid JobField Id: " + jobFieldId));
+
+        jobPost.setJobField(jobField);
         jobPost.setCreatedAt(LocalDateTime.now());
 
-        // 4. Lưu vào cơ sở dữ liệu
-        jobpostService.save(jobPost);
+        if (jobPost.getApprovalStatus() == null) {
+            jobPost.setApprovalStatus(JobPost.ApprovalStatus.PENDING);
+        }
+        iJobpostService.save(jobPost);
+        return "redirect:/Employer/JobPosts";  // Redirect đến endpoint mới
+    }
 
-        // 5. Redirect về dashboard của employer hoặc trang danh sách job posts
-        return "redirect:/employer/dashboard";
+    @PostMapping("/DeleteJobPost/{jobPostId}")
+    public String deleteJobPost(@PathVariable("jobPostId") Integer jobPostId, Authentication authentication) {
+        String employerEmail = authentication.getName();
+        Employer employer = iEmployerService.findByEmail(employerEmail);
+
+        JobPost jobPost = iJobpostService.findById(jobPostId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid JobPost Id: " + jobPostId));
+
+        if (!jobPost.getEmployer().getAccount().getEmail().equals(employerEmail)) {
+            throw new SecurityException("You do not have permission to delete this job post");
+        }
+        iJobpostService.deleteById(jobPostId);
+
+        return "redirect:/Employer/JobPosts";  // Redirect đến endpoint mới
     }
 }

@@ -18,12 +18,25 @@ repositories {
 }
 
 dependencies {
+	// Hibernate Validator (Hibernate Validator phiên bản tương thích với Spring Boot 3.x và Jakarta)
+	implementation 'org.hibernate.validator:hibernate-validator:7.0.0.Final' // Cập nhật lên phiên bản mới nhất
+
+	// Jakarta Validation API
+	implementation 'jakarta.validation:jakarta.validation-api:3.0.0' // Đảm bảo dùng Jakarta validation
+
+	// Spring Boot Starter Validation (Đảm bảo rằng Spring Boot hỗ trợ validate)
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'io.github.cdimascio:dotenv-java:3.0.0'
+	compileOnly 'org.projectlombok:lombok:1.18.30' // Sử dụng phiên bản mới nhất
+	annotationProcessor 'org.projectlombok:lombok:1.18.30'
 	testImplementation 'org.springframework.security:spring-security-test'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.mysql:mysql-connector-j'

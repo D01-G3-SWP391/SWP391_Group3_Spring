@@ -1,17 +1,22 @@
 package com.example.swp391_d01_g3.service.jobpost;
 
+import com.example.swp391_d01_g3.model.Employer;
 import com.example.swp391_d01_g3.model.JobPost;
 import com.example.swp391_d01_g3.repository.IJobPostRepository;
+import com.example.swp391_d01_g3.service.employer.IEmployerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class JobPostImpl implements IJobpostService {
 
     @Autowired
     private IJobPostRepository iJobPostRepository;
+    @Autowired
+    private IEmployerService iEmployerService;
 
     @Override
     public List<JobPost> findAll() {
@@ -22,4 +27,27 @@ public class JobPostImpl implements IJobpostService {
     public void save(JobPost jobPost) {
         iJobPostRepository.save(jobPost);
     }
+
+    @Override
+    public List<JobPost> findByEmployerId(Integer employerId) {
+        return iJobPostRepository.findByEmployerId(employerId);
+    }
+
+    @Override
+    public List<JobPost> findJobPostsByEmployerEmail(String email) {
+        Employer employer = iEmployerService.findByEmail(email);
+        return iJobPostRepository.findByEmployer(employer);
+    }
+
+    @Override
+    public Optional<JobPost> findById(Integer jobPostId) {
+        return iJobPostRepository.findById(jobPostId);
+    }
+
+    @Override
+    public void deleteById(Integer jobPostId) {
+        iJobPostRepository.deleteById(jobPostId);
+    }
+
+
 }

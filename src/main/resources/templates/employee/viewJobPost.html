@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Các Công Việc Của Bạn</title>
+    <link rel="stylesheet" th:href="@{/css/navbarViewJobPost.css}" />
+</head>
+<body>
+<!-- Keep existing navbar exactly as is -->
+<nav class="admin-vertical-navbar" id="adminNavbar" th:fragment="navbarAdmin">
+    <div class="admin-logo-area">
+        <a th:href="@{/}" class="admin-text-logo-link">
+            <span class="admin-text-logo">JOB4YOU</span>
+        </a>
+        <button class="toggle-btn" id="toggleBtn">
+            <i class="bi bi-list"></i>
+        </button>
+    </div>
+    <ul class="admin-nav-links">
+        <li>
+            <a href="#" class="active">
+                <i class="bi bi-house-door"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/Employer/Profile}">
+                <i class="bi bi-people"></i>
+                <span>Profile Employer</span>
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/Employer/CreateJobPost}">
+                <i class="bi bi-briefcase"></i>
+                <span>Jobs</span>
+            </a>
+        </li>
+        <li>
+<!--            <a th:href="@{/Employer/JobPosts(email=${employerEmail})}">-->
+            <a th:href="@{/Employer/JobPosts}">
+                <i class="bi bi-briefcase"></i>
+                <span>Danh sách tuyển dụng</span>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <i class="bi bi-gear"></i>
+                <span>Settings</span>
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/logout}">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<!-- Main content area -->
+<div class="main-content">
+    <h1>Các Công Việc Của Bạn</h1>
+
+    <!-- Statistics cards (optional) -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="bi bi-briefcase-fill"></i>
+            </div>
+            <div class="stat-info">
+                <h3 th:text="${jobPosts != null ? jobPosts.size() : 0}">0</h3>
+                <p>Tổng số công việc</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+            <div class="stat-info">
+                <h3>0</h3>
+                <p>Đã phê duyệt</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="bi bi-clock-fill"></i>
+            </div>
+            <div class="stat-info">
+                <h3>0</h3>
+                <p>Chờ phê duyệt</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table container -->
+    <div class="table-container">
+        <!-- Check if there are job posts -->
+        <div th:if="${jobPosts == null or jobPosts.isEmpty()}" class="empty-state">
+            <i class="bi bi-briefcase"></i>
+            <h3>Chưa có công việc nào</h3>
+            <p>Bạn chưa tạo công việc nào. Hãy bắt đầu tạo công việc đầu tiên!</p>
+            <a th:href="@{/Employer/CreateJobPost}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i>
+                Tạo công việc mới
+            </a>
+        </div>
+
+        <!-- Table with job posts -->
+        <table th:if="${jobPosts != null and !jobPosts.isEmpty()}">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tên Công Việc</th>
+                <th>Loại Công Việc</th>
+                <th>Mô tả Công Việc</th>
+                <th>Trạng Thái</th>
+                <th>Ngày Tạo</th>
+                <th>Hành Động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <th:block th:each="jobPost : ${jobPosts}">
+                <tr>
+                    <td th:text="${jobPost.jobPostId}"></td>
+                    <td>
+                        <div class="job-title">
+                            <strong th:text="${jobPost.jobTitle}"></strong>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="job-type-badge" th:text="${jobPost.jobType}"></span>
+                    </td>
+                    <td>
+                        <div class="job-description" th:text="${jobPost.jobRequirements}"></div>
+                    </td>
+                    <td>
+                                <span class="status-badge"
+                                      th:text="${jobPost.approvalStatus}"></span>
+                    </td>
+                    <td>
+                        <div class="date-info">
+                            <span th:text="${jobPost.createdAt}"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <!-- Edit Button -->
+                            <a th:href="@{/Employer/EditJobPost/{jobPostId}(jobPostId=${jobPost.jobPostId})}"
+                               class="btn btn-primary">
+                                <i class="bi bi-pencil-square"></i>
+                                Chỉnh sửa
+                            </a>
+
+                            <!-- Delete Button -->
+                            <form th:action="@{/Employer/DeleteJobPost/{jobPostId}(jobPostId=${jobPost.jobPostId})}"
+                                  method="post"
+                                  class="delete-form"
+                                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa công việc này?')">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                    Xóa
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </th:block>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add new job button (floating action button) -->
+    <a th:href="@{/Employer/CreateJobPost}" class="fab">
+        <i class="bi bi-plus"></i>
+    </a>
+</div>
+
+<script src="/js/navbarAdmin.js"></script>
+</body>
+</html>
