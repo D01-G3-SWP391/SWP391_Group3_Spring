@@ -58,7 +58,7 @@ public class AddJobApplication {
 
         // Truy xuất student và jobPost từ cơ sở dữ liệu
         Optional<Student> student = studentService.findById(jobApplicationDTO.getStudentId());
-        Optional<JobPost> jobPost = iJobpostService.findById(jobApplicationDTO.getJobPostId());
+        Optional<JobPost> jobPost = iJobpostService.findByIdJobPost(jobApplicationDTO.getJobPostId());
 
         System.out.println(student);
         System.out.println(jobPost);
