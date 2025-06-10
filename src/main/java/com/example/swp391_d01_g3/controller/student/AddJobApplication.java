@@ -5,18 +5,18 @@ import com.example.swp391_d01_g3.model.JobApplication;
 import com.example.swp391_d01_g3.model.JobPost;
 import com.example.swp391_d01_g3.model.Student;
 import com.example.swp391_d01_g3.service.jobapplication.IJobApplicationService;
+import com.example.swp391_d01_g3.service.jobfield.IJobfieldService;
 import com.example.swp391_d01_g3.service.jobpost.IJobpostService;
 import com.example.swp391_d01_g3.service.security.IAccountService;
 import com.example.swp391_d01_g3.service.student.IStudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
+import java.util.Arrays;
 import java.util.Optional;
 
 @Controller
@@ -33,6 +33,19 @@ public class AddJobApplication {
 
     @Autowired
     private IJobpostService iJobpostService;
+
+    @GetMapping("/JobDescription/Apply")
+    public String showApplyForm(@RequestParam("id") Long jobPostId, Model model) {
+        Optional<JobPost> jobPost = iJobpostService.findById(jobPostId);
+        if (jobPost.isEmpty()) {
+            return "redirect:/";
+        }
+
+        model.addAttribute("jobApplicationDTO", new JobApplicationDTO());
+        model.addAttribute("jobPosts", Arrays.asList(jobPost.get()));
+
+        return "homePage/applyForm";
+    }
     @PostMapping("/addJobApplication")
     public String addJobApplication(@ModelAttribute("jobApplicationDTO") JobApplicationDTO jobApplicationDTO,
                                     Model model, RedirectAttributes redirectAttributes) {
