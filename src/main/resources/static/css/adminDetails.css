@@ -1,0 +1,214 @@
+/* ===== ADMIN DETAILS PAGE STYLES ===== */
+
+/* Detail Cards */
+.detail-card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+    margin-bottom: 25px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.detail-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+}
+
+/* Large Avatar for Details Page */
+.avatar-large {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #e2e8f0;
+    margin: 0 auto;
+    display: block;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.avatar-large:hover {
+    border-color: #007bff;
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.2);
+}
+
+/* Information Rows */
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background-color 0.3s ease;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-row:hover {
+    background-color: rgba(0, 123, 255, 0.02);
+    border-radius: 8px;
+    margin: 0 -10px;
+    padding: 15px 10px;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+}
+
+.info-label i {
+    color: #007bff;
+    margin-right: 8px;
+}
+
+.info-value {
+    color: #1e293b;
+    font-weight: 500;
+    font-size: 15px;
+}
+
+/* Back Button */
+.btn-secondary {
+    background: linear-gradient(to right, #6c757d, #5a6268);
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(to right, #5a6268, #495057);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+    color: white;
+}
+
+/* Warning and Info Buttons */
+.btn-warning {
+    background: linear-gradient(to right, #ffc107, #e0a800);
+    border: none;
+    color: #212529;
+    font-weight: 600;
+}
+
+.btn-warning:hover {
+    background: linear-gradient(to right, #e0a800, #d39e00);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+    color: #212529;
+}
+
+.btn-info {
+    background: linear-gradient(to right, #17a2b8, #138496);
+    border: none;
+    color: white;
+    font-weight: 600;
+}
+
+.btn-info:hover {
+    background: linear-gradient(to right, #138496, #117a8b);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+    color: white;
+}
+
+/* Badge Styles */
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge.bg-primary {
+    background: linear-gradient(to right, #007bff, #0056b3) !important;
+}
+
+.badge.bg-success {
+    background: linear-gradient(to right, #28a745, #1e7e34) !important;
+}
+
+/* Header with Back Button */
+.d-flex.justify-content-between.align-items-center {
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+/* Section Headers */
+h5 {
+    color: #1a2b49;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+h5 i {
+    color: #007bff;
+    margin-right: 10px;
+}
+
+/* Action Buttons Section */
+.detail-card .d-flex.gap-3 {
+    flex-wrap: wrap;
+}
+
+.detail-card .d-flex.gap-3 .btn {
+    margin-bottom: 10px;
+}
+
+/* Avatar Center Alignment */
+.admin-table td:first-child {
+    text-align: center;
+}
+
+.avatar {
+    display: block;
+    margin: 0 auto;
+}
+
+/* Responsive adjustments for details */
+@media (max-width: 768px) {
+    .detail-card {
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .avatar-large {
+        width: 100px;
+        height: 100px;
+    }
+
+    .info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .info-label, .info-value {
+        font-size: 14px;
+    }
+
+    .d-flex.gap-3 {
+        flex-direction: column;
+        gap: 10px !important;
+    }
+
+    .d-flex.gap-3 .btn {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+}

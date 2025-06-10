@@ -214,7 +214,7 @@ public class Register {
             // Lưu thông tin employer
             pendingRegistration.setCompanyName(employerDTO.getCompanyName());
             pendingRegistration.setCompanyAddress(employerDTO.getCompanyAddress());
-            pendingRegistration.setCompanyDescription(employerDTO.getCompanyDescription());
+//            pendingRegistration.setCompanyDescription(employerDTO.getCompanyDescription());
             pendingRegistration.setLogoUrl(employerDTO.getLogoUrl());
             pendingRegistration.setJobsFieldId(employerDTO.getJobsFieldId());
             

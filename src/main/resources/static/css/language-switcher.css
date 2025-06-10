@@ -1,0 +1,270 @@
+/* ==============================================
+   LANGUAGE SWITCHER STYLES
+   ============================================== */
+
+/* Container for the language switcher */
+.language-switcher-container {
+  position: relative;
+  display: inline-block;
+  margin-left: 10px;
+}
+
+/* Language switcher button */
+.language-switcher {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 100px;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.language-switcher:hover {
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.language-switcher:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Add an icon to the language switcher */
+.language-switcher::after {
+  content: "🌐";
+  font-size: 14px;
+  margin-left: 4px;
+}
+
+/* Language dropdown menu */
+.language-dropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  min-width: 180px;
+  z-index: 1001;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px) scale(0.95);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.language-dropdown.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+/* Language options */
+.language-option {
+  display: block;
+  padding: 12px 16px;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 400;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f5f5f5;
+  position: relative;
+}
+
+.language-option:last-child {
+  border-bottom: none;
+}
+
+.language-option:hover {
+  background: linear-gradient(90deg, #f8f9ff 0%, #f0f2ff 100%);
+  color: #667eea;
+  text-decoration: none;
+  padding-left: 20px;
+}
+
+.language-option.active {
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-weight: 500;
+}
+
+.language-option.active:hover {
+  background: linear-gradient(90deg, #764ba2 0%, #667eea 100%);
+  color: white;
+  padding-left: 16px;
+}
+
+/* Flag styling */
+.language-option .flag {
+  margin-right: 10px;
+  font-size: 16px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .language-switcher-container {
+    margin-left: 5px;
+  }
+  
+  .language-switcher {
+    padding: 6px 10px;
+    font-size: 11px;
+    min-width: 70px;
+  }
+  
+  .language-dropdown {
+    min-width: 140px;
+    right: -10px;
+  }
+  
+  .language-option {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .language-switcher-container {
+    margin-left: 5px;
+  }
+  
+  .language-switcher {
+    padding: 5px 8px;
+    font-size: 10px;
+    min-width: 60px;
+  }
+  
+  .language-switcher::after {
+    font-size: 10px;
+    margin-left: 2px;
+  }
+  
+  .language-dropdown {
+    min-width: 120px;
+    right: -5px;
+  }
+}
+
+/* Animation for smooth transitions */
+@keyframes languageDropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-15px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes languageDropdownFadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-15px) scale(0.9);
+  }
+}
+
+/* Navbar sections styling */
+.authenticated-section,
+.anonymous-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Fix for potential conflicts with Bootstrap or other CSS frameworks */
+.language-switcher-container * {
+  box-sizing: border-box;
+}
+
+.language-switcher-container .language-dropdown {
+  position: absolute !important;
+  z-index: 1001 !important;
+}
+
+/* Sidebar Language Switcher Styles */
+.language-nav-item {
+  padding: 10px 15px;
+}
+
+.language-nav-item .language-switcher-container {
+  width: 100%;
+  margin: 0;
+}
+
+.sidebar-lang-btn {
+  width: 100%;
+  min-width: auto;
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  justify-content: flex-start;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.sidebar-lang-btn:hover {
+  background: rgba(102, 126, 234, 0.2);
+  color: #5a67d8;
+}
+
+.sidebar-lang-btn::after {
+  margin-left: auto;
+  content: "🌐";
+}
+
+.language-nav-item .language-dropdown {
+  left: 0;
+  right: auto;
+  top: calc(100% + 5px);
+  width: 100%;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .language-dropdown {
+    background: #2d3748;
+    border-color: #4a5568;
+    color: #e2e8f0;
+  }
+  
+  .language-option {
+    color: #e2e8f0;
+    border-bottom-color: #4a5568;
+  }
+  
+  .language-option:hover {
+    background: rgba(102, 126, 234, 0.1);
+    color: #90cdf4;
+  }
+  
+  .sidebar-lang-btn {
+    background: rgba(102, 126, 234, 0.2);
+    color: #90cdf4;
+    border-color: rgba(102, 126, 234, 0.4);
+  }
+  
+  .sidebar-lang-btn:hover {
+    background: rgba(102, 126, 234, 0.3);
+    color: #bee3f8;
+  }
+} 

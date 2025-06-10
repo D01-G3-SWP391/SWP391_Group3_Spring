@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+  <link
+          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
+          rel="stylesheet"
+  />
+</head>
+<body>
+<div id="applyForm" class="apply-form-container hidden">
+  <h2>Ứng tuyển công việc</h2>
+  <form th:action="@{/Student/addJobApplication}" method="post" th:object="${jobApplicationDTO}" th:each="job : ${jobPosts}" >
+
+    <input type="hidden" th:value="${studentDetails.studentId != null ? studentDetails.studentId : null}" name="studentId">
+    <input type="hidden" th:value="${job.jobPostId != null ? job.jobPostId : null}" name="jobPostId">
+    <div class="form-group">
+      <label for="fullName">Họ và tên *</label>
+      <input  type="text" id="fullName" name="fullName" th:field="*{fullname}"  placeholder="Nhập họ tên của bạn" required/>
+    </div>
+    <div class="form-group">
+      <label for="email">Email *</label>
+      <input type="email" id="email" name="email" th:field="*{email}" placeholder="Nhập email của bạn" required/>
+    </div>
+    <div class="form-group">
+      <label for="phone">SĐT *</label>
+      <input type="text" id="phone" name="phone" th:field="*{phoneNumber}" placeholder="Nhập số điện thoại của bạn" required/>
+    </div>
+<!--    <div class="form-group">-->
+<!--      <input type="text"  th:field="*{university}" placeholder="Moi nhap truong dai hoc" required/>-->
+<!--    </div>-->
+    <!--        <div class="form-group">-->
+    <!--            <select name="fieldId" class="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">-->
+    <!--                <option th:field="*{jobFiled}" value="">&#45;&#45; Chọn ngành nghề &#45;&#45;</option>-->
+    <!--                <option th:each="field : ${jobfields}"-->
+    <!--                        th:value="${field.jobFieldId}"-->
+    <!--                        th:text="${field.jobFieldName}">-->
+    <!--                </option>-->
+    <!--            </select>-->
+    <!--        </div>-->
+    <div class="form-group">
+      <label for="content">Nội dung *</label>
+      <textarea id="content" name="content" rows="4" th:field="*{description}" placeholder="Nhập nội dung ứng tuyển" required></textarea>
+    </div>
+    <div class="form-group">
+      <label for="cv">Hồ sơ ứng viên (CV)</label>
+      <input th:field="*{cv_url}" type="file" id="cv" name="cv" accept=".doc,.docx,.pdf,.png,.jpeg"/>
+      <p class="file-info">Hỗ trợ định dạng doc, docx, pdf, png, jpeg nhỏ hơn 2MB</p>
+    </div>
+    <button type="submit" class="submit-btn">Gửi</button>
+    <button type="button" class="close-btn" onclick="closeApplyForm()">Đóng</button>
+  </form>
+</div>
+
+</body>
+<script th:src="@{/js/languageSwitch.js}"></script>
+
+</html>

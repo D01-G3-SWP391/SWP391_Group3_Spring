@@ -23,8 +23,9 @@ public class ConfigI18N implements WebMvcConfigurer {
     @Bean
     public LocaleResolver localeResolver() {
         CookieLocaleResolver localeResolver = new CookieLocaleResolver();
-        localeResolver.setDefaultLocale(Locale.ENGLISH);
+        localeResolver.setDefaultLocale(new Locale("vi")); // Set Vietnamese as default
         localeResolver.setCookieMaxAge(Duration.ofDays(30));
+        localeResolver.setCookieName("language");
         return localeResolver;
     }
 

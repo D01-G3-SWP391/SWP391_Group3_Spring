@@ -40,9 +40,9 @@ public class EmployerDTO implements Validator {
     @Size(min = 5, max = 500, message = "Địa chỉ công ty phải từ 5 đến 500 ký tự")
     private String companyAddress;
     
-    @NotBlank(message = "Mô tả công ty không được để trống")
-    @Size(min = 10, max = 1000, message = "Mô tả công ty phải từ 10 đến 1000 ký tự")
-    private String companyDescription;
+//    @NotBlank(message = "Mô tả công ty không được để trống")
+//    @Size(min = 10, max = 1000, message = "Mô tả công ty phải từ 10 đến 1000 ký tự")
+//    private String companyDescription;
     
     private String logoUrl; // This might be handled as a file upload later
     
@@ -53,7 +53,7 @@ public class EmployerDTO implements Validator {
     public EmployerDTO() {
     }
 
-    public EmployerDTO(String fullName, String email, String phone, String password, String confirmPassword, String companyName, String companyAddress, String companyDescription, String logoUrl, Integer jobsFieldId) {
+    public EmployerDTO(String fullName, String email, String phone, String password, String confirmPassword, String companyName, String companyAddress, String logoUrl, Integer jobsFieldId) {
         this.fullName = fullName;
         this.email = email;
         this.phone = phone;
@@ -61,7 +61,7 @@ public class EmployerDTO implements Validator {
         this.confirmPassword = confirmPassword;
         this.companyName = companyName;
         this.companyAddress = companyAddress;
-        this.companyDescription = companyDescription;
+//        this.companyDescription = companyDescription;
         this.logoUrl = logoUrl;
         this.jobsFieldId = jobsFieldId; 
     }
@@ -76,7 +76,6 @@ public class EmployerDTO implements Validator {
         if (employer != null) {
             this.companyName = employer.getCompanyName();
             this.companyAddress = employer.getCompanyAddress();
-            this.companyDescription = employer.getCompanyDescription();
             this.logoUrl = employer.getLogoUrl();
             if (employer.getJobField() != null) {
                 this.jobsFieldId = employer.getJobField().getJobFieldId();
@@ -172,18 +171,18 @@ public class EmployerDTO implements Validator {
         }
     }
 
-    public String getCompanyDescription() {
-        return companyDescription;
-    }
+//    public String getCompanyDescription() {
+//        return companyDescription;
+//    }
 
-    public void setCompanyDescription(String companyDescription) {
-        // Normalize description: trim and remove extra spaces
-        if (companyDescription != null) {
-            this.companyDescription = companyDescription.trim().replaceAll("\\s+", " ");
-        } else {
-            this.companyDescription = companyDescription;
-        }
-    }
+//    public void setCompanyDescription(String companyDescription) {
+//        // Normalize description: trim and remove extra spaces
+//        if (companyDescription != null) {
+//            this.companyDescription = companyDescription.trim().replaceAll("\\s+", " ");
+//        } else {
+//            this.companyDescription = companyDescription;
+//        }
+//    }
 
     public String getLogoUrl() {
         return logoUrl;

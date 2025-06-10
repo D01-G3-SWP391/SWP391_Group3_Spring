@@ -19,37 +19,49 @@
     </div>
     <ul class="admin-nav-links">
         <li>
-            <a href="#" class="active">
-                <i class="bi bi-house-door"></i>
+            <a th:href="@{/Admin}" class="nav-link">
+                <i class="bi bi-house-door-fill"></i>
                 <span>Dashboard</span>
             </a>
         </li>
         <li>
-            <a href="#">
-                <i class="bi bi-people"></i>
-                <span>Users</span>
+            <a th:href="@{/Admin/ListStudent}" class="nav-link">
+                <i class="bi bi-people-fill"></i>
+                <span>Students</span>
             </a>
         </li>
         <li>
-            <a href="#">
-                <i class="bi bi-briefcase"></i>
+            <a th:href="@{/Admin/ListEmployer}" class="nav-link">
+                <i class="bi bi-building-fill"></i>
+                <span>Employers</span>
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/Admin/ListJobs}" class="nav-link">
+                <i class="bi bi-briefcase-fill"></i>
                 <span>Jobs</span>
             </a>
         </li>
         <li>
-            <a href="#">
-                <i class="bi bi-gear"></i>
+            <a th:href="@{/Admin/Reports}" class="nav-link">
+                <i class="bi bi-graph-up"></i>
+                <span>Reports</span>
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/Admin/Settings}" class="nav-link">
+                <i class="bi bi-gear-fill"></i>
                 <span>Settings</span>
             </a>
         </li>
         <li>
-            <a th:href="@{/logout}">
+            <a th:href="@{/logout}" class="nav-link">
                 <i class="bi bi-box-arrow-right"></i>
                 <span>Logout</span>
             </a>
         </li>
     </ul>
 </nav>
-<script src="/js/navbarAdmin.js"></script>
+<script th:src="@{/js/navbarAdmin.js}"></script>
 </body>
 </html>
