@@ -15,8 +15,8 @@ public class Employer {
     @JoinColumn(name = "jobs_field_id", nullable = false)
     private JobField jobField;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "user_id", unique = true, nullable = false)
     private Account account;
 
     @Column(name = "company_name", length = 255)

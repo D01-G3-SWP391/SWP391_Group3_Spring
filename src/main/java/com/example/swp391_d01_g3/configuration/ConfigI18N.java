@@ -33,4 +33,4 @@ public class ConfigI18N implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
     }
-}
+} 

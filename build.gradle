@@ -18,6 +18,14 @@ repositories {
 }
 
 dependencies {
+	// Hibernate Validator (Hibernate Validator phiên bản tương thích với Spring Boot 3.x và Jakarta)
+	implementation 'org.hibernate.validator:hibernate-validator:7.0.0.Final' // Cập nhật lên phiên bản mới nhất
+
+	// Jakarta Validation API
+	implementation 'jakarta.validation:jakarta.validation-api:3.0.0' // Đảm bảo dùng Jakarta validation
+
+	// Spring Boot Starter Validation (Đảm bảo rằng Spring Boot hỗ trợ validate)
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
