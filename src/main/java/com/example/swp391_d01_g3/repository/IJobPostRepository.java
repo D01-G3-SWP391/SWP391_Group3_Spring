@@ -19,10 +19,10 @@ public interface IJobPostRepository extends JpaRepository<JobPost,Integer> {
     List<JobPost> findByEmployer(Employer employer);
     Optional<JobPost> findById(Integer jobPostId);
 
-    Optional<JobPost> findByIdJobPost(Long jobPostId);
+    Optional<JobPost> findByJobPostId(Integer jobPostId);
 
     @Query("SELECT jp FROM JobPost jp JOIN FETCH jp.employer WHERE jp.jobPostId = ?1")
-    List<JobPost> findAllWithEmployer(Long id);
+    List<JobPost> findAllWithEmployer(Integer id);
 
 
     @Query("SELECT jp FROM JobPost jp " +

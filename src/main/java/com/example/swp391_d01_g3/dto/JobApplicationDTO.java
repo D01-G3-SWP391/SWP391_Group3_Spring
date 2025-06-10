@@ -17,13 +17,13 @@ public class JobApplicationDTO implements Validator {
     private String description;
     private String cv_url;
     private Long studentId;
-    private Long jobPostId;
+    private Integer jobPostId;
 
 
     public JobApplicationDTO() {
     }
 
-    public JobApplicationDTO(String fullname, String email, String phoneNumber, String university, String description, String cv_url, Long studentId, Long jobPostId) {
+    public JobApplicationDTO(String fullname, String email, String phoneNumber, String university, String description, String cv_url, Long studentId, Integer jobPostId) {
         this.fullname = fullname;
         this.email = email;
         this.phoneNumber = phoneNumber;
@@ -90,11 +90,11 @@ public class JobApplicationDTO implements Validator {
         this.studentId = studentId;
     }
 
-    public Long getJobPostId() {
+    public Integer getJobPostId() {
         return jobPostId;
     }
 
-    public void setJobPostId(Long jobPostId) {
+    public void setJobPostId(Integer jobPostId) {
         this.jobPostId = jobPostId;
     }
 

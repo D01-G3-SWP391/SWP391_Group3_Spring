@@ -20,8 +20,8 @@ public interface IJobpostService  {
     void deleteById(Integer jobPostId);
 
     Page<JobPost> findAll(Pageable pageable);
-    Optional<JobPost> findByIdJobPost(Long id);
-    List<JobPost> findAllWithEmployer(Long id);
+    Optional<JobPost> findByJobPostId(Integer id);
+    List<JobPost> findAllWithEmployer(Integer id);
 
     // Hàm search với đầy đủ các tiêu chí
     List<JobPost> searchJobs(String keyword, String location, String jobType,
