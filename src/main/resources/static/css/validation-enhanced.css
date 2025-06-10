@@ -1,0 +1,504 @@
+/* Enhanced Form Validation Styles */
+
+.form-group {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 15px 45px 15px 15px;
+    border: 2px solid #e1e5e9;
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+    padding: 15px;
+}
+
+.form-group select {
+    appearance: none;
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 20px;
+    cursor: pointer;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.form-group input.valid,
+.form-group textarea.valid,
+.form-group select.valid {
+    border-color: #28a745 !important;
+    background-color: #f8fff9 !important;
+    background-image: url('data:image/svg+xml;charset=utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="%2328a745" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>') !important;
+    background-repeat: no-repeat !important;
+    background-position: right 15px center !important;
+    background-size: 20px !important;
+}
+
+.form-group input.invalid,
+.form-group textarea.invalid,
+.form-group select.invalid {
+    border-color: #dc3545 !important;
+    background-color: #fff5f5 !important;
+    background-image: url('data:image/svg+xml;charset=utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="%23dc3545" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>') !important;
+    background-repeat: no-repeat !important;
+    background-position: right 15px center !important;
+    background-size: 20px !important;
+}
+
+.form-group input.valid:focus,
+.form-group textarea.valid:focus,
+.form-group select.valid:focus {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 4px rgba(40, 167, 69, 0.15) !important;
+}
+
+.form-group input.invalid:focus,
+.form-group textarea.invalid:focus,
+.form-group select.invalid:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.15) !important;
+}
+
+/* Custom Checkbox Styling for Terms Agreement */
+.terms-checkbox-container {
+    margin-bottom: 30px !important;
+    padding: 20px !important;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%) !important;
+    border: 2px solid #e9ecef !important;
+    border-radius: 15px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.terms-checkbox-container:hover {
+    border-color: #007bff !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.15) !important;
+}
+
+.terms-checkbox-label {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 15px !important;
+    font-size: 15px !important;
+    color: #495057 !important;
+    cursor: pointer !important;
+    line-height: 1.6 !important;
+    margin: 0 !important;
+    position: relative !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+/* Modern Custom Checkbox */
+.custom-checkbox {
+    position: relative !important;
+    flex-shrink: 0 !important;
+    width: 24px !important;
+    height: 24px !important;
+    margin: 0 !important;
+}
+
+.custom-checkbox input[type="checkbox"] {
+    opacity: 0 !important;
+    position: absolute !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    cursor: pointer !important;
+    z-index: 2 !important;
+}
+
+.custom-checkbox .checkmark {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 24px !important;
+    height: 24px !important;
+    background: #ffffff !important;
+    border: 2px solid #dee2e6 !important;
+    border-radius: 6px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.custom-checkbox input[type="checkbox"]:hover + .checkmark {
+    border-color: #007bff !important;
+    background-color: #f8f9ff !important;
+    transform: scale(1.05) !important;
+}
+
+.custom-checkbox input[type="checkbox"]:checked + .checkmark {
+    background: linear-gradient(135deg, #007bff, #0056b3) !important;
+    border-color: #007bff !important;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3) !important;
+}
+
+.custom-checkbox .checkmark::after {
+    content: "" !important;
+    position: absolute !important;
+    display: none !important;
+    left: 7px !important;
+    top: 3px !important;
+    width: 6px !important;
+    height: 10px !important;
+    border: solid white !important;
+    border-width: 0 2px 2px 0 !important;
+    transform: rotate(45deg) !important;
+}
+
+.custom-checkbox input[type="checkbox"]:checked + .checkmark::after {
+    display: block !important;
+}
+
+.custom-checkbox input[type="checkbox"]:focus + .checkmark {
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.15) !important;
+}
+
+/* Terms text styling */
+.terms-text {
+    color: #495057 !important;
+    font-weight: 500 !important;
+}
+
+.terms-text a {
+    color: #007bff !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+}
+
+.terms-text a:hover {
+    color: #0056b3 !important;
+    text-decoration: underline !important;
+    text-underline-offset: 3px !important;
+}
+
+/* Checkbox validation states */
+.terms-checkbox-container.invalid {
+    border-color: #dc3545 !important;
+    background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%) !important;
+    animation: errorShake 0.5s ease-in-out !important;
+}
+
+.terms-checkbox-container.valid {
+    border-color: #28a745 !important;
+    background: linear-gradient(135deg, #f8fff9 0%, #ffffff 100%) !important;
+}
+
+.terms-checkbox-container.valid .custom-checkbox .checkmark {
+    border-color: #28a745 !important;
+    background: linear-gradient(135deg, #28a745, #1e7e34) !important;
+}
+
+/* Error Messages - Enhanced specificity and override previous styles */
+.login-form .form-group .error-message {
+    color: #dc3545 !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    margin-top: 8px !important;
+    margin-left: 5px !important;
+    display: block !important;
+    min-height: 20px !important;
+    opacity: 0 !important;
+    transform: translateY(-10px) !important;
+    transition: all 0.3s ease !important;
+    padding: 0 !important; /* Override any padding from other CSS */
+    background: transparent !important; /* Override any background from other CSS */
+    border: none !important; /* Override any border from other CSS */
+    border-radius: 0 !important; /* Override any border-radius from other CSS */
+    animation: none !important; /* Override any animation from other CSS */
+    text-align: left !important; /* Override any text-align from other CSS */
+}
+
+.login-form .form-group .error-message:not(:empty) {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+/* Server-side errors - hide by default, will be shown via JavaScript if needed */
+.login-form .form-group .error-message.server-error {
+    opacity: 0 !important;
+    transform: translateY(-10px) !important;
+    background-color: #f8d7da !important;
+    padding: 8px 12px !important;
+    border-radius: 5px !important;
+    border: 1px solid #f5c6cb !important;
+    margin-top: 10px !important;
+}
+
+/* Show server errors only when explicitly enabled */
+.login-form .form-group .error-message.server-error.show {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+.login-form .form-group .success-message {
+    color: #28a745 !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    margin-top: 8px !important;
+    margin-left: 5px !important;
+    display: block !important;
+    opacity: 0 !important;
+    transform: translateY(-10px) !important;
+    transition: all 0.3s ease !important;
+}
+
+.login-form .form-group .success-message:not(:empty) {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+/* Password Strength Indicator */
+.login-form .form-group .password-strength {
+    margin-top: 8px !important;
+    margin-left: 5px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    opacity: 0 !important;
+    transform: translateY(-5px) !important;
+    transition: all 0.3s ease !important;
+}
+
+.login-form .form-group .password-strength:not(:empty) {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+.strength-weak { 
+    color: #dc3545 !important; 
+}
+
+.strength-medium { 
+    color: #ffc107 !important; 
+}
+
+.strength-strong { 
+    color: #28a745 !important; 
+}
+
+/* Loading States */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.btn-submit {
+    position: relative;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+    width: 100%;
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    background: linear-gradient(135deg, #0056b3, #004085);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+}
+
+.btn-submit:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(0, 123, 255, 0.3);
+}
+
+.btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 2px 10px rgba(0, 123, 255, 0.2);
+}
+
+.btn-submit:disabled:hover {
+    transform: none;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+}
+
+/* Error shake animation for submit button */
+.error-shake {
+    animation: errorShake 0.5s ease-in-out;
+}
+
+/* Spinner Animation */
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    to { 
+        transform: rotate(360deg); 
+    }
+}
+
+/* Form Container Enhancements */
+.login-form {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .login-form {
+        padding: 25px;
+        margin: 20px;
+    }
+    
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        padding: 12px 40px 12px 12px;
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+    
+    .btn-submit {
+        padding: 12px 25px;
+        font-size: 15px;
+    }
+}
+
+/* Focus Ring for Accessibility */
+.form-group input:focus-visible,
+.form-group textarea:focus-visible,
+.form-group select:focus-visible {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        border-width: 3px;
+    }
+    
+    .form-group input.valid,
+    .form-group textarea.valid,
+    .form-group select.valid {
+        border-color: #006600;
+    }
+    
+    .form-group input.invalid,
+    .form-group textarea.invalid,
+    .form-group select.invalid {
+        border-color: #cc0000;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    .form-group input,
+    .form-group textarea,
+    .form-group select,
+    .error-message,
+    .success-message,
+    .password-strength,
+    .btn-submit {
+        transition: none;
+    }
+    
+    .spinner {
+        animation: none;
+    }
+}
+
+/* Tooltip Styles for Additional Help */
+.form-tooltip {
+    position: absolute;
+    top: 50%;
+    right: 50px;
+    transform: translateY(-50%);
+    background: #333;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+}
+
+.form-tooltip::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -5px;
+    transform: translateY(-50%);
+    border: 5px solid transparent;
+    border-right-color: #333;
+}
+
+.form-group:hover .form-tooltip {
+    opacity: 1;
+}
+
+/* Success Animation */
+@keyframes successPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.form-group input.valid,
+.form-group textarea.valid,
+.form-group select.valid {
+    animation: successPulse 0.6s ease-out;
+}
+
+/* Error Shake Animation */
+@keyframes errorShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.form-group input.invalid,
+.form-group textarea.invalid,
+.form-group select.invalid {
+    animation: errorShake 0.5s ease-out;
+} 

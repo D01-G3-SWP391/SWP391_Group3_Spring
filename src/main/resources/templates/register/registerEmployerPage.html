@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register Employer</title>
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbar.css}" />
+    <link rel="stylesheet" th:href="@{/css/login.css}" />
+    <link rel="stylesheet" th:href="@{/css/newRegister.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}" />
+    <link rel="stylesheet" th:href="@{/css/registerEnhanced.css}" />
+    <link rel="stylesheet" th:href="@{/css/validation-enhanced.css}" />
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
+            rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+</head>
+<body>
+<div th:replace="~{navbar/navbarHome :: home}"></div>
+<div class="page-container login-container">
+    <h2>ĐĂNG KÝ NHÀ TUYỂN DỤNG</h2>
+    <form class="login-form" method="post" th:action="@{/Register/registerEmployer}" th:object="${accountEmployerDTO}" id="registerForm">
+        <p class="subtitle">Hoặc <a th:href="@{/Login}">đăng nhập NGAY</a> nếu bạn đã có tài khoản.</p>
+        
+        <!-- Login Information Section -->
+        <h3 style="margin-top: 30px; margin-bottom: 20px; color: #333; font-weight: 600; border-bottom: 2px solid #007bff; padding-bottom: 10px;">
+            <i class="bi bi-shield-lock" style="color: #007bff; margin-right: 8px;"></i>Thông tin đăng nhập
+        </h3>
+        
+        <!-- Email -->
+        <div class="form-group">
+            <input type="email" id="email" name="email" placeholder="Nhập địa chỉ Email *" th:field="*{email}" required>
+            <span class="error-message server-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+            <span class="error-message" id="emailError"></span>
+            <div class="form-tooltip">Nhập email để đăng nhập và nhận thông báo</div>
+        </div>
+        
+        <!-- Password -->
+        <div class="form-group">
+            <input type="password" id="password" name="password" placeholder="Nhập mật khẩu *" th:field="*{password}" required>
+            <span class="error-message server-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+            <span class="error-message" id="passwordError"></span>
+            <div class="password-strength" id="passwordStrength"></div>
+            <div class="form-tooltip">Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số</div>
+        </div>
+        
+        <!-- Confirm Password -->
+        <div class="form-group">
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Xác nhận mật khẩu *" th:field="*{confirmPassword}" required>
+            <span class="error-message server-error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></span>
+            <span class="error-message" id="confirmPasswordError"></span>
+            <div class="form-tooltip">Nhập lại mật khẩu để xác nhận</div>
+        </div>
+        
+        <!-- Contact Information Section -->
+        <h3 style="margin-top: 40px; margin-bottom: 20px; color: #333; font-weight: 600; border-bottom: 2px solid #28a745; padding-bottom: 10px;">
+            <i class="bi bi-person-lines-fill" style="color: #28a745; margin-right: 8px;"></i>Thông tin liên hệ
+        </h3>
+        
+        <!-- Full Name -->
+        <div class="form-group">
+            <input type="text" id="fullName" name="fullname" placeholder="Nhập họ và tên người đại diện *" th:field="*{fullName}" required>
+            <span class="error-message server-error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></span>
+            <span class="error-message" id="fullNameError"></span>
+            <div class="form-tooltip">Tên người đại diện công ty</div>
+        </div>
+        
+        <!-- Phone -->
+        <div class="form-group">
+            <input type="tel" id="phone" name="phone" placeholder="Nhập số điện thoại *" th:field="*{phone}" required>
+            <span class="error-message server-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></span>
+            <span class="error-message" id="phoneError"></span>
+            <div class="form-tooltip">Số điện thoại liên hệ (10-11 chữ số)</div>
+        </div>
+        
+        <!-- Company Information Section -->
+        <h3 style="margin-top: 40px; margin-bottom: 20px; color: #333; font-weight: 600; border-bottom: 2px solid #17a2b8; padding-bottom: 10px;">
+            <i class="bi bi-building" style="color: #17a2b8; margin-right: 8px;"></i>Thông tin công ty
+        </h3>
+        
+        <!-- Company Name -->
+        <div class="form-group">
+            <input type="text" id="companyName" name="company_name" placeholder="Tên công ty *" th:field="*{companyName}" required>
+            <span class="error-message server-error" th:if="${#fields.hasErrors('companyName')}" th:errors="*{companyName}"></span>
+            <span class="error-message" id="companyNameError"></span>
+            <div class="form-tooltip">Tên chính thức của công ty</div>
+        </div>
+        
+        <!-- Company Address -->
+        <div class="form-group">
+            <input type="text" id="companyAddress" name="company_address" placeholder="Địa chỉ công ty *" th:field="*{companyAddress}" required>
+            <span class="error-message server-error" th:if="${#fields.hasErrors('companyAddress')}" th:errors="*{companyAddress}"></span>
+            <span class="error-message" id="companyAddressError"></span>
+            <div class="form-tooltip">Địa chỉ trụ sở chính của công ty</div>
+        </div>
+        
+        <!-- Company Description -->
+<!--        <div class="form-group">-->
+<!--            <textarea id="companyDescription" name="company_des" placeholder="Mô tả công ty *" th:field="*{companyDescription}" required -->
+<!--                      style="min-height: 120px; resize: vertical; padding: 15px; border: 2px solid #e1e5e9; border-radius: 10px; -->
+<!--                             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 16px; -->
+<!--                             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; box-sizing: border-box;"></textarea>-->
+<!--            <span class="error-message server-error" th:if="${#fields.hasErrors('companyDescription')}" th:errors="*{companyDescription}"></span>-->
+<!--            <span class="error-message" id="companyDescriptionError"></span>-->
+<!--            <div class="form-tooltip">Mô tả về hoạt động và văn hóa công ty (ít nhất 10 ký tự)</div>-->
+<!--        </div>-->
+        
+        <!-- Job Field -->
+        <div class="form-group">
+                         <select id="jobsFieldId" name="jobsFieldId" th:field="*{jobsFieldId}" required
+                     style="width: 100%; padding: 15px; border: 2px solid #e1e5e9; border-radius: 10px; 
+                            font-size: 16px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); background-color: #fff; 
+                            appearance: none; background-repeat: no-repeat; background-position: right 15px center; background-size: 20px;">
+                <option value="">-- Chọn lĩnh vực công việc --</option>
+                <option th:each="field : ${jobFields}"
+                        th:value="${field.jobFieldId}"
+                        th:text="${field.jobFieldName}">
+                </option>
+            </select>
+            <span class="error-message server-error" th:if="${#fields.hasErrors('jobsFieldId')}" th:errors="*{jobsFieldId}"></span>
+            <span class="error-message" id="jobsFieldIdError"></span>
+            <div class="form-tooltip">Chọn lĩnh vực chính mà công ty hoạt động</div>
+        </div>
+        
+        <!-- Terms and Conditions -->
+        <div class="form-group terms-checkbox-container" id="termsContainer">
+            <label class="terms-checkbox-label" for="agreeTerms">
+                <div class="custom-checkbox">
+                    <input type="checkbox" id="agreeTerms" required>
+                    <span class="checkmark"></span>
+                </div>
+                <div class="terms-text">
+                    Tôi đồng ý với <a href="#" onclick="event.preventDefault();">Điều khoản sử dụng</a> và <a href="#" onclick="event.preventDefault();">Chính sách bảo mật</a>
+                </div>
+            </label>
+            <span class="error-message" id="agreeTermsError"></span>
+        </div>
+        
+        <button type="submit" class="content-btn content-btn-primary login-page-btn btn-submit" id="submitBtn">
+            <i class="bi bi-building-add"></i> Đăng ký tài khoản
+        </button>
+        
+        <div style="text-align: center; margin-top: 20px; color: #666; font-size: 14px;">
+            <p>Bằng cách đăng ký, bạn sẽ nhận được mã OTP qua email để xác thực tài khoản.</p>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('registerForm');
+    const fullNameInput = document.getElementById('fullName');
+    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const companyNameInput = document.getElementById('companyName');
+    const companyAddressInput = document.getElementById('companyAddress');
+    const companyDescriptionInput = document.getElementById('companyDescription');
+    const jobsFieldIdSelect = document.getElementById('jobsFieldId');
+    const agreeTermsCheckbox = document.getElementById('agreeTerms');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Track which fields have been touched/blurred
+    const touchedFields = new Set();
+    
+    // Check if this is a form submission result (has server errors)
+    const hasServerErrors = document.querySelectorAll('.server-error:not(:empty)').length > 0;
+    
+    // If there are server errors and we have field values, it means form was submitted
+    // Show server errors only in this case
+    if (hasServerErrors) {
+        const hasFieldValues = [fullNameInput, emailInput, phoneInput, passwordInput, companyNameInput].some(input => input.value.trim() !== '');
+        if (hasFieldValues) {
+            // This is a form submission result, show server errors
+            document.querySelectorAll('.server-error:not(:empty)').forEach(errorElement => {
+                errorElement.classList.add('show');
+                
+                // Also mark the corresponding input as invalid
+                const fieldName = errorElement.closest('.form-group').querySelector('input, select, textarea').id;
+                const inputElement = document.getElementById(fieldName);
+                if (inputElement) {
+                    inputElement.classList.add('invalid');
+                    touchedFields.add(fieldName);
+                }
+            });
+        }
+    }
+    
+    // Validation functions
+    function validateFullName(value) {
+        if (!value.trim()) {
+            return 'Họ và tên không được để trống';
+        }
+        if (value.trim().length < 2 || value.trim().length > 100) {
+            return 'Họ và tên phải từ 2 đến 100 ký tự';
+        }
+        if (!/^[a-zA-ZÀ-ỹĐđ\s]+$/.test(value)) {
+            return 'Họ và tên chỉ được chứa chữ cái và khoảng trắng';
+        }
+        if (/\d/.test(value)) {
+            return 'Họ và tên không được chứa số';
+        }
+        if (/\s{2,}/.test(value)) {
+            return 'Họ và tên không được chứa nhiều khoảng trắng liên tiếp';
+        }
+        return null;
+    }
+    
+    function validateEmail(value) {
+        if (!value.trim()) {
+            return 'Email không được để trống';
+        }
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(value)) {
+            return 'Email không đúng định dạng';
+        }
+        if (value.length > 100) {
+            return 'Email không được vượt quá 100 ký tự';
+        }
+        return null;
+    }
+    
+    function validatePhone(value) {
+        if (!value.trim()) {
+            return 'Số điện thoại không được để trống';
+        }
+        // Vietnamese phone number validation
+        const phoneRegex = /^0(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-9]|9[0-9])[0-9]{7}$/;
+        if (!phoneRegex.test(value.replace(/\s/g, ''))) {
+            return 'Số điện thoại không đúng định dạng Việt Nam';
+        }
+        return null;
+    }
+    
+    function validatePassword(value) {
+        if (!value) {
+            return 'Mật khẩu không được để trống';
+        }
+        if (value.length < 8 || value.length > 50) {
+            return 'Mật khẩu phải từ 8 đến 50 ký tự';
+        }
+        if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)) {
+            return 'Mật khẩu phải chứa ít nhất 1 chữ thường, 1 chữ hoa và 1 số';
+        }
+        if (value.includes(' ')) {
+            return 'Mật khẩu không được chứa khoảng trắng';
+        }
+        return null;
+    }
+    
+    function validateConfirmPassword(password, confirmPassword) {
+        if (!confirmPassword) {
+            return 'Vui lòng xác nhận mật khẩu';
+        }
+        if (password !== confirmPassword) {
+            return 'Mật khẩu xác nhận không khớp';
+        }
+        return null;
+    }
+    
+    function validateCompanyName(value) {
+        if (!value.trim()) {
+            return 'Tên công ty không được để trống';
+        }
+        if (value.trim().length < 2 || value.trim().length > 255) {
+            return 'Tên công ty phải từ 2 đến 255 ký tự';
+        }
+        return null;
+    }
+    
+    function validateCompanyAddress(value) {
+        if (!value.trim()) {
+            return 'Địa chỉ công ty không được để trống';
+        }
+        if (value.trim().length < 5 || value.trim().length > 500) {
+            return 'Địa chỉ công ty phải từ 5 đến 500 ký tự';
+        }
+        return null;
+    }
+    
+    function validateCompanyDescription(value) {
+        if (!value.trim()) {
+            return 'Mô tả công ty không được để trống';
+        }
+        if (value.trim().length < 10 || value.trim().length > 1000) {
+            return 'Mô tả công ty phải từ 10 đến 1000 ký tự';
+        }
+        return null;
+    }
+    
+    function validateJobField(value) {
+        if (!value || value === '') {
+            return 'Vui lòng chọn lĩnh vực công việc';
+        }
+        return null;
+    }
+    
+    function checkPasswordStrength(password) {
+        if (!password) return '';
+        
+        let strength = 0;
+        const criteria = {
+            length: password.length >= 8,
+            lowercase: /[a-z]/.test(password),
+            uppercase: /[A-Z]/.test(password),
+            number: /\d/.test(password),
+            special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+        };
+        
+        strength = Object.values(criteria).filter(Boolean).length;
+        
+        let strengthText = '';
+        let strengthClass = '';
+        
+        if (strength < 3) {
+            strengthText = 'Yếu';
+            strengthClass = 'strength-weak';
+        } else if (strength < 4) {
+            strengthText = 'Trung bình';
+            strengthClass = 'strength-medium';
+        } else {
+            strengthText = 'Mạnh';
+            strengthClass = 'strength-strong';
+        }
+        
+        const recommendations = [];
+        if (!criteria.length) recommendations.push('ít nhất 8 ký tự');
+        if (!criteria.lowercase) recommendations.push('chữ thường');
+        if (!criteria.uppercase) recommendations.push('chữ hoa');
+        if (!criteria.number) recommendations.push('số');
+        if (!criteria.special) recommendations.push('ký tự đặc biệt');
+        
+        let html = `<span class="${strengthClass}">Độ mạnh: ${strengthText}</span>`;
+        if (recommendations.length > 0) {
+            html += `<br><small>Cần thêm: ${recommendations.join(', ')}</small>`;
+        }
+        
+        return html;
+    }
+    
+    function showError(input, message) {
+        const errorElement = document.getElementById(input.id + 'Error');
+        const serverErrorElement = input.closest('.form-group').querySelector('.server-error');
+        
+        // Hide server error when showing client error
+        if (serverErrorElement) {
+            serverErrorElement.classList.remove('show');
+        }
+        
+        if (errorElement) {
+            errorElement.textContent = message || '';
+        }
+        input.classList.remove('valid');
+        if (message) {
+            input.classList.add('invalid');
+        } else {
+            input.classList.remove('invalid');
+        }
+    }
+    
+    function showValid(input) {
+        const errorElement = document.getElementById(input.id + 'Error');
+        const serverErrorElement = input.closest('.form-group').querySelector('.server-error');
+        
+        // Hide server error when showing valid state
+        if (serverErrorElement) {
+            serverErrorElement.classList.remove('show');
+        }
+        
+        if (errorElement) {
+            errorElement.textContent = '';
+        }
+        input.classList.remove('invalid');
+        input.classList.add('valid');
+    }
+    
+    function validateField(input, validateFn, ...args) {
+        // Chỉ validate nếu field đã được touch hoặc có giá trị
+        if (touchedFields.has(input.id) || input.value.trim() !== '') {
+            const error = validateFn(input.value, ...args);
+            if (error) {
+                showError(input, error);
+                return false;
+            } else {
+                showValid(input);
+                return true;
+            }
+        }
+        return true;
+    }
+    
+    // Add blur event listeners để track touched fields
+    [fullNameInput, emailInput, phoneInput, passwordInput, confirmPasswordInput, 
+     companyNameInput, companyAddressInput, companyDescriptionInput, jobsFieldIdSelect].forEach(input => {
+        input.addEventListener('blur', function() {
+            touchedFields.add(this.id);
+            // Validate when field loses focus
+            switch(this.id) {
+                case 'fullName':
+                    validateField(this, validateFullName);
+                    break;
+                case 'email':
+                    validateField(this, validateEmail);
+                    break;
+                case 'phone':
+                    validateField(this, validatePhone);
+                    break;
+                case 'password':
+                    validateField(this, validatePassword);
+                    break;
+                case 'confirmPassword':
+                    validateField(this, validateConfirmPassword, passwordInput.value);
+                    break;
+                case 'companyName':
+                    validateField(this, validateCompanyName);
+                    break;
+                case 'companyAddress':
+                    validateField(this, validateCompanyAddress);
+                    break;
+                case 'companyDescription':
+                    validateField(this, validateCompanyDescription);
+                    break;
+                case 'jobsFieldId':
+                    validateField(this, validateJobField);
+                    break;
+            }
+        });
+    });
+    
+    // Real-time validation only for touched fields
+    fullNameInput.addEventListener('input', function() {
+        validateField(this, validateFullName);
+    });
+    
+    emailInput.addEventListener('input', function() {
+        validateField(this, validateEmail);
+    });
+    
+    phoneInput.addEventListener('input', function() {
+        // Auto-format phone number
+        let value = this.value.replace(/\D/g, '');
+        if (value.startsWith('84')) {
+            value = '0' + value.substring(2);
+        }
+        this.value = value;
+        
+        validateField(this, validatePhone);
+    });
+    
+    passwordInput.addEventListener('input', function() {
+        const strengthElement = document.getElementById('passwordStrength');
+        
+        // Always show password strength when typing
+        strengthElement.innerHTML = checkPasswordStrength(this.value);
+        
+        validateField(this, validatePassword);
+        
+        // Re-validate confirm password if it has value
+        if (confirmPasswordInput.value && touchedFields.has('confirmPassword')) {
+            validateField(confirmPasswordInput, validateConfirmPassword, this.value);
+        }
+    });
+    
+    confirmPasswordInput.addEventListener('input', function() {
+        validateField(this, validateConfirmPassword, passwordInput.value);
+    });
+    
+    companyNameInput.addEventListener('input', function() {
+        validateField(this, validateCompanyName);
+    });
+    
+    companyAddressInput.addEventListener('input', function() {
+        validateField(this, validateCompanyAddress);
+    });
+    
+    companyDescriptionInput.addEventListener('input', function() {
+        validateField(this, validateCompanyDescription);
+    });
+    
+    jobsFieldIdSelect.addEventListener('change', function() {
+        validateField(this, validateJobField);
+    });
+    
+    agreeTermsCheckbox.addEventListener('change', function() {
+        const errorElement = document.getElementById('agreeTermsError');
+        const termsContainer = document.getElementById('termsContainer');
+        
+        if (!this.checked && touchedFields.has('agreeTerms')) {
+            errorElement.textContent = 'Bạn phải đồng ý với điều khoản sử dụng';
+            termsContainer.classList.add('invalid');
+            termsContainer.classList.remove('valid');
+        } else {
+            errorElement.textContent = '';
+            termsContainer.classList.remove('invalid');
+            if (this.checked) {
+                termsContainer.classList.add('valid');
+            }
+        }
+    });
+    
+    agreeTermsCheckbox.addEventListener('click', function() {
+        touchedFields.add('agreeTerms');
+    });
+    
+    // Form submission - validate all fields
+    form.addEventListener('submit', function(e) {
+        let hasErrors = false;
+        
+        // Mark all fields as touched when submitting
+        touchedFields.add('fullName');
+        touchedFields.add('email');
+        touchedFields.add('phone');
+        touchedFields.add('password');
+        touchedFields.add('confirmPassword');
+        touchedFields.add('companyName');
+        touchedFields.add('companyAddress');
+        touchedFields.add('companyDescription');
+        touchedFields.add('jobsFieldId');
+        touchedFields.add('agreeTerms');
+        
+        // Validate all fields
+        const fullNameError = validateFullName(fullNameInput.value);
+        const emailError = validateEmail(emailInput.value);
+        const phoneError = validatePhone(phoneInput.value);
+        const passwordError = validatePassword(passwordInput.value);
+        const confirmPasswordError = validateConfirmPassword(passwordInput.value, confirmPasswordInput.value);
+        const companyNameError = validateCompanyName(companyNameInput.value);
+        const companyAddressError = validateCompanyAddress(companyAddressInput.value);
+        const companyDescriptionError = validateCompanyDescription(companyDescriptionInput.value);
+        const jobFieldError = validateJobField(jobsFieldIdSelect.value);
+        
+        if (fullNameError) {
+            showError(fullNameInput, fullNameError);
+            hasErrors = true;
+        }
+        
+        if (emailError) {
+            showError(emailInput, emailError);
+            hasErrors = true;
+        }
+        
+        if (phoneError) {
+            showError(phoneInput, phoneError);
+            hasErrors = true;
+        }
+        
+        if (passwordError) {
+            showError(passwordInput, passwordError);
+            hasErrors = true;
+        }
+        
+        if (confirmPasswordError) {
+            showError(confirmPasswordInput, confirmPasswordError);
+            hasErrors = true;
+        }
+        
+        if (companyNameError) {
+            showError(companyNameInput, companyNameError);
+            hasErrors = true;
+        }
+        
+        if (companyAddressError) {
+            showError(companyAddressInput, companyAddressError);
+            hasErrors = true;
+        }
+        
+        if (companyDescriptionError) {
+            showError(companyDescriptionInput, companyDescriptionError);
+            hasErrors = true;
+        }
+        
+        if (jobFieldError) {
+            showError(jobsFieldIdSelect, jobFieldError);
+            hasErrors = true;
+        }
+        
+        // Check terms agreement
+        if (!agreeTermsCheckbox.checked) {
+            const agreeTermsError = document.getElementById('agreeTermsError');
+            const termsContainer = document.getElementById('termsContainer');
+            agreeTermsError.textContent = 'Bạn phải đồng ý với điều khoản sử dụng';
+            termsContainer.classList.add('invalid');
+            termsContainer.classList.remove('valid');
+            hasErrors = true;
+        } else {
+            const termsContainer = document.getElementById('termsContainer');
+            termsContainer.classList.add('valid');
+            termsContainer.classList.remove('invalid');
+        }
+        
+        if (hasErrors) {
+            e.preventDefault();
+            
+            // Scroll to first error
+            const firstError = document.querySelector('.invalid, .terms-checkbox-container.invalid');
+            if (firstError) {
+                firstError.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }
+            
+            // Show shake animation on submit button
+            submitBtn.classList.add('error-shake');
+            setTimeout(() => {
+                submitBtn.classList.remove('error-shake');
+            }, 500);
+        } else {
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span>Đang đăng ký...';
+        }
+    });
+    
+    // Style the textarea to match other inputs
+    companyDescriptionInput.addEventListener('focus', function() {
+        this.style.borderColor = '#007bff';
+        this.style.boxShadow = '0 0 0 4px rgba(0, 123, 255, 0.15)';
+        this.style.transform = 'translateY(-2px)';
+    });
+    
+    companyDescriptionInput.addEventListener('blur', function() {
+        this.style.borderColor = '#e1e5e9';
+        this.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+        this.style.transform = 'translateY(0)';
+    });
+    
+    // Style the select to match other inputs
+    jobsFieldIdSelect.addEventListener('focus', function() {
+        this.style.borderColor = '#007bff';
+        this.style.boxShadow = '0 0 0 4px rgba(0, 123, 255, 0.15)';
+        this.style.transform = 'translateY(-2px)';
+    });
+    
+    jobsFieldIdSelect.addEventListener('blur', function() {
+        this.style.borderColor = '#e1e5e9';
+        this.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+        this.style.transform = 'translateY(0)';
+    });
+});
+</script>
+</body>
+</html>

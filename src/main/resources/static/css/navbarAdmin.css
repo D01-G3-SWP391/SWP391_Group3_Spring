@@ -1,0 +1,181 @@
+/* navbarStudentEmployerEnhanced.css */
+
+/* Body styling to account for vertical navbar */
+body {
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff 0%, #e6e9ff 100%);
+    margin-left: 250px; /* Default margin for content */
+    transition: margin-left 0.3s ease; /* Smooth transition for content shift */
+}
+
+/* Collapsed body margin */
+body.collapsed {
+    margin-left: 80px; /* Adjust body margin when navbar is collapsed */
+}
+
+/* Admin vertical navbar (renamed for student/employer context) */
+.admin-vertical-navbar {
+    width: 250px; /* Expanded width */
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: linear-gradient(135deg, #c7d2fe 0%, #EAEDFF 100%); /* Lavender gradient based on #EAEDFF */
+    padding-top: 20px;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15); /* Softer shadow */
+    overflow-y: auto;
+    z-index: 1000;
+    transition: width 0.3s ease; /* Smooth width transition */
+    animation: fadeInLeft 0.6s ease-out; /* Entrance animation */
+}
+
+.admin-vertical-navbar.collapsed {
+    width: 80px; /* Collapsed width */
+}
+
+/* Logo area */
+.admin-logo-area {
+    padding: 15px 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.admin-text-logo-link {
+    text-decoration: none;
+}
+
+.admin-text-logo {
+    color: #1f2937; /* Dark gray for contrast */
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 12px 20px;
+    display: inline-block;
+    transition: opacity 0.3s ease;
+}
+
+.admin-vertical-navbar.collapsed .admin-text-logo {
+    opacity: 0; /* Hide logo text when collapsed */
+}
+
+/* Toggle button */
+.toggle-btn {
+    background: none;
+    border: none;
+    color: #1f2937;
+    font-size: 1.5em;
+    position: absolute;
+    right: 10px;
+    top: 15px;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.toggle-btn:hover {
+    color: #4f46e5; /* Indigo on hover for consistency */
+    transform: rotate(90deg); /* Subtle rotation on hover */
+}
+
+/* Nav links */
+.admin-nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.admin-nav-links li a {
+    display: flex;
+    align-items: center;
+    padding: 15px 25px;
+    text-decoration: none;
+    color: #1f2937; /* Dark gray text */
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.3s ease, color 0.3s ease, padding-left 0.3s ease;
+}
+
+.admin-nav-links li a .bi {
+    margin-right: 12px;
+    font-size: 1.2em;
+    min-width: 24px; /* Ensure icon alignment */
+    transition: transform 0.3s ease;
+}
+
+.admin-vertical-navbar.collapsed .admin-nav-links li a span {
+    display: none; /* Hide text when collapsed */
+}
+
+.admin-vertical-navbar.collapsed .admin-nav-links li a {
+    padding-left: 28px; /* Center icons when collapsed */
+}
+
+.admin-nav-links li a:hover,
+.admin-nav-links li a.active {
+    background: rgba(165, 180, 252, 0.2); /* Subtle lavender overlay on hover */
+    color: #4f46e5; /* Indigo on hover */
+}
+
+.admin-nav-links li a:hover .bi {
+    transform: translateX(5px); /* Icon shifts slightly on hover */
+}
+
+/* Special styling for Logout link to match theme's button style */
+.admin-nav-links li a[href*="Logout"] {
+    background: linear-gradient(135deg, #4f46e5 0%, #7e6bff 100%); /* Indigo gradient for logout, consistent with theme */
+    border-radius: 8px;
+    margin: 10px 20px;
+    justify-content: center; /* Center icon and text */
+    box-shadow: 0 2px 6px rgba(79, 70, 229, 0.2);
+    color: #fff; /* White text for contrast on indigo */
+}
+
+.admin-nav-links li a[href*="Logout"]:hover {
+    background: linear-gradient(135deg, #3730a3 0%, #5b47d5 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+/* Animation keyframes */
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    body {
+        margin-left: 80px; /* Default to collapsed state on mobile */
+    }
+
+    .admin-vertical-navbar {
+        width: 80px; /* Collapsed by default on mobile */
+    }
+
+    .admin-vertical-navbar.collapsed {
+        width: 80px;
+    }
+
+    body.collapsed {
+        margin-left: 80px;
+    }
+
+    .admin-text-logo {
+        opacity: 0; /* Hide logo text on mobile */
+    }
+
+    .admin-nav-links li a span {
+        display: none; /* Hide text on mobile */
+    }
+
+    .admin-nav-links li a {
+        padding-left: 28px; /* Center icons */
+    }
+}

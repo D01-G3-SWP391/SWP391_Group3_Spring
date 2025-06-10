@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quên mật khẩu</title>
+    <link rel="stylesheet" th:href="@{/css/login.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbar.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
+    <link rel="stylesheet" th:href="@{/css/registerEnhanced.css}" />
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+</head>
+<body>
+<div th:replace="~{navbar/navbarHome :: home}"></div>
+<div class="forgot-password-container page-container login-container">
+    <h2>Quên mật khẩu?</h2>
+    <div class="subtitle">Vui lòng nhập địa chỉ email của bạn để đặt lại mật khẩu</div>
+    <div th:if="${emailNotFound}" class="error-message" th:text="${emailNotFound}"></div>
+    <div th:if="${reEnterEmail}" class="error-message" th:text="${reEnterEmail}"></div>
+    <form class="login-form" method="get" th:action="@{/ForgotPassword/VerifyMail}">
+        <div class="form-group">
+            <input type="text" name="email" placeholder="Nhập email của bạn" required>
+        </div>
+        <button type="submit" class="content-btn content-btn-primary login-page-btn"><span class="icon-lock"></span>Xác nhận</button>
+    </form>
+</div>
+</body>
+<script th:src="@{/js/languageSwitch.js}"></script>
+
+</html>

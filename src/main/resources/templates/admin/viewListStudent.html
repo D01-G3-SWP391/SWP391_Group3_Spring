@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
+    <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
+</head>
+<body>
+<div th:replace="~{navbar/navbarAdmin :: navbarAdmin}"></div>
+
+<div class="main-content">
+    <div class="container-fluid">
+        <h2>Student Management</h2>
+
+        <!-- Success/Error Messages -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Filter Form -->
+        <form method="get" class="row g-3 mb-4 filter-form">
+            <div class="col-md-6 col-lg-4">
+                <input class="form-control" name="keyword" placeholder="Search by name or email..." />
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-primary" type="submit">
+                    <i class="bi bi-search me-2"></i>Filter
+                </button>
+            </div>
+        </form>
+
+        <!-- Student Table -->
+        <div class="table-responsive">
+            <table class="table table-hover admin-table">
+                <thead>
+                <tr>
+                    <th><i class="bi bi-person-circle me-2"></i>Avatar</th>
+                    <th><i class="bi bi-person me-2"></i>Name</th>
+                    <th><i class="bi bi-envelope me-2"></i>Email</th>
+                    <th><i class="bi bi-telephone me-2"></i>Phone</th>
+                    <th><i class="bi bi-shield-check me-2"></i>Status</th>
+                    <th><i class="bi bi-gear me-2"></i>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="student : ${studentList}">
+                    <td>
+                        <img class="avatar"
+                             th:src="${student.avatarUrl != null ? student.avatarUrl : '/images/default-avatar.png'}"
+                             th:alt="${student.fullName}" />
+                    </td>
+                    <td>
+                        <strong th:text="${student.fullName}"></strong>
+                    </td>
+                    <td th:text="${student.email}"></td>
+                    <td th:text="${student.phone}"></td>
+                    <td>
+                        <span th:class="${student.status.name() == 'active' ? 'status-active' : 'status-banned'}"
+                              th:text="${student.status.name() == 'active' ? 'Active' : 'Banned'}"></span>
+                    </td>
+                    <td>
+                        <div class="action-btns">
+                            <a th:href="@{/Admin/student/{id}(id=${student.userId})}"
+                               class="btn btn-sm btn-primary">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+
+                            <form th:if="${student.status.name() == 'active'}"
+                                  th:action="@{/Admin/banStudent/{id}(id=${student.userId})}"
+                                  method="post" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-person-x"></i> Ban
+                                </button>
+                            </form>
+
+                            <form th:if="${student.status.name() == 'inactive'}"
+                                  th:action="@{/Admin/unbanStudent/{id}(id=${student.userId})}"
+                                  method="post" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-success">
+                                    <i class="bi bi-person-check"></i> Unban
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/navbarAdmin.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

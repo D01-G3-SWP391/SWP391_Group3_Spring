@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employer Details - Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
+  <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
+  <link rel="stylesheet" th:href="@{/css/adminDetails.css}">
+</head>
+<body>
+<div th:replace="~{navbar/navbarAdmin :: navbarAdmin}"></div>
+
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2>Employer Details</h2>
+      <a th:href="@{/Admin/ListEmployer}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left me-2"></i>Back to List
+      </a>
+    </div>
+
+    <!-- Personal Information Card -->
+    <div class="detail-card">
+      <div class="row">
+        <div class="col-md-4 text-center">
+          <img class="avatar-large"
+               th:src="${employer.account.avatarUrl != null ? employer.account.avatarUrl : '/images/default-avatar.png'}"
+               th:alt="${employer.account.fullName}" />
+          <h4 class="mt-3 mb-2" th:text="${employer.account.fullName}"></h4>
+          <span th:class="${employer.account.status.name() == 'active' ? 'status-active' : 'status-banned'}"
+                th:text="${employer.account.status.name() == 'active' ? 'Active' : 'Banned'}"></span>
+        </div>
+        <div class="col-md-8">
+          <h5 class="mb-3">
+            <i class="bi bi-person-circle me-2"></i>Personal Information
+          </h5>
+
+          <div class="info-row">
+            <span class="info-label">
+              <i class="bi bi-hash me-2"></i>User ID
+            </span>
+            <span class="info-value" th:text="${employer.account.userId}"></span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">
+              <i class="bi bi-person me-2"></i>Full Name
+            </span>
+            <span class="info-value" th:text="${employer.account.fullName}"></span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">
+              <i class="bi bi-envelope me-2"></i>Email
+            </span>
+            <span class="info-value" th:text="${employer.account.email}"></span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">
+              <i class="bi bi-telephone me-2"></i>Phone
+            </span>
+            <span class="info-value" th:text="${employer.account.phone ?: 'Not provided'}"></span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">
+              <i class="bi bi-briefcase me-2"></i>Role
+            </span>
+            <span class="info-value">
+              <span class="badge bg-primary">Employer</span>
+            </span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">
+              <i class="bi bi-shield-check me-2"></i>Status
+            </span>
+            <span class="info-value">
+              <span th:class="${employer.account.status.name() == 'active' ? 'status-active' : 'status-banned'}"
+                    th:text="${employer.account.status.name() == 'active' ? 'Active' : 'Banned'}"></span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Company Information Card -->
+    <div class="detail-card">
+      <div class="row">
+        <div class="col-md-4 text-center">
+          <img class="avatar-large"
+               th:src="${employer.logoUrl != null ? employer.logoUrl : '/images/default-company.png'}"
+               alt="Company Logo" />
+          <h4 class="mt-3 mb-2" th:text="${employer.companyName ?: 'Company Name Not Set'}"></h4>
+          <!-- SỬA: Đổi từ .name thành .jobFieldName -->
+          <span class="badge bg-info" th:text="${employer.jobField != null ? employer.jobField.jobFieldName : 'No Field Set'}"></span>
+        </div>
+        <div class="col-md-8">
+          <h5 class="mb-3">
+            <i class="bi bi-building me-2"></i>Company Information
+          </h5>
+
+          <div class="info-row">
+            <span class="info-label">
+              <i class="bi bi-hash me-2"></i>Employer ID
+            </span>
+            <span class="info-value" th:text="${employer.employerId}"></span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">
+              <i class="bi bi-building me-2"></i>Company Name
+            </span>
+            <span class="info-value" th:text="${employer.companyName ?: 'Not provided'}"></span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">
+              <i class="bi bi-geo-alt me-2"></i>Company Address
+            </span>
+            <span class="info-value" th:text="${employer.companyAddress ?: 'Not provided'}"></span>
+          </div>
+
+          <div class="info-row">
+            <span class="info-label">
+              <i class="bi bi-tag me-2"></i>Job Field
+            </span>
+            <!-- SỬA: Đổi từ .name thành .jobFieldName -->
+            <span class="info-value" th:text="${employer.jobField != null ? employer.jobField.jobFieldName : 'Not specified'}"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Company Description Card -->
+    <div class="detail-card" th:if="${employer.companyDescription}">
+      <h5 class="mb-3">
+        <i class="bi bi-file-text me-2"></i>Company Description
+      </h5>
+      <div class="company-description">
+        <p th:text="${employer.companyDescription}"></p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="detail-card">
+      <h5 class="mb-3">
+        <i class="bi bi-gear me-2"></i>Actions
+      </h5>
+      <div class="d-flex gap-3">
+        <form th:if="${employer.account.status.name() == 'active'}"
+              th:action="@{/Admin/banEmployer/{id}(id=${employer.account.userId})}"
+              method="post">
+          <button type="submit" class="btn btn-danger">
+            <i class="bi bi-person-x me-2"></i>Ban Employer
+          </button>
+        </form>
+
+        <form th:if="${employer.account.status.name() == 'inactive'}"
+              th:action="@{/Admin/unbanEmployer/{id}(id=${employer.account.userId})}"
+              method="post">
+          <button type="submit" class="btn btn-success">
+            <i class="bi bi-person-check me-2"></i>Unban Employer
+          </button>
+        </form>
+
+        <button class="btn btn-info">
+          <i class="bi bi-envelope me-2"></i>Send Message
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script th:src="@{/js/navbarAdmin.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

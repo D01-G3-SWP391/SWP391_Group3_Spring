@@ -1,0 +1,161 @@
+/* registerPage.css */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7f6;
+    display: flex;
+    flex-direction: column; /* Allow navbar and then content */
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding-top: 0; /* Override if needed */
+}
+
+.register-container {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px; /* Slightly more rounded */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px; /* Wider for the two-column layout */
+    text-align: center;
+    margin-top: 100px; /* Margin from navbar */
+    margin-bottom: 30px;
+}
+
+.register-header {
+    margin-bottom: 30px;
+}
+
+.register-header .tic-logo {
+    max-width: 150px; /* Adjust as needed */
+    margin-bottom: 10px;
+    margin-top: -20px;
+}
+
+.register-header h2 {
+    color: #2c3e50; /* Dark blue/grey */
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.register-header p {
+    color: #555;
+    font-size: 16px;
+    margin-bottom: 0;
+}
+
+.register-options {
+    display: flex;
+    justify-content: space-around; /* Space out the two options */
+    gap: 30px; /* Gap between the two options */
+    margin-bottom: 30px;
+}
+
+.register-option {
+    flex-basis: 45%; /* Each option takes roughly half the space */
+    padding: 30px;
+    border-radius: 8px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.register-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.register-option.candidate {
+    background-color: #e9f2ff; /* Light blue background */
+    border: 1px solid #bad6ff;
+}
+
+.register-option.employer {
+    background-color: #e8f5e9; /* Light green background */
+    border: 1px solid #b8e0b9;
+}
+
+.register-option .option-icon img {
+    width: 130px; /* Adjust icon size */
+    height: 100px;
+    margin-bottom: 20px;
+}
+
+.register-option h3 {
+    color: #333;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.register-option p {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    min-height: 60px; /* Ensure consistent height for p tags */
+}
+
+.register-option .content-btn {
+    background-color: #ffc107; /* Yellow button as in image */
+    color: #333; /* Darker text for yellow button */
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+.register-option .content-btn .arrow-icon {
+    margin-left: 8px;
+    font-weight: bold;
+}
+
+.register-option .content-btn:hover {
+    background-color: #e0a800; /* Darker yellow on hover */
+}
+
+.login-prompt {
+    margin-top: 25px;
+    font-size: 15px;
+    color: #555;
+}
+
+.login-prompt a {
+    color: #007bff;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.login-prompt a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive adjustments for register page */
+@media (max-width: 768px) {
+    .register-container {
+        max-width: 90%;
+        padding: 25px;
+    }
+    .register-options {
+        flex-direction: column; /* Stack options on smaller screens */
+        gap: 20px;
+    }
+    .register-option {
+        flex-basis: 100%; /* Full width when stacked */
+        padding: 20px;
+    }
+    .register-header h2 {
+        font-size: 22px;
+    }
+    .register-option h3 {
+        font-size: 18px;
+    }
+    .register-option p {
+        font-size: 13px;
+        min-height: auto; /* Allow height to adjust on mobile */
+    }
+} 

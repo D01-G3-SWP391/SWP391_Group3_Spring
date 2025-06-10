@@ -1,0 +1,39 @@
+package com.example.swp391_d01_g3.repository;
+
+import com.example.swp391_d01_g3.model.JobPost;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+
+@Repository
+public interface IJobPostRepository extends JpaRepository<JobPost,Long> {
+
+    @Query("SELECT jp FROM JobPost jp JOIN FETCH jp.employer WHERE jp.jobPostId = ?1")
+    List<JobPost> findAllWithEmployer(Long id);
+
+
+    @Query("SELECT jp FROM JobPost jp " +
+            "JOIN jp.employer e " +
+            "JOIN e.jobField jf " +
+            "WHERE (:keyword IS NULL OR jp.jobTitle LIKE %:keyword%) " +
+            "AND (:location IS NULL OR jp.jobLocation = :location) " +
+            "AND (:salary IS NULL OR jp.jobSalary >= :salary) " +
+            "AND (:jobType IS NULL OR jp.jobType = :jobType) " +
+            "AND (:jobFieldId IS NULL OR jf.jobFieldId = :jobFieldId) " +
+            "AND (:companyName IS NULL OR e.companyName = :companyName)")
+    List<JobPost> searchJobs(
+            @Param("keyword") String keyword,
+            @Param("location") String location,
+            @Param("salary") Integer salary,
+            @Param("jobType") String jobType,
+            @Param("jobFieldId") Integer jobFieldId,
+            @Param("companyName") String companyName);
+}
+
+
+

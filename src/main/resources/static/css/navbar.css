@@ -1,0 +1,143 @@
+/* navbar.css */
+
+/* General Navbar styles (assuming some might exist in navbarHome.css or a base stylesheet) */
+.navbar-container {
+    background-color: #fff; /* Or your desired navbar background */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 0px 20px; /* Padding around the navbar content */
+    position: fixed; /* Make navbar fixed at the top */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Ensure navbar stays on top of other content */
+    height: 70px; /* Example fixed height, adjust as needed */
+    display: flex;
+    align-items: center; /* Vertically center content if navbar has fixed height */
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px; /* Max width for navbar content, centered */
+    margin: 0 auto; /* Center the navbar content */
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+/* Remove old .logo img styles if they exist or comment out */
+/* .logo img { ... } */
+
+.text-logo-link {
+    text-decoration: none; /* Remove underline from link */
+}
+
+.text-logo {
+    color: #333333; /* Dark grey/off-black text color */
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', "BIZ UDPMincho Medium"; /* Modern sans-serif font stack */
+    font-size: 24px; 
+    font-weight: 500; /* Medium weight */
+    letter-spacing: 0.5px; /* Slightly reduced letter spacing */
+    padding: 12px 20px; /* Adjusted horizontal padding slightly */
+    display: inline-block; 
+    margin-right: 20px; 
+    margin-left: -100px;
+}
+
+.nav-link {
+    color: #333;
+    text-decoration: none;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    font-size: 15px;
+}
+
+.nav-link:hover, .nav-link.active {
+    background-color: #f0f0f0;
+    color: #007bff;
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+}
+
+/* Action Button base styles */
+.nav-action-btn {
+    padding: 8px 18px; /* Adjusted padding */
+    border-radius: 5px;
+    text-decoration: none;
+    margin-left: 10px;
+    transition: all 0.3s ease;
+    font-size: 15px; /* Consistent font size */
+    font-weight: 500;
+    display: flex; /* To align icon and text */
+    align-items: center; /* Vertically align icon and text */
+    gap: 6px; /* Space between icon and text */
+}
+
+.nav-action-btn i {
+    font-size: 1.1em; /* Slightly larger icon relative to text */
+}
+
+/* Specific button styles from images */
+
+/* "Đăng ký" button (Person icon, default/light style) */
+.nav-register-btn {
+    background-color: transparent; /* Or a very light grey if preferred */
+    color: #333; /* Dark text */
+    border: 1px solid #ddd; /* Light border */
+}
+
+.nav-register-btn:hover {
+    background-color: #f8f8f8;
+    border-color: #ccc;
+}
+
+/* "Đăng nhập" button (Arrow icon, blue background) */
+.nav-login-btn {
+    background-color: #007bff; /* Blue background */
+    color: #ffffff; /* White text */
+    border: 1px solid #007bff;
+}
+
+.nav-login-btn:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    border-color: #0056b3;
+}
+
+/* "Logout" button (Arrow icon, red background) */
+.nav-logout-btn {
+    background-color: #dc3545; /* Red background */
+    color: #ffffff; /* White text */
+    border: 1px solid #dc3545;
+}
+
+.nav-logout-btn:hover {
+    background-color: #c82333; /* Darker red on hover */
+    border-color: #c82333;
+}
+
+/* Responsive adjustments for navbar if necessary */
+@media (max-width: 768px) {
+    .navbar-left .nav-link {
+        display: none; /* Hide some links on smaller screens, or move to a hamburger menu */
+    }
+    .navbar-left .nav-link:first-child { /* Optionally always show the first link or logo */
+        display: block;
+    }
+    .navbar {
+        padding: 0 10px;
+    }
+    .nav-action-btn {
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+    /* Add more responsive styles here, e.g., for a hamburger menu */
+} 
