@@ -1,6 +1,7 @@
 package com.example.swp391_d01_g3.controller.employer;
 
 import com.example.swp391_d01_g3.dto.EmployerDTO;
+import com.example.swp391_d01_g3.dto.EmployerEditDTO;
 import com.example.swp391_d01_g3.model.Account;
 import com.example.swp391_d01_g3.model.Employer;
 import com.example.swp391_d01_g3.model.JobField;
@@ -62,6 +63,23 @@ public class EmployerDashboard {
 
             if (currentAccount != null) {
                 Employer employer = employerService.findByUserId(currentAccount.getUserId());
+                
+                // Debug company description from database
+//                if (employer != null && employer.getCompanyDescription() != null) {
+//                    String dbDescription = employer.getCompanyDescription();
+//                    System.out.println("📖 Company Description from database:");
+//                    System.out.println("📄 Raw text: [" + dbDescription + "]");
+//                    System.out.println("📏 Length: " + dbDescription.length());
+//                    System.out.println("🔍 Contains \\n: " + dbDescription.contains("\n"));
+//                    System.out.println("🔍 Contains \\r: " + dbDescription.contains("\r"));
+//                    // In từng ký tự để debug
+//                    for (int i = 0; i < Math.min(dbDescription.length(), 50); i++) {
+//                        char c = dbDescription.charAt(i);
+//                        System.out.print("'" + c + "'(" + (int)c + ") ");
+//                    }
+//                    System.out.println();
+//                }
+                
                 model.addAttribute("currentAccount", currentAccount);
                 model.addAttribute("employer", employer);
             }
@@ -160,8 +178,8 @@ public class EmployerDashboard {
                 employerDetails = employerService.findByUserId(employerAccount.getUserId());
             }
             
-            // Sử dụng constructor mới để khởi tạo DTO từ Account và Employer
-            EmployerDTO employerProfileDTO = new EmployerDTO(employerAccount, employerDetails);
+            // Sử dụng EmployerEditDTO thay vì EmployerDTO
+            EmployerEditDTO employerProfileDTO = new EmployerEditDTO(employerAccount, employerDetails);
             
             model.addAttribute("employerProfileDTO", employerProfileDTO);
             model.addAttribute("jobFields", jobfieldService.findAll());
@@ -171,12 +189,16 @@ public class EmployerDashboard {
     }
 
     @PostMapping("/EditProfile")
-    public String editProfile(@Valid @ModelAttribute("employerProfileDTO") EmployerDTO employerDTO, 
+    public String editProfile(@Valid @ModelAttribute("employerProfileDTO") EmployerEditDTO employerEditDTO, 
                              BindingResult bindingResult, 
                              @RequestParam(value = "logoFile", required = false) MultipartFile logoFile,
                              Model model,
                              Principal principal, 
                              RedirectAttributes redirectAttributes) {
+//        System.out.println("🔥 POST EditProfile được gọi!");
+//        System.out.println("📧 User email: " + (principal != null ? principal.getName() : "null"));
+//        System.out.println("📝 Form data: " + employerEditDTO.toString());
+        
         if (principal == null) {
             return "redirect:/login";
         }
@@ -195,23 +217,40 @@ public class EmployerDashboard {
         }
 
         // Cập nhật thông tin Account
-        currentAccount.setFullName(employerDTO.getFullName());
-        currentAccount.setPhone(employerDTO.getPhone());
+        currentAccount.setFullName(employerEditDTO.getFullName());
+        currentAccount.setPhone(employerEditDTO.getPhone());
         IAccountService.save(currentAccount);
 
         // Cập nhật thông tin Employer
         Employer employer = employerService.findByUserId(currentAccount.getUserId());
         if (employer != null) {
-            employer.setCompanyName(employerDTO.getCompanyName());
-            employer.setCompanyAddress(employerDTO.getCompanyAddress());
-            employer.setCompanyDescription(employerDTO.getCompanyDescription());
+            employer.setCompanyName(employerEditDTO.getCompanyName());
+            employer.setCompanyAddress(employerEditDTO.getCompanyAddress());
+            
+            // Debug company description
+            String description = employerEditDTO.getCompanyDescription();
+//            System.out.println("📝 Company Description from form:");
+//            System.out.println("📄 Raw text: [" + description + "]");
+//            System.out.println("📏 Length: " + (description != null ? description.length() : 0));
+//            if (description != null) {
+//                System.out.println("🔍 Contains \\n: " + description.contains("\n"));
+//                System.out.println("🔍 Contains \\r: " + description.contains("\r"));
+//                // In từng ký tự để debug
+//                for (int i = 0; i < Math.min(description.length(), 50); i++) {
+//                    char c = description.charAt(i);
+//                    System.out.print("'" + c + "'(" + (int)c + ") ");
+//                }
+//                System.out.println();
+//            }
+            
+            employer.setCompanyDescription(description);
             
             // Xử lý upload logo nếu có file mới
             if (logoFile != null && !logoFile.isEmpty()) {
                 try {
                     String logoUrl = saveLogoFile(logoFile);
                     employer.setLogoUrl(logoUrl);
-                    System.out.println("✅ Logo uploaded successfully: " + logoUrl);
+//                    System.out.println("Logo uploaded successfully: " + logoUrl);
                 } catch (Exception e) {
                     redirectAttributes.addFlashAttribute("error", "Lỗi khi upload logo: " + e.getMessage());
                     model.addAttribute("jobFields", jobfieldService.findAll());
@@ -219,13 +258,13 @@ public class EmployerDashboard {
                 }
             } else {
                 // Giữ nguyên logo cũ nếu không upload file mới
-                employer.setLogoUrl(employerDTO.getLogoUrl());
-                System.out.println("📝 Keeping existing logo: " + employerDTO.getLogoUrl());
+                employer.setLogoUrl(employerEditDTO.getLogoUrl());
+//                System.out.println("📝 Keeping existing logo: " + employerEditDTO.getLogoUrl());
             }
             
             // Cập nhật JobField
-            if (employerDTO.getJobsFieldId() != null) {
-                Optional<JobField> jobField = jobfieldService.findById(employerDTO.getJobsFieldId());
+            if (employerEditDTO.getJobsFieldId() != null) {
+                Optional<JobField> jobField = jobfieldService.findById(employerEditDTO.getJobsFieldId());
                 if (jobField.isPresent()) {
                     employer.setJobField(jobField.get());
                 }
@@ -234,6 +273,7 @@ public class EmployerDashboard {
             employerService.updateEmployer(employer);
         }
 
+//        System.out.println("✅ Update successful, redirecting to profile");
         redirectAttributes.addFlashAttribute("success", "Cập nhật thông tin thành công!");
         return "redirect:/Employer/Profile";
     }
@@ -250,8 +290,8 @@ public class EmployerDashboard {
             throw new IllegalArgumentException("Kích thước file không được vượt quá 5MB");
         }
 
-        // Tạo thư mục uploads nếu chưa tồn tại
-        String uploadDir = "src/main/resources/static/uploads/logos/";
+        // Tạo thư mục uploads external (ngoài project) để load ngay lập tức
+        String uploadDir = "uploads/logos/";
         Path uploadPath = Paths.get(uploadDir);
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
@@ -269,6 +309,8 @@ public class EmployerDashboard {
         Path filePath = uploadPath.resolve(newFilename);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
+//        System.out.println("💾 File saved to: " + filePath.toAbsolutePath());
+        
         // Trả về đường dẫn URL để truy cập file (sẽ được lưu vào database)
         return "/uploads/logos/" + newFilename;
     }

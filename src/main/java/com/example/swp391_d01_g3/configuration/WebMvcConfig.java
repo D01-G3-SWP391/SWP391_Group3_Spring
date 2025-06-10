@@ -9,8 +9,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Map /uploads/** URLs to serve files from src/main/resources/static/uploads/
+        // Map /uploads/** URLs to serve files from external uploads folder
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("classpath:/static/uploads/");
+                .addResourceLocations("file:uploads/")
+                .setCachePeriod(0); // Disable cache for development
     }
 } 

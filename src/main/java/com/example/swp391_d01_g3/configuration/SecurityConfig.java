@@ -1,5 +1,6 @@
 package com.example.swp391_d01_g3.configuration;
 
+
 import com.example.swp391_d01_g3.common.CustomAuthenticationEntryPoint;
 import com.example.swp391_d01_g3.common.CustomAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -52,7 +54,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/uploads/**", "/favicon.ico", "/Login", "/*.css","/*.js","/HomePage/**","/Register/**","/ForgotPassword/**").permitAll()
+                        .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/Login", "/*.css","/*.js","/HomePage/**","/Register/**","/ForgotPassword/**").permitAll()
                         .requestMatchers("/Admin/**").hasRole("admin")
                         .requestMatchers("/Employee/**").hasRole("employer")
                         .requestMatchers("/Student/**").hasRole("student")
@@ -100,4 +102,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-} 
+}
