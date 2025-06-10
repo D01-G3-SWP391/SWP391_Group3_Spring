@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Profile</title>
+    <title th:text="#{profile.title}">Edit Profile</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/navbarStudent_Employer.css}" />
     <link rel="stylesheet" th:href="@{/css/profileStudent.css}" />
@@ -19,42 +19,42 @@
             <p th:text="${account.role}" class="profile-role"></p>
             <form class="profile-form">
                 <div class="form-group">
-                    <label class="form-label">Phone number: </label>
+                    <label class="form-label" th:text="#{profile.phone} + ': '">Phone number: </label>
                     <span th:text="${account.phone}" class="form-value"></span>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Email: </label>
+                    <label class="form-label" th:text="#{profile.email} + ': '">Email: </label>
                     <span th:text="${account.email}" class="form-value"></span>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Address: </label>
-                    <span th:text="${studentDetails != null ? studentDetails.address : 'Chưa cập nhật'}" class="form-value"></span>
+                    <label class="form-label" th:text="#{profile.address} + ': '">Address: </label>
+                    <span th:text="${studentDetails != null ? studentDetails.address : #{profile.notUpdated}}" class="form-value"></span>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">University: </label>
-                    <span th:text="${studentDetails != null ? studentDetails.university : 'Chưa cập nhật'}" class="form-value"></span>
+                    <label class="form-label" th:text="#{profile.university} + ': '">University: </label>
+                    <span th:text="${studentDetails != null ? studentDetails.university : #{profile.notUpdated}}" class="form-value"></span>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Desired work address: </label>
+                    <label class="form-label" th:text="#{profile.desiredWorkAddress} + ': '">Desired work address: </label>
                     <span th:text="${studentDetails.preferredJobAddress}" class="form-value"></span>
                 </div>
             </form>
         </div>
         <div class="profile-buttons">
-            <a th:href="@{/Student/EditProfile}"><button  class="btn btn-edit">Edit information</button></a>
+            <a th:href="@{/Student/EditProfile}"><button  class="btn btn-edit" th:text="#{profile.editInformation}">Edit information</button></a>
         </div>
     </div>
 
     <!-- Giới thiệu bản thân Section -->
     <div class="section intro-section">
-        <h3 class="section-title">Introduce: </h3>
-        <p th:text="${studentDetails != null ? studentDetails.profileDescription : 'Chưa có thông tin giới thiệu'}" class="section-content">.</p>
+        <h3 class="section-title" th:text="#{profile.introduction} + ': '">Introduce: </h3>
+        <p th:text="${studentDetails != null ? studentDetails.profileDescription : #{profile.noIntroduction}}" class="section-content">.</p>
     </div>
 
     <!-- Kinh nghiệm Section -->
     <div class="section experience-section">
-        <h3 class="section-title">Experience</h3>
-        <p th:text="${studentDetails != null ? studentDetails.experience : 'Chưa có thông tin kinh nghiệm'}" class="section-content">.</p>
+        <h3 class="section-title" th:text="#{profile.experience}">Experience</h3>
+        <p th:text="${studentDetails != null ? studentDetails.experience : #{profile.noExperience}}" class="section-content">.</p>
     </div>
     <p th:text="${successMessage}"></p>
     <p th:text="${errorMessage}"></p>

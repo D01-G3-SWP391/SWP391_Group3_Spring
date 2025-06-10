@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Job4You - Trang Tìm Việc Số 1 Việt Nam</title>
+    <title th:text="#{app.title}">Job4You - Trang Tìm Việc Số 1 Việt Nam</title>
     <!-- Bootstrap CSS -->
     <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
@@ -37,7 +37,7 @@
                 <div class="container">
                     <div class="row justify-content-start">
                         <div class="col-10 col-lg-8">
-                            <h1 class="display-3 text-white animated slideInDown mb-4">
+                            <h1 class="display-3 text-white animated slideInDown mb-4" th:text="#{home.hero.title}">
                                 Find The Perfect Job That You Deserved
                             </h1>
                             <p class="fs-5 fw-medium text-white mb-4 pb-2">
@@ -59,7 +59,7 @@
                 <div class="container">
                     <div class="row justify-content-start">
                         <div class="col-10 col-lg-8">
-                            <h1 class="display-3 text-white animated slideInDown mb-4">
+                            <h1 class="display-3 text-white animated slideInDown mb-4" th:text="#{home.hero.title}">
                                 Find The Best Startup Job That Fit You
                             </h1>
                             <p class="fs-5 fw-medium text-white mb-4 pb-2">
@@ -70,11 +70,13 @@
                             <a
                                     href=""
                                     class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft"
+                                    th:text="#{home.hero.searchJob}"
                             >Search A Job</a
                             >
                             <a
                                     href=""
                                     class="btn btn-secondary py-md-3 px-md-5 animated slideInRight"
+                                    th:text="#{home.hero.findTalent}"
                             >Find A Talent</a
                             >
                         </div>
@@ -92,19 +94,19 @@
           <!-- Hero Section -->
       <section class="hero-section">
         <div class="hero-content">
-          <h1>Tìm việc làm mơ ước của bạn</h1>
+          <h1 th:text="#{home.search.title}">Tìm việc làm mơ ước của bạn</h1>
           <p>
-            Kết nối với hàng nghìn cơ hội việc làm tuyệt vời từ các nhà tuyển dụng hàng đầu
+            <span th:text="#{home.search.subtitle}">Kết nối với hàng nghìn cơ hội việc làm tuyệt vời từ các nhà tuyển dụng hàng đầu</span>
           </p>
           
           <!-- Advanced Search Container -->
           <div class="advanced-search-container">
             <!-- Search Tabs -->
             <div class="search-tabs">
-              <button type="button" class="search-tab active" onclick="switchTab('job')" id="jobTab">
+              <button type="button" class="search-tab active" onclick="switchTab('job')" id="jobTab" th:text="#{home.search.findJob}">
                 Find a Job
               </button>
-              <button type="button" class="search-tab" onclick="switchTab('candidate')" id="candidateTab">
+              <button type="button" class="search-tab" onclick="switchTab('candidate')" id="candidateTab" th:text="#{home.search.findCandidate}">
                 Find a Candidate
               </button>
             </div>
@@ -119,7 +121,7 @@
                     <input 
                       type="text" 
                       name="keyword" 
-                      placeholder="eg. Graphic, Web Developer..." 
+                      th:placeholder="#{home.search.keyword.placeholder}" 
                       class="search-input"
                     />
                   </div>
@@ -127,7 +129,7 @@
                   <div class="search-field">
                     <i class="fas fa-list field-icon"></i>
                     <select name="fieldId" class="search-select">
-                      <option value="">Category</option>
+                      <option value="" th:text="#{home.search.category}">Category</option>
                       <option th:each="field : ${jobField}"
                               th:value="${field.jobFieldId}"
                               th:text="${field.jobFieldName}">
@@ -140,7 +142,7 @@
                     <input 
                       type="text" 
                       name="location" 
-                      placeholder="Location" 
+                      th:placeholder="#{home.search.location.placeholder}" 
                       class="search-input"
                     />
                   </div>
@@ -199,17 +201,17 @@
           <!-- Featured Jobs Section -->
       <section class="featured-jobs">
         <div class="section-header">
-          <h2>Việc làm nổi bật</h2>
-          <p>Những cơ hội việc làm tốt nhất dành cho bạn</p>
+          <h2 th:text="#{home.featuredJobs.title}">Việc làm nổi bật</h2>
+          <p th:text="#{home.featuredJobs.subtitle}">Những cơ hội việc làm tốt nhất dành cho bạn</p>
           
           <!-- Jobs per page selector -->
           <div class="jobs-per-page-selector text-end">
-            <label for="jobsPerPage" class="form-label me-2">Hiển thị:</label>
+            <label for="jobsPerPage" class="form-label me-2" th:text="#{home.showJobs}">Hiển thị:</label>
             <select id="jobsPerPage" class="form-select d-inline-block w-auto" onchange="changeJobsPerPage(this.value)">
-              <option value="6" th:selected="${size == 6}">6 việc làm</option>
-              <option value="8" th:selected="${size == 8}">8 việc làm</option>
-              <option value="12" th:selected="${size == 12}">12 việc làm</option>
-              <option value="16" th:selected="${size == 16}">16 việc làm</option>
+                              <option value="6" th:selected="${size == 6}">6 <span th:text="#{home.jobsPerPage}">việc làm</span></option>
+                <option value="8" th:selected="${size == 8}">8 <span th:text="#{home.jobsPerPage}">việc làm</span></option>
+                <option value="12" th:selected="${size == 12}">12 <span th:text="#{home.jobsPerPage}">việc làm</span></option>
+                <option value="16" th:selected="${size == 16}">16 <span th:text="#{home.jobsPerPage}">việc làm</span></option>
             </select>
           </div>
         </div>
@@ -237,11 +239,18 @@
                     </div>
                     <div class="job-type">
                 <span
-                        class="job-type-badge"
-                        th:classappend="${job.jobType?.name() == 'FULL_TIME' ? 'full-time' : 'part-time'}"
-                        th:text="${job.jobType?.name() == 'FULL_TIME' ? 'Toàn thời gian' : 'Bán thời gian'}"
+                        class="job-type-badge full-time"
+                        th:if="${job.jobType?.name() == 'FULL_TIME'}"
+                        th:text="#{home.jobType.fullTime}"
                 >
-                  Loại việc làm
+                  Full-time
+                </span>
+                <span
+                        class="job-type-badge part-time"
+                        th:unless="${job.jobType?.name() == 'FULL_TIME'}"
+                        th:text="#{home.jobType.partTime}"
+                >
+                  Part-time
                 </span>
                     </div>
                 </div>
@@ -272,7 +281,7 @@
                         <input type="hidden" name="id" th:value="${job.jobPostId}">
                         <button class="apply-btn">
                             <i class="fas fa-paper-plane"></i>
-                            Xem chi tiết
+                            <span th:text="#{home.viewDetails}">Xem chi tiết</span>
                         </button>
                     </form>
                     <button class="save-btn">
@@ -290,10 +299,10 @@
               <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                 <a class="page-link" th:href="@{/(page=${currentPage - 1}, size=${size})}"
                    th:if="${currentPage > 0}">
-                  <i class="fas fa-chevron-left"></i> Trước
+                  <i class="fas fa-chevron-left"></i> <span th:text="#{home.pagination.previous}">Trước</span>
                 </a>
                 <span class="page-link" th:unless="${currentPage > 0}">
-                  <i class="fas fa-chevron-left"></i> Trước
+                  <i class="fas fa-chevron-left"></i> <span th:text="#{home.pagination.previous}">Trước</span>
                 </span>
               </li>
 
@@ -311,10 +320,10 @@
               <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
                 <a class="page-link" th:href="@{/(page=${currentPage + 1}, size=${size})}"
                    th:if="${currentPage < totalPages - 1}">
-                  Sau <i class="fas fa-chevron-right"></i>
+                  <span th:text="#{home.pagination.next}">Sau</span> <i class="fas fa-chevron-right"></i>
                 </a>
                 <span class="page-link" th:unless="${currentPage < totalPages - 1}">
-                  Sau <i class="fas fa-chevron-right"></i>
+                  <span th:text="#{home.pagination.next}">Sau</span> <i class="fas fa-chevron-right"></i>
                 </span>
               </li>
             </ul>
@@ -323,9 +332,9 @@
           <!-- Page Info -->
           <div class="page-info text-center mt-3">
             <p class="text-muted">
-              Hiển thị <span th:text="${currentPage * size + 1}">1</span> -
+              <span th:text="#{home.pagination.showing}">Hiển thị</span> <span th:text="${currentPage * size + 1}">1</span> -
               <span th:text="${(currentPage * size + size) > totalElements ? totalElements : (currentPage * size + size)}">8</span>
-              trong tổng số <span th:text="${totalElements}">0</span> việc làm
+              <span th:text="#{home.pagination.of}">trong tổng số</span> <span th:text="${totalElements}">0</span> <span th:text="#{home.pagination.jobs}">việc làm</span>
             </p>
           </div>
         </div>

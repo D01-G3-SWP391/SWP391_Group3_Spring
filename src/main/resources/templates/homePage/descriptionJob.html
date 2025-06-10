@@ -9,6 +9,11 @@
     <link rel="stylesheet" th:href="@{/css/index.css}"/>
     <link rel="stylesheet" th:href="@{/css/job-des.css}"/>
     <link rel="stylesheet" th:href="@{/css/apply-form.css}"/>
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
+            rel="stylesheet"
+    />
 </head>
 <body>
     <div th:replace="~{navbar/navbarHome}"></div>
@@ -349,5 +354,7 @@
             });
         });
     </script>
+    <script th:src="@{/js/languageSwitch.js}"></script>
 </body>
+
 </html>
