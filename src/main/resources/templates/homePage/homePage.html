@@ -97,6 +97,17 @@
         <div class="section-header">
           <h2>Việc làm nổi bật</h2>
           <p>Những cơ hội việc làm tốt nhất dành cho bạn</p>
+          
+          <!-- Jobs per page selector -->
+          <div class="jobs-per-page-selector text-end">
+            <label for="jobsPerPage" class="form-label me-2">Hiển thị:</label>
+            <select id="jobsPerPage" class="form-select d-inline-block w-auto" onchange="changeJobsPerPage(this.value)">
+              <option value="6" th:selected="${size == 6}">6 việc làm</option>
+              <option value="8" th:selected="${size == 8}">8 việc làm</option>
+              <option value="12" th:selected="${size == 12}">12 việc làm</option>
+              <option value="16" th:selected="${size == 16}">16 việc làm</option>
+            </select>
+          </div>
         </div>
 
         <!-- Job Listings -->
@@ -163,12 +174,52 @@
           </div>
         </div>
 
-        <!-- Load More Button -->
-        <div class="load-more-container">
-          <button class="load-more-btn">
-            Xem thêm việc làm
-            <i class="fas fa-chevron-down"></i>
-          </button>
+        <!-- Pagination -->
+        <div class="pagination-container" th:if="${totalPages > 1}">
+          <nav aria-label="Job pagination">
+            <ul class="pagination justify-content-center">
+              <!-- Previous Page -->
+              <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/(page=${currentPage - 1}, size=${size})}" 
+                   th:if="${currentPage > 0}">
+                  <i class="fas fa-chevron-left"></i> Trước
+                </a>
+                <span class="page-link" th:unless="${currentPage > 0}">
+                  <i class="fas fa-chevron-left"></i> Trước
+                </span>
+              </li>
+
+              <!-- Page Numbers -->
+              <li class="page-item" 
+                  th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                  th:if="${pageNum >= currentPage - 2 && pageNum <= currentPage + 2}"
+                  th:classappend="${pageNum == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/(page=${pageNum}, size=${size})}" 
+                   th:text="${pageNum + 1}" th:if="${pageNum != currentPage}">1</a>
+                <span class="page-link" th:if="${pageNum == currentPage}" th:text="${pageNum + 1}">1</span>
+              </li>
+
+              <!-- Next Page -->
+              <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/(page=${currentPage + 1}, size=${size})}" 
+                   th:if="${currentPage < totalPages - 1}">
+                  Sau <i class="fas fa-chevron-right"></i>
+                </a>
+                <span class="page-link" th:unless="${currentPage < totalPages - 1}">
+                  Sau <i class="fas fa-chevron-right"></i>
+                </span>
+              </li>
+            </ul>
+          </nav>
+          
+          <!-- Page Info -->
+          <div class="page-info text-center mt-3">
+            <p class="text-muted">
+              Hiển thị <span th:text="${currentPage * size + 1}">1</span> - 
+              <span th:text="${(currentPage * size + size) > totalElements ? totalElements : (currentPage * size + size)}">8</span> 
+              trong tổng số <span th:text="${totalElements}">0</span> việc làm
+            </p>
+          </div>
         </div>
       </section>
 
@@ -294,6 +345,14 @@
           }, 1000);
         }
       });
+
+      // Function to change jobs per page
+      function changeJobsPerPage(newSize) {
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.set('size', newSize);
+        urlParams.set('page', '0'); // Reset to first page when changing size
+        window.location.search = urlParams.toString();
+      }
     </script>
   </body>
 </html>
