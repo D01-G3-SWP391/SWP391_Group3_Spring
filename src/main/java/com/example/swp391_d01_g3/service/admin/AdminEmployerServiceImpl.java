@@ -5,6 +5,9 @@ import com.example.swp391_d01_g3.model.Employer;
 import com.example.swp391_d01_g3.repository.IAdminRepository;
 import com.example.swp391_d01_g3.repository.IEmployerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -76,6 +79,25 @@ public class AdminEmployerServiceImpl implements IAdminEmployerService {
             return employer;
         } catch (Exception e) {
             throw new RuntimeException("Error getting employer details by ID: " + e.getMessage());
+        }
+    }
+    @Override
+    public Page<Account> getEmployersWithPagination(int page, int size) {
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            return iAdminRepository.getAllEmployerWithPagination(pageable);
+        } catch (Exception e) {
+            throw new RuntimeException("Error getting employers with pagination: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Page<Account> searchEmployers(String keyword, int page, int size) {
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            return iAdminRepository.searchEmployers(keyword, pageable);
+        } catch (Exception e) {
+            throw new RuntimeException("Error searching employers: " + e.getMessage());
         }
     }
 }

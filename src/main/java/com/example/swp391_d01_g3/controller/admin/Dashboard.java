@@ -8,12 +8,10 @@ import com.example.swp391_d01_g3.service.admin.IAdminStudentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -32,10 +30,27 @@ public class Dashboard {
     }
 
     @GetMapping("/ListStudent")
-    public String showListStudent(Model model) {
+    public String showListStudent(@RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "6") int size,
+                                  @RequestParam(required = false) String keyword,
+                                  Model model) {
         try {
-            Iterable<Account> studentList = adminStudentService.getStudents();
-            model.addAttribute("studentList", studentList);
+            Page<Account> studentPage;
+
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                studentPage = adminStudentService.searchStudents(keyword.trim(), page, size);
+                model.addAttribute("keyword", keyword);
+            } else {
+                studentPage = adminStudentService.getStudentsWithPagination(page, size);
+            }
+
+            model.addAttribute("studentList", studentPage.getContent());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", studentPage.getTotalPages());
+            model.addAttribute("totalItems", studentPage.getTotalElements());
+            model.addAttribute("hasNext", studentPage.hasNext());
+            model.addAttribute("hasPrevious", studentPage.hasPrevious());
+
             return "admin/viewListStudent";
         } catch (Exception e) {
             logger.error("Error loading student list: ", e);
@@ -45,10 +60,27 @@ public class Dashboard {
     }
 
     @GetMapping("/ListEmployer")
-    public String showListEmployer(Model model) {
+    public String showListEmployer(@RequestParam(defaultValue = "0") int page,
+                                   @RequestParam(defaultValue = "6") int size,
+                                   @RequestParam(required = false) String keyword,
+                                   Model model) {
         try {
-            Iterable<Account> employerList = adminEmployerService.getEmployers();
-            model.addAttribute("employerList", employerList);
+            Page<Account> employerPage;
+
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                employerPage = adminEmployerService.searchEmployers(keyword.trim(), page, size);
+                model.addAttribute("keyword", keyword);
+            } else {
+                employerPage = adminEmployerService.getEmployersWithPagination(page, size);
+            }
+
+            model.addAttribute("employerList", employerPage.getContent());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", employerPage.getTotalPages());
+            model.addAttribute("totalItems", employerPage.getTotalElements());
+            model.addAttribute("hasNext", employerPage.hasNext());
+            model.addAttribute("hasPrevious", employerPage.hasPrevious());
+
             return "admin/viewListEmployer";
         } catch (Exception e) {
             logger.error("Error loading employer list: ", e);

@@ -7,6 +7,9 @@ import com.example.swp391_d01_g3.repository.IAdminRepository;
 
 import com.example.swp391_d01_g3.repository.IStudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -76,6 +79,25 @@ public class AdminStudentServiceImpl implements IAdminStudentService {
             return student;
         } catch (Exception e) {
             throw new RuntimeException("Error getting employer details by ID: " + e.getMessage());
+        }
+    }
+    @Override
+    public Page<Account> getStudentsWithPagination(int page, int size) {
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            return iAdminRepository.getAllStudentWithPagination(pageable);
+        } catch (Exception e) {
+            throw new RuntimeException("Error getting students with pagination: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Page<Account> searchStudents(String keyword, int page, int size) {
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            return iAdminRepository.searchStudents(keyword, pageable);
+        } catch (Exception e) {
+            throw new RuntimeException("Error searching students: " + e.getMessage());
         }
     }
 }
