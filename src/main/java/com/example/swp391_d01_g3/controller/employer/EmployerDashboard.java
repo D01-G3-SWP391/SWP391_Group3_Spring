@@ -6,6 +6,7 @@ import com.example.swp391_d01_g3.model.Account;
 import com.example.swp391_d01_g3.model.Employer;
 import com.example.swp391_d01_g3.model.JobField;
 import com.example.swp391_d01_g3.service.changePassword.ChangePassword;
+import com.example.swp391_d01_g3.service.cloudinary.CloudinaryService;
 import com.example.swp391_d01_g3.service.employer.IEmployerService;
 import com.example.swp391_d01_g3.service.jobfield.IJobfieldService;
 import com.example.swp391_d01_g3.service.security.IAccountService;
@@ -21,13 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.util.Optional;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/Employer")
@@ -49,6 +45,9 @@ public class EmployerDashboard {
 
     @Autowired
     private IJobfieldService jobfieldService;
+
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     @GetMapping("")
     public String showEmployeeDashboard() {
@@ -227,39 +226,45 @@ public class EmployerDashboard {
             employer.setCompanyName(employerEditDTO.getCompanyName());
             employer.setCompanyAddress(employerEditDTO.getCompanyAddress());
             
-            // Debug company description
+
             String description = employerEditDTO.getCompanyDescription();
-//            System.out.println("📝 Company Description from form:");
-//            System.out.println("📄 Raw text: [" + description + "]");
-//            System.out.println("📏 Length: " + (description != null ? description.length() : 0));
-//            if (description != null) {
-//                System.out.println("🔍 Contains \\n: " + description.contains("\n"));
-//                System.out.println("🔍 Contains \\r: " + description.contains("\r"));
-//                // In từng ký tự để debug
-//                for (int i = 0; i < Math.min(description.length(), 50); i++) {
-//                    char c = description.charAt(i);
-//                    System.out.print("'" + c + "'(" + (int)c + ") ");
-//                }
-//                System.out.println();
-//            }
-            
             employer.setCompanyDescription(description);
             
             // Xử lý upload logo nếu có file mới
+            System.out.println("🔍 Checking logo file...");
             if (logoFile != null && !logoFile.isEmpty()) {
+//                System.out.println("📤 Logo file detected: " + logoFile.getOriginalFilename());
                 try {
-                    String logoUrl = saveLogoFile(logoFile);
+                    // Xóa logo cũ từ Cloudinary nếu tồn tại
+                    String oldLogoUrl = employer.getLogoUrl();
+                    if (oldLogoUrl != null && oldLogoUrl.contains("cloudinary.com")) {
+                        String oldPublicId = cloudinaryService.extractPublicId(oldLogoUrl);
+                        if (oldPublicId != null) {
+                            try {
+                                cloudinaryService.deleteImage(oldPublicId);
+                            } catch (Exception e) {
+                                // Log but don't fail - continue with upload
+//                                System.out.println("⚠️ Warning: Could not delete old logo: " + e.getMessage());
+                            }
+                        }
+                    }
+                    
+                    // Upload logo mới lên Cloudinary
+//                    System.out.println("🚀 Starting Cloudinary upload...");
+                    String logoUrl = cloudinaryService.uploadImage(logoFile, "employer-logos");
                     employer.setLogoUrl(logoUrl);
-//                    System.out.println("Logo uploaded successfully: " + logoUrl);
+//                    System.out.println("✅ Logo uploaded successfully to Cloudinary: " + logoUrl);
                 } catch (Exception e) {
+//                    System.out.println("❌ Upload error in controller: " + e.getMessage());
+                    e.printStackTrace();
                     redirectAttributes.addFlashAttribute("error", "Lỗi khi upload logo: " + e.getMessage());
                     model.addAttribute("jobFields", jobfieldService.findAll());
                     return "employee/editEmployerProfile";
                 }
             } else {
+//                System.out.println("📝 No new logo file, keeping existing: " + employerEditDTO.getLogoUrl());
                 // Giữ nguyên logo cũ nếu không upload file mới
                 employer.setLogoUrl(employerEditDTO.getLogoUrl());
-//                System.out.println("📝 Keeping existing logo: " + employerEditDTO.getLogoUrl());
             }
             
             // Cập nhật JobField
@@ -273,46 +278,10 @@ public class EmployerDashboard {
             employerService.updateEmployer(employer);
         }
 
-//        System.out.println("✅ Update successful, redirecting to profile");
         redirectAttributes.addFlashAttribute("success", "Cập nhật thông tin thành công!");
         return "redirect:/Employer/Profile";
     }
 
-    private String saveLogoFile(MultipartFile file) throws IOException {
-        // Validate file type
-        String contentType = file.getContentType();
-        if (contentType == null || !contentType.startsWith("image/")) {
-            throw new IllegalArgumentException("File phải là ảnh (JPG, PNG, GIF)");
-        }
 
-        // Validate file size (max 5MB)
-        if (file.getSize() > 5 * 1024 * 1024) {
-            throw new IllegalArgumentException("Kích thước file không được vượt quá 5MB");
-        }
-
-        // Tạo thư mục uploads external (ngoài project) để load ngay lập tức
-        String uploadDir = "uploads/logos/";
-        Path uploadPath = Paths.get(uploadDir);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-
-        // Tạo tên file unique
-        String originalFilename = file.getOriginalFilename();
-        String fileExtension = ".jpg"; // default
-        if (originalFilename != null && originalFilename.contains(".")) {
-            fileExtension = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
-        }
-        String newFilename = UUID.randomUUID().toString() + fileExtension;
-
-        // Lưu file
-        Path filePath = uploadPath.resolve(newFilename);
-        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-//        System.out.println("💾 File saved to: " + filePath.toAbsolutePath());
-        
-        // Trả về đường dẫn URL để truy cập file (sẽ được lưu vào database)
-        return "/uploads/logos/" + newFilename;
-    }
 }
 

@@ -1,154 +1,143 @@
-//package com.example.swp391_d01_g3.service.blog;
-//
-//import com.example.swp391_d01_g3.dto.BlogPostCreateDTO;
-//import com.example.swp391_d01_g3.model.Account;
-//import com.example.swp391_d01_g3.model.BlogPost;
-//import com.example.swp391_d01_g3.model.Resource;
-//import com.example.swp391_d01_g3.repository.IBlogPostRepository;
-//import com.example.swp391_d01_g3.repository.IResourceRepository;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Service;
-//import org.springframework.transaction.annotation.Transactional;
-//
-//import java.time.LocalDateTime;
-//import java.util.List;
-//import java.util.Optional;
-//
-//@Service
-//@Transactional
-//public class BlogServiceImpl {
-//
-//    @Autowired
-//    private IBlogPostRepository blogPostRepository;
-//
-//    @Autowired
-//    private IResourceRepository resourceRepository;
-//
-//    /**
-//     * Tạo blog post mới
-//     */
-//    public BlogPost createBlogPost(BlogPostCreateDTO dto, Account author) {
-//        // Tìm hoặc tạo resource
-//        Resource resource = findOrCreateResource(dto, author);
-//
-//        // Tạo blog post
-//        BlogPost blogPost = new BlogPost();
-//        blogPost.setResource(resource);
-//        blogPost.setTitle(dto.getTitle());
-//        blogPost.setContent(dto.getContent());
-//        blogPost.setSummary(dto.getSummary());
-//        blogPost.setFeaturedImageUrl(dto.getFeaturedImageUrl());
-//        blogPost.setMetaDescription(dto.getMetaDescription());
-//        blogPost.setStatus(BlogPost.BlogStatus.DRAFT);
-//        blogPost.setCreatedAt(LocalDateTime.now());
-//        blogPost.setUpdatedAt(LocalDateTime.now());
-//
-//        return blogPostRepository.save(blogPost);
-//    }
-//
-//    /**
-//     * Tìm hoặc tạo resource
-//     */
-//    private Resource findOrCreateResource(BlogPostCreateDTO dto, Account author) {
-//        if (dto.getResourceId() != null) {
-//            Optional<Resource> existingResource = resourceRepository.findById(dto.getResourceId());
-//            if (existingResource.isPresent()) {
-//                return existingResource.get();
-//            }
-//        }
-//
-//        // Tạo resource mới
-//        Resource resource = new Resource();
-//        resource.setResourceTitle(dto.getResourceTitle() != null ? dto.getResourceTitle() : dto.getTitle());
-//        resource.setResourceContent(dto.getResourceContent() != null ? dto.getResourceContent() : dto.getSummary());
-//        resource.setImageUrl(dto.getResourceImageUrl());
-//        resource.setResourceType(dto.getResourceType() != null ? dto.getResourceType() : Resource.ResourceType.application_tips);
-//        resource.setCreatedBy(author);
-//        resource.setCreatedAt(LocalDateTime.now());
-//        resource.setUpdatedAt(LocalDateTime.now());
-//
-//        return resourceRepository.save(resource);
-//    }
-//
-//    /**
-//     * Cập nhật blog post
-//     */
-//    public BlogPost updateBlogPost(Long blogPostId, BlogPostCreateDTO dto) {
-//        Optional<BlogPost> optionalBlogPost = blogPostRepository.findById(blogPostId);
-//        if (optionalBlogPost.isEmpty()) {
-//            throw new RuntimeException("Blog post không tồn tại");
-//        }
-//
-//        BlogPost blogPost = optionalBlogPost.get();
-//        blogPost.setTitle(dto.getTitle());
-//        blogPost.setContent(dto.getContent());
-//        blogPost.setSummary(dto.getSummary());
-//        blogPost.setFeaturedImageUrl(dto.getFeaturedImageUrl());
-//        blogPost.setMetaDescription(dto.getMetaDescription());
-//        blogPost.setUpdatedAt(LocalDateTime.now());
-//
-//        return blogPostRepository.save(blogPost);
-//    }
-//
-//    /**
-//     * Publish blog post
-//     */
-//    public BlogPost publishBlogPost(Long blogPostId) {
-//        Optional<BlogPost> optionalBlogPost = blogPostRepository.findById(blogPostId);
-//        if (optionalBlogPost.isEmpty()) {
-//            throw new RuntimeException("Blog post không tồn tại");
-//        }
-//
-//        BlogPost blogPost = optionalBlogPost.get();
-//        blogPost.setStatus(BlogPost.BlogStatus.PUBLISHED);
-//        blogPost.setPublishedAt(LocalDateTime.now());
-//        blogPost.setUpdatedAt(LocalDateTime.now());
-//
-//        return blogPostRepository.save(blogPost);
-//    }
-//
-//    /**
-//     * Lấy tất cả blog posts đã published
-//     */
-//    public List<BlogPost> getAllPublishedBlogPosts() {
-//        return blogPostRepository.findPublishedPostsOrderByDate();
-//    }
-//
-//    /**
-//     * Lấy blog post theo ID
-//     */
-//    public Optional<BlogPost> getBlogPostById(Long id) {
-//        return blogPostRepository.findById(id);
-//    }
-//
-//    /**
-//     * Tìm kiếm blog posts
-//     */
-//    public List<BlogPost> searchBlogPosts(String keyword) {
-//        return blogPostRepository.findPublishedPostsByTitleContaining(keyword);
-//    }
-//
-//    /**
-//     * Xóa blog post
-//     */
-//    public void deleteBlogPost(Long blogPostId) {
-//        if (!blogPostRepository.existsById(blogPostId)) {
-//            throw new RuntimeException("Blog post không tồn tại");
-//        }
-//        blogPostRepository.deleteById(blogPostId);
-//    }
-//
-//    /**
-//     * Lấy tất cả blog posts (bao gồm draft)
-//     */
-//    public List<BlogPost> getAllBlogPosts() {
-//        return blogPostRepository.findAll();
-//    }
-//
-//    /**
-//     * Lấy blog posts theo status
-//     */
-//    public List<BlogPost> getBlogPostsByStatus(BlogPost.BlogStatus status) {
-//        return blogPostRepository.findByStatus(status);
-//    }
-//}
+package com.example.swp391_d01_g3.service.blog;
+
+import com.example.swp391_d01_g3.model.BlogPost;
+import com.example.swp391_d01_g3.model.Resource;
+import com.example.swp391_d01_g3.repository.IBlogPostRepository;
+import com.example.swp391_d01_g3.repository.IResourceRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+public class BlogServiceImpl implements IBlogService {
+
+    @Autowired
+    private IBlogPostRepository blogPostRepository;
+
+    @Autowired
+    private IResourceRepository resourceRepository;
+
+    @Override
+    public List<BlogPost> getAllPublishedBlogPosts() {
+        return blogPostRepository.findPublishedPostsOrderByDate();
+    }
+
+    @Override
+    public Optional<BlogPost> getBlogPostById(Long id) {
+        return blogPostRepository.findById(id);
+    }
+
+    @Override
+    public List<BlogPost> searchBlogPosts(String keyword) {
+        return blogPostRepository.findPublishedPostsByTitleContaining(keyword);
+    }
+
+    @Override
+    public List<BlogPost> getBlogPostsByResourceType(String resourceType) {
+        try {
+            Resource.ResourceType type = Resource.ResourceType.valueOf(resourceType);
+            List<Resource> resources = resourceRepository.findByResourceType(type);
+            
+            return blogPostRepository.findAll().stream()
+                    .filter(post -> post.getStatus() == BlogPost.BlogStatus.PUBLISHED)
+                    .filter(post -> resources.contains(post.getResource()))
+                    .toList();
+        } catch (IllegalArgumentException e) {
+            return getAllPublishedBlogPosts();
+        }
+    }
+
+    @Override
+    public List<BlogPost> getLatestPublishedPosts(int limit) {
+        return blogPostRepository.findLatestPublishedPosts()
+                .stream()
+                .limit(limit)
+                .toList();
+    }
+
+    @Override
+    public List<BlogPost> getBlogPostsByStatus(BlogPost.BlogStatus status) {
+        return blogPostRepository.findByStatus(status);
+    }
+
+    @Override
+    public List<BlogPost> getBlogPostsByResourceId(Long resourceId) {
+        return blogPostRepository.findByResource_ResourceId(resourceId);
+    }
+
+    @Override
+    public long countBlogPostsByStatus(BlogPost.BlogStatus status) {
+        return blogPostRepository.countByStatus(status);
+    }
+
+    @Override
+    public Page<BlogPost> findAllPublished(Pageable pageable) {
+        return blogPostRepository.findAllPublishedWithPagination(pageable);
+    }
+
+    @Override
+    public Page<BlogPost> searchBlogs(String keyword, Pageable pageable) {
+        return blogPostRepository.searchPublishedPosts(keyword, pageable);
+    }
+
+    @Override
+    public Page<BlogPost> findByCategory(String category, Pageable pageable) {
+        try {
+            Resource.ResourceType resourceType = Resource.ResourceType.valueOf(category);
+            return blogPostRepository.findByResourceTypeWithPagination(resourceType, pageable);
+        } catch (IllegalArgumentException e) {
+            // If category is invalid, return all published posts
+            return findAllPublished(pageable);
+        }
+    }
+
+    @Override
+    public Optional<BlogPost> findById(Long id) {
+        return blogPostRepository.findById(id);
+    }
+
+    @Override
+    public List<String> getAllCategories() {
+        List<Resource.ResourceType> resourceTypes = blogPostRepository.findAllPublishedResourceTypes();
+        return resourceTypes.stream()
+                .map(Enum::name)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BlogPost> getFeaturedPosts(int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        return blogPostRepository.findFeaturedPosts(pageable);
+    }
+
+    @Override
+    public void incrementViewCount(Long id) {
+        blogPostRepository.incrementViewCount(id);
+    }
+
+    @Override
+    public List<BlogPost> getRelatedPosts(Resource.ResourceType resourceType, Long excludeId, int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        return blogPostRepository.findRelatedPosts(resourceType, excludeId, pageable);
+    }
+
+    @Override
+    public Optional<BlogPost> getNextPost(Long currentId) {
+        Pageable limit = PageRequest.of(0, 1);
+        List<BlogPost> nextPosts = blogPostRepository.findNextPostWithLimit(currentId, limit);
+        return nextPosts.isEmpty() ? Optional.empty() : Optional.of(nextPosts.get(0));
+    }
+
+    @Override
+    public Optional<BlogPost> getPreviousPost(Long currentId) {
+        Pageable limit = PageRequest.of(0, 1);
+        List<BlogPost> previousPosts = blogPostRepository.findPreviousPostWithLimit(currentId, limit);
+        return previousPosts.isEmpty() ? Optional.empty() : Optional.of(previousPosts.get(0));
+    }
+} 
