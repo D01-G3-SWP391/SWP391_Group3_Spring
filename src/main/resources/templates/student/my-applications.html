@@ -95,7 +95,7 @@
                     <i class="bi bi-eye-fill"></i>
                     <span>Xem công việc</span>
                 </a>
-                <a th:href="@{/files/cv/{filename}(filename=${jobApp.cvUrl})}"
+                <a th:href="@{/{cvPath}(cvPath=${jobApp.cvUrl})}"
                    target="_blank" class="btn btn-success"
                    th:if="${jobApp.cvUrl != null and !#strings.isEmpty(jobApp.cvUrl)}">
                     <i class="bi bi-file-earmark-pdf-fill"></i>

@@ -443,9 +443,10 @@
             <div class="form-group">
                 <label for="cv">Hồ sơ ứng viên (CV)</label>
                 <input type="file" id="cv" name="cv" 
-                       accept=".doc,.docx,.pdf,.png,.jpeg"/>
-                <p class="file-info">Hỗ trợ định dạng doc, docx, pdf, png, jpeg nhỏ hơn 2048KB</p>
+                       accept=".pdf,.png,.jpg,.jpeg,.gif" onchange="validateCVFile(this)"/>
+                <p class="file-info">Hỗ trợ định dạng PDF và ảnh (png, jpg, jpeg, gif) nhỏ hơn 2048KB</p>
                 <p class="cv-tip">Gửi kèm hồ sơ (CV) giúp bạn tăng cơ hội được tuyển dụng</p>
+                <div id="cv-error-modal" class="file-error" style="display: none;"></div>
             </div>
 
             <div class="button-group">
@@ -457,6 +458,49 @@
 </div>
 
     <script>
+        // CV File Validation Function
+        function validateCVFile(input) {
+            const errorDiv = document.getElementById('cv-error-modal');
+            const allowedTypes = ['application/pdf', 'image/png', 'image/jpg', 'image/jpeg', 'image/gif'];
+            const maxSize = 2048 * 1024; // 2048KB in bytes
+            
+            // Clear previous errors
+            errorDiv.style.display = 'none';
+            errorDiv.textContent = '';
+            input.setCustomValidity('');
+            
+            if (input.files.length === 0) {
+                return true; // No file selected is okay
+            }
+            
+            const file = input.files[0];
+            
+            // Check file type
+            if (!allowedTypes.includes(file.type)) {
+                const errorMessage = 'Chỉ chấp nhận file PDF và ảnh (PNG, JPG, JPEG, GIF)';
+                showFileError(errorDiv, errorMessage);
+                input.setCustomValidity(errorMessage);
+                input.value = ''; // Clear the input
+                return false;
+            }
+            
+            // Check file size
+            if (file.size > maxSize) {
+                const errorMessage = 'Kích thước file không được vượt quá 2048KB';
+                showFileError(errorDiv, errorMessage);
+                input.setCustomValidity(errorMessage);
+                input.value = ''; // Clear the input
+                return false;
+            }
+            
+            return true;
+        }
+        
+        function showFileError(errorDiv, message) {
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
         // Modal Functions
         function showApplyForm() {
             const modal = document.getElementById('applyModal');
@@ -493,6 +537,20 @@
 
         // Enhanced interaction effects
         document.addEventListener('DOMContentLoaded', function() {
+            // Form submission validation
+            const form = document.querySelector('form[th\\:action*="addJobApplication"]');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    const cvInput = document.getElementById('cv');
+                    if (cvInput && cvInput.files.length > 0) {
+                        if (!validateCVFile(cvInput)) {
+                            e.preventDefault();
+                            return false;
+                        }
+                    }
+                });
+            }
+
             // Modal event listeners
             const modal = document.getElementById('applyModal');
             if (modal) {
