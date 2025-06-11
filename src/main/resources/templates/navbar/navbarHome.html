@@ -17,7 +17,6 @@
     <!-- Link to specific navbar styles -->
     <link rel="stylesheet" th:href="@{/css/navbar.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}" />
-    <!-- Language Switcher CSS -->
     <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
 
     <link
@@ -38,11 +37,11 @@
           <a href="#" class="nav-link" th:text="#{nav.jobs}">Việc làm</a>
           <a href="#" class="nav-link" th:text="#{nav.createCV}">Tạo CV</a>
           <a href="#" class="nav-link" th:text="#{nav.tools}">Công cụ</a>
-          <a href="#" class="nav-link" th:text="#{nav.careerGuide}">Cẩm nang nghề nghiệp</a>
+          <a th:href="@{/Blog}" class="nav-link" th:text="#{nav.careerGuide}">Cẩm nang nghề nghiệp</a>
           <a href="#" class="nav-link" th:text="#{nav.blogs}">Blogs</a>
           <a href="#" class="nav-link" th:text="#{nav.events}">Events</a>
         </div>
-        
+
         <div class="navbar-right">
           <!-- Language Switcher - Always visible -->
           <div class="language-switcher-container">
@@ -56,7 +55,7 @@
               </a>
             </div>
           </div>
-          
+
           <!-- Authenticated User Section -->
           <div sec:authorize="isAuthenticated()" class="authenticated-section">
             <div th:if="${userEmail}" class="dropdown">
@@ -95,7 +94,7 @@
               ><i class="bi bi-box-arrow-in-right"></i> <span th:text="#{nav.logout}">Logout</span></a
             >
           </div>
-          
+
           <!-- Anonymous User Section -->
           <div sec:authorize="isAnonymous()" class="anonymous-section">
             <a th:href="@{/Register}" class="nav-action-btn nav-register-btn"
