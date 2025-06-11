@@ -20,52 +20,42 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.security.Principal;
 import java.util.List;
 
-
 @Controller
 @RequestMapping("/JobDescription")
 public class JobsDescription {
     @Autowired
     private IJobpostService iJobpostService;
-
     @Autowired
     private IStudentService iStudentService;
     @Autowired
-    private IJobfieldService iJobfieldService;
-
-//    @Autowired
-//    private I;
-    @Autowired
     private IAccountService iAccountService;
 
-    @Autowired
-    private IStudentService studentService;
-
     @GetMapping("/JobPost")
-    public String showDescription(@RequestParam("id") Long id, Model model, Principal principal) {
-        List<JobPost> jobPosts = iJobpostService.findAllWithEmployer(id.intValue());
+    public String showDescription(@RequestParam("id") Integer id, Model model, Principal principal) {
+        // Lấy thông tin job post
+        List<JobPost> jobPosts = iJobpostService.findAllWithEmployer(id);
         model.addAttribute("jobPosts", jobPosts);
-        model.addAttribute("jobfields", iJobfieldService.findAll());
-        System.out.println(jobPosts);
-        return "homePage/descriptionJob";
-    }
-    @GetMapping("/Apply")
-    public String showApply(@RequestParam("id") Long id, Model model, Principal principal) {
-        List<JobPost> jobPosts = iJobpostService.findAllWithEmployer(id.intValue());
-        model.addAttribute("jobPosts", jobPosts);
+
+        // Tạo DTO cho modal form
         JobApplicationDTO jobApplicationDTO = new JobApplicationDTO();
-        model.addAttribute("jobApplicationDTO",jobApplicationDTO);
-        model.addAttribute("students", iStudentService.findAll());
+        model.addAttribute("jobApplicationDTO", jobApplicationDTO);
+
+        // Lấy thông tin student nếu đã đăng nhập
         if (principal != null) {
             String email = principal.getName();
+            model.addAttribute("userEmail", email); // Thêm userEmail cho navbar
+            
             Account studentAccount = iAccountService.findByEmail(email);
             model.addAttribute("account", studentAccount);
+
             if (studentAccount != null) {
-                Student studentDetails = studentService.findByAccountUserId(studentAccount.getUserId());
+                Student studentDetails = iStudentService.findByAccountUserId(studentAccount.getUserId());
                 model.addAttribute("studentDetails", studentDetails);
-                System.out.println(studentDetails.getStudentId());
+                System.out.println("Student ID: " + studentDetails.getStudentId());
             }
 //            System.out.println(email);
         }
-        return "homePage/applyForm";
+
+        return "homePage/descriptionJob";
     }
 }

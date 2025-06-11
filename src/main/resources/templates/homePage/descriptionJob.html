@@ -1,3 +1,83 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Chi tiết công việc</title>-->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">-->
+<!--    <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />-->
+<!--    <link rel="stylesheet" th:href="@{/css/navbar.css}" />-->
+<!--    <link rel="stylesheet" th:href="@{/css/job-des.css}" />-->
+<!--</head>-->
+<!--<body>-->
+<!--<div th:replace="~{navbar/navbarHome}"></div>-->
+
+<!--<div class="job-card" th:each="job : ${jobPosts}">-->
+<!--    <div class="job-card-header">-->
+<!--        <div class="company-logo default-logo">-->
+<!--            <span th:text="${job.employer.logoUrl != null ? job.employer.logoUrl : 'PHY'}"></span>-->
+<!--        </div>-->
+<!--        <div class="job-info">-->
+<!--            <h3 class="job-title" th:text="${job.jobTitle}"></h3>-->
+<!--            <p class="company-name" th:text="${job.employer.companyName}"></p>-->
+<!--            <div class="job-type">-->
+<!--                <span class="job-type-badge full-time" th:text="${job.jobType}"></span>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="job-card-body">-->
+<!--        <div class="tab-buttons">-->
+<!--            <button class="tab-button" onclick="openTab('job')">VIỆC LÀM</button>-->
+<!--            <button class="tab-button active" onclick="openTab('info')">THÔNG TIN</button>-->
+<!--            <button class="tab-button" onclick="openTab('company')">CÔNG TY</button>-->
+<!--        </div>-->
+
+<!--        <div id="info-tab" class="tab-content active">-->
+<!--            <div class="job-details">-->
+<!--                <div class="job-detail-item">-->
+<!--                    <i class="fas fa-map-marker-alt"></i>-->
+<!--                    <span th:text="${job.jobLocation}"></span>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div id="company-tab" class="tab-content">-->
+<!--            <div class="company_description">-->
+<!--                <h2>Thông tin công ty</h2>-->
+<!--                <p th:text="${job.employer.companyDescription}"></p>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div id="job-tab" class="tab-content">-->
+<!--            <div class="jobs_description">-->
+<!--                <h2>Mô tả công việc</h2>-->
+<!--                <div th:utext="${#strings.replace(job.jobDescription,'\n','<br />')}"></div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="job-card-footer">-->
+<!--        <button class="apply-btn">Apply <i class="fas fa-arrow-right"></i></button>-->
+<!--        <button class="save-btn"><i class="far fa-heart"></i></button>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--    function openTab(tabName) {-->
+<!--        const tabContents = document.getElementsByClassName('tab-content');-->
+<!--        const tabButtons = document.getElementsByClassName('tab-button');-->
+<!--        for (let i = 0; i < tabContents.length; i++) {-->
+<!--            tabContents[i].classList.remove('active');-->
+<!--            tabButtons[i].classList.remove('active');-->
+<!--        }-->
+<!--        document.getElementById(tabName + '-tab').classList.add('active');-->
+<!--        event.target.classList.add('active');-->
+<!--    }-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -14,9 +94,30 @@
             href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
             rel="stylesheet"
     />
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+    />
+    <style>
+        /* Ensure navbar is visible and positioned correctly */
+        .navbar-container {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            z-index: 1000 !important;
+            background-color: #fff !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+        }
+        
+        /* Ensure body has proper padding */
+        body {
+            padding-top: 80px !important;
+        }
+    </style>
 </head>
 <body>
-    <div th:replace="~{navbar/navbarHome}"></div>
+<div th:replace="~{navbar/navbarHome}"></div>
 
     <!-- Header Section -->
     <section class="job-detail-header">
@@ -29,7 +130,7 @@
                     <span class="breadcrumb-separator">/</span>
                     <span class="breadcrumb-current">Chi tiết công việc</span>
                 </div>
-                
+
                 <div class="job-hero">
                     <div class="job-hero-left">
                         <div class="company-logo-large">
@@ -43,7 +144,7 @@
                             <h1 class="job-title-large" th:text="${job.jobTitle}">Tiêu đề công việc</h1>
                             <p class="company-name-large" th:text="${job.employer.companyName}">Tên công ty</p>
                             <div class="job-quick-info">
-                                <span class="job-type-badge-large" 
+                                <span class="job-type-badge-large"
                                       th:classappend="${job.jobType?.name() == 'FULL_TIME' ? 'full-time' : 'part-time'}"
                                       th:text="${job.jobType?.name() == 'FULL_TIME' ? 'Toàn thời gian' : 'Bán thời gian'}">
                                     Loại việc làm
@@ -57,13 +158,10 @@
                     </div>
                     <div class="job-hero-right">
                         <div class="job-actions">
-                            <form method="get" th:action="@{/JobDescription/Apply}">
-                                <input type="hidden" name="id" th:value="${job.jobPostId}">
-                                <button class="btn-primary-large">
-                                    <i class="fas fa-paper-plane"></i>
-                                    Ứng tuyển ngay
-                                </button>
-                            </form>
+                            <button class="btn-primary-large" onclick="showApplyForm()">
+                                <i class="fas fa-paper-plane"></i>
+                                Ứng tuyển ngay
+                            </button>
                             <button class="btn-save-large">
                                 <i class="far fa-heart"></i>
                                 Lưu việc làm
@@ -306,27 +404,112 @@
         </div>
     </footer>
 
+<!-- Modal Form Overlay -->
+<div id="applyModal" class="modal-overlay hidden">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Ứng tuyển</h2>
+            <button class="close-btn" onclick="closeApplyForm()">&times;</button>
+        </div>
+
+        <!-- Modal Form với th:value đúng -->
+        <form th:action="@{/Student/addJobApplication}" method="post" th:object="${jobApplicationDTO}" enctype="multipart/form-data">
+            <div th:each="job : ${jobPosts}">
+                <input type="hidden" th:value="${studentDetails?.studentId}" name="studentId">
+                <input type="hidden" th:value="${job.jobPostId}" name="jobPostId">
+            </div>
+
+            <div class="form-group">
+                <label for="fullName">Họ và tên *</label>
+                <input type="text" id="fullName" name="fullName" th:field="*{fullname}" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email *</label>
+                <input type="email" id="email" name="email" th:field="*{email}" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">SĐT *</label>
+                <input type="text" id="phone" name="phone" th:field="*{phoneNumber}" required/>
+            </div>
+
+            <div class="form-group">
+                <label for="content">Nội dung *</label>
+                <textarea id="content" name="content" th:field="*{description}"
+                          placeholder="Tôi muốn ứng tuyển vị trí này" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="cv">Hồ sơ ứng viên (CV)</label>
+                <input type="file" id="cv" name="cv" 
+                       accept=".doc,.docx,.pdf,.png,.jpeg"/>
+                <p class="file-info">Hỗ trợ định dạng doc, docx, pdf, png, jpeg nhỏ hơn 2048KB</p>
+                <p class="cv-tip">Gửi kèm hồ sơ (CV) giúp bạn tăng cơ hội được tuyển dụng</p>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="submit-btn">Gửi</button>
+                <button type="button" class="cancel-btn" onclick="closeApplyForm()">Đóng</button>
+            </div>
+        </form>
+    </div>
+</div>
+
     <script>
+        // Modal Functions
+        function showApplyForm() {
+            const modal = document.getElementById('applyModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeApplyForm() {
+            const modal = document.getElementById('applyModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Tab Navigation
         function openTab(tabName) {
-            // Hide all tab contents
             const tabContents = document.getElementsByClassName('tab-content');
+            const tabButtons = document.getElementsByClassName('tab-button');
+
             for (let i = 0; i < tabContents.length; i++) {
                 tabContents[i].classList.remove('active');
-            }
-            
-            // Remove active class from all tab buttons
-            const tabButtons = document.getElementsByClassName('tab-button');
-            for (let i = 0; i < tabButtons.length; i++) {
                 tabButtons[i].classList.remove('active');
             }
-            
-            // Show selected tab content and mark button as active
-            document.getElementById(tabName + '-tab').classList.add('active');
-            event.target.classList.add('active');
+
+            const targetTab = document.getElementById(tabName + '-tab');
+            if (targetTab && event.target) {
+                targetTab.classList.add('active');
+                event.target.classList.add('active');
+            }
         }
 
         // Enhanced interaction effects
         document.addEventListener('DOMContentLoaded', function() {
+            // Modal event listeners
+            const modal = document.getElementById('applyModal');
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeApplyForm();
+                    }
+                });
+            }
+
+            // Keyboard event for modal
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+                    closeApplyForm();
+                }
+            });
+
             // Add smooth scrolling for anchor links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
@@ -347,14 +530,12 @@
                 element.addEventListener('mouseenter', function() {
                     this.style.transform = 'translateY(-2px)';
                 });
-                
+
                 element.addEventListener('mouseleave', function() {
                     this.style.transform = 'translateY(0)';
                 });
             });
         });
     </script>
-    <script th:src="@{/js/languageSwitch.js}"></script>
 </body>
-
 </html>

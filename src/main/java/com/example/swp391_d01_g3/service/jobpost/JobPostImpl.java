@@ -32,6 +32,7 @@ public class JobPostImpl implements IJobpostService {
     public Page<JobPost> findAll(Pageable pageable) {
         return iJobPostRepository.findAll(pageable);
     }
+
     @Override
     public Optional<JobPost> findByJobPostId(Integer id) {
         return iJobPostRepository.findByJobPostId(id);

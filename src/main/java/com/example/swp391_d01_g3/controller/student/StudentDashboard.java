@@ -2,8 +2,10 @@ package com.example.swp391_d01_g3.controller.student;
 
 import com.example.swp391_d01_g3.model.Account;
 import com.example.swp391_d01_g3.model.Employer;
+import com.example.swp391_d01_g3.model.JobApplication;
 import com.example.swp391_d01_g3.model.Student;
 import com.example.swp391_d01_g3.service.changePassword.ChangePassword;
+import com.example.swp391_d01_g3.service.jobapplication.IJobApplicationService;
 import com.example.swp391_d01_g3.service.security.IAccountService;
 import com.example.swp391_d01_g3.service.security.IAccountServiceImpl;
 import com.example.swp391_d01_g3.service.student.IStudentService;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.List;
 
 // Import the DTO
 import com.example.swp391_d01_g3.dto.StudentProfileDTO;
@@ -41,9 +44,32 @@ public class StudentDashboard {
     @Autowired
     private ChangePassword changePassword;
 
+    @Autowired
+    private IJobApplicationService  iJobApplicationService;
+
     @GetMapping("")
     public String showStudentDashboard(){
         return "student/dashboardStudent";
+    }
+
+    // Chau them
+
+    @GetMapping("/applications")
+    public String viewApplications(Model model, Principal principal){
+        if (principal != null){
+            String email = principal.getName();
+            Account account = IAccountService.findByEmail(email);
+            if (account != null){
+                Student student=studentService.findByAccountUserId(account.getUserId());
+                if (student != null){
+                    List<JobApplication> applications=iJobApplicationService.findByStudentId(student.getStudentId());
+                    model.addAttribute("applications",applications);
+                    model.addAttribute("student",student);
+                    model.addAttribute("account",account);
+                }
+            }
+        }
+        return "student/my-applications";
     }
     @GetMapping("/Profile")
     public String showStudentProfile(Model model, Principal principal){

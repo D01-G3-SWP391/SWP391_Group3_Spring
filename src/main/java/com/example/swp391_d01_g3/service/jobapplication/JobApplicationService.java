@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class JobApplicationService implements  IJobApplicationService {
+public class JobApplicationService implements IJobApplicationService {
     @Autowired
     private IJobApplicationRepository iJobApplicationRepository;
 
@@ -19,6 +19,11 @@ public class JobApplicationService implements  IJobApplicationService {
 
     @Override
     public JobApplication save(JobApplication jobApplication) {
-       return iJobApplicationRepository.save(jobApplication);
+        return iJobApplicationRepository.save(jobApplication);
+    }
+
+    @Override
+    public List<JobApplication> findByStudentId(Integer studentId) {
+        return iJobApplicationRepository.findByStudentId(studentId);
     }
 }

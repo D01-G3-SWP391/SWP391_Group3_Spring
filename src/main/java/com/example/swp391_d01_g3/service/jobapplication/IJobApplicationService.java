@@ -7,4 +7,5 @@ import java.util.List;
 public interface IJobApplicationService {
     List<JobApplication> findAllJobApplication();
     JobApplication save(JobApplication jobApplication);
+    List<JobApplication> findByStudentId(Integer studentId);
 }
