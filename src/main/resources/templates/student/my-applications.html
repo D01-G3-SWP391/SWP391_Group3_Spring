@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đơn ứng tuyển của tôi - JOB4YOU</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/navbarStudent_Employer.css}"/>
+    <link rel="stylesheet" th:href="@{/css/my-applications.css}"/>
+</head>
+<body>
+<div th:replace="~{navbar/navbarStudent :: navbarAdmin}"></div>
+
+<div class="main-content">
+    <div class="page-header">
+        <div class="header-content">
+            <h1>Đơn ứng tuyển của tôi</h1>
+            <p>Theo dõi trạng thái các đơn ứng tuyển</p>
+        </div>
+    </div>
+
+    <div class="applications-container" th:if="${applications != null and !#lists.isEmpty(applications)}">
+        <div th:each="jobApp : ${applications}" class="application-card">
+            <!-- Card Header -->
+            <div class="card-header">
+                <div class="job-info">
+                    <h2 class="job-title" th:text="${jobApp.jobPost?.jobTitle ?: 'N/A'}"></h2>
+                    <div class="company-name">
+                        <i class="bi bi-building-fill"></i>
+                        <span th:text="${jobApp.jobPost?.employer?.companyName ?: 'Chưa có thông tin công ty'}"></span>
+                    </div>
+                </div>
+                <div class="status-container">
+                        <span class="status-badge"
+                              th:class="'status-badge status-' + ${jobApp.status?.name()?.toLowerCase() ?: 'unknown'}"
+                              th:text="${jobApp.status?.name() ?: 'UNKNOWN'}"></span>
+                </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="card-body">
+                <div class="details-grid">
+                    <div class="detail-item" th:if="${jobApp.jobPost?.jobLocation}">
+                        <div class="detail-icon">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <span th:text="${jobApp.jobPost.jobLocation}"></span>
+                    </div>
+
+                    <div class="detail-item" th:if="${jobApp.appliedAt}">
+                        <div class="detail-icon">
+                            <i class="bi bi-calendar-check-fill"></i>
+                        </div>
+                        <span th:text="'Ứng tuyển ngày: ' + ${#temporals.format(jobApp.appliedAt, 'dd/MM/yyyy HH:mm')}"></span>
+                    </div>
+
+                    <div class="detail-item" th:if="${jobApp.fullName}">
+                        <div class="detail-icon">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                        <span th:text="${jobApp.fullName}"></span>
+                    </div>
+
+                    <div class="detail-item" th:if="${jobApp.email}">
+                        <div class="detail-icon">
+                            <i class="bi bi-envelope-fill"></i>
+                        </div>
+                        <span th:text="${jobApp.email}"></span>
+                    </div>
+
+                    <div class="detail-item" th:if="${jobApp.phone}">
+                        <div class="detail-icon">
+                            <i class="bi bi-telephone-fill"></i>
+                        </div>
+                        <span th:text="${jobApp.phone}"></span>
+                    </div>
+                </div>
+
+                <!-- Application Content -->
+                <div class="application-content" th:if="${jobApp.description != null and !#strings.isEmpty(jobApp.description)}">
+                    <div class="content-header">
+                        <i class="bi bi-chat-text-fill"></i>
+                        <h4>Nội dung ứng tuyển:</h4>
+                    </div>
+                    <div class="content-text">
+                        <p th:text="${jobApp.description}">/p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Footer -->
+            <div class="card-footer">
+                <a th:href="@{/JobDescription/JobPost(id=${jobApp.jobPost?.jobPostId ?: 0})}"
+                   class="btn btn-primary" th:if="${jobApp.jobPost}">
+                    <i class="bi bi-eye-fill"></i>
+                    <span>Xem công việc</span>
+                </a>
+                <a th:href="@{/files/cv/{filename}(filename=${jobApp.cvUrl})}"
+                   target="_blank" class="btn btn-success"
+                   th:if="${jobApp.cvUrl != null and !#strings.isEmpty(jobApp.cvUrl)}">
+                    <i class="bi bi-file-earmark-pdf-fill"></i>
+                    <span>Xem CV</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" th:if="${applications == null or #lists.isEmpty(applications)}">
+        <div class="empty-illustration">
+            <i class="bi bi-briefcase"></i>
+        </div>
+        <h3>Chưa có đơn ứng tuyển nào</h3>
+        <p>Hãy tìm kiếm và ứng tuyển các công việc phù hợp với bạn</p>
+        <a href="/" class="btn btn-primary">
+            <i class="bi bi-search"></i>
+            Tìm kiếm việc làm
+        </a>
+    </div>
+</div>
+</body>
+</html>

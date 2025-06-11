@@ -2,23 +2,28 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Xác thực email</title>
+    <title th:text="#{verify.title}">Xác thực email</title>
     <link rel="stylesheet" th:href="@{/css/login.css}" />
     <link rel="stylesheet" th:href="@{/css/navbar.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
     <link rel="stylesheet" th:href="@{/css/registerEnhanced.css}" />
     <link rel="stylesheet" th:href="@{/css/forgotPasswordEnhanced.css}" />
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
+            rel="stylesheet"
+    />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
 <body>
 <div th:replace="~{navbar/navbarHome :: home}"></div>
 <div class="page-container login-container">
-    <h2>🔐 Xác thực email đăng ký</h2>
+            <h2 th:text="#{verify.heading}">🔐 Xác thực email đăng ký</h2>
     <div class="subtitle">
-        <p>Xin chào <strong th:text="${fullName}">Tên người dùng</strong>!</p>
-        <p>Chúng tôi đã gửi mã OTP đến email: <strong th:text="${email}">email@example.com</strong></p>
-        <p>Vui lòng nhập mã OTP để hoàn tất đăng ký tài khoản.</p>
+        <p><span th:text="#{verify.greeting}">Xin chào</span> <strong th:text="${fullName}">Tên người dùng</strong>!</p>
+        <p><span th:text="#{verify.otpSent}">Chúng tôi đã gửi mã OTP đến email:</span> <strong th:text="${email}">email@example.com</strong></p>
+        <p th:text="#{verify.instruction}">Vui lòng nhập mã OTP để hoàn tất đăng ký tài khoản.</p>
     </div>
 
     <!-- Thông báo thành công -->
@@ -31,7 +36,7 @@
     <form class="forgot-password-form" th:action="@{/Register/EmailVerification/verifyOTP}" method="post">
         <input type="hidden" name="email" th:value="${email}" />
         <div class="form-group">
-            <label for="otp">Mã OTP (6 chữ số):</label>
+            <label for="otp" th:text="#{verify.otpLabel}">Mã OTP (6 chữ số):</label>
             <input type="number" 
                    id="otp" 
                    name="otp" 
@@ -42,33 +47,33 @@
         </div>
         <button type="submit" class="content-btn content-btn-primary login-page-btn">
             <i class="bi bi-shield-check"></i>
-            Xác thực & Hoàn tất đăng ký
+            <span th:text="#{verify.verifyButton}">Xác thực & Hoàn tất đăng ký</span>
         </button>
     </form>
 
     <!-- Nút gửi lại OTP -->
     <div style="text-align: center; margin-top: 20px;">
-        <p>Không nhận được mã OTP?</p>
+        <p th:text="#{verify.resendOtp}">Không nhận được mã OTP?</p>
         <form th:action="@{/Register/EmailVerification/resendOTP}" method="post" style="display: inline;">
             <input type="hidden" name="email" th:value="${email}" />
             <button type="submit" class="content-btn" style="background-color: #6c757d; border: none;">
                 <i class="bi bi-arrow-clockwise"></i>
-                Gửi lại mã OTP
+                <span th:text="#{verify.resendButton}">Gửi lại mã OTP</span>
             </button>
         </form>
     </div>
 
     <!-- Thông tin hỗ trợ -->
     <div style="text-align: center; margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
-        <h4 style="color: #007bff; margin-bottom: 10px;">💡 Lưu ý quan trọng:</h4>
+        <h4 style="color: #007bff; margin-bottom: 10px;" th:text="#{verify.importantNotes}">💡 Lưu ý quan trọng:</h4>
         <ul style="text-align: left; margin: 0; padding-left: 20px; color: #6c757d;">
-            <li>Mã OTP có hiệu lực trong <strong>10 phút</strong></li>
-            <li>Tài khoản chỉ được tạo <strong>sau khi xác thực thành công</strong></li>
-            <li>Kiểm tra cả hộp thư <strong>Spam/Junk</strong> nếu không thấy email</li>
-            <li>Mỗi lần yêu cầu sẽ tạo mã OTP mới và hủy mã cũ</li>
+            <li th:utext="#{verify.note1}">Mã OTP có hiệu lực trong <strong>10 phút</strong></li>
+            <li th:utext="#{verify.note2}">Tài khoản chỉ được tạo <strong>sau khi xác thực thành công</strong></li>
+            <li th:utext="#{verify.note3}">Kiểm tra cả hộp thư <strong>Spam/Junk</strong> nếu không thấy email</li>
+            <li th:utext="#{verify.note4}">Mỗi lần yêu cầu sẽ tạo mã OTP mới và hủy mã cũ</li>
         </ul>
         <p style="margin-top: 15px; color: #6c757d;">
-            <i class="bi bi-telephone"></i> Cần hỗ trợ? Liên hệ: <strong>1900-xxxx</strong>
+            <span th:utext="#{verify.support}"><i class="bi bi-telephone"></i> Cần hỗ trợ? Liên hệ: <strong>1900-xxxx</strong></span>
         </p>
     </div>
 
@@ -76,7 +81,7 @@
     <div style="text-align: center; margin-top: 20px; padding: 15px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px;">
         <p style="margin: 0; color: #856404; font-size: 14px;">
             <i class="bi bi-exclamation-triangle"></i>
-            <strong>Lưu ý:</strong> Nếu đóng trình duyệt hoặc hết phiên làm việc, bạn sẽ cần đăng ký lại từ đầu.
+            <span th:utext="#{verify.sessionWarning}"><strong>Lưu ý:</strong> Nếu đóng trình duyệt hoặc hết phiên làm việc, bạn sẽ cần đăng ký lại từ đầu.</span>
         </p>
     </div>
 </div>
@@ -126,5 +131,7 @@
     color: #007bff;
 }
 </style>
+<script th:src="@{/js/languageSwitch.js}"></script>
+
 </body>
 </html> 
