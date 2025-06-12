@@ -40,5 +40,5 @@ public interface IAdminRepository extends JpaRepository<Account, Integer> {
     // Search Employer theo name, email, phone với pagination
     @Query("SELECT a FROM Account a WHERE a.role = 'employer' AND (a.fullName LIKE %:keyword% OR a.email LIKE %:keyword% OR a.phone LIKE %:keyword%)")
     Page<Account> searchEmployers(@Param("keyword") String keyword, Pageable pageable);
-}
 
+}

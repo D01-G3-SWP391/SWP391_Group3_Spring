@@ -29,7 +29,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
-        <!-- Search Form -->
+        <!-- Search Form - SỬA: Cấu trúc HTML và sử dụng .btn-equal -->
         <form method="get" class="row g-3 mb-4 filter-form">
             <div class="col-md-8">
                 <input class="form-control" name="keyword"
@@ -37,16 +37,12 @@
                        placeholder="Search by name, email or phone..." />
             </div>
             <div class="col-auto d-flex gap-2">
-                <div class="col-auto">
-                <button class="btn btn-primary" type="submit">
+                <button class="btn-equal" type="submit">
                     <i class="bi bi-search me-2"></i>Search
                 </button>
-            </div >
-                <div class="col-auto" >
-                    <a th:href="@{/Admin/ListStudent}" class="btn btn-secondary">
-                        <i class="bi bi-arrow-clockwise me-2"></i>Reset
-                    </a>
-                </div>
+                <a th:href="@{/Admin/ListStudent}" class="btn-equal">
+                    <i class="bi bi-arrow-clockwise me-2"></i>Reset
+                </a>
             </div>
         </form>
 
@@ -88,6 +84,7 @@
                     <td th:text="${student.email}"></td>
                     <td th:text="${student.phone}"></td>
                     <td>
+                        <!-- SỬA: Cải thiện logic hiển thị status -->
                         <span th:class="${student.status.name() == 'active' ? 'status-active' : 'status-banned'}"
                               th:text="${student.status.name() == 'active' ? 'Active' : 'Banned'}"></span>
                     </td>
@@ -98,9 +95,11 @@
                                 <i class="bi bi-eye"></i> View
                             </a>
 
+                            <!-- SỬA: Thêm confirmation cho Ban/Unban actions -->
                             <form th:if="${student.status.name() == 'active'}"
                                   th:action="@{/Admin/banStudent/{id}(id=${student.userId})}"
-                                  method="post" style="display: inline;">
+                                  method="post" style="display: inline;"
+                                  onsubmit="return confirm('Are you sure you want to ban this student?')">
                                 <button type="submit" class="btn btn-sm btn-danger">
                                     <i class="bi bi-person-x"></i> Ban
                                 </button>
@@ -108,7 +107,8 @@
 
                             <form th:if="${student.status.name() == 'inactive'}"
                                   th:action="@{/Admin/unbanStudent/{id}(id=${student.userId})}"
-                                  method="post" style="display: inline;">
+                                  method="post" style="display: inline;"
+                                  onsubmit="return confirm('Are you sure you want to unban this student?')">
                                 <button type="submit" class="btn btn-sm btn-success">
                                     <i class="bi bi-person-check"></i> Unban
                                 </button>
