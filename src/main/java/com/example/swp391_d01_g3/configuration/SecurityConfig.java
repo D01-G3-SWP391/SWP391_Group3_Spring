@@ -57,7 +57,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/Login", "/*.css","/*.js","/HomePage/**","/Register/**","/ForgotPassword/**","/Blog/**").permitAll()
                         .requestMatchers("/Admin/**").hasRole("admin")
                         .requestMatchers("/Employee/**").hasRole("employer")
-                        .requestMatchers("/Student/**").hasRole("student")
+                        .requestMatchers("/Student/**","/JobDescription/**").hasRole("student")
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)

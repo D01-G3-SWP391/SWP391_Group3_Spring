@@ -3,18 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng ký Sinh viên - JobPortal</title>
+    <title th:text="#{register.student.title} + ' - JobPortal'">Đăng ký Sinh viên - JobPortal</title>
     <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
     <link rel="stylesheet" th:href="@{/css/navbar.css}" />
     <link rel="stylesheet" th:href="@{/css/login.css}" />
     <link rel="stylesheet" th:href="@{/css/registerEnhanced.css}" />
+    <link rel="stylesheet" th:href="@{/css/newRegister.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}" />
     <link rel="stylesheet" th:href="@{/css/validation-enhanced.css}" />
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
+            rel="stylesheet"
+    />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
 <body>
 <div th:replace="~{navbar/navbarHome :: home}"></div>
 <div class="page-container login-container">
-    <h2>ĐĂNG KÝ NGƯỜI TÌM VIỆC</h2>
+    <h2 th:text="#{register.student.title}">ĐĂNG KÝ NGƯỜI TÌM VIỆC</h2>
     
     <!-- Hiển thị thông báo lỗi chung nếu có -->
     <div th:if="${errorMessage}" class="alert alert-danger" style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #f5c6cb;">
@@ -22,14 +29,14 @@
     </div>
     
     <form class="login-form" method="post" th:action="@{/Register/registerStudent}" th:object="${accountDTO}" id="registerForm" novalidate>
-        <p class="subtitle">Hoặc <a th:href="@{/Login}">đăng nhập NGAY</a> nếu bạn đã có tài khoản.</p>
+        <p class="subtitle" th:utext="#{register.subtitle}">Hoặc <a th:href="@{/Login}">đăng nhập NGAY</a> nếu bạn đã có tài khoản.</p>
         
         <!-- Họ và tên -->
         <div class="form-group">
             <input type="text" 
                    id="fullName" 
                    name="fullName" 
-                   placeholder="Nhập họ và tên *" 
+                   th:placeholder="#{register.fullName.placeholder}" 
                    th:field="*{fullName}" 
                    required
                    autocomplete="name"
@@ -40,7 +47,7 @@
                   th:errors="*{fullName}"></span>
             <!-- Client-side error container -->
             <span class="error-message" id="fullNameError"></span>
-            <div class="form-tooltip">Họ và tên phải từ 6-100 ký tự, chỉ chứa chữ cái</div>
+            <div class="form-tooltip" th:text="#{register.validation.fullName}">Họ và tên phải từ 6-100 ký tự, chỉ chứa chữ cái</div>
         </div>
         
         <!-- Email -->
@@ -48,7 +55,7 @@
             <input type="email" 
                    id="email" 
                    name="email" 
-                   placeholder="Nhập địa chỉ Email *" 
+                   th:placeholder="#{register.email.placeholder}" 
                    th:field="*{email}"
                    required
                    autocomplete="email"
@@ -59,7 +66,7 @@
                   th:errors="*{email}"></span>
             <!-- Client-side error container -->
             <span class="error-message" id="emailError"></span>
-            <div class="form-tooltip">Email hợp lệ để nhận thông báo việc làm</div>
+            <div class="form-tooltip" th:text="#{register.validation.email}">Email hợp lệ để nhận thông báo việc làm</div>
         </div>
         
         <!-- Số điện thoại -->
@@ -67,7 +74,7 @@
             <input type="tel" 
                    id="phone" 
                    name="phone" 
-                   placeholder="Nhập số điện thoại *" 
+                   th:placeholder="#{register.phone.placeholder}" 
                    th:field="*{phone}"
                    required
                    autocomplete="tel"
@@ -78,7 +85,7 @@
                   th:errors="*{phone}"></span>
             <!-- Client-side error container -->
             <span class="error-message" id="phoneError"></span>
-            <div class="form-tooltip">Số điện thoại Việt Nam (10-11 số)</div>
+            <div class="form-tooltip" th:text="#{register.validation.phone}">Số điện thoại Việt Nam (10-11 số)</div>
         </div>
         
         <!-- Mật khẩu -->
@@ -86,7 +93,7 @@
             <input type="password" 
                    id="password" 
                    name="password" 
-                   placeholder="Nhập mật khẩu *" 
+                   th:placeholder="#{register.password.placeholder}" 
                    th:field="*{password}"
                    required
                    autocomplete="new-password"
@@ -98,7 +105,7 @@
             <!-- Client-side error container -->
             <span class="error-message" id="passwordError"></span>
             <div class="password-strength" id="passwordStrength"></div>
-            <div class="form-tooltip">Tối thiểu 8 ký tự, có chữ hoa, chữ thường và số</div>
+            <div class="form-tooltip" th:text="#{register.validation.password}">Tối thiểu 8 ký tự, có chữ hoa, chữ thường và số</div>
         </div>
         
         <!-- Xác nhận mật khẩu -->
@@ -106,13 +113,13 @@
             <input type="password" 
                    id="confirmPassword" 
                    name="confirmPassword" 
-                   placeholder="Xác nhận mật khẩu *" 
+                   th:placeholder="#{register.confirmPassword.placeholder}" 
                    required
                    autocomplete="new-password"
                    aria-describedby="confirmPasswordError">
             <!-- Client-side error container -->
             <span class="error-message" id="confirmPasswordError"></span>
-            <div class="form-tooltip">Nhập lại mật khẩu để xác nhận</div>
+            <div class="form-tooltip" th:text="#{register.validation.confirmPassword}">Nhập lại mật khẩu để xác nhận</div>
         </div>
         
         <!-- Terms and Conditions -->
@@ -123,18 +130,18 @@
                     <span class="checkmark"></span>
                 </div>
                 <div class="terms-text">
-                    Tôi đồng ý với <a href="#" onclick="event.preventDefault();">Điều khoản sử dụng</a> và <a href="#" onclick="event.preventDefault();">Chính sách bảo mật</a>
+                    <span th:utext="#{register.agreeTerms}">Tôi đồng ý với <a href="#" onclick="event.preventDefault();">Điều khoản sử dụng</a> và <a href="#" onclick="event.preventDefault();">Chính sách bảo mật</a></span>
                 </div>
             </label>
             <span class="error-message" id="agreeTermsError"></span>
         </div>
         
         <button type="submit" class="content-btn content-btn-primary login-page-btn btn-submit" id="submitBtn">
-            <i class="bi bi-person-plus"></i> Đăng ký tài khoản
+            <i class="bi bi-person-plus"></i> <span th:text="#{register.submitButton}">Đăng ký tài khoản</span>
         </button>
         
         <div style="text-align: center; margin-top: 20px; color: #666; font-size: 14px;">
-            <p>Bằng cách đăng ký, bạn sẽ nhận được mã OTP qua email để xác thực tài khoản.</p>
+            <p th:text="#{register.otpNotice}">Bằng cách đăng ký, bạn sẽ nhận được mã OTP qua email để xác thực tài khoản.</p>
         </div>
     </form>
 </div>
@@ -505,5 +512,7 @@ document.addEventListener('DOMContentLoaded', function() {
     fullNameInput.focus();
 });
 </script>
+<script th:src="@{/js/languageSwitch.js}"></script>
+
 </body>
 </html>

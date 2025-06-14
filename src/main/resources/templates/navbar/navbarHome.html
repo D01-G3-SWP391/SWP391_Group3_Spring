@@ -17,6 +17,9 @@
     <!-- Link to specific navbar styles -->
     <link rel="stylesheet" th:href="@{/css/navbar.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}" />
+    <!-- Language Switcher CSS -->
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
@@ -32,58 +35,168 @@
               <div class="text-logo">JOB4YOU</div>
             </a>
           </div>
-          <a href="#" class="nav-link">Việc làm</a>
-          <a href="#" class="nav-link">Tạo CV</a>
-          <a href="#" class="nav-link">Công cụ</a>
-          <a th:href="@{/Blog}" class="nav-link">Cẩm nang nghề nghiệp</a>
-          <a href="#" class="nav-link">Mẹo phỏng vấn</a>
-          <a href="#" class="nav-link">Sự kiện</a>
+          <a href="#" class="nav-link" th:text="#{nav.jobs}">Việc làm</a>
+          <a href="#" class="nav-link" th:text="#{nav.createCV}">Tạo CV</a>
+          <a href="#" class="nav-link" th:text="#{nav.tools}">Công cụ</a>
+          <a th:href="@{/Blog}" class="nav-link" th:text="#{nav.blogs}">Blogs</a>
+          <a href="#" class="nav-link" th:text="#{nav.events}">Events</a>
         </div>
-        <div sec:authorize="isAuthenticated()" class="navbar-right">
-          <div th:if="${userEmail}" class="dropdown">
-            <input
-              type="checkbox"
-              id="dropdown-toggle"
-              class="dropdown-toggle"
-            />
-            <label for="dropdown-toggle" class="nav-link user-greeting">
-              Hi <span th:text="${userEmail}"></span>
-              <i class="bi bi-caret-down-fill"></i>
-            </label>
-            <div class="dropdown-menu">
-              <a
-                class="dropdown-item"
-                th:href="@{/Student}"
-                sec:authorize="hasRole('student')"
-                >Tài khoản</a
-              >
-              <a
-                class="dropdown-item"
-                th:href="@{/Employer}"
-                sec:authorize="hasRole('employer')"
-                >Tài khoản</a
-              >
-              <a
-                class="dropdown-item"
-                th:href="@{/Admin}"
-                sec:authorize="hasRole('admin')"
-                >Tài khoản</a
-              >
+
+        <div class="navbar-right">
+          <!-- Language Switcher - Always visible -->
+          <div class="language-switcher-container">
+            <button class="language-switcher" th:text="#{app.language}">LANGUAGE</button>
+            <div class="language-dropdown">
+              <a href="?lang=en" class="language-option" th:classappend="${#locale.language == 'en'} ? 'active'">
+                <span class="flag">🇺🇸</span> English
+              </a>
+              <a href="?lang=vi" class="language-option" th:classappend="${#locale.language == 'vi'} ? 'active'">
+                <span class="flag">🇻🇳</span> Tiếng Việt
+              </a>
             </div>
           </div>
-          <a th:href="@{/logout}" class="nav-action-btn nav-logout-btn"
-            ><i class="bi bi-box-arrow-in-right"></i> Logout</a
-          >
-        </div>
-        <div sec:authorize="isAnonymous()" class="navbar-right">
-          <a th:href="@{/Register}" class="nav-action-btn nav-register-btn"
-            ><i class="bi bi-person-plus-fill"></i> Đăng ký</a
-          >
-          <a th:href="@{/Login}" class="nav-action-btn nav-login-btn"
-            ><i class="bi bi-box-arrow-in-right"></i> Đăng nhập</a
-          >
+
+          <!-- Authenticated User Section -->
+          <div sec:authorize="isAuthenticated()" class="authenticated-section">
+            <div th:if="${userEmail}" class="dropdown">
+              <input
+                type="checkbox"
+                id="dropdown-toggle"
+                class="dropdown-toggle"
+              />
+              <label for="dropdown-toggle" class="nav-link user-greeting">
+                <span th:text="#{app.account}"></span>
+                <i class="bi bi-person-circle"></i>
+                <i class="bi bi-caret-down-fill"></i>
+              </label>
+              <div class="dropdown-menu">
+                <a
+                  class="dropdown-item"
+                  th:href="@{/Student}"
+                  sec:authorize="hasRole('student')"
+                  th:text="#{nav.account}">Tài khoản</a
+                >
+                <a
+                  class="dropdown-item"
+                  th:href="@{/Employer}"
+                  sec:authorize="hasRole('employer')"
+                  th:text="#{nav.account}">Tài khoản</a
+                >
+                <a
+                  class="dropdown-item"
+                  th:href="@{/Admin}"
+                  sec:authorize="hasRole('admin')"
+                  th:text="#{nav.account}">Tài khoản</a
+                >
+              </div>
+            </div>
+            <a th:href="@{/logout}" class="nav-action-btn nav-logout-btn"
+              ><i class="bi bi-box-arrow-in-right"></i> <span th:text="#{nav.logout}">Logout</span></a
+            >
+          </div>
+
+          <!-- Anonymous User Section -->
+          <div sec:authorize="isAnonymous()" class="anonymous-section">
+            <a th:href="@{/Register}" class="nav-action-btn nav-register-btn"
+              ><i class="bi bi-person-plus-fill"></i> <span th:text="#{nav.register}">Đăng ký</span></a
+            >
+            <a th:href="@{/Login}" class="nav-action-btn nav-login-btn"
+              ><i class="bi bi-box-arrow-in-right"></i> <span th:text="#{nav.login}">Đăng nhập</span></a
+            >
+          </div>
         </div>
       </div>
     </div>
   </body>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Language switcher functionality
+    const languageOptions = document.querySelectorAll('.language-option');
+    languageOptions.forEach(option => {
+      option.addEventListener('click', function(event) {
+        event.preventDefault();
+        const lang = this.getAttribute('href').split('=')[1];
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('lang', lang);
+        window.location.href = currentUrl.toString();
+      });
+    });
+
+    const languageButton = document.querySelector('.language-switcher');
+    const languageDropdown = document.querySelector('.language-dropdown');
+    if (languageButton && languageDropdown) {
+      languageButton.addEventListener('click', function(event) {
+        event.stopPropagation();
+        languageDropdown.classList.toggle('active');
+      });
+      document.addEventListener('click', function(event) {
+        if (!languageButton.contains(event.target) && !languageDropdown.contains(event.target)) {
+          languageDropdown.classList.remove('active');
+        }
+      });
+    }
+
+    // Booking modal functionality
+    const openBtnNavbar = document.getElementById('openBookingModalNavbar');
+    const modal = document.getElementById('bookingModal');
+    const modalContent = document.querySelector('.booking-modal-content-popover');
+    const closeBtn = document.getElementById('closeBookingModal');
+
+    function hideModal() {
+      modal.style.display = 'none';
+    }
+
+    if (openBtnNavbar && modal && closeBtn && modalContent) {
+      openBtnNavbar.addEventListener('click', function() {
+        const rect = openBtnNavbar.getBoundingClientRect();
+        const modalWidth = modalContent.offsetWidth;
+        const windowWidth = window.innerWidth;
+
+        // Position vertically below the button
+        modalContent.style.top = (rect.bottom + window.scrollY + 5) + 'px';
+
+        // Center the modal horizontally relative to the button
+        let leftPosition = rect.left + window.scrollX + (rect.width / 2) - (modalWidth / 2);
+
+        // Ensure the modal doesn't go off-screen
+        if (leftPosition < 10) {
+          leftPosition = 10; // Keep a small margin from the left edge
+        } else if (leftPosition + modalWidth > windowWidth - 10) {
+          leftPosition = windowWidth - modalWidth - 10; // Keep a small margin from the right edge
+        }
+
+        modalContent.style.left = leftPosition + 'px';
+        modal.style.display = 'block';
+      });
+
+      closeBtn.addEventListener('click', hideModal);
+
+      window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+          hideModal();
+        }
+      });
+
+      // Adjust position on window resize
+      window.addEventListener('resize', function() {
+        if (modal.style.display === 'block') {
+          const rect = openBtnNavbar.getBoundingClientRect();
+          const modalWidth = modalContent.offsetWidth;
+          const windowWidth = window.innerWidth;
+
+          modalContent.style.top = (rect.bottom + window.scrollY + 5) + 'px';
+          let leftPosition = rect.left + window.scrollX + (rect.width / 2) - (modalWidth / 2);
+
+          if (leftPosition < 10) {
+            leftPosition = 10;
+          } else if (leftPosition + modalWidth > windowWidth - 10) {
+            leftPosition = windowWidth - modalWidth - 10;
+          }
+
+          modalContent.style.left = leftPosition + 'px';
+        }
+      });
+    }
+  });
+</script>
 </html>

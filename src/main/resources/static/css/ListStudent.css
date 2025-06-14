@@ -1,0 +1,211 @@
+body {
+    font-family: 'Poppins', Arial, sans-serif;
+    background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container-fluid {
+    flex: 1;
+    padding: 40px 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+h2 {
+    color: #2d3748;
+    font-size: 28px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 40px;
+    position: relative;
+    text-align: center;
+}
+
+h2::after {
+    content: '';
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(to right, #007bff, #00c6ff);
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+}
+
+.filter-form {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.filter-form:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.filter-form .form-control {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px;
+    transition: border-color 0.3s ease;
+}
+
+.filter-form .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    outline: none;
+}
+
+.filter-form .btn-primary {
+    background: linear-gradient(to right, #007bff, #00c6ff);
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 600;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.filter-form .btn-primary:hover {
+    background: linear-gradient(to right, #0056b3, #0096c7);
+    transform: translateY(-2px);
+}
+
+.student-table {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.student-table th {
+    background: linear-gradient(to right, #007bff, #00c6ff);
+    color: #ffffff;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 15px;
+    border: none;
+}
+
+.student-table td {
+    vertical-align: middle;
+    padding: 15px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.student-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.admin-table td:first-child {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.avatar:hover {
+    border-color: #007bff;
+}
+
+.status-active {
+    color: #28a745;
+    font-weight: 600;
+    background-color: #e6f4ea;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 14px;
+}
+
+.status-banned {
+    color: #dc3545;
+    font-weight: 600;
+    background-color: #f8e1e4;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 14px;
+}
+
+.action-btns {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.action-btns .btn {
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.action-btns .btn-primary {
+    background: linear-gradient(to right, #007bff, #00c6ff);
+    border: none;
+}
+
+.action-btns .btn-primary:hover {
+    background: linear-gradient(to right, #0056b3, #0096c7);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+}
+
+.action-btns .btn-danger {
+    background: linear-gradient(to right, #dc3545, #ff7581);
+    border: none;
+}
+
+.action-btns .btn-danger:hover {
+    background: linear-gradient(to right, #a71d2a, #d63a47);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+}
+
+.action-btns .btn-success {
+    background: linear-gradient(to right, #28a745, #34d058);
+    border: none;
+}
+
+.action-btns .btn-success:hover {
+    background: linear-gradient(to right, #1e7e34, #28a745);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .student-table th, .student-table td {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+    }
+
+    .action-btns {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .filter-form .form-control {
+        font-size: 14px;
+    }
+}
