@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employer Management - Admin</title>
+    <title>Job Posts Management - Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
@@ -14,7 +14,7 @@
 
 <div class="main-content">
     <div class="container-fluid">
-        <h2>Employer Management</h2>
+        <h2>Job Posts Management</h2>
 
         <!-- Success/Error Messages -->
         <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -29,18 +29,26 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
-        <!-- Search Form - SỬA: Sử dụng .btn-equal cho cả 2 nút -->
+        <!-- Filter Form -->
         <form method="get" class="row g-3 mb-4 filter-form">
-            <div class="col-md-8">
+            <div class="col-md-6">
                 <input class="form-control" name="keyword"
                        th:value="${keyword}"
-                       placeholder="Search by name, email or phone..." />
+                       placeholder="Search by job title, company or location..." />
+            </div>
+            <div class="col-md-3">
+                <select class="form-control" name="status">
+                    <option value="">All Status</option>
+                    <option value="PENDING" th:selected="${selectedStatus == 'PENDING'}">Pending</option>
+                    <option value="APPROVED" th:selected="${selectedStatus == 'APPROVED'}">Approved</option>
+                    <option value="REJECTED" th:selected="${selectedStatus == 'REJECTED'}">Rejected</option>
+                </select>
             </div>
             <div class="col-auto d-flex gap-2">
                 <button class="btn-equal" type="submit">
                     <i class="bi bi-search me-2"></i>Search
                 </button>
-                <a th:href="@{/Admin/ListEmployer}" class="btn-equal">
+                <a th:href="@{/Admin/JobPosts}" class="btn-equal">
                     <i class="bi bi-arrow-clockwise me-2"></i>Reset
                 </a>
             </div>
@@ -50,67 +58,66 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <span class="text-muted">
                 Showing <strong th:text="${currentPage * 6 + 1}"></strong> to
-                <strong th:text="${currentPage * 6 + #lists.size(employerList)}"></strong>
-                of <strong th:text="${totalItems}"></strong> employers
+                <strong th:text="${currentPage * 6 + #lists.size(jobPostList)}"></strong>
+                of <strong th:text="${totalItems}"></strong> job posts
             </span>
             <span class="text-muted" th:if="${totalPages > 1}">
                 Page <strong th:text="${currentPage + 1}"></strong> of <strong th:text="${totalPages}"></strong>
             </span>
         </div>
 
-        <!-- Employer Table -->
+        <!-- Job Posts Table -->
         <div class="table-responsive">
             <table class="table table-hover admin-table">
                 <thead>
                 <tr>
-                    <th><i class="bi bi-person-circle me-2"></i>Avatar</th>
-                    <th><i class="bi bi-person me-2"></i>Name</th>
-                    <th><i class="bi bi-envelope me-2"></i>Email</th>
-                    <th><i class="bi bi-telephone me-2"></i>Phone</th>
+                    <th><i class="bi bi-briefcase me-2"></i>Job Title</th>
+                    <th><i class="bi bi-building me-2"></i>Company</th>
+                    <th><i class="bi bi-geo-alt me-2"></i>Location</th>
+                    <th><i class="bi bi-cash me-2"></i>Salary</th>
+                    <th><i class="bi bi-clock me-2"></i>Type</th>
                     <th><i class="bi bi-shield-check me-2"></i>Status</th>
+                    <th><i class="bi bi-calendar me-2"></i>Created</th>
                     <th><i class="bi bi-gear me-2"></i>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="employer : ${employerList}">
+                <tr th:each="jobPost : ${jobPostList}">
                     <td>
-                        <img class="avatar"
-                             th:src="${employer.avatarUrl != null ? employer.avatarUrl : '/images/default-avatar.png'}"
-                             th:alt="${employer.fullName}" />
+                        <strong th:text="${jobPost.jobTitle}"></strong>
+                    </td>
+                    <td th:text="${jobPost.employer.companyName}"></td>
+                    <td th:text="${jobPost.jobLocation}"></td>
+                    <td th:text="${jobPost.jobSalary}"></td>
+                    <td>
+                        <span class="badge bg-info" th:text="${jobPost.jobType}"></span>
                     </td>
                     <td>
-                        <strong th:text="${employer.fullName}"></strong>
+                        <span th:class="${jobPost.approvalStatus.name() == 'APPROVED' ? 'status-active' :
+                                        (jobPost.approvalStatus.name() == 'REJECTED' ? 'status-banned' : 'status-pending')}"
+                              th:text="${jobPost.approvalStatus.name()}"></span>
                     </td>
-                    <td th:text="${employer.email}"></td>
-                    <td th:text="${employer.phone}"></td>
-                    <td>
-                        <!-- SỬA: Cải thiện logic hiển thị status -->
-                        <span th:class="${employer.status.name() == 'active' ? 'status-active' : 'status-banned'}"
-                              th:text="${employer.status.name() == 'active' ? 'Active' : 'Banned'}"></span>
-                    </td>
+                    <td th:text="${#temporals.format(jobPost.createdAt, 'dd/MM/yyyy')}"></td>
                     <td>
                         <div class="action-btns">
-                            <a th:href="@{/Admin/employer/{id}(id=${employer.userId})}"
+                            <a th:href="@{/Admin/JobPost/{id}(id=${jobPost.jobPostId})}"
                                class="btn btn-sm btn-primary">
                                 <i class="bi bi-eye"></i> View
                             </a>
 
-                            <!-- SỬA: Cải thiện logic hiển thị nút Ban/Unban -->
-                            <form th:if="${employer.status.name() == 'active'}"
-                                  th:action="@{/Admin/banEmployer/{id}(id=${employer.userId})}"
-                                  method="post" style="display: inline;"
-                                  onsubmit="return confirm('Are you sure you want to ban this employer?')">
-                                <button type="submit" class="btn btn-sm btn-danger">
-                                    <i class="bi bi-person-x"></i> Ban
+                            <form th:if="${jobPost.approvalStatus.name() == 'PENDING'}"
+                                  th:action="@{/Admin/ApproveJobPost/{id}(id=${jobPost.jobPostId})}"
+                                  method="post" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-success">
+                                    <i class="bi bi-check-circle"></i> Approve
                                 </button>
                             </form>
 
-                            <form th:if="${employer.status.name() == 'inactive'}"
-                                  th:action="@{/Admin/unbanEmployer/{id}(id=${employer.userId})}"
-                                  method="post" style="display: inline;"
-                                  onsubmit="return confirm('Are you sure you want to unban this employer?')">
-                                <button type="submit" class="btn btn-sm btn-success">
-                                    <i class="bi bi-person-check"></i> Unban
+                            <form th:if="${jobPost.approvalStatus.name() == 'PENDING'}"
+                                  th:action="@{/Admin/RejectJobPost/{id}(id=${jobPost.jobPostId})}"
+                                  method="post" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-x-circle"></i> Reject
                                 </button>
                             </form>
                         </div>
@@ -121,9 +128,9 @@
         </div>
 
         <!-- No Results Message -->
-        <div th:if="${#lists.isEmpty(employerList)}" class="text-center py-5">
-            <i class="bi bi-search display-1 text-muted"></i>
-            <h4 class="text-muted mt-3">No employers found</h4>
+        <div th:if="${#lists.isEmpty(jobPostList)}" class="text-center py-5">
+            <i class="bi bi-briefcase display-1 text-muted"></i>
+            <h4 class="text-muted mt-3">No job posts found</h4>
             <p class="text-muted">Try adjusting your search criteria</p>
         </div>
 
@@ -133,7 +140,7 @@
                 <!-- Previous Page -->
                 <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                     <a class="page-link"
-                       th:href="@{/Admin/ListEmployer(page=${currentPage - 1}, keyword=${keyword})}">
+                       th:href="@{/Admin/JobPosts(page=${currentPage - 1}, keyword=${keyword}, status=${selectedStatus})}">
                         <i class="bi bi-chevron-left"></i> Previous
                     </a>
                 </li>
@@ -143,14 +150,14 @@
                     th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
                     th:classappend="${pageNum == currentPage} ? 'active'">
                     <a class="page-link"
-                       th:href="@{/Admin/ListEmployer(page=${pageNum}, keyword=${keyword})}"
+                       th:href="@{/Admin/JobPosts(page=${pageNum}, keyword=${keyword}, status=${selectedStatus})}"
                        th:text="${pageNum + 1}"></a>
                 </li>
 
                 <!-- Next Page -->
                 <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
                     <a class="page-link"
-                       th:href="@{/Admin/ListEmployer(page=${currentPage + 1}, keyword=${keyword})}">
+                       th:href="@{/Admin/JobPosts(page=${currentPage + 1}, keyword=${keyword}, status=${selectedStatus})}">
                         Next <i class="bi bi-chevron-right"></i>
                     </a>
                 </li>
