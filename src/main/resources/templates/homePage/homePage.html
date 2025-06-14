@@ -205,17 +205,6 @@
         <div class="section-header">
           <h2 th:text="#{home.featuredJobs.title}">Việc làm nổi bật</h2>
           <p th:text="#{home.featuredJobs.subtitle}">Những cơ hội việc làm tốt nhất dành cho bạn</p>
-          
-          <!-- Jobs per page selector -->
-          <div class="jobs-per-page-selector text-end">
-            <label for="jobsPerPage" class="form-label me-2" th:text="#{home.showJobs}">Hiển thị:</label>
-            <select id="jobsPerPage" class="form-select d-inline-block w-auto" onchange="changeJobsPerPage(this.value)">
-                              <option value="6" th:selected="${size == 6}">6 <span th:text="#{home.jobsPerPage}">việc làm</span></option>
-                <option value="8" th:selected="${size == 8}">8 <span th:text="#{home.jobsPerPage}">việc làm</span></option>
-                <option value="12" th:selected="${size == 12}">12 <span th:text="#{home.jobsPerPage}">việc làm</span></option>
-                <option value="16" th:selected="${size == 16}">16 <span th:text="#{home.jobsPerPage}">việc làm</span></option>
-            </select>
-          </div>
         </div>
 
         <!-- Job Listings -->

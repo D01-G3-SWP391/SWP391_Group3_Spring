@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Employer Dashboard - JOB4YOU</title>
+  <title th:text="#{employer.dashboard.title}">Employer Dashboard - JOB4YOU</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
   <link rel="stylesheet" th:href="@{/css/navbarStudent_Employer.css}" />
   <link rel="stylesheet" th:href="@{/css/profileEmployer.css}" />
+  <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
 </head>
 <body>
   <div th:replace="~{navbar/navbarEmployee :: navbarAdmin}"></div>
@@ -30,10 +31,10 @@
             </div>
             <div class="profile-info">
               <h1 class="profile-title" th:text="${employer.companyName}">Company name</h1>
-              <p class="profile-subtitle">Employer</p>
+              <p class="profile-subtitle" th:text="#{employer.profile.roleLabel}">Employer</p>
               <div class="profile-actions">
                 <a th:href="@{/Employer/EditProfile}" class="btn-edit">
-                  <i class="bi bi-pencil-square"></i> Edit information
+                  <i class="bi bi-pencil-square"></i> <span th:text="#{employer.editInformation}">Edit information</span>
                 </a>
               </div>
             </div>
@@ -44,7 +45,7 @@
             <div class="info-item">
               <i class="bi bi-envelope info-icon"></i>
               <div class="info-content">
-                <div class="info-label">Email</div>
+                <div class="info-label" th:text="#{profile.email}">Email</div>
                 <div class="info-value" th:text="${currentAccount.email}">email@example.com</div>
               </div>
             </div>
@@ -52,24 +53,24 @@
             <div class="info-item">
               <i class="bi bi-telephone info-icon"></i>
               <div class="info-content">
-                <div class="info-label">Phone number</div>
-                <div class="info-value" th:text="${currentAccount.phone ?: 'Chưa cập nhật'}">Số điện thoại</div>
+                <div class="info-label" th:text="#{employer.phone}">Phone number</div>
+                <div class="info-value" th:text="${currentAccount.phone ?: #{employer.notUpdated}}">Số điện thoại</div>
               </div>
             </div>
 
             <div class="info-item">
               <i class="bi bi-geo-alt info-icon"></i>
               <div class="info-content">
-                <div class="info-label">Address</div>
-                <div class="info-value" th:text="${employer.companyAddress ?: 'Chưa cập nhật'}">Address company</div>
+                <div class="info-label" th:text="#{employer.address}">Address</div>
+                <div class="info-value" th:text="${employer.companyAddress ?: #{employer.notUpdated}}">Address company</div>
               </div>
             </div>
 
             <div class="info-item">
               <i class="bi bi-briefcase info-icon"></i>
               <div class="info-content">
-                <div class="info-label">Field</div>
-                <div class="info-value" th:text="${employer.jobField?.jobFieldName ?: 'Chưa cập nhật'}">Field of activity</div>
+                <div class="info-label" th:text="#{employer.field}">Field</div>
+                <div class="info-value" th:text="${employer.jobField?.jobFieldName ?: #{employer.notUpdated}}">Field of activity</div>
               </div>
             </div>
           </div>
@@ -78,7 +79,7 @@
         <!-- Company Description Section -->
         <div class="info-section" th:if="${employer.companyDescription != null and employer.companyDescription != ''}">
           <h3 class="section-title">
-            <i class="bi bi-file-text"></i> Mô tả công ty
+            <i class="bi bi-file-text"></i> <span th:text="#{employer.companyDescriptionLabel}">Mô tả công ty</span>
           </h3>
           <div class="company-description">
             <div th:utext="${employer.companyDescription}">Company description...</div>
@@ -88,13 +89,13 @@
         <!-- Additional Info Section -->
         <div class="info-section">
           <h3 class="section-title">
-            <i class="bi bi-info-circle"></i> Additional information
+            <i class="bi bi-info-circle"></i> <span th:text="#{employer.additionalInfo}">Additional information</span>
           </h3>
           <div class="info-grid">
             <div class="info-item">
               <i class="bi bi-person info-icon"></i>
               <div class="info-content">
-                <div class="info-label">Representative</div>
+                <div class="info-label" th:text="#{employer.representative}">Representative</div>
                 <div class="info-value" th:text="${currentAccount.fullName}">User name</div>
               </div>
             </div>
@@ -102,10 +103,10 @@
             <div class="info-item">
               <i class="bi bi-shield-check info-icon"></i>
               <div class="info-content">
-                <div class="info-label">Account status</div>
+                <div class="info-label" th:text="#{employer.accountStatus}">Account status</div>
                 <div class="info-value">
-                  <span th:if="${currentAccount.status.name() == 'active'}" class="badge bg-success">Active</span>
-                  <span th:if="${currentAccount.status.name() == 'inactive'}" class="badge bg-warning">Inactive</span>
+                  <span th:if="${currentAccount.status.name() == 'active'}" class="badge bg-success" th:text="#{employer.active}">Active</span>
+                  <span th:if="${currentAccount.status.name() == 'inactive'}" class="badge bg-warning" th:text="#{employer.inactive}">Inactive</span>
                 </div>
               </div>
             </div>
@@ -116,8 +117,8 @@
       <div th:unless="${currentAccount != null and employer != null}" class="profile-card">
         <div class="no-data">
           <i class="bi bi-exclamation-triangle" style="font-size: 48px; color: #ffc107"></i>
-          <h3>Không tìm thấy thông tin</h3>
-          <p>Không thể tải thông tin tài khoản hoặc thông tin công ty. Vui lòng thử lại sau.</p>
+          <h3 th:text="#{employer.noDataFound}">Không tìm thấy thông tin</h3>
+          <p th:text="#{employer.noInfoMessage}">Không thể tải thông tin tài khoản hoặc thông tin công ty. Vui lòng thử lại sau.</p>
         </div>
       </div>
     </div>
@@ -125,5 +126,6 @@
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script th:src="@{/js/languageSwitch.js}"></script>
 </body>
 </html>

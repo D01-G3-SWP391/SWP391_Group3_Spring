@@ -2,7 +2,7 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Quên mật khẩu</title>
+    <title th:text="#{forgotPassword.title}">Quên mật khẩu</title>
     <link rel="stylesheet" th:href="@{/css/login.css}" />
     <link rel="stylesheet" th:href="@{/css/navbar.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}" />
@@ -16,8 +16,8 @@
 <body>
 <div th:replace="~{navbar/navbarHome :: home}"></div>
 <div class="page-container login-container">
-    <h2>Quên mật khẩu?</h2>
-    <div class="subtitle">Vui lòng nhập OTP của bạn để đặt lại mật khẩu</div>
+    <h2 th:text="#{forgotPassword.heading}">Quên mật khẩu?</h2>
+    <div class="subtitle" th:text="#{forgotPassword.otp.subtitle}">Vui lòng nhập OTP của bạn để đặt lại mật khẩu</div>
 
     <div th:if="${otpSuccess}" class="success-message" th:text="${otpSuccess}"></div>
     <div th:if="${otp_failed}" class="error-message" th:text="${otp_failed}"></div>
@@ -25,9 +25,9 @@
 
     <form class="forgot-password-form" th:action="@{/ForgotPassword/VerifyOTP}" method="post">
         <div class="form-group">
-            <input type="number" name="otp" placeholder="Nhập OTP" required>
+            <input type="number" name="otp" th:placeholder="#{forgotPassword.otp.placeholder}" required>
         </div>
-        <button type="submit" class="content-btn content-btn-primary login-page-btn"><span class="icon-lock"></span>Xác nhận</button>
+        <button type="submit" class="content-btn content-btn-primary login-page-btn"><span class="icon-lock"></span><span th:text="#{forgotPassword.otp.confirm}">Xác nhận</span></button>
     </form>
 </div>
 </body>
