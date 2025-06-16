@@ -1,0 +1,157 @@
+package com.example.swp391_d01_g3.service.event;
+
+import com.example.swp391_d01_g3.model.Event;
+import com.example.swp391_d01_g3.model.EventForm;
+import com.example.swp391_d01_g3.repository.IEventFormRepository;
+import com.example.swp391_d01_g3.repository.IEventRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@Transactional
+public class EventServiceImpl implements IEventService {
+
+    @Autowired
+    private IEventRepository eventRepository;
+    
+    @Autowired
+    private IEventFormRepository eventFormRepository;
+
+    @Override
+    public Page<Event> findByApprovalStatus(Event.ApprovalStatus status, Pageable pageable) {
+        return eventRepository.findByApprovalStatusOrderByEventDateAsc(status, pageable);
+    }
+
+    @Override
+    public Page<Event> searchEvents(String keyword, Pageable pageable) {
+        return eventRepository.findByApprovalStatusAndEventTitleContainingIgnoreCaseOrEventDescriptionContainingIgnoreCase(
+                Event.ApprovalStatus.APPROVED, keyword, keyword, pageable);
+    }
+
+    @Override
+    public List<Event> getUpcomingEvents(int limit) {
+        LocalDateTime now = LocalDateTime.now();
+        Pageable pageable = PageRequest.of(0, limit, Sort.by("eventDate").ascending());
+        return eventRepository.findByApprovalStatusAndEventDateAfterOrderByEventDateAsc(
+                Event.ApprovalStatus.APPROVED, now, pageable).getContent();
+    }
+
+    @Override
+    public Event findById(Integer eventId) {
+        Optional<Event> eventOpt = eventRepository.findById(eventId);
+        return eventOpt.orElse(null);
+    }
+
+    @Override
+    public List<Event> getRelatedEvents(Integer eventId, int limit) {
+        Event currentEvent = findById(eventId);
+        if (currentEvent == null) {
+            return List.of();
+        }
+        
+        Pageable pageable = PageRequest.of(0, limit);
+        return eventRepository.findRelatedEvents(
+                eventId, 
+                currentEvent.getEmployer().getEmployerId(),
+                Event.ApprovalStatus.APPROVED, 
+                pageable);
+    }
+
+    @Override
+    public boolean isStudentRegistered(Integer eventId, Integer studentId) {
+        return eventFormRepository.existsByEventEventIdAndStudentStudentId(eventId, studentId);
+    }
+
+    @Override
+    public void registerEvent(EventForm eventForm) {
+        // Lưu đăng ký
+        eventFormRepository.save(eventForm);
+        
+        // Tăng số lượng participants
+        Event event = eventForm.getEvent();
+        event.incrementParticipants();
+        eventRepository.save(event);
+    }
+
+    @Override
+    public void unregisterEvent(Integer eventId, Integer studentId) {
+        Optional<EventForm> eventFormOpt = eventFormRepository.findByEventEventIdAndStudentStudentId(eventId, studentId);
+        
+        if (eventFormOpt.isPresent()) {
+            EventForm eventForm = eventFormOpt.get();
+            Event event = eventForm.getEvent();
+            
+            // Xóa đăng ký
+            eventFormRepository.delete(eventForm);
+            
+            // Giảm số lượng participants
+            event.decrementParticipants();
+            eventRepository.save(event);
+        }
+    }
+
+    @Override
+    public long countApprovedEvents() {
+        return eventRepository.countByApprovalStatus(Event.ApprovalStatus.APPROVED);
+    }
+
+    @Override
+    public long countEventsByJobField(String jobFieldName) {
+        return eventRepository.countEventsByJobField(jobFieldName, Event.ApprovalStatus.APPROVED);
+    }
+
+    @Override
+    public Event save(Event event) {
+        return eventRepository.save(event);
+    }
+
+    @Override
+    public void delete(Integer eventId) {
+        eventRepository.deleteById(eventId);
+    }
+
+    @Override
+    public Page<Event> findAll(Pageable pageable) {
+        return eventRepository.findAllByOrderByCreatedAtDesc(pageable);
+    }
+
+    @Override
+    public void approveEvent(Integer eventId, Integer approvedById) {
+        Event event = findById(eventId);
+        if (event != null) {
+            event.setApprovalStatus(Event.ApprovalStatus.APPROVED);
+            event.setApprovedAt(LocalDateTime.now());
+            // Set approved by - cần tạo Account entity tương ứng
+            eventRepository.save(event);
+        }
+    }
+
+    @Override
+    public void rejectEvent(Integer eventId, Integer rejectedById) {
+        Event event = findById(eventId);
+        if (event != null) {
+            event.setApprovalStatus(Event.ApprovalStatus.REJECTED);
+            event.setApprovedAt(LocalDateTime.now());
+            eventRepository.save(event);
+        }
+    }
+
+    @Override
+    public List<Event> findByEmployerId(Integer employerId) {
+        return eventRepository.findByEmployer_EmployerIdOrderByEventDateDesc(employerId);
+    }
+
+    @Override
+    public Page<Event> findByEmployerId(Integer employerId, Pageable pageable) {
+        return eventRepository.findByEmployer_EmployerIdOrderByEventDateDesc(employerId, pageable);
+    }
+} 

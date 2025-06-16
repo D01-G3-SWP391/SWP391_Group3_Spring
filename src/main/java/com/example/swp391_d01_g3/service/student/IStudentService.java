@@ -9,5 +9,6 @@ public interface IStudentService {
     Student save(Student student);
     List<Student> findAll();
     Student findByAccountUserId(Integer userId);
+    Student findByEmail(String email);
     Optional<Student> findById(Long id);
 }

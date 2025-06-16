@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IStudentRepository extends JpaRepository<Student,Long> {
     Student findByAccount_UserId(Integer userId);
-
+    Student findByAccount_Email(String email);
 }
