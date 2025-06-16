@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Quên mật khẩu</title>
+    <title th:text="#{forgotPassword.title}">Quên mật khẩu</title>
     <link rel="stylesheet" th:href="@{/css/login.css}" />
     <link rel="stylesheet" th:href="@{/css/navbar.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}" />
@@ -15,15 +15,15 @@
 <body>
 <div th:replace="~{navbar/navbarHome :: home}"></div>
 <div class="forgot-password-container page-container login-container">
-    <h2>Quên mật khẩu?</h2>
-    <div class="subtitle">Vui lòng nhập địa chỉ email của bạn để đặt lại mật khẩu</div>
+    <h2 th:text="#{forgotPassword.heading}">Quên mật khẩu?</h2>
+    <div class="subtitle" th:text="#{forgotPassword.email.subtitle}">Vui lòng nhập địa chỉ email của bạn để đặt lại mật khẩu</div>
     <div th:if="${emailNotFound}" class="error-message" th:text="${emailNotFound}"></div>
     <div th:if="${reEnterEmail}" class="error-message" th:text="${reEnterEmail}"></div>
     <form class="login-form" method="get" th:action="@{/ForgotPassword/VerifyMail}">
         <div class="form-group">
-            <input type="text" name="email" placeholder="Nhập email của bạn" required>
+            <input type="text" name="email" th:placeholder="#{forgotPassword.email.placeholder}" required>
         </div>
-        <button type="submit" class="content-btn content-btn-primary login-page-btn"><span class="icon-lock"></span>Xác nhận</button>
+        <button type="submit" class="content-btn content-btn-primary login-page-btn"><span class="icon-lock"></span><span th:text="#{forgotPassword.email.confirm}">Xác nhận</span></button>
     </form>
 </div>
 </body>

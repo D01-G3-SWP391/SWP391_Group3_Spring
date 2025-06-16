@@ -8,6 +8,7 @@ import com.example.swp391_d01_g3.repository.IJobPostRepository;
 import com.example.swp391_d01_g3.service.employer.IEmployerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -81,6 +82,17 @@ public class JobPostImpl implements IJobpostService {
                 (fieldId == null || fieldId == 0) ? null : fieldId,
                 (companyName == null || companyName.isEmpty()) ? null : companyName
         );
+    }
+
+    @Override
+    public List<JobPost> getTopJobs() {
+        return iJobPostRepository.findTopJobsByAppliedQuality();
+    }
+
+    @Override
+    public List<JobPost> getTopJobsLimit(int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        return iJobPostRepository.findTopJobsByAppliedQualityLimit(pageable);
     }
 
 

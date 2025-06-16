@@ -34,15 +34,32 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException {
+        // First check session attribute, then check query parameter
         String targetUrl = (String) request.getSession().getAttribute("REDIRECT_URL");
-        System.out.println("REDIRECT_URL from session: " + targetUrl);
-        request.getSession().removeAttribute("REDIRECT_URL");
+        String returnUrlParam = request.getParameter("returnUrl");
+
+        
+        // Prioritize returnUrl parameter if it exists and is valid
+        if (returnUrlParam != null && !returnUrlParam.isEmpty() && 
+            !returnUrlParam.contains("favicon.ico") && !returnUrlParam.startsWith("/.well-known")) {
+            targetUrl = returnUrlParam;
+        } else if (targetUrl != null && targetUrl.startsWith("/Login?returnUrl=")) {
+            // Extract the actual returnUrl from /Login?returnUrl=... 
+            try {
+                String encodedReturnUrl = targetUrl.substring("/Login?returnUrl=".length());
+                targetUrl = java.net.URLDecoder.decode(encodedReturnUrl, "UTF-8");
+            } catch (Exception e) {
+
+                targetUrl = null;
+            }
+        } else if (targetUrl == null || targetUrl.isEmpty()) {
+        }
         
         if (authentication.getPrincipal() instanceof OAuth2User oauth2User) {
             Map<String, Object> attributes = oauth2User.getAttributes();
             String email = (String) attributes.get("email");
             String fullName = (String) attributes.get("name");
-            System.out.println("Logged in with Google - Email: " + email + ", Name: " + fullName);
+
 
             // Kiểm tra user có tồn tại chưa để biết có phải tài khoản mới
             boolean isNewUser = accountService.findByEmail(email) == null;
