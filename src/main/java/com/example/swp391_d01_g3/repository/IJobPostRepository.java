@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,4 +42,20 @@ public interface IJobPostRepository extends JpaRepository<JobPost,Integer> {
             @Param("jobType") String jobType,
             @Param("jobFieldId") Integer jobFieldId,
             @Param("companyName") String companyName);
+
+
+
+    @Query("SELECT jp FROM JobPost jp " +
+            "WHERE jp.displayStatus = 'ACTIVE' " +
+            "ORDER BY jp.appliedQuality DESC")
+    List<JobPost> findTopJobsByAppliedQuality();
+
+
+    // Giới hạn số lượng top job muốn lấy (nếu muốn)
+    @Query("SELECT jp FROM JobPost jp " +
+            "WHERE jp.displayStatus = 'ACTIVE' " +
+            "ORDER BY jp.appliedQuality DESC")
+    List<JobPost> findTopJobsByAppliedQualityLimit(Pageable pageable);
+
+
 }
