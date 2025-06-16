@@ -7,139 +7,221 @@
       lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title th:text="#{jobPost.create.title}">Đăng Tin Tuyển Dụng</title>
+    <title>Đăng Tin Tuyển Dụng</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
     <link rel="stylesheet" th:href="@{/css/createFormJobPost.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarStudent_Employer.css}"/>
-    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
 
 </head>
 <body>
 <div th:replace="~{navbar/navbarEmployee :: navbarAdmin}"></div>
 <script src="/js/navbarAdmin.js"></script>
 <div class="main-content">
-    <div class="header" th:text="#{jobPost.create.heading}">Đăng tuyển dụng</div>
-    <div class="form-container">
-        <form th:action="@{/Employer/CreateJobPost}"
-              th:object="${jobPostDTO}"
-              method="post"
-              id="createJobPostForm">
-
-            <!-- CSRF -->
-            <sec:csrfInput/>
-
-            <!-- 1. Tiêu đề tin tuyển dụng -->
-            <div class="form-group">
-                <label for="jobTitle" th:text="#{jobPost.create.jobTitle}">Tiêu đề tuyển dụng</label>
-                <input type="text"
-                       th:field="*{jobTitle}"
-                       class="form-control"
-                       id="jobTitle"
-                       th:placeholder="#{jobPost.create.jobTitle.placeholder}"
-                       required />
-                <div th:if="${#fields.hasErrors('jobTitle')}"
-                     th:errors="*{jobTitle}"
-                     class="text-danger"></div>
+    <div class="container">
+        <div class="form-card">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1><i class="bi bi-briefcase-fill"></i> Đăng Tuyển Dụng</h1>
+                <p>Tạo tin tuyển dụng để tìm kiếm ứng viên phù hợp</p>
             </div>
 
-            <!-- 2. Lĩnh vực và Loại công việc -->
-            <div class="form-group">
-                <label th:text="#{jobPost.create.fieldAndType}">Lĩnh vực và Loại công việc</label>
-                <div class="row">
-                    <div class="col">
-                        <select th:field="*{jobFieldId}"
-                                class="form-select"
-                                id="jobFieldId"
-                                required>
-                            <option th:value="${null}" disabled selected th:text="#{jobPost.create.selectField}">-- Chọn lĩnh vực --</option>
-                            <option th:each="field : ${jobFields}"
-                                    th:value="${field.jobFieldId}"
-                                    th:text="${field.jobFieldName}"/>
-                        </select>
-                        <div th:if="${#fields.hasErrors('jobFieldId')}"
-                             th:errors="*{jobFieldId}"
-                             class="text-danger"></div>
+            <form th:action="@{/Employer/CreateJobPost}"
+                  th:object="${jobPostDTO}"
+                  method="post"
+                  id="createJobPostForm"
+                  class="needs-validation"
+                  novalidate>
+
+                <!-- CSRF -->
+                <sec:csrfInput/>
+
+                <!-- 1. Tiêu đề tin tuyển dụng -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="bi bi-card-heading"></i>
+                        Thông tin cơ bản
                     </div>
-                    <div class="col">
-                        <select th:field="*{jobType}"
-                                class="form-select"
-                                id="jobType"
-                                required>
-                            <option th:value="${null}" disabled selected th:text="#{jobPost.create.selectJobType}">-- Chọn loại công việc --</option>
-                            <option th:each="type : ${jobTypes}"
-                                    th:value="${type}"
-                                    th:text="${type}"/>
-                        </select>
-                        <div th:if="${#fields.hasErrors('jobType')}"
-                             th:errors="*{jobType}"
+                    <div class="mb-3">
+                        <label for="jobTitle" class="form-label">Tiêu đề tuyển dụng *</label>
+                        <input type="text"
+                               th:field="*{jobTitle}"
+                               class="form-control"
+                               id="jobTitle"
+                               placeholder="Nhập tiêu đề tin tuyển dụng"
+                               required />
+                        <div th:if="${#fields.hasErrors('jobTitle')}"
+                             th:errors="*{jobTitle}"
                              class="text-danger"></div>
                     </div>
                 </div>
-            </div>
 
-            <!-- 3. Khu vực (jobLocation) -->
-            <div class="form-group">
-                <label for="jobLocation" th:text="#{jobPost.create.location}">Khu vực</label>
-                <input type="text"
-                       th:field="*{jobLocation}"
-                       class="form-control"
-                       id="jobLocation"
-                       th:placeholder="#{jobPost.create.location.placeholder}"
-                       required />
-                <div th:if="${#fields.hasErrors('jobLocation')}"
-                     th:errors="*{jobLocation}"
-                     class="text-danger"></div>
-            </div>
+                <!-- 2. Lĩnh vực và Loại công việc -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="bi bi-diagram-3"></i>
+                        Phân loại công việc
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="jobFieldId" class="form-label">Lĩnh vực *</label>
+                            <select th:field="*{jobFieldId}"
+                                    class="form-select"
+                                    id="jobFieldId"
+                                    required>
+                                <option th:value="${null}" disabled selected>-- Chọn lĩnh vực --</option>
+                                <option th:each="field : ${jobFields}"
+                                        th:value="${field.jobFieldId}"
+                                        th:text="${field.jobFieldName}"/>
+                            </select>
+                            <div th:if="${#fields.hasErrors('jobFieldId')}"
+                                 th:errors="*{jobFieldId}"
+                                 class="text-danger"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="jobType" class="form-label">Loại công việc *</label>
+                            <select th:field="*{jobType}"
+                                    class="form-select"
+                                    id="jobType"
+                                    required>
+                                <option th:value="${null}" disabled selected>-- Chọn loại công việc --</option>
+                                <option th:each="type : ${jobTypes}"
+                                        th:value="${type}"
+                                        th:text="${type}"/>
+                            </select>
+                            <div th:if="${#fields.hasErrors('jobType')}"
+                                 th:errors="*{jobType}"
+                                 class="text-danger"></div>
+                        </div>
+                    </div>
+                </div>
 
-            <!-- 4. Lương thỏa thuận (jobSalary) -->
-            <div class="form-group">
-                <label for="jobSalary" th:text="#{jobPost.create.salary}">Lương thỏa thuận</label>
-                <input type="text"
-                       th:field="*{jobSalary}"
-                       class="form-control"
-                       id="jobSalary"
-                       th:placeholder="#{jobPost.create.salary.placeholder}" />
-                <div th:if="${#fields.hasErrors('jobSalary')}"
-                     th:errors="*{jobSalary}"
-                     class="text-danger"></div>
-            </div>
+                <!-- 3. Vị trí và Lương -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="bi bi-geo-alt"></i>
+                        Vị trí và Lương
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="jobLocation" class="form-label">Khu vực *</label>
+                            <input type="text"
+                                   th:field="*{jobLocation}"
+                                   class="form-control"
+                                   id="jobLocation"
+                                   placeholder="Nhập khu vực/địa điểm"
+                                   required />
+                            <div th:if="${#fields.hasErrors('jobLocation')}"
+                                 th:errors="*{jobLocation}"
+                                 class="text-danger"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="jobSalary" class="form-label">Lương thỏa thuận</label>
+                            <input type="text"
+                                   th:field="*{jobSalary}"
+                                   class="form-control"
+                                   id="jobSalary"
+                                   placeholder="Ví dụ: 7–10 triệu VNĐ" />
+                            <div th:if="${#fields.hasErrors('jobSalary')}"
+                                 th:errors="*{jobSalary}"
+                                 class="text-danger"></div>
+                        </div>
+                    </div>
+                </div>
 
-            <!-- 5. Yêu cầu công việc (jobRequirements) -->
-            <div class="form-group">
-                <label for="jobRequirements" th:text="#{jobPost.create.requirements}">Yêu cầu công việc</label>
-                <textarea th:field="*{jobRequirements}"
-                          class="form-control"
-                          id="jobRequirements"
-                          rows="3"
-                          th:placeholder="#{jobPost.create.requirements.placeholder}"></textarea>
-                <div th:if="${#fields.hasErrors('jobRequirements')}"
-                     th:errors="*{jobRequirements}"
-                     class="text-danger"></div>
-            </div>
+                <!-- 4. Yêu cầu công việc -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="bi bi-list-check"></i>
+                        Yêu cầu công việc
+                    </div>
+                    <div class="mb-3">
+                        <label for="jobRequirements" class="form-label">Yêu cầu công việc</label>
+                        <textarea th:field="*{jobRequirements}"
+                                  class="form-control"
+                                  id="jobRequirements"
+                                  rows="4"
+                                  placeholder="Mô tả chi tiết về kinh nghiệm, kỹ năng, trình độ học vấn yêu cầu..."></textarea>
+                        <div th:if="${#fields.hasErrors('jobRequirements')}"
+                             th:errors="*{jobRequirements}"
+                             class="text-danger"></div>
+                    </div>
+                </div>
 
-            <!-- 6. Mô tả chi tiết (jobDescription) -->
-            <div class="form-group">
-                <label for="jobDescription" th:text="#{jobPost.create.description}">Mô tả chi tiết</label>
-                <textarea th:field="*{jobDescription}"
-                          class="form-control"
-                          id="jobDescription"
-                          rows="5"
-                          th:placeholder="#{jobPost.create.description.placeholder}"></textarea>
-                <div th:if="${#fields.hasErrors('jobDescription')}"
-                     th:errors="*{jobDescription}"
-                     class="text-danger"></div>
-            </div>
+                <!-- 5. Mô tả chi tiết -->
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="bi bi-file-text"></i>
+                        Mô tả chi tiết
+                    </div>
+                    <div class="mb-3">
+                        <label for="jobDescription" class="form-label">Mô tả công việc</label>
+                        <textarea th:field="*{jobDescription}"
+                                  class="form-control"
+                                  id="jobDescription"
+                                  rows="6"
+                                  placeholder="Mô tả chi tiết về công việc, trách nhiệm, phúc lợi, cơ hội phát triển..."></textarea>
+                        <div th:if="${#fields.hasErrors('jobDescription')}"
+                             th:errors="*{jobDescription}"
+                             class="text-danger"></div>
+                    </div>
+                </div>
 
-            <!-- Nút Hủy và Đăng việc -->
-            <div class="buttons mt-3">
-                <a th:href="@{/Employer/JobPosts}" class="btn btn-secondary" th:text="#{jobPost.create.cancel}">Hủy</a>
-                <button type="submit" class="btn btn-primary" th:text="#{jobPost.create.submit}">Đăng việc</button>
-            </div>
-        </form>
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <a th:href="@{/Employer/JobPosts}" class="btn btn-secondary-modern btn-modern">
+                        <i class="bi bi-arrow-left"></i> Hủy
+                    </a>
+                    <button type="submit" class="btn btn-primary-modern btn-modern">
+                        <i class="bi bi-check-circle"></i> Đăng việc
+                    </button>
+                </div>
+
+            </form>
+        </div>
     </div>
 </div>
 
-<script th:src="@{/js/languageSwitch.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Form validation
+    (function() {
+        'use strict';
+
+        var forms = document.querySelectorAll('.needs-validation');
+
+        Array.prototype.slice.call(forms).forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+
+    // Smooth animations
+    document.addEventListener('DOMContentLoaded', function() {
+        const sections = document.querySelectorAll('.form-section');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        });
+
+        sections.forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'all 0.6s ease';
+            observer.observe(section);
+        });
+    });
+</script>
+
 </body>
 </html>

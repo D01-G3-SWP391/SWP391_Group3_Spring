@@ -100,7 +100,7 @@
           <p>
             <span th:text="#{home.search.subtitle}">Kết nối với hàng nghìn cơ hội việc làm tuyệt vời từ các nhà tuyển dụng hàng đầu</span>
           </p>
-          
+
           <!-- Advanced Search Container -->
           <div class="advanced-search-container">
             <!-- Search Tabs -->
@@ -112,7 +112,7 @@
                 Find a Candidate
               </button>
             </div>
-            
+
             <!-- Search Forms -->
             <div class="search-forms">
               <!-- Find a Job Form -->
@@ -120,14 +120,14 @@
                 <div class="search-fields">
                   <div class="search-field">
                     <i class="fas fa-search field-icon"></i>
-                    <input 
-                      type="text" 
-                      name="keyword" 
-                      th:placeholder="#{home.search.keyword.placeholder}" 
+                    <input
+                      type="text"
+                      name="keyword"
+                      th:placeholder="#{home.search.keyword.placeholder}"
                       class="search-input"
                     />
                   </div>
-                  
+
                   <div class="search-field">
                     <i class="fas fa-list field-icon"></i>
                     <select name="fieldId" class="search-select">
@@ -138,13 +138,13 @@
                       </option>
                     </select>
                   </div>
-                  
+
                   <div class="search-field">
                     <i class="fas fa-map-marker-alt field-icon"></i>
-                    <input 
-                      type="text" 
-                      name="location" 
-                      th:placeholder="#{home.search.location.placeholder}" 
+                    <input
+                      type="text"
+                      name="location"
+                      th:placeholder="#{home.search.location.placeholder}"
                       class="search-input"
                     />
                   </div>
@@ -154,20 +154,20 @@
                   </button>
                 </div>
               </form>
-              
+
               <!-- Find a Candidate Form -->
               <form th:action="@{/HomePage/search}" method="post" class="search-form" id="candidateForm">
                 <div class="search-fields">
                   <div class="search-field">
                     <i class="fas fa-dollar-sign field-icon"></i>
-                    <input 
-                      type="number" 
-                      name="salary" 
-                      placeholder="Minimum Salary..." 
+                    <input
+                      type="number"
+                      name="salary"
+                      placeholder="Minimum Salary..."
                       class="search-input"
                     />
                   </div>
-                  
+
                   <div class="search-field">
                     <i class="fas fa-briefcase field-icon"></i>
                     <select name="jobType" class="search-select">
@@ -176,17 +176,17 @@
                       <option value="PART_TIME">Part Time</option>
                     </select>
                   </div>
-                  
+
                   <div class="search-field">
                     <i class="fas fa-building field-icon"></i>
-                    <input 
-                      type="text" 
-                      name="companyName" 
-                      placeholder="Company Name..." 
+                    <input
+                      type="text"
+                      name="companyName"
+                      placeholder="Company Name..."
                       class="search-input"
                     />
                   </div>
-                  
+
                   <button type="submit" class="search-button">
                     Search
                   </button>
@@ -205,6 +205,17 @@
         <div class="section-header">
           <h2 th:text="#{home.featuredJobs.title}">Việc làm nổi bật</h2>
           <p th:text="#{home.featuredJobs.subtitle}">Những cơ hội việc làm tốt nhất dành cho bạn</p>
+          
+          <!-- Jobs per page selector -->
+          <div class="jobs-per-page-selector text-end">
+            <label for="jobsPerPage" class="form-label me-2" th:text="#{home.showJobs}">Hiển thị:</label>
+            <select id="jobsPerPage" class="form-select d-inline-block w-auto" onchange="changeJobsPerPage(this.value)">
+                              <option value="6" th:selected="${size == 6}">6 <span th:text="#{home.jobsPerPage}">việc làm</span></option>
+                <option value="8" th:selected="${size == 8}">8 <span th:text="#{home.jobsPerPage}">việc làm</span></option>
+                <option value="12" th:selected="${size == 12}">12 <span th:text="#{home.jobsPerPage}">việc làm</span></option>
+                <option value="16" th:selected="${size == 16}">16 <span th:text="#{home.jobsPerPage}">việc làm</span></option>
+            </select>
+          </div>
         </div>
 
         <!-- Job Listings -->

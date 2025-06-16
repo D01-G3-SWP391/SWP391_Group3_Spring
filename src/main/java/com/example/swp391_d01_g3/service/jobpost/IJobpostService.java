@@ -26,6 +26,7 @@ public interface IJobpostService  {
                              Integer fieldId, Integer salary,
                              String companyName);
 
-
+    List<JobPost> getTopJobs();
+    List<JobPost> getTopJobsLimit(int limit);
 
 }
