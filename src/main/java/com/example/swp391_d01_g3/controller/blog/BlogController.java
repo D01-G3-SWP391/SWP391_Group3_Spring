@@ -47,14 +47,30 @@ public class BlogController {
         } else {
             blogPosts = blogService.findAllPublished(pageable);
         }
+
+        // Phân loại bài viết theo resource type
+        var interviewPosts = blogPosts.getContent().stream()
+                .filter(post -> post.getResource().getResourceType() == Resource.ResourceType.interview_guide)
+                .toList();
+        
+        var quotePosts = blogPosts.getContent().stream()
+                .filter(post -> post.getResource().getResourceType() == Resource.ResourceType.quotes)
+                .toList();
+        
+        var applicationPosts = blogPosts.getContent().stream()
+                .filter(post -> post.getResource().getResourceType() == Resource.ResourceType.application_tips)
+                .toList();
         
         // Lấy các category để hiển thị filter
         var categories = blogService.getAllCategories();
         
         // Lấy blog posts nổi bật (featured)
-        var featuredPosts = blogService.getFeaturedPosts(3);
+        var featuredPosts = blogService.getFeaturedPosts(4);
         
         model.addAttribute("blogPosts", blogPosts);
+        model.addAttribute("interviewPosts", interviewPosts);
+        model.addAttribute("quotePosts", quotePosts);
+        model.addAttribute("applicationPosts", applicationPosts);
         model.addAttribute("categories", categories);
         model.addAttribute("featuredPosts", featuredPosts);
         model.addAttribute("currentPage", page);
