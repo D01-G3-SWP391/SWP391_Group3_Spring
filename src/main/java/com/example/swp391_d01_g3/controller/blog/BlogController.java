@@ -8,10 +8,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.Optional;
 
 @Controller
@@ -30,7 +32,7 @@ public class BlogController {
             @RequestParam(defaultValue = "6") int size,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String search,
-            Model model) {
+            Model model, Principal principal) {
         
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<BlogPost> blogPosts;
@@ -45,20 +47,38 @@ public class BlogController {
         } else {
             blogPosts = blogService.findAllPublished(pageable);
         }
+
+        // Phân loại bài viết theo resource type
+        var interviewPosts = blogPosts.getContent().stream()
+                .filter(post -> post.getResource().getResourceType() == Resource.ResourceType.interview_guide)
+                .toList();
+        
+        var quotePosts = blogPosts.getContent().stream()
+                .filter(post -> post.getResource().getResourceType() == Resource.ResourceType.quotes)
+                .toList();
+        
+        var applicationPosts = blogPosts.getContent().stream()
+                .filter(post -> post.getResource().getResourceType() == Resource.ResourceType.application_tips)
+                .toList();
         
         // Lấy các category để hiển thị filter
         var categories = blogService.getAllCategories();
         
         // Lấy blog posts nổi bật (featured)
-        var featuredPosts = blogService.getFeaturedPosts(3);
+        var featuredPosts = blogService.getFeaturedPosts(4);
         
         model.addAttribute("blogPosts", blogPosts);
+        model.addAttribute("interviewPosts", interviewPosts);
+        model.addAttribute("quotePosts", quotePosts);
+        model.addAttribute("applicationPosts", applicationPosts);
         model.addAttribute("categories", categories);
         model.addAttribute("featuredPosts", featuredPosts);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", blogPosts.getTotalPages());
         model.addAttribute("totalElements", blogPosts.getTotalElements());
-        
+        if (principal != null) {
+            model.addAttribute("userEmail", principal.getName());
+        }
         return "blog/blog-list";
     }
 
@@ -66,7 +86,7 @@ public class BlogController {
      * Hiển thị chi tiết blog post
      */
     @GetMapping("/{id}")
-    public String blogDetail(@PathVariable Long id, Model model) {
+    public String blogDetail(@PathVariable Long id, Model model, Principal principal) {
         Optional<BlogPost> blogPost = blogService.findById(id);
         
         if (blogPost.isEmpty()) {
@@ -89,6 +109,9 @@ public class BlogController {
         model.addAttribute("relatedPosts", relatedPosts);
         model.addAttribute("nextPost", nextPost.orElse(null));
         model.addAttribute("previousPost", previousPost.orElse(null));
+        if (principal != null) {
+            model.addAttribute("userEmail", principal.getName());
+        }
         
         return "blog/blog-detail";
     }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -19,9 +20,12 @@ public class TopJob {
     private IJobpostService jobpostService;
 
     @GetMapping("/View")
-    public String showTopJobs(@RequestParam(defaultValue = "20") int limit, Model model) {
+    public String showTopJobs(@RequestParam(defaultValue = "20") int limit, Model model, Principal principal) {
         List<JobPost> topJobs = jobpostService.getTopJobsLimit(limit);
         model.addAttribute("jobs", topJobs);
+        if (principal != null) {
+            model.addAttribute("userEmail", principal.getName());
+        }
         return "homePage/topJobs"; // Sử dụng template list jobs có sẵn
     }
 }

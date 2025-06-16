@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sự kiện - JOB4YOU</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}">
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!--    <link rel="stylesheet" th:href="@{/css/index.css}"/>-->
+    <link rel="stylesheet" th:href="@{/css/owlcarousel/owl.carousel.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/animate/animate.min.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+    
+    <!-- AOS Library for Scroll Animations -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Swiper for Carousels -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}">
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}">
+    
+    <style>
+        :root {
+            --primary: #00B074;
+            --secondary: #2B3940;
+            --light: #F0F5F9;
+            --dark: #1C2833;
+            --text-color: #25324B;
+            --text-light: #7C8493;
+            --background-light: #F8F8FD;
+            --border-color: #E0E2E7;
+        }
+        
+        body, main, .container, .carousel-section {
+            margin-top: 0 !important;
+            padding-top: 0 !important;
+        }
+        
+        body {
+            background-color: var(--background-light);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .search-section {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        
+        .search-form input {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 16px;
+        }
+        
+        .search-form button {
+            background: var(--primary);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-weight: 500;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .search-form button:hover {
+            background: #009e69;
+            transform: translateY(-2px);
+        }
+        
+        .row.align-items-stretch {
+            align-items: stretch;
+        }
+        
+        .events-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            padding: 20px 0;
+        }
+        
+        .event-card {
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            flex: 1 1 350px;
+            min-width: 320px;
+            max-width: 100%;
+            min-height: 420px;
+            box-sizing: border-box;
+        }
+        
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        
+        .event-image {
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .event-date {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: var(--primary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: white;
+        }
+        
+        .event-content {
+            flex: 1 1 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .event-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-color);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .event-title a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .event-title a:hover {
+            color: var(--primary);
+        }
+        
+        .event-company {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-light);
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        
+        .event-location {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+        
+        .event-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .event-participants {
+            background: var(--light);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--primary);
+        }
+        
+        .event-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 18px;
+
+        }
+        
+        .event-actions .btn {
+            font-size: 14px;
+            padding: 6px 18px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        
+        .event-actions .btn-outline-primary {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: transparent;
+            transition: all 0.2s;
+        }
+        
+        .event-actions .btn-outline-primary:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+        
+        .event-actions .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            border: none !important;
+            color: #fff !important;
+            transition: background 0.3s;
+        }
+        
+        .event-actions .btn-primary:hover, .event-actions .btn-primary:focus {
+            background: linear-gradient(135deg, #5a67d8 0%, #5f3b8c 100%) !important;
+            color: #fff !important;
+        }
+        
+        .pagination {
+            margin-top: 40px;
+            justify-content: center;
+        }
+        
+        .pagination .page-link {
+            border: none;
+            color: var(--text-color);
+            padding: 8px 16px;
+            margin: 0 4px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .pagination .page-item.active .page-link {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .pagination .page-link:hover {
+            background: var(--light);
+            color: var(--primary);
+        }
+        
+        .no-events {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 16px;
+            margin-top: 20px;
+        }
+        
+        .no-events i {
+            font-size: 48px;
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+
+        /* Banner Styles */
+        .events-banner {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            padding: 60px 0;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .events-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="40" stroke="rgba(255,255,255,0.1)" stroke-width="2" fill="none"/></svg>') repeat;
+            opacity: 0.1;
+        }
+
+        .banner-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+        }
+
+        .banner-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .banner-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(120deg, #ffffff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .banner-description {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .banner-breadcrumb {
+            margin-top: 20px;
+        }
+
+        .banner-breadcrumb .breadcrumb {
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .banner-breadcrumb .breadcrumb-item {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .banner-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .banner-breadcrumb .breadcrumb-item.active {
+            color: white;
+        }
+
+        .banner-breadcrumb a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .banner-breadcrumb a:hover {
+            color: white;
+        }
+
+        .carousel-section {
+            width: 100vw;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.10);
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #4158d0 0%, #c850c0 46%, #ffcc70 100%);
+        }
+        .carousel-inner {
+            border-radius: 32px;
+        }
+        .carousel-item {
+            height: 500px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .carousel-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(43, 57, 64, 0.5), rgba(43, 57, 64, 0.8));
+            display: flex;
+            align-items: center;
+            padding: 40px;
+        }
+        .carousel-content {
+            color: white;
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .carousel-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 18px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.18);
+        }
+        .carousel-description {
+            font-size: 1.25rem;
+            margin-bottom: 28px;
+            opacity: 0.95;
+        }
+        .carousel-meta {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            font-size: 1.05rem;
+            opacity: 0.9;
+            justify-content: center;
+        }
+        .carousel-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .carousel-indicators {
+            margin-bottom: 20px;
+        }
+        .carousel-indicators [data-bs-target] {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            margin: 0 8px;
+            background-color: #fff;
+            border: none;
+            opacity: 0.5;
+            transition: all 0.3s;
+        }
+        .carousel-indicators .active {
+            opacity: 1;
+            background: var(--primary);
+        }
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 56px;
+            height: 56px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+        .carousel-control-prev:hover,
+        .carousel-control-next:hover {
+            opacity: 1;
+            background: rgba(255,255,255,0.5);
+        }
+        @media (max-width: 900px) {
+            .carousel-item {
+                height: 320px;
+            }
+            .carousel-title {
+                font-size: 2rem;
+            }
+            .carousel-section {
+                border-radius: 18px;
+            }
+            .carousel-inner {
+                border-radius: 18px;
+            }
+        }
+        @media (max-width: 600px) {
+            .carousel-item {
+                height: 200px;
+            }
+            .carousel-content {
+                padding: 0 10px;
+            }
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .sidebar-section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-title i {
+            color: var(--primary);
+        }
+
+        /* Upcoming Events */
+        .upcoming-events {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .upcoming-event {
+            display: flex;
+            gap: 16px;
+            padding: 16px 12px;
+            border-radius: 12px;
+            background: var(--light);
+            margin-bottom: 16px;
+            align-items: flex-start;
+            transition: box-shadow 0.2s;
+        }
+
+        .upcoming-event:hover {
+            box-shadow: 0 4px 16px rgba(0,176,116,0.08);
+        }
+
+        .event-date-text {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--primary);
+            min-width: 48px;
+            margin-top: 2px;
+        }
+
+        .event-day {
+            font-size: 24px;
+            line-height: 1;
+        }
+
+        .event-month, .event-year {
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 1;
+        }
+
+        .event-info {
+            flex: 1;
+        }
+
+        .event-name {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--dark);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .event-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .event-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .event-actions .btn {
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 6px;
+        }
+
+        .event-actions .btn-outline-primary {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: transparent;
+            transition: all 0.2s;
+        }
+
+        .event-actions .btn-outline-primary:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .event-actions .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            border: none !important;
+            color: #fff !important;
+            transition: background 0.3s;
+        }
+
+        .event-actions .btn-primary:hover, .event-actions .btn-primary:focus {
+            background: linear-gradient(135deg, #5a67d8 0%, #5f3b8c 100%) !important;
+            color: #fff !important;
+        }
+
+        /* Categories */
+        .categories-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-radius: 8px;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .category-item:hover {
+            background: var(--light);
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .category-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-count {
+            background: var(--light);
+            color: var(--primary);
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .stat-item {
+            background: var(--light);
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-icon {
+            color: var(--primary);
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 991.98px) {
+            .row.align-items-stretch {
+                align-items: flex-start;
+            }
+            .events-grid {
+                flex-direction: column;
+            }
+            .event-card {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Include Navbar -->
+    <div th:replace="~{navbar/navbarHome :: home}"></div>
+
+    <!-- Carousel Section -->
+    <div class="container py-5">
+        <div class="carousel-section">
+            <div id="eventsCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#eventsCarousel" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#eventsCarousel" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#eventsCarousel" data-bs-slide-to="2"></button>
+                </div>
+                <div class="carousel-inner">
+                    <!-- First Slide -->
+                    <div class="carousel-item active" style="background-image: url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=2000&q=80')">
+                        <div class="carousel-overlay">
+                            <div class="carousel-content">
+                                <h2 class="carousel-title">Sự kiện nghề nghiệp</h2>
+                                <p class="carousel-description">Khám phá các sự kiện, hội thảo và cơ hội networking từ các doanh nghiệp hàng đầu</p>
+                                <div class="carousel-meta">
+                                    <div class="carousel-meta-item">
+                                        <i class="bi bi-calendar-event"></i>
+                                        <span>Cập nhật hàng tuần</span>
+                                    </div>
+                                    <div class="carousel-meta-item">
+                                        <i class="bi bi-building"></i>
+                                        <span>Từ các công ty hàng đầu</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Second Slide -->
+                    <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1559223607-a43c990c692c?auto=format&fit=crop&w=2000&q=80')">
+                        <div class="carousel-overlay">
+                            <div class="carousel-content">
+                                <h2 class="carousel-title">Hội thảo chuyên môn</h2>
+                                <p class="carousel-description">Tham gia các buổi hội thảo để nâng cao kiến thức và kỹ năng chuyên môn</p>
+                                <div class="carousel-meta">
+                                    <div class="carousel-meta-item">
+                                        <i class="bi bi-people"></i>
+                                        <span>Chuyên gia hàng đầu</span>
+                                    </div>
+                                    <div class="carousel-meta-item">
+                                        <i class="bi bi-award"></i>
+                                        <span>Chứng chỉ sau khóa học</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Third Slide -->
+                    <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=2000&q=80')">
+                        <div class="carousel-overlay">
+                            <div class="carousel-content">
+                                <h2 class="carousel-title">Cơ hội việc làm</h2>
+                                <p class="carousel-description">Kết nối trực tiếp với nhà tuyển dụng thông qua các sự kiện tuyển dụng</p>
+                                <div class="carousel-meta">
+                                    <div class="carousel-meta-item">
+                                        <i class="bi bi-briefcase"></i>
+                                        <span>Phỏng vấn trực tiếp</span>
+                                    </div>
+                                    <div class="carousel-meta-item">
+                                        <i class="bi bi-graph-up"></i>
+                                        <span>Cơ hội thăng tiến</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#eventsCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#eventsCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="container py-5">
+            <div class="row align-items-stretch">
+                <!-- Main Events Grid -->
+                <div class="col-lg-8 d-flex flex-column">
+                    <div class="search-section">
+                        <form class="search-form" th:action="@{/Events}" method="get">
+                            <div class="row g-3">
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control" name="search" 
+                                           th:value="${search}" placeholder="Tìm kiếm sự kiện...">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="events-grid">
+                        <div th:each="event : ${eventsPage.content}" class="event-card" data-aos="fade-up" data-aos-delay="100">
+                            <div class="event-image" th:style="'background-image: url(https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80)'">
+                                <div class="event-date">
+                                    <i class="bi bi-calendar3"></i>
+                                    <span th:text="${#temporals.format(event.eventDate, 'dd/MM/yyyy')}"></span>
+                                </div>
+                            </div>
+                            <div class="event-content">
+                                <h3 class="event-title">
+                                    <a th:href="@{/Events/{id}(id=${event.eventId})}" th:text="${event.eventTitle}"></a>
+                                </h3>
+                                <div class="event-company">
+                                    <i class="bi bi-building"></i>
+                                    <span th:text="${event.employer.companyName}"></span>
+                                </div>
+                                <div class="event-location">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <span th:text="${event.eventLocation}"></span>
+                                </div>
+                                <div class="event-meta mt-auto">
+                                    <div class="event-participants">
+                                        <i class="bi bi-people"></i>
+                                        <span th:text="${event.currentParticipants} + '/' + ${event.maxParticipants != null ? event.maxParticipants : '∞'}"></span>
+                                    </div>
+                                </div>
+                                <div class="event-actions">
+                                    <a th:href="@{/Events/{id}(id=${event.eventId})}" class="btn btn-outline-primary">Xem chi tiết</a>
+                                    <a th:href="@{/Events/register/{id}(id=${event.eventId})}" class="btn btn-primary">Đăng ký tham gia</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <div class="sidebar h-100">
+                        <!-- Upcoming Events -->
+                        <div class="sidebar-section">
+                            <h4 class="sidebar-title">
+                                <i class="fas fa-calendar-alt"></i>
+                                Sự kiện sắp diễn ra
+                            </h4>
+                            <div class="upcoming-events">
+                                <div class="upcoming-event" th:each="event : ${upcomingEvents}">
+                                    <div class="event-date-text">
+                                        <span class="event-day" th:text="${#temporals.format(event.eventDate, 'dd')}">10</span>
+                                        <span class="event-month" th:text="${#temporals.format(event.eventDate, 'MM')}">07</span>
+                                        <span class="event-year" th:text="${#temporals.format(event.eventDate, 'yyyy')}">2025</span>
+                                    </div>
+                                    <div class="event-info">
+                                        <h5 class="event-name" th:text="${event.eventTitle}">Workshop Game Development</h5>
+                                        <div class="event-meta">
+                                            <span class="company">
+                                                <i class="fas fa-building"></i>
+                                                <span th:text="${event.employer.companyName}">VNG Corporation</span>
+                                            </span>
+                                            <span class="location">
+                                                <i class="fas fa-map-marker-alt"></i>
+                                                <span th:text="${event.eventLocation}">TP.HCM</span>
+                                            </span>
+                                        </div>
+                                        <div class="event-actions mt-2">
+                                            <a th:href="@{/Events/{id}(id=${event.eventId})}" class="btn btn-outline-primary btn-sm me-2">Xem chi tiết</a>
+                                            <a th:href="@{/Events/register/{id}(id=${event.eventId})}" class="btn btn-primary btn-sm">Đăng ký tham gia</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Categories -->
+                        <div class="sidebar-section">
+                            <h4 class="sidebar-title">
+                                <i class="fas fa-tags"></i>
+                                Danh mục sự kiện
+                            </h4>
+                            <div class="categories-list">
+                                <a href="#" class="category-item">
+                                    <span class="category-name">
+                                        <i class="fas fa-briefcase"></i>
+                                        Tất cả sự kiện
+                                    </span>
+                                    <span class="category-count" th:text="${totalEvents}">150</span>
+                                </a>
+                                <a href="#" class="category-item">
+                                    <span class="category-name">
+                                        <i class="fas fa-laptop-code"></i>
+                                        Công nghệ thông tin
+                                    </span>
+                                    <span class="category-count" th:text="${itEvents}">45</span>
+                                </a>
+                                <a href="#" class="category-item">
+                                    <span class="category-name">
+                                        <i class="fas fa-chart-line"></i>
+                                        Marketing
+                                    </span>
+                                    <span class="category-count" th:text="${marketingEvents}">30</span>
+                                </a>
+                                <a href="#" class="category-item">
+                                    <span class="category-name">
+                                        <i class="fas fa-coins"></i>
+                                        Tài chính - Ngân hàng
+                                    </span>
+                                    <span class="category-count" th:text="${bankingEvents}">25</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Pagination dưới cùng -->
+            <nav th:if="${eventsPage.totalPages > 1}" aria-label="Page navigation" class="mt-4">
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${eventsPage.first} ? 'disabled'">
+                        <a class="page-link" th:href="@{/Events(page=${eventsPage.number - 1}, search=${search})}">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                    
+                    <li class="page-item" 
+                        th:each="pageNum : ${#numbers.sequence(0, eventsPage.totalPages - 1)}"
+                        th:classappend="${pageNum == eventsPage.number} ? 'active'">
+                        <a class="page-link" th:href="@{/Events(page=${pageNum}, search=${search})}" 
+                           th:text="${pageNum + 1}"></a>
+                    </li>
+                    
+                    <li class="page-item" th:classappend="${eventsPage.last} ? 'disabled'">
+                        <a class="page-link" th:href="@{/Events(page=${eventsPage.number + 1}, search=${search})}">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- AOS Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Swiper JS -->
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            mirror: false
+        });
+
+        // Event Registration Function
+        function registerEvent(eventId) {
+            if (!confirm('Bạn có chắc chắn muốn đăng ký sự kiện này?')) {
+                return;
+            }
+            
+            // Add loading state
+            const button = event.target.closest('button');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang xử lý...';
+            button.disabled = true;
+            
+            fetch(`/events/${eventId}/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'notes='
+            })
+            .then(response => response.text())
+            .then(data => {
+                if (data.startsWith('success:')) {
+                    showToast('Thành công', data.substring(8), 'success');
+                    setTimeout(() => location.reload(), 1500);
+                } else if (data.startsWith('error:')) {
+                    showToast('Lỗi', data.substring(6), 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Lỗi', 'Đã xảy ra lỗi khi đăng ký sự kiện', 'error');
+            })
+            .finally(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            });
+        }
+
+        // Toast Notification Function
+        function showToast(title, message, type) {
+            const toastContainer = document.getElementById('toast-container');
+            if (!toastContainer) {
+                const container = document.createElement('div');
+                container.id = 'toast-container';
+                container.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999;';
+                document.body.appendChild(container);
+            }
+            
+            const toast = document.createElement('div');
+            toast.className = `toast show bg-${type === 'success' ? 'success' : 'danger'} text-white`;
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            
+            toast.innerHTML = `
+                <div class="toast-header bg-${type === 'success' ? 'success' : 'danger'} text-white">
+                    <strong class="me-auto">${title}</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    ${message}
+                </div>
+            `;
+            
+            document.getElementById('toast-container').appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add loading animation for images
+        document.addEventListener('DOMContentLoaded', function() {
+            const images = document.querySelectorAll('.event-image');
+            images.forEach(img => {
+                img.classList.add('loading-skeleton');
+                img.addEventListener('load', function() {
+                    img.classList.remove('loading-skeleton');
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -29,6 +29,11 @@ public class StudentServiceImpl implements IStudentService {
         return iStudentRepository.findByAccount_UserId(userId);
     }
 
+    @Override
+    public Student findByEmail(String email) {
+        return iStudentRepository.findByAccount_Email(email);
+    }
+
     public Optional<Student> findById(Long id) {
         return iStudentRepository.findById(id);
     }
