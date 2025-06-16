@@ -190,6 +190,29 @@ public class AdminJobPostServiceImpl implements IAdminJobPostService {
             throw new RuntimeException("Job post not found with ID: " + jobPostId);
         }
     }
+    @Override
+    public void changeJobPostStatus(Integer jobPostId, JobPost.ApprovalStatus newStatus) {
+        try {
+            JobPost jobPost = jobpostService.findById(jobPostId)
+                    .orElseThrow(() -> new RuntimeException("Job post not found with ID: " + jobPostId));
+
+            jobPost.setApprovalStatus(newStatus);
+
+            // Cập nhật display status tương ứng
+            if (newStatus == JobPost.ApprovalStatus.APPROVED) {
+                jobPost.setDisplayStatus(JobPost.DisplayStatus.ACTIVE);
+            } else if (newStatus == JobPost.ApprovalStatus.REJECTED) {
+                jobPost.setDisplayStatus(JobPost.DisplayStatus.INACTIVE);
+            }
+
+            jobpostService.save(jobPost);
+            logger.info("Changed job post status - ID: {}, New Status: {}", jobPostId, newStatus);
+
+        } catch (Exception e) {
+            logger.error("Error changing job post status: ", e);
+            throw new RuntimeException("Error changing job post status: " + e.getMessage());
+        }
+    }
 
     @Override
     public long getPendingCount() {

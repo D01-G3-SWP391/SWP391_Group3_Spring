@@ -195,4 +195,22 @@ public class AdminJobPostController {
         }
         return "redirect:/Admin/AllJobPosts";
     }
+
+    @PostMapping("/ChangeJobPostStatus/{id}")
+    public String changeJobPostStatus(@PathVariable("id") Integer jobPostId,
+                                      @RequestParam("status") String status,
+                                      RedirectAttributes redirectAttributes) {
+        try {
+            JobPost.ApprovalStatus newStatus = JobPost.ApprovalStatus.valueOf(status.toUpperCase());
+            adminJobPostService.changeJobPostStatus(jobPostId, newStatus);
+
+            String message = String.format("Job post status changed to %s successfully", newStatus);
+            redirectAttributes.addFlashAttribute("success", message);
+
+        } catch (Exception e) {
+            logger.error("Error changing job post status: ", e);
+            redirectAttributes.addFlashAttribute("error", "Error changing job post status: " + e.getMessage());
+        }
+        return "redirect:/Admin/AllJobPosts";
+    }
 }
