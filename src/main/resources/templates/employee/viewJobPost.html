@@ -5,24 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Các Công Việc Của Bạn</title>
     <link rel="stylesheet" th:href="@{/css/navbarViewJobPost.css}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
 </head>
 <body>
 <div th:replace="~{navbar/navbarEmployee :: navbarAdmin}"></div>
-<!-- Keep existing navbar exactly as is -->
-
 
 <!-- Main content area -->
 <div class="main-content">
     <h1>Các Công Việc Của Bạn</h1>
 
-    <!-- Statistics cards (optional) -->
+    <!-- Statistics cards -->
     <div class="stats-container">
         <div class="stat-card">
             <div class="stat-icon">
                 <i class="bi bi-briefcase-fill"></i>
             </div>
             <div class="stat-info">
-                <h3 th:text="${jobPosts != null ? jobPosts.size() : 0}">0</h3>
+                <h3 th:text="${jobPostPage != null ? jobPostPage.totalElements : 0}">0</h3>
                 <p>Tổng số công việc</p>
             </div>
         </div>
@@ -49,7 +48,7 @@
     <!-- Table container -->
     <div class="table-container">
         <!-- Check if there are job posts -->
-        <div th:if="${jobPosts == null or jobPosts.isEmpty()}" class="empty-state">
+        <div th:if="${jobPostPage == null or jobPostPage.content.isEmpty()}" class="empty-state">
             <i class="bi bi-briefcase"></i>
             <h3>Chưa có công việc nào</h3>
             <p>Bạn chưa tạo công việc nào. Hãy bắt đầu tạo công việc đầu tiên!</p>
@@ -60,7 +59,7 @@
         </div>
 
         <!-- Table with job posts -->
-        <table th:if="${jobPosts != null and !jobPosts.isEmpty()}">
+        <table th:if="${jobPostPage != null and !jobPostPage.content.isEmpty()}">
             <thead>
             <tr>
                 <th>STT</th>
@@ -73,9 +72,9 @@
             </tr>
             </thead>
             <tbody>
-            <th:block th:each="jobPost,l : ${jobPosts}">
+            <th:block th:each="jobPost,l : ${jobPostPage.content}">
                 <tr>
-                    <td th:text="${l.count}"></td>
+                    <td th:text="${(jobPostPage.number * jobPostPage.size) + l.count}"></td>
                     <td>
                         <div class="job-title">
                             <strong th:text="${jobPost.jobTitle}"></strong>
@@ -88,8 +87,7 @@
                         <div class="job-description" th:text="${jobPost.jobRequirements}"></div>
                     </td>
                     <td>
-                                <span class="status-badge"
-                                      th:text="${jobPost.approvalStatus}"></span>
+                        <span class="status-badge" th:text="${jobPost.approvalStatus}"></span>
                     </td>
                     <td>
                         <div class="date-info">
@@ -127,6 +125,48 @@
     <a th:href="@{/Employer/CreateJobPost}" class="fab">
         <i class="bi bi-plus"></i>
     </a>
+
+    <!-- Pagination ở vùng trống dưới cùng -->
+    <div th:if="${jobPostPage != null and jobPostPage.totalPages > 1}" class="bottom-pagination">
+        <div class="pagination-wrapper">
+            <!-- Previous button -->
+            <a th:if="${jobPostPage.hasPrevious()}"
+               th:href="@{/Employer/JobPosts(page=${jobPostPage.number - 1})}"
+               class="pagination-btn prev-btn">
+                <i class="bi bi-chevron-left"></i>
+                <span>Trang trước</span>
+            </a>
+            <span th:unless="${jobPostPage.hasPrevious()}" class="pagination-btn prev-btn disabled">
+                <i class="bi bi-chevron-left"></i>
+                <span>Trang trước</span>
+            </span>
+
+            <!-- Page numbers -->
+            <div class="page-numbers">
+                <th:block th:each="pageNum : ${#numbers.sequence(0, jobPostPage.totalPages - 1)}">
+                    <a th:if="${pageNum >= jobPostPage.number - 2 and pageNum <= jobPostPage.number + 2 and pageNum != jobPostPage.number}"
+                       th:href="@{/Employer/JobPosts(page=${pageNum})}"
+                       class="page-number"
+                       th:text="${pageNum + 1}">1</a>
+                    <span th:if="${pageNum >= jobPostPage.number - 2 and pageNum <= jobPostPage.number + 2 and pageNum == jobPostPage.number}"
+                          class="page-number active"
+                          th:text="${pageNum + 1}">1</span>
+                </th:block>
+            </div>
+
+            <!-- Next button -->
+            <a th:if="${jobPostPage.hasNext()}"
+               th:href="@{/Employer/JobPosts(page=${jobPostPage.number + 1})}"
+               class="pagination-btn next-btn">
+                <span>Trang sau</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+            <span th:unless="${jobPostPage.hasNext()}" class="pagination-btn next-btn disabled">
+                <span>Trang sau</span>
+                <i class="bi bi-chevron-right"></i>
+            </span>
+        </div>
+    </div>
 </div>
 
 <script src="/js/navbarAdmin.js"></script>

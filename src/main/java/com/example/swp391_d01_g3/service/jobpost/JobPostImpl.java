@@ -94,6 +94,15 @@ public class JobPostImpl implements IJobpostService {
         Pageable pageable = PageRequest.of(0, limit);
         return iJobPostRepository.findTopJobsByAppliedQualityLimit(pageable);
     }
+    //phan trang JobPost
+    @Override
+    public Page<JobPost> findJobPostsByEmployerEmail(String email, Pageable pageable) {
+        Employer employer = iEmployerService.findByEmail(email); // Tìm employer theo email
+        if (employer == null) {
+            return Page.empty(pageable);
+        }
+        return iJobPostRepository.findByEmployerOrderByCreatedAtDesc(employer, pageable); // Lọc JobPost theo employer đó
+    }
 
 
 }

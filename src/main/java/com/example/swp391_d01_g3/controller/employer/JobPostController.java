@@ -8,6 +8,10 @@ import com.example.swp391_d01_g3.service.jobfield.IJobfieldService;
 import com.example.swp391_d01_g3.service.jobpost.IJobpostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -79,24 +83,28 @@ public String createJobPost(
         return "employee/createJobPost";
     }
 
-    @GetMapping("/JobPosts")
-    public String viewJobPosts(Model model, Authentication authentication) {
-        String employerEmail = authentication.getName();
-        Employer employer = iEmployerService.findByEmail(employerEmail);
-        List<JobPost> jobPosts = iJobpostService.findJobPostsByEmployerEmail(employerEmail);
-        model.addAttribute("jobPosts", jobPosts);
-        model.addAttribute("employerEmail", employerEmail);
-        return "employee/viewJobPost";
-    }
+        @GetMapping("/JobPosts")
+        public String viewJobPosts(
+                @RequestParam(defaultValue = "0") int page,
+                @RequestParam(defaultValue = "5") int size,
+                Model model,
+                Authentication authentication) {
 
-    @GetMapping("/JobPostsByEmail")
-    public String viewJobPostsByEmail(@RequestParam("email") String email, Model model) {
-        Employer employer = iEmployerService.findByEmail(email);
-        List<JobPost> jobPosts = iJobpostService.findJobPostsByEmployerEmail(email);
-        model.addAttribute("jobPosts", jobPosts);
-        model.addAttribute("employerEmail", email);
-        return "employee/viewJobPost";
-    }
+            String employerEmail = authentication.getName(); // Lấy email của employer đang đăng nhập
+            Employer employer = iEmployerService.findByEmail(employerEmail);
+
+            // Tạo Pageable object với sắp xếp theo ngày tạo giảm dần
+            Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+            // **QUAN TRỌNG**: Gọi method có phân trang với email
+            Page<JobPost> jobPostPage = iJobpostService.findJobPostsByEmployerEmail(employerEmail, pageable);
+
+            model.addAttribute("jobPostPage", jobPostPage);
+            model.addAttribute("employerEmail", employerEmail);
+
+            return "employee/viewJobPost";
+        }
+
 
     @GetMapping("/EditJobPost/{jobPostId}")
     public String showEditForm(@PathVariable("jobPostId") Integer jobPostId, Model model) {
