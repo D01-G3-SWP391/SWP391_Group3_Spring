@@ -17,12 +17,11 @@
     <!-- Link to specific navbar styles -->
     <link rel="stylesheet" th:href="@{/css/navbar.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}" />
-    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
-
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
     />
+
   </head>
   <body>
     <!-- Navbar Fragment -->
@@ -37,8 +36,7 @@
           <a th:href="@{/TopJob/View}" class="nav-link" th:text="#{nav.jobs}">Việc làm</a>
           <a href="#" class="nav-link" th:text="#{nav.createCV}">Tạo CV</a>
           <a href="#" class="nav-link" th:text="#{nav.tools}">Công cụ</a>
-          <a th:href="@{/Blog}" class="nav-link" th:text="#{nav.careerGuide}">Cẩm nang nghề nghiệp</a>
-          <a href="#" class="nav-link" th:text="#{nav.blogs}">Blogs</a>
+          <a th:href="@{/Blog}" class="nav-link" th:text="#{nav.blogs}">Blogs</a>
           <a href="#" class="nav-link" th:text="#{nav.events}">Events</a>
         </div>
 

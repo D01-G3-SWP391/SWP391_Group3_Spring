@@ -63,7 +63,7 @@
         <table th:if="${jobPosts != null and !jobPosts.isEmpty()}">
             <thead>
             <tr>
-                <th>ID</th>
+                <th>STT</th>
                 <th>Tên Công Việc</th>
                 <th>Loại Công Việc</th>
                 <th>Mô tả Công Việc</th>
@@ -73,9 +73,9 @@
             </tr>
             </thead>
             <tbody>
-            <th:block th:each="jobPost : ${jobPosts}">
+            <th:block th:each="jobPost,l : ${jobPosts}">
                 <tr>
-                    <td th:text="${jobPost.jobPostId}"></td>
+                    <td th:text="${l.count}"></td>
                     <td>
                         <div class="job-title">
                             <strong th:text="${jobPost.jobTitle}"></strong>

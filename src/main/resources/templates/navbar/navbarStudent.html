@@ -28,30 +28,31 @@
         <li>
             <a th:href="@{/Student/Profile}">
                 <i class="bi bi-people"></i>
-                <span>Profile Student</span>
+                <span th:text="#{nav.profile}">Profile Student</span>
             </a>
         </li>
         <li>
             <a th:href="@{/Student/applications}">
                 <i class="bi bi-briefcase"></i>
-                <span>Jobs</span>
+                <span th:text="#{nav.jobs}">Jobs</span>
             </a>
         </li>
         <li>
             <a th:href="@{/Student/ChangePassword}">
                 <i class="bi bi-gear"></i>
-                <span>Change Password</span>
+                <span th:text="#{nav.changePassword}">Change Password</span>
             </a>
         </li>
         <li>
             <a th:href="@{/logout}">
                 <i class="bi bi-box-arrow-right"></i>
-                <span>Logout</span>
+                <span th:text="#{nav.logout}">Logout</span>
             </a>
         </li>
     </ul>
 </nav>
 <script src="/js/navbarAdmin.js"></script>
+<script th:src="@{/js/languageSwitch.js}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Language switcher functionality for sidebar

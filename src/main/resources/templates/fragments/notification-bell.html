@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <div th:fragment="notification-bell">
+        <link rel="stylesheet" th:href="@{/css/notification-bell.css}" />
+        
+        <div class="notification-bell-container" id="notificationBell">
+            <div class="notification-bell">
+                <div id="lottie-bell"></div>
+            </div>
+            <span class="notification-badge" style="display: none;">0</span>
+        </div>
+
+        <!-- Add Lottie Library -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.6/lottie.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Initialize Lottie animation
+                const animation = bodymovin.loadAnimation({
+                    container: document.getElementById('lottie-bell'),
+                    renderer: 'svg',
+                    loop: false,
+                    autoplay: false,
+                    path: '/js/notfication-bell.js'
+                });
+
+                const bell = document.getElementById('lottie-bell');
+                const badge = document.querySelector('.notification-badge');
+                let notificationCount = 0;
+
+                // Play animation on hover
+                bell.addEventListener('mouseenter', () => {
+                    animation.play();
+                });
+
+                bell.addEventListener('mouseleave', () => {
+                    animation.stop();
+                });
+
+                // Function to update notification count
+                function updateNotificationCount(count) {
+                    notificationCount = count;
+                    if (count > 0) {
+                        badge.style.display = 'flex';
+                        badge.textContent = count;
+                        animation.play();
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+
+                // Click handler to reset notifications
+                bell.addEventListener('click', () => {
+                    updateNotificationCount(0);
+                });
+
+                // Example: Add notification every 5 seconds (for testing)
+                setInterval(() => {
+                    updateNotificationCount(notificationCount + 1);
+                }, 5000);
+            });
+        </script>
+    </div>
+</body>
+</html> 

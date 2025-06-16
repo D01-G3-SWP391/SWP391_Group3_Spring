@@ -31,7 +31,9 @@ public class JobsDescription {
     private IAccountService iAccountService;
 
     @GetMapping("/JobPost")
-    public String showDescription(@RequestParam("id") Integer id, Model model, Principal principal) {
+    public String showDescription(@RequestParam("id") Integer id, 
+                                @RequestParam(value = "lang", required = false) String lang,
+                                Model model, Principal principal) {
         // Lấy thông tin job post
         List<JobPost> jobPosts = iJobpostService.findAllWithEmployer(id);
         model.addAttribute("jobPosts", jobPosts);
