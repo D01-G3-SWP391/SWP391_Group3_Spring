@@ -34,12 +34,6 @@ public class Register {
     private IJobfieldService iJobfieldService;
 
     @Autowired
-    private IStudentService iStudentService;
-
-    @Autowired
-    private IEmployerService iEmployerService;
-
-    @Autowired
     private IAccountService iAccountService;
 
     @Autowired
