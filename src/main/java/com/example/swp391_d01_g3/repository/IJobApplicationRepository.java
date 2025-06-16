@@ -13,4 +13,6 @@ public interface IJobApplicationRepository extends JpaRepository<JobApplication,
 
     @Query("SELECT ja FROM JobApplication ja WHERE ja.student.studentId = :studentId")
     List<JobApplication> findByStudentId(@Param("studentId") Integer studentId);
+
+
 }

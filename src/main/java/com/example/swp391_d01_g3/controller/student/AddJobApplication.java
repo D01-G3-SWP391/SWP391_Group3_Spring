@@ -39,18 +39,18 @@ public class AddJobApplication {
     @Autowired
     private IJobpostService iJobpostService;
 
-    @GetMapping("/JobDescription/Apply")
-    public String showApplyForm(@RequestParam("id") Integer jobPostId, Model model) {
-        Optional<JobPost> jobPost = iJobpostService.findByJobPostId(jobPostId);
-        if (jobPost.isEmpty()) {
-            return "redirect:/";
-        }
-
-        model.addAttribute("jobApplicationDTO", new JobApplicationDTO());
-        model.addAttribute("jobPosts", Arrays.asList(jobPost.get()));
-
-        return "homePage/applyForm";
-    }
+//    @GetMapping("/JobDescription/Apply")
+//    public String showApplyForm(@RequestParam("id") Integer jobPostId, Model model) {
+//        Optional<JobPost> jobPost = iJobpostService.findByJobPostId(jobPostId);
+//        if (jobPost.isEmpty()) {
+//            return "redirect:/";
+//        }
+//
+//        model.addAttribute("jobApplicationDTO", new JobApplicationDTO());
+//        model.addAttribute("jobPosts", Arrays.asList(jobPost.get()));
+//
+//        return "homePage/applyForm";
+//    }
     @PostMapping("/addJobApplication")
     public String addJobApplication(@ModelAttribute("jobApplicationDTO") JobApplicationDTO jobApplicationDTO,
                                     @RequestParam("cv") MultipartFile cvFile,

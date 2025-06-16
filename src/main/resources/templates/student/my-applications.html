@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đơn ứng tuyển của tôi - JOB4YOU</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/navbarStudent_Employer.css}"/>
+    <link rel="stylesheet" th:href="@{/css/my-applications.css}"/>
+</head>
+<body>
+<div th:replace="~{navbar/navbarStudent :: navbarAdmin}"></div>
+
+<div class="main-content">
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="bi bi-briefcase-fill"></i>
+            </div>
+            <h1>Đơn ứng tuyển của tôi</h1>
+            <p>Theo dõi trạng thái các đơn ứng tuyển</p>
+        </div>
+    </div>
+
+    <div class="applications-container" th:if="${applications != null and !#lists.isEmpty(applications)}">
+        <!-- Table Header -->
+        <div class="table-header">
+            <div class="header-cell job-title-col">
+                <i class="bi bi-briefcase"></i>
+                <span>CÔNG VIỆC</span>
+            </div>
+            <div class="header-cell company-col">
+                <i class="bi bi-building"></i>
+                <span>CÔNG TY</span>
+            </div>
+            <div class="header-cell location-col">
+                <i class="bi bi-geo-alt"></i>
+                <span>ĐỊA ĐIỂM</span>
+            </div>
+            <div class="header-cell date-col">
+                <i class="bi bi-calendar-check"></i>
+                <span>NGÀY ỨNG TUYỂN</span>
+            </div>
+            <div class="header-cell status-col">
+                <i class="bi bi-flag"></i>
+                <span>TRẠNG THÁI</span>
+            </div>
+            <div class="header-cell action-col">
+                <i class="bi bi-gear"></i>
+                <span>THAO TÁC</span>
+            </div>
+        </div>
+
+        <!-- Application Rows Container -->
+        <div id="applications-list">
+            <div th:each="jobApp, iterStat : ${applications}"
+                 class="application-row"
+                 th:data-index="${iterStat.index}"
+                 style="display: none;">
+
+                <!-- Basic Info Row -->
+                <div class="basic-row">
+                    <div class="cell job-title-col">
+                        <div class="job-info-cell">
+                            <i class="bi bi-briefcase-fill job-icon"></i>
+                            <span class="job-title" th:text="${jobApp.jobPost?.jobTitle ?: 'N/A'}"></span>
+                        </div>
+                    </div>
+                    <div class="cell company-col">
+                        <div class="company-info">
+                            <i class="bi bi-building-fill company-icon"></i>
+                            <span th:text="${jobApp.jobPost?.employer?.companyName ?: 'Chưa có thông tin'}"></span>
+                        </div>
+                    </div>
+                    <div class="cell location-col">
+                        <div class="location-info">
+                            <i class="bi bi-geo-alt-fill location-icon"></i>
+                            <span th:text="${jobApp.jobPost?.jobLocation ?: 'N/A'}"></span>
+                        </div>
+                    </div>
+                    <div class="cell date-col">
+                        <div class="date-info">
+                            <i class="bi bi-calendar-check-fill date-icon"></i>
+                            <span th:text="${jobApp.appliedAt != null ? #temporals.format(jobApp.appliedAt, 'dd/MM/yyyy') : 'N/A'}"></span>
+                        </div>
+                    </div>
+                    <div class="cell status-col">
+                        <span class="status-badge"
+                              th:class="'status-badge status-' + ${jobApp.status?.name()?.toLowerCase() ?: 'unknown'}"
+                              th:text="${jobApp.status?.name() ?: 'UNKNOWN'}"></span>
+                    </div>
+                    <div class="cell action-col">
+                        <button class="view-details-btn" th:onclick="'toggleDetails(' + ${iterStat.index} + ')'">
+                            <i class="bi bi-chevron-down"></i>
+                            <span>View Details</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Detailed Info Row (Hidden by default) -->
+                <div class="details-row" th:id="'details-' + ${iterStat.index}">
+                    <div class="details-content">
+                        <div class="details-grid">
+                            <!-- Personal Info Section -->
+                            <div class="detail-section">
+                                <h4><i class="bi bi-person-fill"></i> Thông tin cá nhân</h4>
+                                <div class="detail-items">
+                                    <div class="detail-item" th:if="${jobApp.fullName}">
+                                        <span class="label"><i class="bi bi-person-badge"></i> Họ tên:</span>
+                                        <span class="value" th:text="${jobApp.fullName}"></span>
+                                    </div>
+                                    <div class="detail-item" th:if="${jobApp.email}">
+                                        <span class="label"><i class="bi bi-envelope"></i> Email:</span>
+                                        <span class="value" th:text="${jobApp.email}"></span>
+                                    </div>
+                                    <div class="detail-item" th:if="${jobApp.phone}">
+                                        <span class="label"><i class="bi bi-telephone"></i> Điện thoại:</span>
+                                        <span class="value" th:text="${jobApp.phone}"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Job Info Section -->
+                            <div class="detail-section">
+                                <h4><i class="bi bi-briefcase-fill"></i> Thông tin công việc</h4>
+                                <div class="detail-items">
+                                    <div class="detail-item">
+                                        <span class="label"><i class="bi bi-clock"></i> Thời gian ứng tuyển:</span>
+                                        <span class="value" th:text="${jobApp.appliedAt != null ? #temporals.format(jobApp.appliedAt, 'dd/MM/yyyy HH:mm') : 'N/A'}"></span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="label"><i class="bi bi-geo-alt"></i> Địa điểm:</span>
+                                        <span class="value" th:text="${jobApp.jobPost?.jobLocation ?: 'N/A'}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Application Description -->
+                        <div class="application-description" th:if="${jobApp.description != null and !#strings.isEmpty(jobApp.description)}">
+                            <h4><i class="bi bi-chat-text-fill"></i> Nội dung ứng tuyển</h4>
+                            <div class="description-content">
+                                <p th:text="${jobApp.description}"></p>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="detail-actions">
+                            <a th:href="@{/JobDescription/JobPost(id=${jobApp.jobPost?.jobPostId ?: 0})}"
+                               class="btn btn-primary" th:if="${jobApp.jobPost}">
+                                <i class="bi bi-eye-fill"></i>
+                                <span>Xem công việc</span>
+                            </a>
+                            <a th:href="@{/{cvPath}(cvPath=${jobApp.cvUrl})}"
+                               target="_blank" class="btn btn-success"
+                               th:if="${jobApp.cvUrl != null and !#strings.isEmpty(jobApp.cvUrl)}">
+                                <i class="bi bi-file-earmark-pdf-fill"></i>
+                                <span>Xem CV</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-container">
+            <div class="pagination-wrapper">
+                <div class="pagination" id="pagination">
+                    <!-- Pagination buttons will be generated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" th:if="${applications == null or #lists.isEmpty(applications)}">
+        <div class="empty-illustration">
+            <i class="bi bi-briefcase-x"></i>
+        </div>
+        <h3>Chưa có đơn ứng tuyển nào</h3>
+        <p>Hãy tìm kiếm và ứng tuyển các công việc phù hợp với bạn</p>
+    </div>
+</div>
+
+<script>
+    let currentPage = 1;
+    const itemsPerPage = 5;
+    let totalItems = 0;
+
+    function initializePagination() {
+        const applications = document.querySelectorAll('.application-row');
+        totalItems = applications.length;
+
+        if (totalItems === 0) return;
+
+        showPage(1);
+        setupPagination();
+    }
+
+    function showPage(page) {
+        const applications = document.querySelectorAll('.application-row');
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+
+        applications.forEach((app, index) => {
+            if (index >= startIndex && index < endIndex) {
+                app.style.display = 'block';
+            } else {
+                app.style.display = 'none';
+            }
+        });
+
+        currentPage = page;
+    }
+
+    function setupPagination() {
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+        const pagination = document.getElementById('pagination');
+        pagination.innerHTML = '';
+
+        // Previous button
+        const prevBtn = document.createElement('a');
+        prevBtn.href = '#';
+        prevBtn.innerHTML = '<i class="bi bi-chevron-left"></i>';
+        prevBtn.className = 'page-btn prev-btn';
+        if (currentPage === 1) prevBtn.classList.add('disabled');
+        prevBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (currentPage > 1) {
+                showPage(currentPage - 1);
+                setupPagination();
+            }
+        });
+        pagination.appendChild(prevBtn);
+
+        // Page numbers
+        for (let i = 1; i <= totalPages; i++) {
+            const pageBtn = document.createElement('a');
+            pageBtn.href = '#';
+            pageBtn.textContent = i;
+            pageBtn.className = 'page-btn';
+
+            if (i === currentPage) {
+                pageBtn.classList.add('active');
+            }
+
+            pageBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                showPage(i);
+                setupPagination();
+            });
+
+            pagination.appendChild(pageBtn);
+        }
+
+        // Next button
+        const nextBtn = document.createElement('a');
+        nextBtn.href = '#';
+        nextBtn.innerHTML = '<i class="bi bi-chevron-right"></i>';
+        nextBtn.className = 'page-btn next-btn';
+        if (currentPage === totalPages) nextBtn.classList.add('disabled');
+        nextBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (currentPage < totalPages) {
+                showPage(currentPage + 1);
+                setupPagination();
+            }
+        });
+        pagination.appendChild(nextBtn);
+    }
+
+    function toggleDetails(index) {
+        const detailsRow = document.getElementById('details-' + index);
+        const button = document.querySelector(`[data-index="${index}"] .view-details-btn`);
+        const icon = button.querySelector('i');
+        const text = button.querySelector('span');
+
+        if (detailsRow.classList.contains('show')) {
+            detailsRow.classList.remove('show');
+            icon.className = 'bi bi-chevron-down';
+            text.textContent = 'View Details';
+            button.classList.remove('expanded');
+        } else {
+            detailsRow.classList.add('show');
+            icon.className = 'bi bi-chevron-up';
+            text.textContent = 'Hide Details';
+            button.classList.add('expanded');
+        }
+    }
+
+    // Initialize pagination when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        initializePagination();
+    });
+</script>
+</body>
+<script src="/js/navbarAdmin.js"></script>
+
+</html>

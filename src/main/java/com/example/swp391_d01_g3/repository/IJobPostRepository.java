@@ -4,10 +4,14 @@ import com.example.swp391_d01_g3.model.Employer;
 import com.example.swp391_d01_g3.model.JobPost;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,10 +26,12 @@ public interface IJobPostRepository extends JpaRepository<JobPost, Integer> {
 
     List<JobPost> findByEmployer(Employer employer);
     Optional<JobPost> findById(Integer jobPostId);
+
     Optional<JobPost> findByJobPostId(Integer jobPostId);
 
     @Query("SELECT jp FROM JobPost jp JOIN FETCH jp.employer WHERE jp.jobPostId = ?1")
     List<JobPost> findAllWithEmployer(Integer id);
+
 
     @Query("SELECT jp FROM JobPost jp " +
             "JOIN jp.employer e " +
@@ -43,6 +49,22 @@ public interface IJobPostRepository extends JpaRepository<JobPost, Integer> {
             @Param("jobType") String jobType,
             @Param("jobFieldId") Integer jobFieldId,
             @Param("companyName") String companyName);
+
+
+
+    @Query("SELECT jp FROM JobPost jp " +
+            "WHERE jp.displayStatus = 'ACTIVE' " +
+            "ORDER BY jp.appliedQuality DESC")
+    List<JobPost> findTopJobsByAppliedQuality();
+
+
+    // Giới hạn số lượng top job muốn lấy (nếu muốn)
+    @Query("SELECT jp FROM JobPost jp " +
+            "WHERE jp.displayStatus = 'ACTIVE' " +
+            "ORDER BY jp.appliedQuality DESC")
+    List<JobPost> findTopJobsByAppliedQualityLimit(Pageable pageable);
+
+
 
     // Admin Job Post Management Methods
     Page<JobPost> findByApprovalStatusOrderByCreatedAtDesc(JobPost.ApprovalStatus status, Pageable pageable);
