@@ -53,6 +53,9 @@ public class Event {
     @Column(name = "approved_at")
     private LocalDateTime approvedAt;
     
+    @Column(name = "created_at", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
+    private LocalDateTime createdAt;
+    
     // Enums - chỉ giữ lại những cái cần thiết
     public enum EventStatus {
         ACTIVE,     // Đang mở đăng ký
@@ -182,6 +185,22 @@ public class Event {
     
     public void setApprovedBy(Account approvedBy) {
         this.approvedBy = approvedBy;
+    }
+    
+    public LocalDateTime getApprovedAt() {
+        return approvedAt;
+    }
+    
+    public void setApprovedAt(LocalDateTime approvedAt) {
+        this.approvedAt = approvedAt;
+    }
+    
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     
