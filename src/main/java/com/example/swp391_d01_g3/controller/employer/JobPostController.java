@@ -64,6 +64,7 @@ public String createJobPost(
     job.setJobRequirements(dto.getJobRequirements());
     job.setJobDescription(dto.getJobDescription());
     job.setJobType(JobPost.JobType.valueOf(dto.getJobType()));
+    job.setAppliedQuality(0);
     // createdAt, approvalStatus, displayStatus dùng mặc định
 
     // 4) Lưu và thông báo thành công

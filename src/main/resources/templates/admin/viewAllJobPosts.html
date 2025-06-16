@@ -63,6 +63,7 @@
       <table class="table table-hover admin-table">
         <thead>
         <tr>
+          <th><i class="bi bi-briefcase me-2"></i>Stt</th>
           <th><i class="bi bi-briefcase me-2"></i>Job Title</th>
           <th><i class="bi bi-building me-2"></i>Company</th>
           <th><i class="bi bi-geo-alt me-2"></i>Location</th>
@@ -74,7 +75,8 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="jobPost : ${jobPostList}">
+        <tr th:each="jobPost,l : ${jobPostList}">
+          <td th:text="${l.count}"></td>
           <td>
             <strong th:text="${jobPost.jobTitle}"></strong>
           </td>

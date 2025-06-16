@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class NotificationService implements INotificationService {
@@ -29,6 +30,14 @@ public class NotificationService implements INotificationService {
     @Override
     public List<Notification> getUserNotifications(Integer userId) {
         return notificationRepository.findByUserIdOrderByCreatedAtDesc(userId);
+    }
+
+    @Override
+    public List<Notification> getLatestUserNotifications(Integer userId, int limit) {
+        return notificationRepository.findByUserIdOrderByCreatedAtDesc(userId)
+                .stream()
+                .limit(limit)
+                .collect(Collectors.toList());
     }
 
     @Override

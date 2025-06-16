@@ -1,57 +1,232 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title th:text="#{student.editProfile.title}">Student</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-  <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Edit Profile - Student</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <link rel="stylesheet" th:href="@{/css/navbarStudent_Employer.css}"/>
+  <link rel="stylesheet" th:href="@{/css/editStudent.css}"/>
+  <link rel="stylesheet" th:href="@{/css/registerEnhanced.css}"/>
 </head>
-<link rel="stylesheet" th:href="@{/css/navbarStudent_Employer.css}" />
-<link rel="stylesheet" th:href="@{/css/editStudent.css}" />
 <body>
-<div th:replace="~{navbar/navbarStudent :: navbarAdmin}"></div>
-<div class="profile-container">
-  <div class="edit-profile-card">
-    <h2 class="edit-profile-title" th:text="#{student.editProfile.heading}">Edit Profile</h2>
-    <form th:action="@{/Student/EditProfile}" method="post" class="edit-profile-form" th:object="${studentProfileDTO}">
-      <div class="form-group">
-        <label class="form-label" for="fullName" th:text="#{student.editProfile.fullName}">Full name: </label>
-        <input type="text" id="fullName" th:field="*{fullName}" class="form-input" required>
+  <div th:replace="~{navbar/navbarStudent :: navbarAdmin}"></div>
+  <div class="main-content">
+    <div class="profile-container">
+      <!-- Error Alert -->
+      <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        <span th:text="${error}">Error message</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
-      <div class="form-group">
-        <label class="form-label" for="phone" th:text="#{student.editProfile.phone}">Phone number: </label>
-        <input type="text" id="phone" th:field="*{phone}" class="form-input" required>
+      <!-- Page Header -->
+      <div class="page-header">
+        <h2 class="page-title">
+          <i class="bi bi-pencil-square me-2"></i>Edit Information
+        </h2>
+        <p class="page-subtitle">Update your profile information</p>
       </div>
-      <div class="form-group">
-        <label class="form-label" for="address" th:text="#{student.editProfile.address}">Address: </label>
-        <input type="text" id="address" th:field="*{address}" class="form-input">
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="university" th:text="#{student.editProfile.university}">University: </label>
-        <input type="text" id="university" th:field="*{university}" class="form-input">
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="preferredJobAddress" th:text="#{student.editProfile.preferredJobAddress}">Desired work address: </label>
-        <input type="text" id="preferredJobAddress" th:field="*{preferredJobAddress}" class="form-input">
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="profileDescription" th:text="#{student.editProfile.introduction}">Introduce: </label>
-        <input type="text" id="profileDescription" th:field="*{profileDescription}" class="form-input">
-      </div>
-      <div class="form-group">
-        <label class="form-label" for="experience" th:text="#{student.editProfile.experience}">Experience: </label>
-        <input type="text" id="experience" th:field="*{experience}" class="form-input">
-      </div>
-
-      <div class="form-buttons">
-        <button type="submit" class="btn btn-save" th:text="#{student.editProfile.save}">Save</button>
-        <a th:href="@{/profile}" class="btn btn-cancel" th:text="#{student.editProfile.cancel}">Cancel</a>
-      </div>
-    </form>
+      <form class="edit-form" method="post" th:action="@{/Student/EditProfile}" th:object="${studentProfileDTO}" enctype="multipart/form-data">
+        <div class="main-form-grid">
+          <!-- Left Column: Avatar + Personal Info -->
+          <div class="left-column">
+            <!-- Avatar Upload Section -->
+            <div class="info-section logo-section">
+              <h3 class="section-title">
+                <i class="bi bi-image"></i> Profile Picture
+              </h3>
+              <div class="logo-upload-container">
+                <!-- Current avatar preview -->
+                <div class="current-logo" th:if="${studentProfileDTO.avatarUrl != null and studentProfileDTO.avatarUrl != ''}">
+                  <img th:src="${studentProfileDTO.avatarUrl}" alt="Current Avatar" class="logo-preview-current"/>
+                  <p class="text-muted">Current Avatar</p>
+                </div>
+                <!-- File input -->
+                <div class="file-input-container">
+                  <input type="file" id="avatarFile" name="avatarFile" class="form-control" accept="image/*" onchange="previewLogo(this)"/>
+                  <div class="file-input-help">
+                    <i class="bi bi-cloud-upload"></i>
+                    <span>Choose image from computer (JPG, PNG, GIF)</span>
+                  </div>
+                </div>
+                <!-- New avatar preview -->
+                <div class="new-logo-preview" id="newLogoPreview" style="display: none">
+                  <img id="logoPreviewImage" alt="Avatar Preview" class="logo-preview-new"/>
+                  <p class="text-success">New avatar will be updated</p>
+                  <button type="button" class="btn btn-sm btn-outline-secondary" onclick="clearLogoPreview()">
+                    <i class="bi bi-x"></i> Remove
+                  </button>
+                </div>
+                <!-- Hidden field to keep current avatar URL -->
+                <input type="hidden" name="avatarUrl" th:field="*{avatarUrl}"/>
+              </div>
+            </div>
+            <!-- Personal Information Section -->
+            <div class="info-section">
+              <h3 class="section-title">
+                <i class="bi bi-person"></i> Personal Information
+              </h3>
+              <div class="form-group">
+                <label for="fullName" class="form-label">Full Name</label>
+                <input type="text" id="fullName" class="form-control" th:field="*{fullName}" placeholder="Enter full name" required/>
+              </div>
+              <div class="form-group">
+                <label for="phone" class="form-label">Phone Number</label>
+                <input type="text" id="phone" class="form-control" th:field="*{phone}" placeholder="Enter phone number" required/>
+              </div>
+              <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <div class="form-control" style="background:#f8fafc; color:#6c757d; cursor:not-allowed;">
+                  <span th:text="${email}"></span>
+                </div>
+                <small class="form-text text-muted">Email cannot be changed</small>
+              </div>
+            </div>
+          </div>
+          <!-- Right Column: Academic Info, Introduction, Experience -->
+          <div class="right-column">
+            <div class="info-section">
+              <h3 class="section-title">
+                <i class="bi bi-mortarboard"></i> Academic & Profile Information
+              </h3>
+              <div class="form-group">
+                <label for="university" class="form-label">University</label>
+                <input type="text" id="university" class="form-control" th:field="*{university}" placeholder="Enter university name"/>
+              </div>
+              <div class="form-group">
+                <label for="address" class="form-label">Current Address</label>
+                <input type="text" id="address" class="form-control" th:field="*{address}" placeholder="Enter your current address"/>
+              </div>
+              <div class="form-group">
+                <label for="preferredJobAddress" class="form-label">Preferred Job Location</label>
+                <input type="text" id="preferredJobAddress" class="form-control" th:field="*{preferredJobAddress}" placeholder="Enter preferred job location"/>
+              </div>
+              <div class="form-group">
+                <label for="profileDescription" class="form-label">Introduction</label>
+                <input type="hidden" id="profileDescriptionHidden" name="profileDescription" th:field="*{profileDescription}"/>
+                <div id="profileDescriptionEditor"></div>
+              </div>
+              <div class="form-group">
+                <label for="experience" class="form-label">Experience</label>
+                <input type="hidden" id="experienceHidden" name="experience" th:field="*{experience}"/>
+                <div id="experienceEditor"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Action Buttons -->
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-lg">
+            <i class="bi bi-check-circle me-2"></i>Update Information
+          </button>
+          <a th:href="@{/Student/Profile}" class="btn btn-secondary btn-lg">
+            <i class="bi bi-x-circle me-2"></i>Cancel
+          </a>
+        </div>
+      </form>
+    </div>
   </div>
-</div>
-<script th:src="@{/js/navbarAdmin.js}"></script>
-<script th:src="@{/js/languageSwitch.js}"></script>
+  <!-- Add notification bell -->
+  <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- CKEditor 5 -->
+  <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
+  <script>
+    function previewLogo(input) {
+      const file = input.files[0];
+      if (file) {
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+        if (!allowedTypes.includes(file.type)) {
+          alert('Please select an image file (JPG, PNG, GIF, WEBP)');
+          input.value = '';
+          return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+          alert('File size must not exceed 5MB');
+          input.value = '';
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('logoPreviewImage').src = e.target.result;
+          document.getElementById('newLogoPreview').style.display = 'block';
+          const preview = document.getElementById('newLogoPreview');
+          preview.style.opacity = '0';
+          preview.style.transform = 'scale(0.8)';
+          setTimeout(() => {
+            preview.style.transition = 'all 0.3s ease';
+            preview.style.opacity = '1';
+            preview.style.transform = 'scale(1)';
+          }, 10);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+    function clearLogoPreview() {
+      const preview = document.getElementById('newLogoPreview');
+      preview.style.transition = 'all 0.3s ease';
+      preview.style.opacity = '0';
+      preview.style.transform = 'scale(0.8)';
+      setTimeout(() => {
+        document.getElementById('avatarFile').value = '';
+        preview.style.display = 'none';
+        document.getElementById('logoPreviewImage').src = '';
+      }, 300);
+    }
+    // CKEditor initialization and form submission
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.querySelector('.edit-form');
+      const submitBtn = document.querySelector('.btn-primary');
+      // Introduction
+      let introEditor;
+      const introHiddenInput = document.getElementById('profileDescriptionHidden');
+      const introInitialContent = introHiddenInput.value || '';
+      ClassicEditor.create(document.querySelector('#profileDescriptionEditor'), {
+        toolbar: ['heading', '|', 'bold', 'italic', 'underline', '|', 'bulletedList', 'numberedList', '|', 'outdent', 'indent', '|', 'blockQuote', 'insertTable', '|', 'undo', 'redo'],
+        placeholder: 'Enter your introduction...'
+      })
+      .then(editor => {
+        introEditor = editor;
+        editor.setData(introInitialContent);
+        editor.model.document.on('change:data', () => {
+          introHiddenInput.value = editor.getData();
+        });
+      })
+      .catch(error => {
+        console.error('Introduction editor initialization failed:', error);
+      });
+      // Experience
+      let expEditor;
+      const expHiddenInput = document.getElementById('experienceHidden');
+      const expInitialContent = expHiddenInput.value || '';
+      ClassicEditor.create(document.querySelector('#experienceEditor'), {
+        toolbar: ['heading', '|', 'bold', 'italic', 'underline', '|', 'bulletedList', 'numberedList', '|', 'outdent', 'indent', '|', 'blockQuote', 'insertTable', '|', 'undo', 'redo'],
+        placeholder: 'Enter your experience...'
+      })
+      .then(editor => {
+        expEditor = editor;
+        editor.setData(expInitialContent);
+        editor.model.document.on('change:data', () => {
+          expHiddenInput.value = editor.getData();
+        });
+      })
+      .catch(error => {
+        console.error('Experience editor initialization failed:', error);
+      });
+      form.addEventListener('submit', function(e) {
+        if (introEditor) {
+          introHiddenInput.value = introEditor.getData();
+        }
+        if (expEditor) {
+          expHiddenInput.value = expEditor.getData();
+        }
+        submitBtn.classList.add('loading');
+        submitBtn.innerHTML = '<i class="bi bi-arrow-clockwise me-2"></i>Updating...';
+        submitBtn.disabled = true;
+      });
+    });
+  </script>
 </body>
 </html>

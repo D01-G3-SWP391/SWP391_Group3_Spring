@@ -37,6 +37,20 @@ public class NotificationController {
         return "notifications/notifications-list";
     }
 
+    @GetMapping("/latest")
+    @ResponseBody
+    public ResponseEntity<List<Notification>> getLatestNotifications(Authentication authentication) {
+        if (authentication != null) {
+            String email = authentication.getName();
+            Account account = accountService.findByEmail(email);
+            if (account != null) {
+                List<Notification> notifications = notificationService.getLatestUserNotifications(account.getUserId(), 5);
+                return ResponseEntity.ok(notifications);
+            }
+        }
+        return ResponseEntity.ok(List.of());
+    }
+
     @GetMapping("/count")
     @ResponseBody
     public ResponseEntity<Map<String, Integer>> getUnreadCount(Authentication authentication) {

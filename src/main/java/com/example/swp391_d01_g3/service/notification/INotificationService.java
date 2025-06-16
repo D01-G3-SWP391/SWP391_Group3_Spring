@@ -7,6 +7,7 @@ import java.util.List;
 public interface INotificationService {
     Notification createNotification(Account user, String title, String message, String type, Long relatedId);
     List<Notification> getUserNotifications(Integer userId);
+    List<Notification> getLatestUserNotifications(Integer userId, int limit);
     int getUnreadNotificationCount(Integer userId);
     void markAsRead(Integer notificationId);
     void markAllAsRead(Integer userId);
