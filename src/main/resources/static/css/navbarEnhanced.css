@@ -70,6 +70,7 @@
 .navbar-right {
     display: flex;
     align-items: center;
+    margin-right: -150px;
 }
 
 /* Action Button base styles */
