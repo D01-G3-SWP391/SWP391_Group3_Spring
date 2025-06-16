@@ -20,6 +20,7 @@ public interface IAdminJobPostService {
     void approveJobPost(Integer jobPostId);
     void rejectJobPost(Integer jobPostId, String reason);
     JobPost getJobPostById(Integer jobPostId);
+    void changeJobPostStatus(Integer jobPostId, JobPost.ApprovalStatus newStatus);
 
     // Dashboard statistics
     long getPendingCount();

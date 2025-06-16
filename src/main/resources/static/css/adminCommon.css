@@ -388,3 +388,24 @@ h2::after {
     gap: 12px !important;
     align-items: center;
 }
+.dropdown-item {
+    padding: 8px 16px;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.dropdown-item.text-success:hover {
+    background-color: #d4edda;
+}
+
+.dropdown-item.text-danger:hover {
+    background-color: #f8d7da;
+}
+
+.dropdown-item.text-warning:hover {
+    background-color: #fff3cd;
+}
+
