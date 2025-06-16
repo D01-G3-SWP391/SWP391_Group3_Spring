@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -377,8 +377,8 @@
     </style>
 </head>
 <body>
-    <!-- Include navbar -->
-    <div th:replace="~{navbar/navbarHome :: home}"></div>
+    <!-- Add navHome -->
+    <div th:replace="~{navbar/navbarHome}"></div>
     
     <!-- Blog Hero Section -->
     <section class="blog-hero">
