@@ -25,6 +25,8 @@
                 <span th:text="#{nav.dashboard}">Dashboard</span>
             </a>
         </li>
+
+        <!-- User Management Section -->
         <li>
             <a th:href="@{/Admin/ListStudent}" class="nav-link">
                 <i class="bi bi-people-fill"></i>
@@ -37,6 +39,8 @@
                 <span>Employers</span>
             </a>
         </li>
+
+        <!-- Job Posts Management Section -->
         <li>
             <a th:href="@{/Admin/JobPosts}" class="nav-link">
                 <i class="bi bi-briefcase-fill"></i>
@@ -49,6 +53,23 @@
                 <span>All Job Posts</span>
             </a>
         </li>
+
+        <!-- Events Management Section -->
+        <li>
+            <a th:href="@{/Admin/PendingEvents}" class="nav-link">
+                <i class="bi bi-calendar-check"></i>
+                <span>Confirm Events</span>
+            </a>
+        </li>
+        <li>
+            <a th:href="@{/Admin/Events}" class="nav-link">
+                <i class="bi bi-calendar-event"></i>
+                <span>All Events</span>
+            </a>
+        </li>
+
+
+        <!-- System Management Section -->
         <li>
             <a th:href="@{/Admin/Reports}" class="nav-link">
                 <i class="bi bi-graph-up"></i>
@@ -61,6 +82,8 @@
                 <span>Settings</span>
             </a>
         </li>
+
+        <!-- Language Switcher -->
         <li class="language-nav-item">
             <button class="sidebar-lang-btn">
                 <i class="bi bi-globe"></i>
@@ -78,6 +101,8 @@
                 </a>
             </div>
         </li>
+
+        <!-- Logout -->
         <li>
             <a th:href="@{/logout}" class="nav-link">
                 <i class="bi bi-box-arrow-right"></i>
@@ -89,33 +114,33 @@
 <script th:src="@{/js/navbarAdmin.js}"></script>
 <script th:src="@{/js/languageSwitch.js}"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Language switcher functionality for sidebar
-    const languageOptions = document.querySelectorAll('.language-option');
-    languageOptions.forEach(option => {
-        option.addEventListener('click', function(event) {
-            event.preventDefault();
-            const lang = this.getAttribute('href').split('=')[1];
-            const currentUrl = new URL(window.location.href);
-            currentUrl.searchParams.set('lang', lang);
-            window.location.href = currentUrl.toString();
+    document.addEventListener('DOMContentLoaded', function() {
+        // Language switcher functionality for sidebar
+        const languageOptions = document.querySelectorAll('.language-option');
+        languageOptions.forEach(option => {
+            option.addEventListener('click', function(event) {
+                event.preventDefault();
+                const lang = this.getAttribute('href').split('=')[1];
+                const currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('lang', lang);
+                window.location.href = currentUrl.toString();
+            });
         });
-    });
 
-    const languageButton = document.querySelector('.sidebar-lang-btn');
-    const languageDropdown = document.querySelector('.language-nav-item .language-dropdown');
-    if (languageButton && languageDropdown) {
-        languageButton.addEventListener('click', function(event) {
-            event.stopPropagation();
-            languageDropdown.classList.toggle('active');
-        });
-        document.addEventListener('click', function(event) {
-            if (!languageButton.contains(event.target) && !languageDropdown.contains(event.target)) {
-                languageDropdown.classList.remove('active');
-            }
-        });
-    }
-});
+        const languageButton = document.querySelector('.sidebar-lang-btn');
+        const languageDropdown = document.querySelector('.language-nav-item .language-dropdown');
+        if (languageButton && languageDropdown) {
+            languageButton.addEventListener('click', function(event) {
+                event.stopPropagation();
+                languageDropdown.classList.toggle('active');
+            });
+            document.addEventListener('click', function(event) {
+                if (!languageButton.contains(event.target) && !languageDropdown.contains(event.target)) {
+                    languageDropdown.classList.remove('active');
+                }
+            });
+        }
+    });
 </script>
 </body>
 </html>
