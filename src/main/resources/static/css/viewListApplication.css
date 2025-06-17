@@ -14,21 +14,21 @@ body {
 
 /* ===== MAIN CONTENT LAYOUT - CĂN GIỮA HOÀN HẢO ===== */
 .main-content {
-    margin-top: 90px;
-    padding: 30px 20px;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-    min-height: calc(100vh - 90px);
-    width: 100%;
+    margin-top: 50px; /* Giảm margin-top */
+    margin-left: 280px; /* Tăng margin-left để tránh sidebar */
+    padding: 20px 15px; /* Giảm padding */
+    max-width: calc(100vw - 320px); /* Thu nhỏ width */
+    min-height: calc(100vh - 100px);
+    width: auto;
+    transition: margin-left 0.3s ease;
 }
 
 .main-content h1 {
-    font-size: 2.2rem;
+    font-size: 1.8rem; /* Giảm font-size */
     font-weight: 700;
     color: #2c3e50;
     text-align: center;
-    margin-bottom: 35px;
+    margin-bottom: 25px; /* Giảm margin-bottom */
     position: relative;
 }
 
@@ -38,7 +38,7 @@ body {
     bottom: -10px;
     left: 50%;
     transform: translateX(-50%);
-    width: 80px;
+    width: 60px;
     height: 4px;
     background: linear-gradient(90deg, #667eea, #764ba2);
     border-radius: 2px;
@@ -47,12 +47,12 @@ body {
 /* ===== SEARCH SECTION ===== */
 .search-section {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    padding: 25px;
-    border-radius: 20px;
+    padding: 20px;
+    border-radius: 15px;
     box-shadow:
             0 15px 35px rgba(102, 126, 234, 0.3),
             0 5px 15px rgba(0, 0, 0, 0.1);
-    margin-bottom: 30px;
+    margin-bottom: 25px;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     max-width: 100%;
@@ -127,12 +127,12 @@ body {
 /* ===== TABLE CONTAINER ===== */
 .table-container {
     background: white;
-    border-radius: 20px;
+    border-radius: 15px;
     box-shadow:
             0 20px 40px rgba(0, 0, 0, 0.1),
             0 8px 16px rgba(0, 0, 0, 0.05);
-    padding: 30px;
-    margin-bottom: 120px;
+    padding: 20px;
+    margin-bottom: 100px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(10px);
     width: 100%;
@@ -174,10 +174,10 @@ table thead {
 }
 
 table thead th {
-    padding: 18px 15px;
+    padding: 15px 10px;
     font-weight: 600;
     text-align: center;
-    font-size: 14px;
+    font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     border: none;
@@ -564,17 +564,39 @@ table tbody td {
     animation: gentlePulse 2s infinite;
 }
 
-/* ===== RESPONSIVE DESIGN ===== */
+/* ===== RESPONSIVE DESIGN - KHẮC PHỤC TRÀN NAVBAR ===== */
 @media (max-width: 1200px) {
     .main-content {
         max-width: 95%;
         padding: 25px 15px;
+        margin-top: 110px; /* Tăng từ 90px lên 110px */
+    }
+}
+
+@media (max-width: 992px) {
+    .main-content {
+        margin-top: 130px; /* Thêm breakpoint mới */
+        padding: 20px 10px;
+        max-width: 98%;
+    }
+
+    .main-content h1 {
+        font-size: 2rem;
+        margin-bottom: 30px;
+    }
+
+    .search-section {
+        padding: 20px 15px;
+    }
+
+    .table-container {
+        padding: 20px 15px;
     }
 }
 
 @media (max-width: 768px) {
     .main-content {
-        margin-top: 80px;
+        margin-top: 110px; /* Tăng từ 80px lên 150px */
         padding: 20px 10px;
         max-width: 98%;
     }
@@ -596,7 +618,7 @@ table tbody td {
     }
 
     table {
-        min-width: 800px;
+        min-width: 500px;
     }
 
     .bottom-pagination {
@@ -626,6 +648,7 @@ table tbody td {
     .main-content {
         padding: 15px 5px;
         max-width: 100%;
+        margin-top: 170px; /* Tăng thêm cho màn hình rất nhỏ */
     }
 
     .table-container {
@@ -641,6 +664,22 @@ table tbody td {
         width: 32px;
         height: 32px;
         font-size: 12px;
+    }
+}
+
+/* ===== BREAKPOINT BỔ SUNG CHO MÀN HÌNH RẤT NHỎ ===== */
+@media (max-width: 360px) {
+    .main-content {
+        margin-top: 180px; /* Đảm bảo không tràn trên màn hình rất nhỏ */
+        padding: 10px 5px;
+    }
+
+    .search-section {
+        padding: 15px 10px;
+    }
+
+    .table-container {
+        padding: 15px 8px;
     }
 }
 
