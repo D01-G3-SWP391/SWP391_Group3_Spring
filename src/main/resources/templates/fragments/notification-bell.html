@@ -7,11 +7,25 @@
     <div th:fragment="notification-bell">
         <link rel="stylesheet" th:href="@{/css/notification-bell.css}" />
         
-        <div class="notification-bell-container" id="notificationBell">
-            <div class="notification-bell">
-                <div id="lottie-bell"></div>
+        <div class="notification-bell-wrapper" id="notificationBell">
+            <div class="notification-bell-button" onclick="toggleNotifications(event)">
+                <div class="notification-bell-icon" id="notification-bell-animation"></div>
+                <span class="notification-bell-badge" style="display: none;">0</span>
             </div>
-            <span class="notification-badge" style="display: none;">0</span>
+            
+            <!-- Notification Dropdown -->
+            <div class="notification-bell-dropdown" id="notificationDropdown" style="display: none;">
+                <div class="notification-bell-header">
+                    <h6 class="mb-0">Notifications</h6>
+                    <div class="notification-bell-actions">
+                        <a href="#" class="notification-bell-mark-all" onclick="markAllAsRead(event)">Mark all as read</a>
+                        <a href="#" class="notification-bell-delete-all" onclick="deleteAllNotifications(event)">Delete all</a>
+                    </div>
+                </div>
+                <div class="notification-bell-list" id="notificationList">
+                    <!-- Notifications will be loaded here -->
+                </div>
+            </div>
         </div>
 
         <!-- Add Lottie Library -->
@@ -20,18 +34,16 @@
             document.addEventListener('DOMContentLoaded', function() {
                 // Initialize Lottie animation
                 const animation = bodymovin.loadAnimation({
-                    container: document.getElementById('lottie-bell'),
+                    container: document.getElementById('notification-bell-animation'),
                     renderer: 'svg',
                     loop: false,
                     autoplay: false,
-                    path: '/js/notfication-bell.js'
+                    path: '/js/notification-bell.js'
                 });
 
-                const bell = document.getElementById('lottie-bell');
-                const badge = document.querySelector('.notification-badge');
-                let notificationCount = 0;
+                const bell = document.getElementById('notification-bell-animation');
 
-                // Play animation on hover
+                // Play animation on hover (without scaling)
                 bell.addEventListener('mouseenter', () => {
                     animation.play();
                 });
@@ -40,28 +52,192 @@
                     animation.stop();
                 });
 
-                // Function to update notification count
-                function updateNotificationCount(count) {
-                    notificationCount = count;
-                    if (count > 0) {
-                        badge.style.display = 'flex';
-                        badge.textContent = count;
-                        animation.play();
-                    } else {
-                        badge.style.display = 'none';
-                    }
-                }
-
-                // Click handler to reset notifications
-                bell.addEventListener('click', () => {
-                    updateNotificationCount(0);
-                });
-
-                // Example: Add notification every 5 seconds (for testing)
-                setInterval(() => {
-                    updateNotificationCount(notificationCount + 1);
-                }, 5000);
+                // Update notifications initially and every 30 seconds
+                updateNotifications();
+                setInterval(updateNotifications, 30000);
             });
+
+            // Toggle notification dropdown
+            function toggleNotifications(event) {
+                event.stopPropagation(); // Prevent event from bubbling up
+                const dropdown = document.getElementById('notificationDropdown');
+                const isVisible = dropdown.style.display === 'block';
+                
+                if (!isVisible) {
+                    dropdown.style.display = 'block';
+                    updateNotifications();
+                } else {
+                    dropdown.style.display = 'none';
+                }
+            }
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                const bell = document.getElementById('notificationBell');
+                const dropdown = document.getElementById('notificationDropdown');
+                if (!bell.contains(event.target) && dropdown.style.display === 'block') {
+                    dropdown.style.display = 'none';
+                }
+            });
+
+            // Update notifications
+            function updateNotifications() {
+                fetch('/notifications/latest')
+                    .then(response => response.json())
+                    .then(data => {
+                        const notificationList = document.getElementById('notificationList');
+                        notificationList.innerHTML = '';
+
+                        if (data.length === 0) {
+                            notificationList.innerHTML = `
+                                <div class="notification-bell-empty">
+                                    <i class="bi bi-bell-slash"></i>
+                                    <p>No notifications</p>
+                                </div>
+                            `;
+                        } else {
+                            data.forEach(notification => {
+                                const notificationItem = document.createElement('div');
+                                notificationItem.className = `notification-bell-item${notification.read ? '' : ' unread'}`;
+                                notificationItem.dataset.id = notification.id;
+                                
+                                notificationItem.innerHTML = `
+                                    <div class="notification-bell-content" onclick="markAsRead(${notification.id})">
+                                        <div class="notification-bell-title">${notification.title}</div>
+                                        <div class="notification-bell-message">${notification.message}</div>
+                                        <div class="notification-bell-time">${formatDate(notification.createdAt)}</div>
+                                    </div>
+                                    <div class="notification-bell-delete" onclick="deleteNotification(event, ${notification.id})">
+                                        <i class="bi bi-trash"></i>
+                                    </div>
+                                `;
+                                
+                                notificationList.appendChild(notificationItem);
+                            });
+                        }
+
+                        // Update badge count
+                        updateNotificationCount();
+                    });
+            }
+
+            // Format date
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+            }
+
+            // Mark single notification as read
+            function markAsRead(id) {
+                fetch(`/notifications/${id}/mark-read`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(() => {
+                    const item = document.querySelector(`.notification-bell-item[data-id="${id}"]`);
+                    if (item) {
+                        item.classList.remove('unread');
+                    }
+                    updateNotificationCount();
+                });
+            }
+
+            // Delete single notification
+            function deleteNotification(event, id) {
+                event.stopPropagation(); // Prevent triggering markAsRead
+                if (confirm('Are you sure you want to delete this notification?')) {
+                    fetch(`/notifications/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            const item = document.querySelector(`.notification-bell-item[data-id="${id}"]`);
+                            if (item) {
+                                item.remove();
+                            }
+                            updateNotificationCount();
+                            checkEmptyState();
+                        }
+                    });
+                }
+            }
+
+            // Delete all notifications
+            function deleteAllNotifications(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                if (confirm('Are you sure you want to delete all notifications?')) {
+                    fetch('/notifications/delete-all', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            const notificationList = document.getElementById('notificationList');
+                            notificationList.innerHTML = `
+                                <div class="notification-bell-empty">
+                                    <i class="bi bi-bell-slash"></i>
+                                    <p>No notifications</p>
+                                </div>
+                            `;
+                            updateNotificationCount();
+                        }
+                    });
+                }
+            }
+
+            // Mark all notifications as read
+            function markAllAsRead(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                fetch('/notifications/mark-all-read', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(() => {
+                    document.querySelectorAll('.notification-bell-item.unread').forEach(item => {
+                        item.classList.remove('unread');
+                    });
+                    updateNotificationCount();
+                });
+            }
+
+            // Check if notifications list is empty
+            function checkEmptyState() {
+                const notificationList = document.getElementById('notificationList');
+                if (!notificationList.querySelector('.notification-bell-item')) {
+                    notificationList.innerHTML = `
+                        <div class="notification-bell-empty">
+                            <i class="bi bi-bell-slash"></i>
+                            <p>No notifications</p>
+                        </div>
+                    `;
+                }
+            }
+
+            // Update notification count in bell icon
+            function updateNotificationCount() {
+                fetch('/notifications/count')
+                    .then(response => response.json())
+                    .then(data => {
+                        const badge = document.querySelector('.notification-bell-badge');
+                        if (badge) {
+                            if (data.count > 0) {
+                                badge.style.display = 'flex';
+                                badge.textContent = data.count;
+                            } else {
+                                badge.style.display = 'none';
+                            }
+                        }
+                    });
+            }
         </script>
     </div>
 </body>

@@ -16,5 +16,8 @@
     <p th:text="#{employer.dashboard.welcome}">Welcome to the THCLT JOBS Employer Dashboard.</p>
     <script th:src="@{/js/navbarAdmin.js}"></script>
     <script th:src="@{/js/languageSwitch.js}"></script>
+
+    <!-- Add notification bell -->
+    <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
   </body>
 </html>
