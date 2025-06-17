@@ -128,13 +128,17 @@ public class EmailService {
         Account savedAccount = accountRepository.save(account);
         
         // Gửi email chào mừng sau khi tạo account thành công
-        String roleText = account.getRole().name();
+        String roleText = account.getRole() != null ? account.getRole().name().toLowerCase() : "";
         String role = switch (roleText) {
             case "student" -> "Student";
             case "employer" -> "Employer";
-            default -> "User";
+            default -> null;
         };
-        sendWelcomeEmail(savedAccount.getEmail(), savedAccount.getFullName(), role);
+        if (role != null) {
+            sendWelcomeEmail(savedAccount.getEmail(), savedAccount.getFullName(), role);
+        } else {
+            System.err.println("Không xác định được vai trò, không gửi email chào mừng!");
+        }
         
         System.out.println("Account created successfully after verification for: " + savedAccount.getEmail());
         return savedAccount;
@@ -188,10 +192,6 @@ public class EmailService {
         }
         
         body.append("📧 Email đăng nhập: ").append(email).append("\n");
-        if (!role.equals("Google")) {
-            body.append("👤 Vai trò: ").append(roleText).append("\n");
-        }
-        body.append("\n");
         
         // Thêm hướng dẫn theo role
         body.append("🚀 Bạn có thể bắt đầu:\n");

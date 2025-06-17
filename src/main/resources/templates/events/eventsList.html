@@ -824,7 +824,8 @@
                                 </div>
                                 <div class="event-actions">
                                     <a th:href="@{/Events/{id}(id=${event.eventId})}" class="btn btn-outline-primary">Xem chi tiết</a>
-                                    <a th:href="@{/Events/register/{id}(id=${event.eventId})}" class="btn btn-primary">Đăng ký tham gia</a>
+                                    <button th:if="${event.isRegistered}" class="btn btn-secondary" disabled>Đã đăng ký</button>
+                                    <button th:if="${!event.isRegistered}" th:onclick="'registerEvent(' + ${event.eventId} + ')'" class="btn btn-primary">Đăng ký tham gia</button>
                                 </div>
                             </div>
                         </div>
@@ -861,7 +862,8 @@
                                         </div>
                                         <div class="event-actions mt-2">
                                             <a th:href="@{/Events/{id}(id=${event.eventId})}" class="btn btn-outline-primary btn-sm me-2">Xem chi tiết</a>
-                                            <a th:href="@{/Events/register/{id}(id=${event.eventId})}" class="btn btn-primary btn-sm">Đăng ký tham gia</a>
+                                            <button th:if="${event.isRegistered}" class="btn btn-secondary btn-sm" disabled>Đã đăng ký</button>
+                                            <button th:if="${!event.isRegistered}" th:onclick="'registerEvent(' + ${event.eventId} + ')'" class="btn btn-primary btn-sm">Đăng ký tham gia</button>
                                         </div>
                                     </div>
                                 </div>
@@ -945,45 +947,110 @@
     
     <!-- Custom JavaScript -->
     <script>
-        // Initialize AOS
-        AOS.init({
-            duration: 800,
-            easing: 'ease-in-out',
-            once: true,
-            mirror: false
+        // Make registerEvent global
+        window.registerEvent = function(eventId) {
+            // Show modal and set event ID
+            document.getElementById('eventId').value = eventId;
+            var registrationModal = new bootstrap.Modal(document.getElementById('registrationModal'));
+            registrationModal.show();
+        };
+
+        // Initialize AOS with custom settings to prevent scroll conflicts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize AOS with reduced settings
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true,
+                mirror: false,
+                disable: 'mobile' // Disable on mobile to prevent conflicts
+            });
+
+            // Registration form handling
+            initializeRegistrationForm();
+            
+            // Initialize other UI components
+            initializeUIComponents();
         });
 
-        // Event Registration Function
-        function registerEvent(eventId) {
-            if (!confirm('Bạn có chắc chắn muốn đăng ký sự kiện này?')) {
+        // Separate registration form logic
+        function initializeRegistrationForm() {
+            const submitButton = document.getElementById('submitRegistration');
+            const registrationModal = document.getElementById('registrationModal');
+
+            if (submitButton) {
+                submitButton.addEventListener('click', handleRegistrationSubmit);
+            }
+
+            if (registrationModal) {
+                registrationModal.addEventListener('hidden.bs.modal', function () {
+                    const form = document.getElementById('registrationForm');
+                    form.reset();
+                    form.classList.remove('was-validated');
+                });
+            }
+        }
+
+        // Handle form submission
+        function handleRegistrationSubmit() {
+            const form = document.getElementById('registrationForm');
+            
+            // Check form validation
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
                 return;
             }
             
+            const eventId = document.getElementById('eventId').value;
+            const formData = {
+                fullName: document.getElementById('fullName').value,
+                phone: document.getElementById('phone').value,
+                organization: document.getElementById('organization').value,
+                notes: document.getElementById('notes').value
+            };
+            
+            const button = this;
+            const modalElement = document.getElementById('registrationModal');
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            
             // Add loading state
-            const button = event.target.closest('button');
             const originalText = button.innerHTML;
             button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang xử lý...';
             button.disabled = true;
             
-            fetch(`/events/${eventId}/register`, {
+            fetch(`/Events/${eventId}/register`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
-                body: 'notes='
+                body: JSON.stringify(formData)
             })
-            .then(response => response.text())
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`Network response was not ok (${response.status}): ${text}`);
+                    });
+                }
+                return response.text();
+            })
             .then(data => {
-                if (data.startsWith('success:')) {
-                    showToast('Thành công', data.substring(8), 'success');
-                    setTimeout(() => location.reload(), 1500);
-                } else if (data.startsWith('error:')) {
-                    showToast('Lỗi', data.substring(6), 'error');
+                try {
+                    if (data.startsWith('success:')) {
+                        modal.hide();
+                        showToast('Thành công', data.substring(8), 'success');
+                        setTimeout(() => location.reload(), 1500);
+                    } else if (data.startsWith('error:')) {
+                        showToast('Lỗi', data.substring(6), 'error');
+                    } else {
+                        showToast('Lỗi', 'Đã xảy ra lỗi không xác định', 'error');
+                    }
+                } catch (e) {
+                    showToast('Lỗi', 'Đã xảy ra lỗi khi xử lý phản hồi từ máy chủ', 'error');
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                showToast('Lỗi', 'Đã xảy ra lỗi khi đăng ký sự kiện', 'error');
+                showToast('Lỗi', 'Đã xảy ra lỗi khi đăng ký sự kiện: ' + error.message, 'error');
             })
             .finally(() => {
                 button.innerHTML = originalText;
@@ -991,55 +1058,9 @@
             });
         }
 
-        // Toast Notification Function
-        function showToast(title, message, type) {
-            const toastContainer = document.getElementById('toast-container');
-            if (!toastContainer) {
-                const container = document.createElement('div');
-                container.id = 'toast-container';
-                container.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999;';
-                document.body.appendChild(container);
-            }
-            
-            const toast = document.createElement('div');
-            toast.className = `toast show bg-${type === 'success' ? 'success' : 'danger'} text-white`;
-            toast.setAttribute('role', 'alert');
-            toast.setAttribute('aria-live', 'assertive');
-            toast.setAttribute('aria-atomic', 'true');
-            
-            toast.innerHTML = `
-                <div class="toast-header bg-${type === 'success' ? 'success' : 'danger'} text-white">
-                    <strong class="me-auto">${title}</strong>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body">
-                    ${message}
-                </div>
-            `;
-            
-            document.getElementById('toast-container').appendChild(toast);
-            
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
-        }
-
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Add loading animation for images
-        document.addEventListener('DOMContentLoaded', function() {
+        // Separate UI components initialization
+        function initializeUIComponents() {
+            // Image loading animation
             const images = document.querySelectorAll('.event-image');
             images.forEach(img => {
                 img.classList.add('loading-skeleton');
@@ -1047,7 +1068,96 @@
                     img.classList.remove('loading-skeleton');
                 });
             });
-        });
+        }
+
+        // Toast function
+        function showToast(title, message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-white bg-${type} border-0`;
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <strong>${title}</strong><br>
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            `;
+            
+            const container = document.getElementById('toast-container') || document.body;
+            container.appendChild(toast);
+            
+            const bsToast = new bootstrap.Toast(toast, {
+                autohide: true,
+                delay: 5000
+            });
+            
+            bsToast.show();
+            
+            toast.addEventListener('hidden.bs.toast', function () {
+                toast.remove();
+            });
+        }
     </script>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+
+    <!-- Registration Modal -->
+    <div class="modal fade" id="registrationModal" tabindex="-1" aria-labelledby="registrationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registrationModalLabel">Đăng ký tham gia sự kiện</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="registrationForm" class="needs-validation" novalidate>
+                        <input type="hidden" id="eventId" name="eventId">
+                        
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Họ và tên người tham gia <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="fullName" name="fullName" required
+                                   minlength="5" maxlength="100">
+                            <div class="invalid-feedback">
+                                Vui lòng nhập họ và tên (5-100 ký tự)
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Số điện thoại người tham gia <span class="text-danger">*</span></label>
+                            <input type="tel" class="form-control" id="phone" name="phone" required
+                                   pattern="[0-9]{10,11}">
+                            <div class="invalid-feedback">
+                                Vui lòng nhập số điện thoại hợp lệ (10-11 số)
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="organization" class="form-label">Trường/Công ty <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="organization" name="organization" required>
+                            <div class="invalid-feedback">
+                                Vui lòng nhập tên trường/công ty
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">Ghi chú</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3" 
+                                    placeholder="Nhập thông tin bổ sung hoặc yêu cầu đặc biệt (nếu có)"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="submitRegistration">Xác nhận đăng ký</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html> 
