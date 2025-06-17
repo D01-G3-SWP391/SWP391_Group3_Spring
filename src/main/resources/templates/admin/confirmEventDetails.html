@@ -8,96 +8,130 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
   <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
+  <link rel="stylesheet" th:href="@{/css/adminDetails.css}">
 </head>
 <body>
 <div th:replace="~{navbar/navbarAdmin :: navbarAdmin}"></div>
 
 <div class="main-content">
   <div class="container-fluid">
+    <!-- Header Section - SỬA: Giống như viewEventDetails -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2>Event Confirmation</h2>
-      <a th:href="@{/Admin/PendingEvents}" class="btn btn-secondary">
-        <i class="bi bi-arrow-left me-2"></i>Back to Pending Events
-      </a>
+      <div>
+        <h2 class="mb-1">Event Confirmation</h2>
+        <p class="text-muted mb-0">Review and confirm this career event</p>
+      </div>
+      <div class="d-flex gap-2">
+        <a th:href="@{/Admin/PendingEvents}" class="btn btn-secondary">
+          <i class="bi bi-arrow-left me-2"></i>Back to Pending Events
+        </a>
+      </div>
     </div>
 
     <!-- Event Information Card -->
-    <div class="filter-form">
-      <h5 class="mb-3">
-        <i class="bi bi-calendar-event me-2"></i>Event Information
-      </h5>
-
-      <div class="row mb-3">
-        <div class="col-md-3"><strong>Event ID:</strong></div>
-        <div class="col-md-9" th:text="${event.eventId}"></div>
+    <div class="detail-card">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="bi bi-calendar-event me-2"></i>Event Information
+        </h5>
       </div>
+      <div class="card-body">
+        <div class="info-row">
+          <span class="info-label">
+            <i class="bi bi-hash me-2"></i>Event ID
+          </span>
+          <span class="info-value" th:text="${event.eventId}"></span>
+        </div>
 
-      <div class="row mb-3">
-        <div class="col-md-3"><strong>Event Title:</strong></div>
-        <div class="col-md-9" th:text="${event.eventTitle}"></div>
-      </div>
+        <div class="info-row">
+          <span class="info-label">
+            <i class="bi bi-calendar-event me-2"></i>Event Title
+          </span>
+          <span class="info-value" th:text="${event.eventTitle}"></span>
+        </div>
 
-      <div class="row mb-3">
-        <div class="col-md-3"><strong>Employer:</strong></div>
-        <div class="col-md-9" th:text="${event.employer.companyName}"></div>
-      </div>
+        <div class="info-row">
+          <span class="info-label">
+            <i class="bi bi-building me-2"></i>Employer
+          </span>
+          <span class="info-value" th:text="${event.employer.companyName}"></span>
+        </div>
 
-      <div class="row mb-3">
-        <div class="col-md-3"><strong>Location:</strong></div>
-        <div class="col-md-9" th:text="${event.eventLocation}"></div>
-      </div>
+        <div class="info-row">
+          <span class="info-label">
+            <i class="bi bi-geo-alt me-2"></i>Location
+          </span>
+          <span class="info-value" th:text="${event.eventLocation}"></span>
+        </div>
 
-      <div class="row mb-3">
-        <div class="col-md-3"><strong>Event Date:</strong></div>
-        <div class="col-md-9" th:text="${#temporals.format(event.eventDate, 'dd/MM/yyyy HH:mm')}"></div>
-      </div>
+        <div class="info-row">
+          <span class="info-label">
+            <i class="bi bi-calendar me-2"></i>Event Date
+          </span>
+          <span class="info-value" th:text="${#temporals.format(event.eventDate, 'dd/MM/yyyy HH:mm')}"></span>
+        </div>
 
-      <div class="row mb-3">
-        <div class="col-md-3"><strong>Max Participants:</strong></div>
-        <div class="col-md-9" th:text="${event.maxParticipants != null ? event.maxParticipants : 'Unlimited'}"></div>
-      </div>
+        <div class="info-row">
+          <span class="info-label">
+            <i class="bi bi-people me-2"></i>Max Participants
+          </span>
+          <span class="info-value" th:text="${event.maxParticipants != null ? event.maxParticipants : 'Unlimited'}"></span>
+        </div>
 
-      <div class="row mb-3">
-        <div class="col-md-3"><strong>Contact Email:</strong></div>
-        <div class="col-md-9" th:text="${event.contactEmail != null ? event.contactEmail : 'N/A'}"></div>
-      </div>
+        <div class="info-row">
+          <span class="info-label">
+            <i class="bi bi-envelope me-2"></i>Contact Email
+          </span>
+          <span class="info-value" th:text="${event.contactEmail != null ? event.contactEmail : 'N/A'}"></span>
+        </div>
 
-      <div class="row mb-3">
-        <div class="col-md-3"><strong>Status:</strong></div>
-        <div class="col-md-9">
-          <span class="status-pending" th:text="${event.approvalStatus.name()}"></span>
+        <div class="info-row">
+          <span class="info-label">
+            <i class="bi bi-shield-check me-2"></i>Status
+          </span>
+          <span class="info-value">
+            <span class="status-pending" th:text="${event.approvalStatus.name()}"></span>
+          </span>
         </div>
       </div>
     </div>
 
     <!-- Event Description Card -->
-    <div class="filter-form">
-      <h5 class="mb-3">
-        <i class="bi bi-file-text me-2"></i>Event Description
-      </h5>
-      <div class="mb-3">
-        <p th:text="${event.eventDescription}"></p>
+    <div class="detail-card">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="bi bi-file-text me-2"></i>Event Description
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="event-description">
+          <p th:text="${event.eventDescription}"></p>
+        </div>
       </div>
     </div>
 
     <!-- Action Buttons -->
-    <div class="filter-form">
-      <h5 class="mb-3">
-        <i class="bi bi-gear me-2"></i>Confirmation Actions
-      </h5>
-      <div class="d-flex gap-3">
-        <form th:action="@{/Admin/ConfirmEvent/{id}(id=${event.eventId})}"
-              method="post">
-          <button type="submit" class="btn btn-success btn-lg"
-                  onclick="return confirm('Are you sure you want to confirm and approve this event?')">
-            <i class="bi bi-check-circle me-2"></i>Confirm & Approve Event
-          </button>
-        </form>
+    <div class="detail-card">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="bi bi-gear me-2"></i>Confirmation Actions
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="d-flex gap-3">
+          <form th:action="@{/Admin/ConfirmEvent/{id}(id=${event.eventId})}"
+                method="post">
+            <button type="submit" class="btn btn-success btn-lg"
+                    onclick="return confirm('Are you sure you want to confirm and approve this event?')">
+              <i class="bi bi-check-circle me-2"></i>Confirm & Approve Event
+            </button>
+          </form>
 
-        <button type="button" class="btn btn-danger btn-lg"
-                data-bs-toggle="modal" data-bs-target="#rejectModal">
-          <i class="bi bi-x-circle me-2"></i>Reject Event
-        </button>
+          <button type="button" class="btn btn-danger btn-lg"
+                  data-bs-toggle="modal" data-bs-target="#rejectModal">
+            <i class="bi bi-x-circle me-2"></i>Reject Event
+          </button>
+        </div>
       </div>
     </div>
   </div>

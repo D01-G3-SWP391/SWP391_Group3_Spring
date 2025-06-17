@@ -246,20 +246,15 @@ public class AdminEventController {
     // 4. DELETE CAREER EVENT
     @PostMapping("/DeleteEvent/{id}")
     public String deleteEvent(@PathVariable("id") Integer eventId,
-                              @RequestParam(required = false) String reason,
                               RedirectAttributes redirectAttributes) {
         try {
-            if (!adminEventService.canDeleteEvent(eventId)) {
-                redirectAttributes.addFlashAttribute("error", "This event cannot be deleted at this time.");
-                return "redirect:/Admin/Events";
-            }
-
             adminEventService.deleteEvent(eventId);
-            redirectAttributes.addFlashAttribute("success", "Event deleted successfully");
+            redirectAttributes.addFlashAttribute("success", "Event đã được xóa thành công!");
         } catch (Exception e) {
             logger.error("Error deleting event: ", e);
-            redirectAttributes.addFlashAttribute("error", "Error deleting event: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Lỗi khi xóa event: " + e.getMessage());
         }
         return "redirect:/Admin/Events";
     }
+
 }
