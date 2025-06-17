@@ -214,6 +214,45 @@ h2::after {
 }
 
 /* Action buttons */
+/* Action Buttons - Căn hàng ngang */
+.action-btns {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    min-width: 260px;
+    padding: 8px 0;
+}
+
+.action-btn {
+    border-radius: 8px !important;
+    padding: 8px 14px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+    border: none !important;
+    min-width: 75px;
+    height: 36px;
+    text-align: center;
+    white-space: nowrap;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none !important;
+    flex-shrink: 0; /* Ngăn button bị co lại */
+}
+
+.action-btn i {
+    margin-right: 5px;
+    font-size: 11px;
+}
+
+.action-btn .btn-text {
+    font-size: 12px;
+    font-weight: 600;
+}
 .action-btns {
     display: flex;
     gap: 8px;
