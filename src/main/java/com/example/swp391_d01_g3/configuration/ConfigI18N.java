@@ -9,6 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
+
 import java.time.Duration;
 import java.util.Locale;
 
@@ -42,4 +43,8 @@ public class ConfigI18N implements WebMvcConfigurer {
                 .addResourceLocations("file:uploads/")
                 .setCachePeriod(3600); // Cache trong 1 tiếng
     }
+
+
+
+
 } 

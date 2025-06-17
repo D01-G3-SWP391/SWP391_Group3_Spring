@@ -101,5 +101,8 @@ public interface IJobPostRepository extends JpaRepository<JobPost, Integer> {
                                         Pageable pageable);
 //    phan trang jobPost
     Page<JobPost> findByEmployerOrderByCreatedAtDesc(Employer employer, Pageable pageable);
+//    pendding
+    long countByEmployer(Employer employer);
+    long countByEmployerAndApprovalStatus(Employer employer, JobPost.ApprovalStatus approvalStatus);
 
 }

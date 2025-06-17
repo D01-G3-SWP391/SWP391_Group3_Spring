@@ -10,11 +10,9 @@
 <body>
 <div th:replace="~{navbar/navbarEmployee :: navbarAdmin}"></div>
 
-<!-- Main content area -->
 <div class="main-content">
     <h1>Các Công Việc Của Bạn</h1>
 
-    <!-- Statistics cards -->
     <div class="stats-container">
         <div class="stat-card">
             <div class="stat-icon">
@@ -27,27 +25,16 @@
         </div>
         <div class="stat-card">
             <div class="stat-icon">
-                <i class="bi bi-check-circle-fill"></i>
-            </div>
-            <div class="stat-info">
-                <h3>0</h3>
-                <p>Đã phê duyệt</p>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">
                 <i class="bi bi-clock-fill"></i>
             </div>
             <div class="stat-info">
-                <h3>0</h3>
+                <h3 th:text="${pendingJobs != null ? pendingJobs : 0}">0</h3>
                 <p>Chờ phê duyệt</p>
             </div>
         </div>
     </div>
 
-    <!-- Table container -->
     <div class="table-container">
-        <!-- Check if there are job posts -->
         <div th:if="${jobPostPage == null or jobPostPage.content.isEmpty()}" class="empty-state">
             <i class="bi bi-briefcase"></i>
             <h3>Chưa có công việc nào</h3>
@@ -58,7 +45,6 @@
             </a>
         </div>
 
-        <!-- Table with job posts -->
         <table th:if="${jobPostPage != null and !jobPostPage.content.isEmpty()}">
             <thead>
             <tr>
@@ -84,7 +70,7 @@
                         <span class="job-type-badge" th:text="${jobPost.jobType}"></span>
                     </td>
                     <td>
-                        <div class="job-description" th:text="${jobPost.jobRequirements}"></div>
+                        <div class="job-description" th:utext="${jobPost.jobRequirements}"></div>
                     </td>
                     <td>
                         <span class="status-badge" th:text="${jobPost.approvalStatus}"></span>
@@ -96,14 +82,12 @@
                     </td>
                     <td>
                         <div class="action-buttons">
-                            <!-- Edit Button -->
                             <a th:href="@{/Employer/EditJobPost/{jobPostId}(jobPostId=${jobPost.jobPostId})}"
                                class="btn btn-primary">
                                 <i class="bi bi-pencil-square"></i>
                                 Chỉnh sửa
                             </a>
 
-                            <!-- Delete Button -->
                             <form th:action="@{/Employer/DeleteJobPost/{jobPostId}(jobPostId=${jobPost.jobPostId})}"
                                   method="post"
                                   class="delete-form"
@@ -121,12 +105,10 @@
         </table>
     </div>
 
-    <!-- Add new job button (floating action button) -->
     <a th:href="@{/Employer/CreateJobPost}" class="fab">
         <i class="bi bi-plus"></i>
     </a>
 
-    <!-- Pagination ở vùng trống dưới cùng -->
     <div th:if="${jobPostPage != null and jobPostPage.totalPages > 1}" class="bottom-pagination">
         <div class="pagination-wrapper">
             <!-- Previous button -->
@@ -141,7 +123,6 @@
                 <span>Trang trước</span>
             </span>
 
-            <!-- Page numbers -->
             <div class="page-numbers">
                 <th:block th:each="pageNum : ${#numbers.sequence(0, jobPostPage.totalPages - 1)}">
                     <a th:if="${pageNum >= jobPostPage.number - 2 and pageNum <= jobPostPage.number + 2 and pageNum != jobPostPage.number}"
@@ -154,7 +135,6 @@
                 </th:block>
             </div>
 
-            <!-- Next button -->
             <a th:if="${jobPostPage.hasNext()}"
                th:href="@{/Employer/JobPosts(page=${jobPostPage.number + 1})}"
                class="pagination-btn next-btn">

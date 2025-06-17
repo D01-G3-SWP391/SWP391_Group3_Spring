@@ -1,5 +1,6 @@
 package com.example.swp391_d01_g3.controller;
 
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -27,13 +28,13 @@ public class FileController {
             String workingDir = System.getProperty("user.dir");
             Path cvDir = Paths.get(workingDir, "uploads", "cv");
             File dir = cvDir.toFile();
-            
+
             StringBuilder result = new StringBuilder();
             result.append("Working Directory: ").append(workingDir).append("<br>");
             result.append("CV Directory: ").append(cvDir.toAbsolutePath()).append("<br>");
             result.append("Directory exists: ").append(dir.exists()).append("<br>");
             result.append("Directory readable: ").append(dir.canRead()).append("<br>");
-            
+
             if (dir.exists() && dir.isDirectory()) {
                 result.append("Files in directory:<br>");
                 File[] files = dir.listFiles();
@@ -48,34 +49,36 @@ public class FileController {
                     result.append("No files found<br>");
                 }
             }
-            
+
             return result.toString();
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
     }
 
-    @GetMapping("/cv/{filename:.+}")
+
+
+        @GetMapping("/cv/{filename:.+}")
     public ResponseEntity<Resource> downloadCVFile(@PathVariable String filename) {
         try {
             System.out.println("🔍 Attempting to serve file: " + filename);
-            
+
             // Sử dụng absolute path từ working directory
             String workingDir = System.getProperty("user.dir");
             Path filePath = Paths.get(workingDir, "uploads", "cv", filename).normalize();
             System.out.println("📁 Full file path: " + filePath.toAbsolutePath());
             System.out.println("📁 Working directory: " + workingDir);
-            
+
             File file = filePath.toFile();
             System.out.println("📊 File exists: " + file.exists());
             System.out.println("📖 File can read: " + file.canRead());
             System.out.println("📏 File size: " + file.length());
-            
+
             if (!file.exists()) {
                 System.out.println("❌ File not found");
                 return ResponseEntity.notFound().build();
             }
-            
+
             Resource resource = new UrlResource(filePath.toUri());
             System.out.println("🔗 Resource URI: " + resource.getURI());
 
@@ -96,7 +99,7 @@ public class FileController {
                         contentType = "application/octet-stream";
                     }
                 }
-                
+
                 System.out.println("🎯 Content type: " + contentType);
 
                 return ResponseEntity.ok()
@@ -113,4 +116,6 @@ public class FileController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+
 } 

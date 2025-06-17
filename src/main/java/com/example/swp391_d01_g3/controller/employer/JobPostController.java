@@ -90,20 +90,26 @@ public String createJobPost(
                 Model model,
                 Authentication authentication) {
 
-            String employerEmail = authentication.getName(); // Lấy email của employer đang đăng nhập
+            String employerEmail = authentication.getName();
             Employer employer = iEmployerService.findByEmail(employerEmail);
 
-            // Tạo Pageable object với sắp xếp theo ngày tạo giảm dần
             Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-
-            // **QUAN TRỌNG**: Gọi method có phân trang với email
             Page<JobPost> jobPostPage = iJobpostService.findJobPostsByEmployerEmail(employerEmail, pageable);
+
+            long totalJobs = iJobpostService.countJobPostsByEmployerEmail(employerEmail);
+
+            long pendingJobs = iJobpostService.countJobPostsByEmployerEmailAndStatus(employerEmail, "PENDING");
+
 
             model.addAttribute("jobPostPage", jobPostPage);
             model.addAttribute("employerEmail", employerEmail);
+            model.addAttribute("totalJobs", totalJobs);
+            model.addAttribute("pendingJobs", pendingJobs);
 
             return "employee/viewJobPost";
         }
+
+
 
 
     @GetMapping("/EditJobPost/{jobPostId}")
