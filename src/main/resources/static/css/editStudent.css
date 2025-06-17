@@ -2,12 +2,12 @@
 
 /* General body styling to match navbar and profile theme */
 body {
-    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
-    background: linear-gradient(135deg, #f0f4ff 0%, #e6e9ff 100%);
-    margin: 0;
-    padding: 20px;
-    margin-left: 250px; /* Match navbar's default expanded width */
-    transition: margin-left 0.3s ease;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #f8fafc;
+    width: 100% !important;
+    max-width: none !important;
+    overflow-x: hidden !important;
 }
 
 /* Adjust body margin when navbar is collapsed */
@@ -17,9 +17,10 @@ body.collapsed {
 
 /* Container for the edit profile form */
 .profile-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+    max-width: 1400px !important;
+    width: 100% !important;
+    margin: 0px auto !important;
+    min-height: 100vh;
 }
 
 /* Edit profile card styling */
@@ -159,4 +160,771 @@ body.collapsed {
     .form-buttons {
         justify-content: center;
     }
+}
+
+.avatar-group {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.avatar-preview {
+    width: 150px;
+    height: 150px;
+    margin: 1rem auto;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#avatarFile {
+    margin: 1rem auto;
+    max-width: 300px;
+}
+
+/* Main content styles */
+.main-content {
+    margin-top: 0 !important;
+    padding-top: 20px !important;
+    background: #f8fafc;
+    margin-left: 250px !important;
+    padding-left: 30px !important;
+    padding-right: 30px !important;
+    width: calc(100% - 250px) !important;
+    max-width: none !important;
+}
+
+.edit-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.edit-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+}
+
+.edit-title {
+    color: #2c3e50;
+    font-size: 24px;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e9ecef;
+}
+
+/* Section card styles */
+.section-card {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.section-title {
+    font-size: 18px;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-title i {
+    color: #3498db;
+}
+
+/* Form styles */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    transition: border-color 0.2s;
+}
+
+.form-control:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+/* Avatar upload styles */
+.avatar-upload {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+.avatar-preview {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #e9ecef;
+}
+
+.avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.upload-controls {
+    flex: 1;
+}
+
+/* Button styles */
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    justify-content: flex-end;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    border-color: #3498db;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+}
+
+.btn-secondary {
+    background-color: #95a5a6;
+    border-color: #95a5a6;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #7f8c8d;
+    border-color: #7f8c8d;
+}
+
+/* Alert styles */
+.alert {
+    margin-bottom: 1.5rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* CKEditor styles */
+.ck-editor__editable {
+    min-height: 200px;
+}
+
+.ck.ck-editor {
+    width: 100%;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .avatar-upload {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .upload-controls {
+        width: 100%;
+        text-align: center;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+
+/* Main layout */
+.main-content {
+    padding: 2rem;
+    margin-top: 60px;
+    background-color: #f8f9fa;
+    min-height: calc(100vh - 60px);
+}
+
+.profile-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Page header */
+.page-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.page-title {
+    font-size: 1.75rem;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.page-subtitle {
+    color: #7f8c8d;
+    font-size: 1rem;
+}
+
+/* Form layout */
+.edit-form {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+}
+
+.main-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+/* Section styling */
+.info-section {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.section-title {
+    font-size: 1.2rem;
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-title i {
+    color: #3498db;
+}
+
+/* Logo/Avatar upload section */
+.logo-section {
+    margin-bottom: 2rem;
+}
+
+.logo-upload-container {
+    text-align: center;
+}
+
+.current-logo {
+    margin-bottom: 1.5rem;
+}
+
+.logo-preview-current {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #e9ecef;
+    margin-bottom: 0.5rem;
+}
+
+.file-input-container {
+    margin-bottom: 1rem;
+}
+
+.file-input-help {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: #7f8c8d;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.new-logo-preview {
+    margin-top: 1rem;
+    display: none;
+}
+
+.logo-preview-new {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #2ecc71;
+    margin-bottom: 0.5rem;
+}
+
+/* Form controls */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    outline: none;
+}
+
+textarea.form-control {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-text {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+/* CKEditor customization */
+.ck-editor__editable {
+    min-height: 200px !important;
+}
+
+.ck.ck-editor__main > .ck-editor__editable {
+    background-color: #fff !important;
+}
+
+.ck.ck-toolbar {
+    border-radius: 4px 4px 0 0 !important;
+}
+
+.ck.ck-editor__main > .ck-editor__editable {
+    border-radius: 0 0 4px 4px !important;
+}
+
+/* Action buttons */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.5;
+    text-align: center;
+    border-radius: 4px;
+    transition: all 0.15s ease-in-out;
+}
+
+.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #3498db;
+    border-color: #3498db;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+}
+
+.btn-secondary {
+    color: #fff;
+    background-color: #95a5a6;
+    border-color: #95a5a6;
+}
+
+.btn-secondary:hover {
+    background-color: #7f8c8d;
+    border-color: #7f8c8d;
+}
+
+.btn-outline-secondary {
+    color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+/* Alert styles */
+.alert {
+    position: relative;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+/* Responsive design */
+@media (max-width: 992px) {
+    .main-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        padding: 1rem;
+    }
+
+    .profile-container {
+        padding: 10px;
+    }
+
+    .edit-form {
+        padding: 1.5rem;
+    }
+
+    .page-title {
+        font-size: 1.5rem;
+    }
+}
+
+/* Animations */
+.form-control, .btn {
+    transition: all 0.2s ease-in-out;
+}
+
+.form-control:focus, .btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Loading State */
+.btn.loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.btn.loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* CKEditor 5 custom styles */
+.ck.ck-editor {
+    width: 100%;
+    border: none;
+}
+
+.ck.ck-toolbar {
+    border: 2px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+    border-radius: 12px 12px 0 0;
+    background: #f8f9fa;
+    padding: 12px;
+    box-shadow: none;
+}
+
+.ck.ck-editor__main {
+    border: 2px solid #e5e7eb;
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    background: white;
+    overflow: hidden;
+}
+
+.ck.ck-editor__editable_inline {
+    min-height: 250px;
+    padding: 25px;
+    border: none;
+    border-radius: 0 0 12px 12px;
+    font-family: "Inter", "Segoe UI", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #374151;
+    background: white;
+    box-shadow: none;
+}
+
+.ck.ck-editor__editable_inline:focus {
+    border: none;
+    box-shadow: none;
+    outline: none;
+}
+
+.ck.ck-editor:focus-within .ck-toolbar {
+    border-color: #007bff;
+}
+
+.ck.ck-editor:focus-within .ck-editor__main {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+/* CKEditor toolbar buttons */
+.ck.ck-button {
+    border-radius: 6px;
+    padding: 6px 8px;
+    transition: all 0.2s ease;
+}
+
+.ck.ck-button:hover {
+    background: #e9ecef;
+}
+
+.ck.ck-button.ck-on {
+    background: #007bff;
+    color: white;
+}
+
+/* CKEditor dropdown */
+.ck.ck-dropdown__button {
+    border-radius: 6px;
+    padding: 6px 12px;
+}
+
+/* CKEditor content styling */
+.ck-content p {
+    margin: 0 0 12px 0;
+}
+
+.ck-content h2,
+.ck-content h3 {
+    margin: 16px 0 8px 0;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.ck-content ul,
+.ck-content ol {
+    margin: 8px 0;
+    padding-left: 24px;
+}
+
+.ck-content blockquote {
+    border-left: 4px solid #007bff;
+    margin: 16px 0;
+    padding-left: 16px;
+    font-style: italic;
+    color: #6b7280;
+}
+
+/* Page Header Styles */
+.page-header {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    text-align: center;
+}
+
+.page-title {
+    color: #1f2937;
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.page-subtitle {
+    color: #6b7280;
+    font-size: 1.1rem;
+    margin-bottom: 0;
+}
+
+/* Main two column layout */
+.main-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: none;
+    align-items: start;
+}
+
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.right-column {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.right-column .info-section {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 600px; /* Đảm bảo height tối thiểu */
+}
+
+.right-column .info-section .form-group:last-child {
+    flex: 1; /* CKEditor section sẽ expand */
+    display: flex;
+    flex-direction: column;
+}
+
+.right-column .info-section .form-group:last-child .ck.ck-editor {
+    flex: 1;
+}
+
+.edit-form {
+    padding: 0;
+    background: transparent;
+}
+
+.info-section {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    height: fit-content;
+}
+
+.info-section:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo section styling */
+.logo-section .logo-upload-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    min-height: 250px;
+}
+
+.logo-section .current-logo,
+.logo-section .new-logo-preview {
+    margin-bottom: 0;
+}
+
+.logo-section .file-input-container {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.section-title {
+    color: #1a1a2e;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid #667eea;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-title i {
+    color: #667eea;
+    font-size: 1.5rem;
 }
