@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
@@ -24,6 +25,7 @@ import java.util.List;
 
 // Import the DTO
 import com.example.swp391_d01_g3.dto.StudentProfileDTO;
+import com.example.swp391_d01_g3.service.cloudinary.CloudinaryService;
 
 @Controller
 @RequestMapping("/Student")
@@ -45,14 +47,15 @@ public class StudentDashboard {
     private ChangePassword changePassword;
 
     @Autowired
-    private IJobApplicationService  iJobApplicationService;
+    private IJobApplicationService iJobApplicationService;
+
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     @GetMapping("")
-    public String showStudentDashboard(){
+    public String showStudentDashboard() {
         return "student/dashboardStudent";
     }
-
-    // Chau them
 
     @GetMapping("/applications")
     public String viewApplications(Model model, Principal principal){
@@ -89,7 +92,7 @@ public class StudentDashboard {
         return "student/profileStudent";
     }
     @GetMapping("/EditProfile")
-    public String showEditForm(Model model, Principal principal){
+    public String showEditForm(Model model, Principal principal) {
         if (principal != null) {
             String email = principal.getName();
             Account studentAccount = IAccountService.findByEmail(email);
@@ -108,8 +111,10 @@ public class StudentDashboard {
                 studentProfileDTO.setPreferredJobAddress(studentDetails.getPreferredJobAddress());
                 studentProfileDTO.setProfileDescription(studentDetails.getProfileDescription());
                 studentProfileDTO.setExperience(studentDetails.getExperience());
+                studentProfileDTO.setAvatarUrl(studentDetails.getAvatarUrl());
             }
             model.addAttribute("studentProfileDTO", studentProfileDTO);
+            model.addAttribute("email",studentAccount.getEmail());
         }
         return "student/editStudentProfile";
     }
@@ -118,6 +123,7 @@ public class StudentDashboard {
     public String saveStudentProfile(
             @Valid @ModelAttribute("studentProfileDTO") StudentProfileDTO studentProfileDTO,
             BindingResult bindingResult,
+            @RequestParam(value = "avatarFile", required = false) MultipartFile avatarFile,
             Principal principal,
             RedirectAttributes redirectAttributes) {
 
@@ -127,11 +133,51 @@ public class StudentDashboard {
         if (principal == null) {
             return "redirect:/Login";
         }
+
         String email = principal.getName();
         Account currentAccount = IAccountService.findByEmail(email);
         Student currentStudent = studentService.findByAccountUserId(currentAccount.getUserId());
-        BeanUtils.copyProperties(studentProfileDTO, currentAccount, "address", "university", "preferredJobAddress", "profileDescription", "experience");
-        BeanUtils.copyProperties(studentProfileDTO, currentStudent, "fullName", "phone");
+
+        // Handle avatar upload if a new file is provided
+        if (avatarFile != null && !avatarFile.isEmpty()) {
+            try {
+                // Delete old avatar from Cloudinary if it exists
+                String oldAvatarUrl = currentStudent.getAvatarUrl();
+                if (oldAvatarUrl != null && oldAvatarUrl.contains("cloudinary.com")) {
+                    String oldPublicId = cloudinaryService.extractPublicId(oldAvatarUrl);
+                    if (oldPublicId != null) {
+                        try {
+                            cloudinaryService.deleteImage(oldPublicId);
+                        } catch (Exception e) {
+                            // Log but continue with upload
+                        }
+                    }
+                }
+                
+                // Upload new avatar to Cloudinary
+                String avatarUrl = cloudinaryService.uploadImage(avatarFile, "student-avatars");
+                currentStudent.setAvatarUrl(avatarUrl);
+                studentProfileDTO.setAvatarUrl(avatarUrl);
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Lỗi khi upload ảnh: " + e.getMessage());
+                return "student/editStudentProfile";
+            }
+        } else {
+            // Keep existing avatar if no new file is uploaded
+            currentStudent.setAvatarUrl(studentProfileDTO.getAvatarUrl());
+        }
+
+        // Update Account information
+        currentAccount.setFullName(studentProfileDTO.getFullName());
+        currentAccount.setPhone(studentProfileDTO.getPhone());
+
+        // Update Student information
+        currentStudent.setAddress(studentProfileDTO.getAddress());
+        currentStudent.setUniversity(studentProfileDTO.getUniversity());
+        currentStudent.setPreferredJobAddress(studentProfileDTO.getPreferredJobAddress());
+        currentStudent.setProfileDescription(studentProfileDTO.getProfileDescription());
+        currentStudent.setExperience(studentProfileDTO.getExperience());
+
         try {
             IAccountService.save(currentAccount);
             studentService.save(currentStudent);

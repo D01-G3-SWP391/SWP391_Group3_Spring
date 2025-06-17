@@ -1,6 +1,7 @@
 package com.example.swp391_d01_g3.controller.event;
 
 import com.example.swp391_d01_g3.dto.EventRegistrationDTO;
+import com.example.swp391_d01_g3.dto.EventDTO;
 import com.example.swp391_d01_g3.model.Account;
 import com.example.swp391_d01_g3.model.Event;
 import com.example.swp391_d01_g3.model.EventForm;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/Events")
@@ -48,39 +50,51 @@ public class EventController {
             @RequestParam(value = "size", defaultValue = "6") int size,
             @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "status", required = false) String status,
-            Model model) {
-        
+            Model model,
+            Authentication authentication) {
         try {
-            // Tạo Pageable object với sắp xếp theo ngày tạo
             Pageable pageable = PageRequest.of(page, size, Sort.by("eventDate").ascending());
-            
-            // Lấy dữ liệu events
             Page<Event> eventsPage;
-            
             if (search != null && !search.trim().isEmpty()) {
-                // Tìm kiếm theo title hoặc description
                 eventsPage = eventService.searchEvents(search.trim(), pageable);
                 model.addAttribute("search", search);
             } else if (status != null && !status.trim().isEmpty()) {
-                // Lọc theo status
                 Event.ApprovalStatus approvalStatus = Event.ApprovalStatus.valueOf(status.toUpperCase());
                 eventsPage = eventService.findByApprovalStatus(approvalStatus, pageable);
                 model.addAttribute("selectedStatus", status);
             } else {
-                // Chỉ hiển thị events đã được approve
                 eventsPage = eventService.findByApprovalStatus(Event.ApprovalStatus.APPROVED, pageable);
             }
-            
-            // Lấy upcoming events cho sidebar
+            List<Event> events = eventsPage.getContent();
+            Integer studentId = null;
+            if (authentication != null && authentication.isAuthenticated()) {
+                Student student = studentService.findByEmail(authentication.getName());
+                if (student != null) studentId = student.getStudentId();
+            }
+            // Lấy tất cả eventId user đã đăng ký (tối ưu, tránh gọi DB nhiều lần)
+            List<EventDTO> eventDTOs = new java.util.ArrayList<>();
+            if (studentId != null) {
+                List<EventForm> registeredForms = eventService.getEventFormsByStudentId(studentId);
+                Set<Integer> registeredEventIds = new java.util.HashSet<>();
+                for (EventForm ef : registeredForms) {
+                    registeredEventIds.add(ef.getEvent().getEventId());
+                }
+                for (Event event : events) {
+                    boolean registered = registeredEventIds.contains(event.getEventId());
+                    eventDTOs.add(new EventDTO(event, registered));
+                }
+            } else {
+                for (Event event : events) {
+                    eventDTOs.add(new EventDTO(event, false));
+                }
+            }
+            // Upcoming events, statistics giữ nguyên
             List<Event> upcomingEvents = eventService.getUpcomingEvents(5);
-            
-            // Lấy event statistics cho categories
             long totalEvents = eventService.countApprovedEvents();
             long itEvents = eventService.countEventsByJobField("IT");
             long marketingEvents = eventService.countEventsByJobField("Marketing");
             long bankingEvents = eventService.countEventsByJobField("Banking");
-            
-            // Add data to model
+            model.addAttribute("eventDTOs", eventDTOs);
             model.addAttribute("eventsPage", eventsPage);
             model.addAttribute("upcomingEvents", upcomingEvents);
             model.addAttribute("totalEvents", totalEvents);
@@ -89,9 +103,7 @@ public class EventController {
             model.addAttribute("bankingEvents", bankingEvents);
             model.addAttribute("currentPage", page);
             model.addAttribute("totalPages", eventsPage.getTotalPages());
-            
             return "events/eventsList";
-            
         } catch (Exception e) {
             model.addAttribute("error", "Đã xảy ra lỗi khi tải danh sách sự kiện");
             return "events/eventsList";

@@ -48,14 +48,14 @@
 
     <!-- Results Info -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-            <span class="text-muted">
-                Showing <strong th:text="${currentPage * 10 + 1}"></strong> to
-                <strong th:text="${currentPage * 10 + #lists.size(jobPostList)}"></strong>
-                of <strong th:text="${totalItems}"></strong> job posts
-            </span>
+      <span class="text-muted">
+        Showing <strong th:text="${currentPage * 10 + 1}"></strong> to
+        <strong th:text="${currentPage * 10 + #lists.size(jobPostList)}"></strong>
+        of <strong th:text="${totalItems}"></strong> job posts
+      </span>
       <span class="text-muted" th:if="${totalPages > 1}">
-                Page <strong th:text="${currentPage + 1}"></strong> of <strong th:text="${totalPages}"></strong>
-            </span>
+        Page <strong th:text="${currentPage + 1}"></strong> of <strong th:text="${totalPages}"></strong>
+      </span>
     </div>
 
     <!-- Job Posts Table -->
@@ -63,6 +63,7 @@
       <table class="table table-hover admin-table">
         <thead>
         <tr>
+          <th><i class="bi bi-briefcase me-2"></i>Stt</th>
           <th><i class="bi bi-briefcase me-2"></i>Job Title</th>
           <th><i class="bi bi-building me-2"></i>Company</th>
           <th><i class="bi bi-geo-alt me-2"></i>Location</th>
@@ -74,7 +75,8 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="jobPost : ${jobPostList}">
+        <tr th:each="jobPost,l : ${jobPostList}">
+          <td th:text="${l.count}"></td>
           <td>
             <strong th:text="${jobPost.jobTitle}"></strong>
           </td>
@@ -85,9 +87,9 @@
             <span class="badge bg-info" th:text="${jobPost.jobType}"></span>
           </td>
           <td>
-                        <span th:class="${jobPost.approvalStatus.name() == 'APPROVED' ? 'status-active' :
-                                        (jobPost.approvalStatus.name() == 'REJECTED' ? 'status-banned' : 'status-pending')}"
-                              th:text="${jobPost.approvalStatus.name()}"></span>
+            <span th:class="${jobPost.approvalStatus.name() == 'APPROVED' ? 'status-active' :
+                            (jobPost.approvalStatus.name() == 'REJECTED' ? 'status-banned' : 'status-pending')}"
+                  th:text="${jobPost.approvalStatus.name()}"></span>
           </td>
           <td th:text="${#temporals.format(jobPost.createdAt, 'dd/MM/yyyy')}"></td>
           <td>
@@ -96,6 +98,46 @@
                  class="btn btn-sm btn-primary">
                 <i class="bi bi-eye"></i> View
               </a>
+
+              <!-- THÊM: Status Change Dropdown -->
+              <div class="dropdown" style="display: inline;">
+                <button class="btn btn-sm btn-warning dropdown-toggle" type="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-arrow-repeat"></i> Change Status
+                </button>
+                <ul class="dropdown-menu">
+                  <li th:if="${jobPost.approvalStatus.name() != 'APPROVED'}">
+                    <form th:action="@{/Admin/ChangeJobPostStatus/{id}(id=${jobPost.jobPostId})}"
+                          method="post" style="margin: 0;">
+                      <input type="hidden" name="status" value="APPROVED">
+                      <button type="submit" class="dropdown-item text-success"
+                              onclick="return confirm('Are you sure you want to approve this job post?')">
+                        <i class="bi bi-check-circle me-2"></i>Approve
+                      </button>
+                    </form>
+                  </li>
+                  <li th:if="${jobPost.approvalStatus.name() != 'REJECTED'}">
+                    <form th:action="@{/Admin/ChangeJobPostStatus/{id}(id=${jobPost.jobPostId})}"
+                          method="post" style="margin: 0;">
+                      <input type="hidden" name="status" value="REJECTED">
+                      <button type="submit" class="dropdown-item text-danger"
+                              onclick="return confirm('Are you sure you want to reject this job post?')">
+                        <i class="bi bi-x-circle me-2"></i>Reject
+                      </button>
+                    </form>
+                  </li>
+                  <li th:if="${jobPost.approvalStatus.name() != 'PENDING'}">
+                    <form th:action="@{/Admin/ChangeJobPostStatus/{id}(id=${jobPost.jobPostId})}"
+                          method="post" style="margin: 0;">
+                      <input type="hidden" name="status" value="PENDING">
+                      <button type="submit" class="dropdown-item text-warning"
+                              onclick="return confirm('Are you sure you want to set this job post to pending?')">
+                        <i class="bi bi-clock me-2"></i>Set Pending
+                      </button>
+                    </form>
+                  </li>
+                </ul>
+              </div>
 
               <!-- Delete button with confirmation -->
               <button type="button" class="btn btn-sm btn-danger"

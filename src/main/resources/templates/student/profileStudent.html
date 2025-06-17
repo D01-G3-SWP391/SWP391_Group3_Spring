@@ -13,7 +13,8 @@
 <div class="profile-container">
     <!-- Profile Card -->
     <div class="profile-card">
-        <img src="/images/student.jpeg" alt="Avatar" class="avatar">
+        <img th:src="${studentDetails != null and studentDetails.avatarUrl != null and studentDetails.avatarUrl != '' ? studentDetails.avatarUrl : '/images/student.jpeg'}" 
+             alt="Avatar" class="avatar">
         <div class="profile-info">
             <h2 class="profile-name" th:text="${account.fullName}"></h2>
             <p th:text="${account.role}" class="profile-role"></p>
@@ -48,13 +49,13 @@
     <!-- Giới thiệu bản thân Section -->
     <div class="section intro-section">
         <h3 class="section-title" th:text="#{profile.introduction} + ': '">Introduce: </h3>
-        <p th:text="${studentDetails != null and studentDetails.profileDescription != null and studentDetails.profileDescription != ''} ? ${studentDetails.profileDescription} : #{profile.noIntroduction}" class="section-content">.</p>
+        <div class="form-value" th:utext="${studentDetails.profileDescription}"></div>
     </div>
 
     <!-- Kinh nghiệm Section -->
     <div class="section experience-section">
         <h3 class="section-title" th:text="#{profile.experience}">Experience</h3>
-        <p th:text="${studentDetails != null and studentDetails.experience != null and studentDetails.experience != ''} ? ${studentDetails.experience} : #{profile.noExperience}" class="section-content">.</p>
+        <div class="form-value" th:utext="${studentDetails.experience}"></div>
     </div>
     <p th:text="${successMessage}"></p>
     <p th:text="${errorMessage}"></p>

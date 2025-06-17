@@ -288,7 +288,7 @@
         </div>
 
         <!-- Modal Form với th:value đúng -->
-        <form th:action="@{/Student/addJobApplication}" method="post" th:object="${jobApplicationDTO}" enctype="multipart/form-data">
+        <form th:action="@{/Student/JobDescription/Apply}" method="post" th:object="${jobApplicationDTO}" enctype="multipart/form-data">
             <div th:each="job : ${jobPosts}">
                 <input type="hidden" th:value="${studentDetails?.studentId}" name="studentId">
                 <input type="hidden" th:value="${job.jobPostId}" name="jobPostId">

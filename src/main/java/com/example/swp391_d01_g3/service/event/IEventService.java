@@ -2,13 +2,14 @@ package com.example.swp391_d01_g3.service.event;
 
 import com.example.swp391_d01_g3.model.Event;
 import com.example.swp391_d01_g3.model.EventForm;
+import com.example.swp391_d01_g3.repository.IEventFormRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface IEventService {
-    
+
     /**
      * Tìm tất cả events đã được approve với phân trang
      */
@@ -18,6 +19,11 @@ public interface IEventService {
      * Tìm kiếm events theo title hoặc description
      */
     Page<Event> searchEvents(String keyword, Pageable pageable);
+
+    /**
+     * THÊM: Tìm kiếm events theo keyword và status
+     */
+    Page<Event> searchEventsByKeywordAndStatus(String keyword, Event.ApprovalStatus status, Pageable pageable);
 
     /**
      * Lấy danh sách events sắp tới
@@ -55,6 +61,11 @@ public interface IEventService {
     long countApprovedEvents();
 
     /**
+     * THÊM: Đếm events theo status
+     */
+    long countEventsByStatus(Event.ApprovalStatus status);
+
+    /**
      * Đếm events theo job field
      */
     long countEventsByJobField(String jobFieldName);
@@ -65,9 +76,14 @@ public interface IEventService {
     Event save(Event event);
 
     /**
-     * Xóa event
+     * SỬA: Xóa event (với cascade delete EventForm)
      */
     void delete(Integer eventId);
+
+    /**
+     * THÊM: Xóa event với cascade delete EventForm
+     */
+    void deleteEventWithRegistrations(Integer eventId);
 
     /**
      * Lấy tất cả events cho admin
@@ -93,4 +109,6 @@ public interface IEventService {
      * Lấy events theo employer với phân trang
      */
     Page<Event> findByEmployerId(Integer employerId, Pageable pageable);
-} 
+
+    List<EventForm> getEventFormsByStudentId(Integer studentId);
+}
