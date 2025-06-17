@@ -57,10 +57,23 @@ public class NotificationService implements INotificationService {
     @Override
     @Transactional
     public void markAllAsRead(Integer userId) {
-        List<Notification> notifications = getUserNotifications(userId);
-        for (Notification notification : notifications) {
-            notification.setRead(true);
-            notificationRepository.save(notification);
-        }
+        List<Notification> notifications = notificationRepository.findByUserIdOrderByCreatedAtDesc(userId);
+        notifications.forEach(notification -> notification.setRead(true));
+        notificationRepository.saveAll(notifications);
+    }
+
+    @Override
+    @Transactional
+    public void deleteNotification(Integer notificationId) {
+        notificationRepository.findById(notificationId).ifPresent(notification -> {
+            notificationRepository.delete(notification);
+        });
+    }
+
+    @Override
+    @Transactional
+    public void deleteAllNotifications(Integer userId) {
+        List<Notification> notifications = notificationRepository.findByUserIdOrderByCreatedAtDesc(userId);
+        notificationRepository.deleteAll(notifications);
     }
 } 

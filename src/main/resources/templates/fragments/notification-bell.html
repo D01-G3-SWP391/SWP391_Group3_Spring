@@ -17,7 +17,10 @@
             <div class="notification-bell-dropdown" id="notificationDropdown" style="display: none;">
                 <div class="notification-bell-header">
                     <h6 class="mb-0">Notifications</h6>
-                    <a href="#" class="notification-bell-mark-all" onclick="markAllAsRead(event)">Mark all as read</a>
+                    <div class="notification-bell-actions">
+                        <a href="#" class="notification-bell-mark-all" onclick="markAllAsRead(event)">Mark all as read</a>
+                        <a href="#" class="notification-bell-delete-all" onclick="deleteAllNotifications(event)">Delete all</a>
+                    </div>
                 </div>
                 <div class="notification-bell-list" id="notificationList">
                     <!-- Notifications will be loaded here -->
@@ -97,12 +100,16 @@
                                 const notificationItem = document.createElement('div');
                                 notificationItem.className = `notification-bell-item${notification.read ? '' : ' unread'}`;
                                 notificationItem.dataset.id = notification.id;
-                                notificationItem.onclick = () => markAsRead(notification.id);
                                 
                                 notificationItem.innerHTML = `
-                                    <div class="notification-bell-title">${notification.title}</div>
-                                    <div class="notification-bell-message">${notification.message}</div>
-                                    <div class="notification-bell-time">${formatDate(notification.createdAt)}</div>
+                                    <div class="notification-bell-content" onclick="markAsRead(${notification.id})">
+                                        <div class="notification-bell-title">${notification.title}</div>
+                                        <div class="notification-bell-message">${notification.message}</div>
+                                        <div class="notification-bell-time">${formatDate(notification.createdAt)}</div>
+                                    </div>
+                                    <div class="notification-bell-delete" onclick="deleteNotification(event, ${notification.id})">
+                                        <i class="bi bi-trash"></i>
+                                    </div>
                                 `;
                                 
                                 notificationList.appendChild(notificationItem);
@@ -136,6 +143,55 @@
                 });
             }
 
+            // Delete single notification
+            function deleteNotification(event, id) {
+                event.stopPropagation(); // Prevent triggering markAsRead
+                if (confirm('Are you sure you want to delete this notification?')) {
+                    fetch(`/notifications/${id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            const item = document.querySelector(`.notification-bell-item[data-id="${id}"]`);
+                            if (item) {
+                                item.remove();
+                            }
+                            updateNotificationCount();
+                            checkEmptyState();
+                        }
+                    });
+                }
+            }
+
+            // Delete all notifications
+            function deleteAllNotifications(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                if (confirm('Are you sure you want to delete all notifications?')) {
+                    fetch('/notifications/delete-all', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            const notificationList = document.getElementById('notificationList');
+                            notificationList.innerHTML = `
+                                <div class="notification-bell-empty">
+                                    <i class="bi bi-bell-slash"></i>
+                                    <p>No notifications</p>
+                                </div>
+                            `;
+                            updateNotificationCount();
+                        }
+                    });
+                }
+            }
+
             // Mark all notifications as read
             function markAllAsRead(event) {
                 event.preventDefault();
@@ -151,6 +207,19 @@
                     });
                     updateNotificationCount();
                 });
+            }
+
+            // Check if notifications list is empty
+            function checkEmptyState() {
+                const notificationList = document.getElementById('notificationList');
+                if (!notificationList.querySelector('.notification-bell-item')) {
+                    notificationList.innerHTML = `
+                        <div class="notification-bell-empty">
+                            <i class="bi bi-bell-slash"></i>
+                            <p>No notifications</p>
+                        </div>
+                    `;
+                }
             }
 
             // Update notification count in bell icon

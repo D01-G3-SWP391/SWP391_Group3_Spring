@@ -70,6 +70,11 @@
     align-items: center;
 }
 
+.notification-bell-actions {
+    display: flex;
+    gap: 15px;
+}
+
 .notification-bell-list {
     overflow-y: auto;
     max-height: 300px;
@@ -80,10 +85,34 @@
     border-bottom: 1px solid #eee;
     cursor: pointer;
     transition: background-color 0.2s;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.notification-bell-content {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.notification-bell-delete {
+    opacity: 0;
+    transition: opacity 0.2s;
+    color: #dc3545;
+    cursor: pointer;
+    padding: 5px;
 }
 
 .notification-bell-item:hover {
     background-color: #f8f9fa;
+}
+
+.notification-bell-item:hover .notification-bell-delete {
+    opacity: 1;
+}
+
+.notification-bell-delete:hover {
+    color: #bb2d3b;
 }
 
 .notification-bell-item.unread {
@@ -127,14 +156,18 @@
     text-decoration: underline;
 }
 
-.notification-bell-mark-all {
+.notification-bell-mark-all, .notification-bell-delete-all {
     color: #0d6efd;
     text-decoration: none;
     font-size: 13px;
     cursor: pointer;
 }
 
-.notification-bell-mark-all:hover {
+.notification-bell-delete-all {
+    color: #dc3545;
+}
+
+.notification-bell-mark-all:hover, .notification-bell-delete-all:hover {
     text-decoration: underline;
 }
 
