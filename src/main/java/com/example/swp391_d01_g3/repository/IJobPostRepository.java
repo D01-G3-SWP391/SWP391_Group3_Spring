@@ -101,4 +101,10 @@ public interface IJobPostRepository extends JpaRepository<JobPost, Integer> {
     Page<JobPost> findDeletableJobPosts(@Param("status") JobPost.ApprovalStatus status,
                                         @Param("cutoffDate") LocalDateTime cutoffDate,
                                         Pageable pageable);
+//    phan trang jobPost
+    Page<JobPost> findByEmployerOrderByCreatedAtDesc(Employer employer, Pageable pageable);
+//    pendding
+    long countByEmployer(Employer employer);
+    long countByEmployerAndApprovalStatus(Employer employer, JobPost.ApprovalStatus approvalStatus);
+
 }

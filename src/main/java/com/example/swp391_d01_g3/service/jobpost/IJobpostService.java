@@ -14,6 +14,8 @@ public interface IJobpostService  {
     void save(JobPost jobPost);
     List<JobPost> findByEmployerId(Integer employerId);
     List<JobPost> findJobPostsByEmployerEmail(String email);
+    //phan trang JobPost
+    Page<JobPost> findJobPostsByEmployerEmail(String email, Pageable pageable);
     Optional<JobPost> findById(Integer jobPostId);
     void deleteById(Integer jobPostId);
 
@@ -28,5 +30,9 @@ public interface IJobpostService  {
 
     List<JobPost> getTopJobs();
     List<JobPost> getTopJobsLimit(int limit);
+//    pendding
+    long countJobPostsByEmployerEmail(String employerEmail);
+    long countJobPostsByEmployerEmailAndStatus(String employerEmail, String status);
+
 
 }
