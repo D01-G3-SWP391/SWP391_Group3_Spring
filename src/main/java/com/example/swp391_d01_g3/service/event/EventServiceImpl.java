@@ -41,7 +41,6 @@ public class EventServiceImpl implements IEventService {
                 Event.ApprovalStatus.APPROVED, keyword, keyword, pageable);
     }
 
-    // THÊM: Search events theo keyword và status
     @Override
     public Page<Event> searchEventsByKeywordAndStatus(String keyword, Event.ApprovalStatus status, Pageable pageable) {
         if (keyword != null && !keyword.trim().isEmpty()) {
@@ -119,7 +118,6 @@ public class EventServiceImpl implements IEventService {
         return eventRepository.countByApprovalStatus(Event.ApprovalStatus.APPROVED);
     }
 
-    // THÊM: Count events theo status
     @Override
     public long countEventsByStatus(Event.ApprovalStatus status) {
         return eventRepository.countByApprovalStatus(status);
@@ -135,8 +133,6 @@ public class EventServiceImpl implements IEventService {
         return eventRepository.save(event);
     }
 
-    // SỬA: Delete method với cascade delete EventForm
-    // SỬA: Delete method với cascade delete EventForm
     @Override
     public void delete(Integer eventId) {
         try {
@@ -159,7 +155,6 @@ public class EventServiceImpl implements IEventService {
         }
     }
 
-    // THÊM: Method sử dụng @Modifying query (hiệu quả hơn)
     @Override
     public void deleteEventWithRegistrations(Integer eventId) {
         try {
@@ -171,9 +166,10 @@ public class EventServiceImpl implements IEventService {
             // Đếm số registrations trước khi xóa
             long registrationCount = eventFormRepository.countByEventEventId(eventId);
 
-            // Xóa tất cả registrations bằng @Modifying query
+            // Xóa tất cả registrations
             if (registrationCount > 0) {
-                eventFormRepository.deleteByEventEventId(eventId);
+                List<EventForm> eventForms = eventFormRepository.findByEventEventId(eventId);
+                eventFormRepository.deleteAll(eventForms);
                 logger.info("Deleted {} registrations for event: {}", registrationCount, event.getEventTitle());
             }
 
@@ -187,7 +183,6 @@ public class EventServiceImpl implements IEventService {
         }
     }
 
-
     @Override
     public Page<Event> findAll(Pageable pageable) {
         return eventRepository.findAllByOrderByCreatedAtDesc(pageable);
@@ -200,6 +195,7 @@ public class EventServiceImpl implements IEventService {
             event.setApprovalStatus(Event.ApprovalStatus.APPROVED);
             event.setApprovedAt(LocalDateTime.now());
             eventRepository.save(event);
+            logger.info("Approved event with ID: {}", eventId);
         }
     }
 
@@ -210,6 +206,7 @@ public class EventServiceImpl implements IEventService {
             event.setApprovalStatus(Event.ApprovalStatus.REJECTED);
             event.setApprovedAt(LocalDateTime.now());
             eventRepository.save(event);
+            logger.info("Rejected event with ID: {}", eventId);
         }
     }
 

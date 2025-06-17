@@ -20,7 +20,7 @@ public interface IEventService {
     Page<Event> searchEvents(String keyword, Pageable pageable);
 
     /**
-     * THÊM: Tìm kiếm events theo keyword và status
+     * Tìm kiếm events theo keyword và status
      */
     Page<Event> searchEventsByKeywordAndStatus(String keyword, Event.ApprovalStatus status, Pageable pageable);
 
@@ -60,7 +60,7 @@ public interface IEventService {
     long countApprovedEvents();
 
     /**
-     * THÊM: Đếm events theo status
+     * Đếm events theo status
      */
     long countEventsByStatus(Event.ApprovalStatus status);
 
@@ -75,12 +75,12 @@ public interface IEventService {
     Event save(Event event);
 
     /**
-     * SỬA: Xóa event (với cascade delete EventForm)
+     * Xóa event (với cascade delete EventForm)
      */
     void delete(Integer eventId);
 
     /**
-     * THÊM: Xóa event với cascade delete EventForm
+     * Xóa event với cascade delete EventForm
      */
     void deleteEventWithRegistrations(Integer eventId);
 
