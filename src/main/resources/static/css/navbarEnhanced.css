@@ -70,7 +70,7 @@
 .navbar-right {
     display: flex;
     align-items: center;
-    margin-right: -150px;
+    margin-right: -100px;
 }
 
 /* Action Button base styles */
@@ -221,6 +221,9 @@
     .dropdown-item {
         padding: 10px 15px;
         font-size: 13px;
+    }
+    .navbar-right {
+        margin-right: 10px;
     }
 }
 

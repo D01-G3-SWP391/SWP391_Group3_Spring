@@ -35,7 +35,7 @@ public class EmployerEditDTO {
     private String companyAddress;
 
     @NotBlank(message = "Mô tả công ty không được để trống")
-    @Size(min = 10, max = 1000, message = "Mô tả công ty phải từ 10 đến 1000 ký tự")
+    @Size(min = 10, max = 100000000, message = "Mô tả công ty phải từ 10 đến 10000000 ký tự")
     private String companyDescription;
 
     @Setter
