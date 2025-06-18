@@ -20,7 +20,7 @@ import java.util.Optional;
 @Repository
 public interface IJobPostRepository extends JpaRepository<JobPost, Integer> {
 
-    @Query("select jp from JobPost jp where jp.approvalStatus = 'APPROVED'")
+    @Query("select jp from JobPost jp where jp.approvalStatus = 'APPROVED' and jp.displayStatus = 'ACTIVEgit'")
     Page<JobPost> findAllPendingJobs(Pageable pageable);
     // Existing methods
     @Query("SELECT jp FROM JobPost jp WHERE jp.employer = ?1")
