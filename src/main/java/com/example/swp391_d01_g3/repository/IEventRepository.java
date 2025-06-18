@@ -63,4 +63,27 @@ public interface IEventRepository extends JpaRepository<Event, Integer> {
     List<Event> findEventsByStatusAndDateRange(@Param("status") Event.ApprovalStatus status,
                                                @Param("startDate") LocalDateTime startDate,
                                                @Param("endDate") LocalDateTime endDate);
+
+    // Thêm vào IEventRepository.java
+    @Query("SELECT e FROM Event e WHERE " +
+            "e.eventTitle LIKE %:keyword% OR e.eventDescription LIKE %:keyword% OR e.eventLocation LIKE %:keyword% " +
+            "ORDER BY e.eventDate DESC")
+    Page<Event> searchEventsByKeyword(@Param("keyword") String keyword, Pageable pageable);
+
+    @Query("SELECT e FROM Event e WHERE " +
+            "(e.eventTitle LIKE %:keyword% OR e.eventDescription LIKE %:keyword% OR e.eventLocation LIKE %:keyword%) " +
+            "AND e.approvalStatus = :status " +
+            "ORDER BY e.eventDate DESC")
+    Page<Event> searchEventsByKeywordAndStatus(@Param("keyword") String keyword,
+                                               @Param("status") Event.ApprovalStatus status,
+                                               Pageable pageable);
+
+    // Find events that can be deleted (cancelled or past events)
+    @Query("SELECT e FROM Event e WHERE " +
+            "e.eventStatus = :cancelledStatus OR e.eventDate < :cutoffDate " +
+            "ORDER BY e.eventDate DESC")
+    Page<Event> findDeletableEvents(@Param("cancelledStatus") Event.EventStatus cancelledStatus,
+                                    @Param("cutoffDate") LocalDateTime cutoffDate,
+                                    Pageable pageable);
+
 } 

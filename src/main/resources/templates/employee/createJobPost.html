@@ -13,178 +13,260 @@
     <link rel="stylesheet" th:href="@{/css/createFormJobPost.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarStudent_Employer.css}"/>
 
+    <!-- ✅ THÊM CKEDITOR CSS -->
+    <style>
+        .ck-editor__editable {
+            min-height: 200px;
+        }
+        .ck-editor__editable_inline {
+            border: 1px solid #ced4da;
+            border-radius: 0.375rem;
+        }
+        .ck-editor__editable:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .ckeditor-container {
+            margin-bottom: 1rem;
+        }
+    </style>
 </head>
 <body>
 <div th:replace="~{navbar/navbarEmployee :: navbarAdmin}"></div>
 <script src="/js/navbarAdmin.js"></script>
+
 <div class="main-content">
-    <div class="container">
-        <div class="form-card">
-            <!-- Page Header -->
-            <div class="page-header">
-                <h1><i class="bi bi-briefcase-fill"></i> Đăng Tuyển Dụng</h1>
-                <p>Tạo tin tuyển dụng để tìm kiếm ứng viên phù hợp</p>
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-7">
+                <div class="form-card">
+                    <!-- Page Header -->
+                    <div class="page-header text-center mb-4">
+                        <h2><i class="bi bi-briefcase-fill"></i> Đăng Tuyển Dụng</h2>
+                        <p class="text-muted">Tạo tin tuyển dụng để tìm kiếm ứng viên phù hợp</p>
+                    </div>
+
+                    <form th:action="@{/Employer/CreateJobPost}"
+                          th:object="${jobPostDTO}"
+                          method="post"
+                          id="createJobPostForm"
+                          class="needs-validation"
+                          novalidate>
+
+                        <!-- CSRF -->
+                        <sec:csrfInput/>
+
+                        <!-- 1. Tiêu đề tin tuyển dụng -->
+                        <div class="form-section mb-4">
+                            <div class="section-title mb-3">
+                                <i class="bi bi-card-heading"></i>
+                                Thông tin cơ bản
+                            </div>
+                            <div class="mb-3">
+                                <label for="jobTitle" class="form-label">Tiêu đề tuyển dụng *</label>
+                                <input type="text"
+                                       th:field="*{jobTitle}"
+                                       class="form-control form-control-sm"
+                                       id="jobTitle"
+                                       placeholder="Nhập tiêu đề tin tuyển dụng"
+                                       required />
+                                <div th:if="${#fields.hasErrors('jobTitle')}"
+                                     th:errors="*{jobTitle}"
+                                     class="text-danger small"></div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Lĩnh vực và Loại công việc -->
+                        <div class="form-section mb-4">
+                            <div class="section-title mb-3">
+                                <i class="bi bi-diagram-3"></i>
+                                Phân loại công việc
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <label for="jobFieldId" class="form-label">Lĩnh vực *</label>
+                                    <select th:field="*{jobFieldId}"
+                                            class="form-select form-select-sm"
+                                            id="jobFieldId"
+                                            required>
+                                        <option th:value="${null}" disabled selected>-- Chọn lĩnh vực --</option>
+                                        <option th:each="field : ${jobFields}"
+                                                th:value="${field.jobFieldId}"
+                                                th:text="${field.jobFieldName}"/>
+                                    </select>
+                                    <div th:if="${#fields.hasErrors('jobFieldId')}"
+                                         th:errors="*{jobFieldId}"
+                                         class="text-danger small"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="jobType" class="form-label">Loại công việc *</label>
+                                    <select th:field="*{jobType}"
+                                            class="form-select form-select-sm"
+                                            id="jobType"
+                                            required>
+                                        <option th:value="${null}" disabled selected>-- Chọn loại công việc --</option>
+                                        <option th:each="type : ${jobTypes}"
+                                                th:value="${type}"
+                                                th:text="${type}"/>
+                                    </select>
+                                    <div th:if="${#fields.hasErrors('jobType')}"
+                                         th:errors="*{jobType}"
+                                         class="text-danger small"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Vị trí và Lương -->
+                        <div class="form-section mb-4">
+                            <div class="section-title mb-3">
+                                <i class="bi bi-geo-alt"></i>
+                                Vị trí và Lương
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <label for="jobLocation" class="form-label">Khu vực *</label>
+                                    <input type="text"
+                                           th:field="*{jobLocation}"
+                                           class="form-control form-control-sm"
+                                           id="jobLocation"
+                                           placeholder="Nhập khu vực/địa điểm"
+                                           required />
+                                    <div th:if="${#fields.hasErrors('jobLocation')}"
+                                         th:errors="*{jobLocation}"
+                                         class="text-danger small"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="jobSalary" class="form-label">Lương thỏa thuận</label>
+                                    <input type="text"
+                                           th:field="*{jobSalary}"
+                                           class="form-control form-control-sm"
+                                           id="jobSalary"
+                                           placeholder="Ví dụ: 7–10 triệu VNĐ" />
+                                    <div th:if="${#fields.hasErrors('jobSalary')}"
+                                         th:errors="*{jobSalary}"
+                                         class="text-danger small"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ✅ 4. Yêu cầu công việc - CKEDITOR -->
+                        <div class="form-section mb-4">
+                            <div class="section-title mb-3">
+                                <i class="bi bi-list-check"></i>
+                                Yêu cầu công việc
+                            </div>
+                            <div class="mb-3">
+                                <label for="jobRequirements" class="form-label">Yêu cầu công việc</label>
+                                <div class="ckeditor-container">
+                                    <textarea th:field="*{jobRequirements}"
+                                              class="form-control"
+                                              id="jobRequirements"
+                                              name="jobRequirements"
+                                              placeholder="Mô tả chi tiết về kinh nghiệm, kỹ năng, trình độ học vấn yêu cầu..."></textarea>
+                                </div>
+                                <div th:if="${#fields.hasErrors('jobRequirements')}"
+                                     th:errors="*{jobRequirements}"
+                                     class="text-danger small"></div>
+                            </div>
+                        </div>
+
+                        <!-- ✅ 5. Mô tả chi tiết - CKEDITOR -->
+                        <div class="form-section mb-4">
+                            <div class="section-title mb-3">
+                                <i class="bi bi-file-text"></i>
+                                Mô tả chi tiết
+                            </div>
+                            <div class="mb-3">
+                                <label for="jobDescription" class="form-label">Mô tả công việc</label>
+                                <div class="ckeditor-container">
+                                    <textarea th:field="*{jobDescription}"
+                                              class="form-control"
+                                              id="jobDescription"
+                                              name="jobDescription"
+                                              placeholder="Mô tả chi tiết về công việc, trách nhiệm, phúc lợi, cơ hội phát triển..."></textarea>
+                                </div>
+                                <div th:if="${#fields.hasErrors('jobDescription')}"
+                                     th:errors="*{jobDescription}"
+                                     class="text-danger small"></div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions text-center pt-3">
+                            <a th:href="@{/Employer/JobPosts}" class="btn btn-secondary-modern btn-modern me-2">
+                                <i class="bi bi-arrow-left"></i> Hủy
+                            </a>
+                            <button type="submit" class="btn btn-primary-modern btn-modern">
+                                <i class="bi bi-check-circle"></i> Đăng việc
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
             </div>
-
-            <form th:action="@{/Employer/CreateJobPost}"
-                  th:object="${jobPostDTO}"
-                  method="post"
-                  id="createJobPostForm"
-                  class="needs-validation"
-                  novalidate>
-
-                <!-- CSRF -->
-                <sec:csrfInput/>
-
-                <!-- 1. Tiêu đề tin tuyển dụng -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <i class="bi bi-card-heading"></i>
-                        Thông tin cơ bản
-                    </div>
-                    <div class="mb-3">
-                        <label for="jobTitle" class="form-label">Tiêu đề tuyển dụng *</label>
-                        <input type="text"
-                               th:field="*{jobTitle}"
-                               class="form-control"
-                               id="jobTitle"
-                               placeholder="Nhập tiêu đề tin tuyển dụng"
-                               required />
-                        <div th:if="${#fields.hasErrors('jobTitle')}"
-                             th:errors="*{jobTitle}"
-                             class="text-danger"></div>
-                    </div>
-                </div>
-
-                <!-- 2. Lĩnh vực và Loại công việc -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <i class="bi bi-diagram-3"></i>
-                        Phân loại công việc
-                    </div>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="jobFieldId" class="form-label">Lĩnh vực *</label>
-                            <select th:field="*{jobFieldId}"
-                                    class="form-select"
-                                    id="jobFieldId"
-                                    required>
-                                <option th:value="${null}" disabled selected>-- Chọn lĩnh vực --</option>
-                                <option th:each="field : ${jobFields}"
-                                        th:value="${field.jobFieldId}"
-                                        th:text="${field.jobFieldName}"/>
-                            </select>
-                            <div th:if="${#fields.hasErrors('jobFieldId')}"
-                                 th:errors="*{jobFieldId}"
-                                 class="text-danger"></div>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="jobType" class="form-label">Loại công việc *</label>
-                            <select th:field="*{jobType}"
-                                    class="form-select"
-                                    id="jobType"
-                                    required>
-                                <option th:value="${null}" disabled selected>-- Chọn loại công việc --</option>
-                                <option th:each="type : ${jobTypes}"
-                                        th:value="${type}"
-                                        th:text="${type}"/>
-                            </select>
-                            <div th:if="${#fields.hasErrors('jobType')}"
-                                 th:errors="*{jobType}"
-                                 class="text-danger"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 3. Vị trí và Lương -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <i class="bi bi-geo-alt"></i>
-                        Vị trí và Lương
-                    </div>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="jobLocation" class="form-label">Khu vực *</label>
-                            <input type="text"
-                                   th:field="*{jobLocation}"
-                                   class="form-control"
-                                   id="jobLocation"
-                                   placeholder="Nhập khu vực/địa điểm"
-                                   required />
-                            <div th:if="${#fields.hasErrors('jobLocation')}"
-                                 th:errors="*{jobLocation}"
-                                 class="text-danger"></div>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="jobSalary" class="form-label">Lương thỏa thuận</label>
-                            <input type="text"
-                                   th:field="*{jobSalary}"
-                                   class="form-control"
-                                   id="jobSalary"
-                                   placeholder="Ví dụ: 7–10 triệu VNĐ" />
-                            <div th:if="${#fields.hasErrors('jobSalary')}"
-                                 th:errors="*{jobSalary}"
-                                 class="text-danger"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 4. Yêu cầu công việc -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <i class="bi bi-list-check"></i>
-                        Yêu cầu công việc
-                    </div>
-                    <div class="mb-3">
-                        <label for="jobRequirements" class="form-label">Yêu cầu công việc</label>
-                        <textarea th:field="*{jobRequirements}"
-                                  class="form-control"
-                                  id="jobRequirements"
-                                  rows="4"
-                                  placeholder="Mô tả chi tiết về kinh nghiệm, kỹ năng, trình độ học vấn yêu cầu..."></textarea>
-                        <div th:if="${#fields.hasErrors('jobRequirements')}"
-                             th:errors="*{jobRequirements}"
-                             class="text-danger"></div>
-                    </div>
-                </div>
-
-                <!-- 5. Mô tả chi tiết -->
-                <div class="form-section">
-                    <div class="section-title">
-                        <i class="bi bi-file-text"></i>
-                        Mô tả chi tiết
-                    </div>
-                    <div class="mb-3">
-                        <label for="jobDescription" class="form-label">Mô tả công việc</label>
-                        <textarea th:field="*{jobDescription}"
-                                  class="form-control"
-                                  id="jobDescription"
-                                  rows="6"
-                                  placeholder="Mô tả chi tiết về công việc, trách nhiệm, phúc lợi, cơ hội phát triển..."></textarea>
-                        <div th:if="${#fields.hasErrors('jobDescription')}"
-                             th:errors="*{jobDescription}"
-                             class="text-danger"></div>
-                    </div>
-                </div>
-
-                <!-- Form Actions -->
-                <div class="form-actions">
-                    <a th:href="@{/Employer/JobPosts}" class="btn btn-secondary-modern btn-modern">
-                        <i class="bi bi-arrow-left"></i> Hủy
-                    </a>
-                    <button type="submit" class="btn btn-primary-modern btn-modern">
-                        <i class="bi bi-check-circle"></i> Đăng việc
-                    </button>
-                </div>
-
-            </form>
         </div>
     </div>
 </div>
 
+<!-- ✅ THÊM CKEDITOR SCRIPT -->
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
-    // Form validation
+    // ✅ KHỞI TẠO CKEDITOR
+    let requirementsEditor, descriptionEditor;
+
+    ClassicEditor
+        .create(document.querySelector('#jobRequirements'), {
+            toolbar: [
+                'heading', '|',
+                'bold', 'italic', 'underline', '|',
+                'bulletedList', 'numberedList', '|',
+                'outdent', 'indent', '|',
+                'link', '|',
+                'blockQuote', 'insertTable', '|',
+                'undo', 'redo'
+            ],
+            language: 'vi'
+        })
+        .then(editor => {
+            requirementsEditor = editor;
+
+            // Sync với textarea khi submit form
+            editor.model.document.on('change:data', () => {
+                document.querySelector('#jobRequirements').value = editor.getData();
+            });
+        })
+        .catch(error => {
+            console.error('Error initializing requirements editor:', error);
+        });
+
+    ClassicEditor
+        .create(document.querySelector('#jobDescription'), {
+            toolbar: [
+                'heading', '|',
+                'bold', 'italic', 'underline', '|',
+                'bulletedList', 'numberedList', '|',
+                'outdent', 'indent', '|',
+                'link', '|',
+                'blockQuote', 'insertTable', '|',
+                'undo', 'redo'
+            ],
+            language: 'vi'
+        })
+        .then(editor => {
+            descriptionEditor = editor;
+
+            // Sync với textarea khi submit form
+            editor.model.document.on('change:data', () => {
+                document.querySelector('#jobDescription').value = editor.getData();
+            });
+        })
+        .catch(error => {
+            console.error('Error initializing description editor:', error);
+        });
+
+    // ✅ FORM VALIDATION VỚI CKEDITOR
     (function() {
         'use strict';
 
@@ -192,6 +274,14 @@
 
         Array.prototype.slice.call(forms).forEach(function(form) {
             form.addEventListener('submit', function(event) {
+                // Sync CKEditor data trước khi validate
+                if (requirementsEditor) {
+                    document.querySelector('#jobRequirements').value = requirementsEditor.getData();
+                }
+                if (descriptionEditor) {
+                    document.querySelector('#jobDescription').value = descriptionEditor.getData();
+                }
+
                 if (!form.checkValidity()) {
                     event.preventDefault();
                     event.stopPropagation();
@@ -201,7 +291,7 @@
         });
     })();
 
-    // Smooth animations
+    // ✅ SMOOTH ANIMATIONS
     document.addEventListener('DOMContentLoaded', function() {
         const sections = document.querySelectorAll('.form-section');
 
@@ -220,6 +310,16 @@
             section.style.transition = 'all 0.6s ease';
             observer.observe(section);
         });
+    });
+
+    // ✅ CLEANUP KHI LEAVE PAGE
+    window.addEventListener('beforeunload', function() {
+        if (requirementsEditor) {
+            requirementsEditor.destroy();
+        }
+        if (descriptionEditor) {
+            descriptionEditor.destroy();
+        }
     });
 </script>
 

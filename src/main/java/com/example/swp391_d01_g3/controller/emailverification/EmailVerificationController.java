@@ -103,6 +103,8 @@ public class EmailVerificationController {
                 if (pendingRegistration.getRole() == Account.Role.student) {
                     Student student = new Student();
                     student.setAccount(savedAccount);
+                    Account account = student.getAccount();
+                    emailService.sendWelcomeEmail(account.getEmail(),account.getFullName(), String.valueOf(Account.Role.student));
                     studentService.save(student);
                 } else if (pendingRegistration.getRole() == Account.Role.employer) {
                     Employer employer = new Employer();
@@ -119,6 +121,8 @@ public class EmailVerificationController {
                     }
                     
                     employerService.saveEmployer(employer);
+                    Account account = employer.getAccount();
+                    emailService.sendWelcomeEmail(account.getEmail(),account.getFullName(), String.valueOf(Account.Role.employer));
                 }
                 
                 // Xóa session data

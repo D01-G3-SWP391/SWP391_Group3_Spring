@@ -32,6 +32,9 @@ public class Student {
     @Column(columnDefinition = "TEXT")
     private String experience;
 
+    @Column(name = "avatar_url", length = 255)
+    private String avatarUrl;
+
     public Student() {
     }
 
@@ -98,6 +101,14 @@ public class Student {
 
     public void setExperience(String experience) {
         this.experience = experience;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 }
 

@@ -4,15 +4,22 @@ import com.example.swp391_d01_g3.dto.EmployerDTO;
 import com.example.swp391_d01_g3.dto.EmployerEditDTO;
 import com.example.swp391_d01_g3.model.Account;
 import com.example.swp391_d01_g3.model.Employer;
+import com.example.swp391_d01_g3.model.JobApplication;
 import com.example.swp391_d01_g3.model.JobField;
 import com.example.swp391_d01_g3.service.changePassword.ChangePassword;
 import com.example.swp391_d01_g3.service.cloudinary.CloudinaryService;
 import com.example.swp391_d01_g3.service.employer.IEmployerService;
+import com.example.swp391_d01_g3.service.jobapplication.IJobApplicationService;
 import com.example.swp391_d01_g3.service.jobfield.IJobfieldService;
 import com.example.swp391_d01_g3.service.security.IAccountService;
 import com.example.swp391_d01_g3.service.security.IAccountServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,9 +28,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/Employer")
@@ -48,6 +57,9 @@ public class EmployerDashboard {
 
     @Autowired
     private CloudinaryService cloudinaryService;
+
+    @Autowired
+    private IJobApplicationService iJobApplicationService;
 
     @GetMapping("")
     public String showEmployeeDashboard() {
@@ -281,7 +293,76 @@ public class EmployerDashboard {
         redirectAttributes.addFlashAttribute("success", "Cập nhật thông tin thành công!");
         return "redirect:/Employer/Profile";
     }
+    // **CONTROLLER ĐỚN GIẢN VỚI TÌM KIẾM**
+    @GetMapping("/Applications")
+    public String viewApplications(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(required = false) String searchName,
+            Model model,
+            Authentication authentication) {
 
+        // Lấy thông tin employer đang đăng nhập
+        String employerEmail = authentication.getName();
+        Employer employer = employerService.findByEmail(employerEmail);
+
+        if (employer == null) {
+            return "redirect:/login";
+        }
+
+        // Tạo Pageable
+        Pageable pageable = PageRequest.of(page, size, Sort.by("appliedAt").descending());
+        Page<JobApplication> applications;
+
+        // Tìm kiếm hoặc hiển thị tất cả
+        if (searchName != null && !searchName.trim().isEmpty()) {
+            applications = iJobApplicationService.searchApplicationsByEmployerIdAndName(
+                    employer.getEmployerId(), searchName.trim(), pageable);
+            model.addAttribute("searchName", searchName);
+        } else {
+            applications = iJobApplicationService.getApplicationsByEmployerId(employer.getEmployerId(), pageable);
+        }
+
+        model.addAttribute("applications", applications);
+        model.addAttribute("statuses", JobApplication.ApplicationStatus.values());
+
+        return "employee/viewListApplications";
+    }
+
+
+
+
+    // Cập nhật trạng thái ứng viên
+    @PostMapping("/Applications/{applicationId}/updateStatus")
+    public String updateApplicationStatus(
+            @PathVariable Integer applicationId,
+            @RequestParam String status,
+            RedirectAttributes redirectAttributes,
+            Authentication authentication) {
+
+        try {
+            String employerEmail = authentication.getName();
+            Employer employer = employerService.findByEmail(employerEmail);
+
+            JobApplication application = iJobApplicationService.findById(applicationId)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn ứng tuyển"));
+
+            // Kiểm tra quyền
+            if (!application.getJobPost().getEmployer().getEmployerId().equals(employer.getEmployerId())) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Bạn không có quyền thực hiện hành động này!");
+                return "redirect:/Employer/Applications";
+            }
+
+            JobApplication.ApplicationStatus newStatus = JobApplication.ApplicationStatus.valueOf(status);
+            iJobApplicationService.updateApplicationStatus(applicationId, newStatus);
+            redirectAttributes.addFlashAttribute("successMessage", "Cập nhật trạng thái thành công!");
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật trạng thái!");
+        }
+
+        return "redirect:/Employer/Applications";
+    }
 
 }
 

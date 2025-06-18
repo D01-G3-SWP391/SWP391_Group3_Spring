@@ -1,18 +1,17 @@
 /* navbar.css */
 
-/* General Navbar styles (assuming some might exist in navbarHome.css or a base stylesheet) */
+/* General Navbar styles */
 .navbar-container {
-    background-color: #fff; /* Or your desired navbar background */
+    background-color: #fff;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    padding: 0px 20px; /* Padding around the navbar content */
-    position: fixed; /* Make navbar fixed at the top */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 1000; /* Ensure navbar stays on top of other content */
-    height: 70px; /* Example fixed height, adjust as needed */
+    z-index: 1000;
+    height: 70px;
     display: flex;
-    align-items: center; /* Vertically center content if navbar has fixed height */
+    align-items: center;
 }
 
 .navbar {
@@ -20,8 +19,9 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 1200px; /* Max width for navbar content, centered */
-    margin: 0 auto; /* Center the navbar content */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
 }
 
 .navbar-left {
@@ -33,19 +33,18 @@
 /* .logo img { ... } */
 
 .text-logo-link {
-    text-decoration: none; /* Remove underline from link */
+    text-decoration: none;
 }
 
 .text-logo {
-    color: #333333; /* Dark grey/off-black text color */
-    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', "BIZ UDPMincho Medium"; /* Modern sans-serif font stack */
-    font-size: 24px; 
-    font-weight: 500; /* Medium weight */
-    letter-spacing: 0.5px; /* Slightly reduced letter spacing */
-    padding: 12px 20px; /* Adjusted horizontal padding slightly */
-    display: inline-block; 
-    margin-right: 20px; 
-    margin-left: -100px;
+    color: #333333;
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', "BIZ UDPMincho Medium";
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    padding: 12px 20px;
+    display: inline-block;
+    margin-right: 20px;
 }
 
 .nav-link {
@@ -124,20 +123,22 @@
     border-color: #c82333;
 }
 
-/* Responsive adjustments for navbar if necessary */
+/* Responsive adjustments */
 @media (max-width: 768px) {
-    .navbar-left .nav-link {
-        display: none; /* Hide some links on smaller screens, or move to a hamburger menu */
+    .navbar {
+        padding: 0 15px;
     }
-    .navbar-left .nav-link:first-child { /* Optionally always show the first link or logo */
+    
+    .navbar-left .nav-link {
+        display: none;
+    }
+    
+    .navbar-left .nav-link:first-child {
         display: block;
     }
-    .navbar {
-        padding: 0 10px;
-    }
+    
     .nav-action-btn {
         padding: 6px 12px;
         font-size: 14px;
     }
-    /* Add more responsive styles here, e.g., for a hamburger menu */
 } 

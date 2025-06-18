@@ -20,6 +20,8 @@ import java.util.Optional;
 @Repository
 public interface IJobPostRepository extends JpaRepository<JobPost, Integer> {
 
+    @Query("select jp from JobPost jp where jp.approvalStatus = 'APPROVED'")
+    Page<JobPost> findAllPendingJobs(Pageable pageable);
     // Existing methods
     @Query("SELECT jp FROM JobPost jp WHERE jp.employer = ?1")
     List<JobPost> findByEmployerId(Integer employerId);
@@ -100,4 +102,10 @@ public interface IJobPostRepository extends JpaRepository<JobPost, Integer> {
     Page<JobPost> findDeletableJobPosts(@Param("status") JobPost.ApprovalStatus status,
                                         @Param("cutoffDate") LocalDateTime cutoffDate,
                                         Pageable pageable);
+//    phan trang jobPost
+    Page<JobPost> findByEmployerOrderByCreatedAtDesc(Employer employer, Pageable pageable);
+//    pendding
+    long countByEmployer(Employer employer);
+    long countByEmployerAndApprovalStatus(Employer employer, JobPost.ApprovalStatus approvalStatus);
+
 }

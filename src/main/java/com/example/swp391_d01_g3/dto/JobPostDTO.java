@@ -17,7 +17,7 @@ public class JobPostDTO {
     @Size(max = 50, message = "Lương tối đa 50 ký tự.")
     private String jobSalary;
 
-    @Size(max = 500, message = "Yêu cầu tối đa 500 ký tự.")
+    @Size(max = 1000000000, message = "Yêu cầu tối đa 1000000000 ký tự.")
     private String jobRequirements;
 
     @NotEmpty(message = "Mô tả công việc không được để trống.")

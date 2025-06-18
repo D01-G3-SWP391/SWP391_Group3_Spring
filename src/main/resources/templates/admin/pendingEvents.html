@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Events - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
+    <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
+</head>
+<body>
+<div th:replace="~{navbar/navbarAdmin :: navbarAdmin}"></div>
+
+<div class="main-content">
+    <div class="container-fluid">
+        <h2>Confirm Career Events</h2>
+        <p class="text-muted mb-4">Review and confirm career events submitted by employers</p>
+
+        <!-- Success/Error Messages -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Search Form -->
+        <form method="get" class="row g-3 mb-4 filter-form">
+            <div class="col-md-8">
+                <input class="form-control" name="keyword"
+                       th:value="${keyword}"
+                       placeholder="Search pending events by title, company or location..." />
+            </div>
+            <div class="col-auto d-flex gap-2">
+                <button class="btn-equal" type="submit">
+                    <i class="bi bi-search me-2"></i>Search
+                </button>
+                <a th:href="@{/Admin/PendingEvents}" class="btn-equal">
+                    <i class="bi bi-arrow-clockwise me-2"></i>Reset
+                </a>
+            </div>
+        </form>
+
+        <!-- Results Info -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-muted">
+                <strong th:text="${totalItems}"></strong> pending events awaiting confirmation
+            </span>
+        </div>
+
+        <!-- Pending Events Table -->
+        <div class="table-responsive">
+            <table class="table table-hover admin-table">
+                <thead>
+                <tr>
+                    <th><i class="bi bi-calendar-event me-2"></i>Event Title</th>
+                    <th><i class="bi bi-building me-2"></i>Employer</th>
+                    <th><i class="bi bi-geo-alt me-2"></i>Location</th>
+                    <th><i class="bi bi-calendar me-2"></i>Event Date</th>
+                    <th><i class="bi bi-gear me-2"></i>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="event : ${eventList}">
+                    <td>
+                        <strong th:text="${event.eventTitle}"></strong>
+                        <br>
+                        <small class="text-muted" th:text="${#strings.abbreviate(event.eventDescription, 50)}"></small>
+                    </td>
+                    <td>
+                        <strong th:text="${event.employer.companyName}"></strong>
+                    </td>
+                    <td th:text="${event.eventLocation}"></td>
+                    <td th:text="${#temporals.format(event.eventDate, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td>
+                        <div class="action-btns">
+                            <a th:href="@{/Admin/ConfirmEvent/{id}(id=${event.eventId})}"
+                               class="btn btn-sm btn-primary">
+                                <i class="bi bi-eye"></i> Review
+                            </a>
+
+                            <form th:action="@{/Admin/ConfirmEvent/{id}(id=${event.eventId})}"
+                                  method="post" style="display: inline;"
+                                  onsubmit="return confirm('Are you sure you want to confirm this event?')">
+                                <button type="submit" class="btn btn-sm btn-success">
+                                    <i class="bi bi-check-circle"></i> Confirm
+                                </button>
+                            </form>
+
+                            <button type="button" class="btn btn-sm btn-danger"
+                                    data-bs-toggle="modal"
+                                    th:data-bs-target="'#rejectModal' + ${event.eventId}">
+                                <i class="bi bi-x-circle"></i> Reject
+                            </button>
+
+                            <!-- Reject Modal -->
+                            <div class="modal fade" th:id="'rejectModal' + ${event.eventId}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Reject Event</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Are you sure you want to reject this event?</p>
+                                            <p><strong>Event:</strong> <span th:text="${event.eventTitle}"></span></p>
+                                            <div class="mb-3">
+                                                <label class="form-label">Reason for rejection:</label>
+                                                <textarea class="form-control"
+                                                          th:id="'reason' + ${event.eventId}"
+                                                          rows="3"
+                                                          placeholder="Please provide a reason..."></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <form th:action="@{/Admin/RejectEvent/{id}(id=${event.eventId})}"
+                                                  method="post" style="display: inline;">
+                                                <input type="hidden" name="reason" th:id="'hiddenReason' + ${event.eventId}">
+                                                <button type="submit" class="btn btn-danger"
+                                                        th:onclick="'document.getElementById(\'hiddenReason' + ${event.eventId} + '\').value = document.getElementById(\'reason' + ${event.eventId} + '\').value'">
+                                                    Reject Event
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- No Results Message -->
+        <div th:if="${#lists.isEmpty(eventList)}" class="text-center py-5">
+            <i class="bi bi-calendar-check display-1 text-muted"></i>
+            <h4 class="text-muted mt-3">No pending events</h4>
+            <p class="text-muted">All events have been reviewed</p>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/navbarAdmin.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

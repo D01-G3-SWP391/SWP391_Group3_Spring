@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title th:text="#{job.description.title}">Chi tiết công việc</title>
@@ -80,13 +80,23 @@
                     </div>
                     <div class="job-hero-right">
                         <div class="job-actions">
-                            <button class="btn-primary-large" onclick="showApplyForm()">
-                                <i class="fas fa-paper-plane"></i>
-                                <span th:text="#{job.description.applyNow}">Ứng tuyển ngay</span>
-                            </button>
+                            <!-- Hiển thị nút đăng nhập cho người dùng chưa xác thực -->
+                            <div sec:authorize="!isAuthenticated()">
+                                <a th:href="@{/Login}" class="btn-primary-large">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                    <span>Đăng nhập để ứng tuyển</span>
+                                </a>
+                            </div>
+                            <!-- Hiển thị nút ứng tuyển cho người dùng đã xác thực -->
+                            <div sec:authorize="isAuthenticated()">
+                                <button class="btn-primary-large" onclick="showApplyForm()">
+                                    <i class="fas fa-paper-plane"></i>
+                                    <span>Ứng tuyển ngay</span>
+                                </button>
+                            </div>
                             <button class="btn-save-large">
                                 <i class="far fa-heart"></i>
-                                <span th:text="#{job.description.saveJob}">Lưu việc làm</span>
+                                <span>Lưu việc làm</span>
                             </button>
                         </div>
                     </div>
@@ -288,7 +298,7 @@
         </div>
 
         <!-- Modal Form với th:value đúng -->
-        <form th:action="@{/Student/addJobApplication}" method="post" th:object="${jobApplicationDTO}" enctype="multipart/form-data">
+        <form th:action="@{/Student/JobDescription/Apply}" method="post" th:object="${jobApplicationDTO}" enctype="multipart/form-data">
             <div th:each="job : ${jobPosts}">
                 <input type="hidden" th:value="${studentDetails?.studentId}" name="studentId">
                 <input type="hidden" th:value="${job.jobPostId}" name="jobPostId">

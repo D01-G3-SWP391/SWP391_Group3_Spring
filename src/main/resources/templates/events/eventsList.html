@@ -7,14 +7,16 @@
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
-    <link rel="stylesheet" th:href="@{/css/navbarHome.css}">
-    <link rel="stylesheet" th:href="@{/css/navbar.css}">
-    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}">
-    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
 
+    <!-- Navbar CSS -->
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}">
+
+    <!-- Other CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<!--    <link rel="stylesheet" th:href="@{/css/index.css}"/>-->
     <link rel="stylesheet" th:href="@{/css/owlcarousel/owl.carousel.min.css}"/>
     <link rel="stylesheet" th:href="@{/css/animate/animate.min.css}"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
@@ -24,12 +26,6 @@
     
     <!-- Swiper for Carousels -->
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" th:href="@{/css/navbarHome.css}">
-    <link rel="stylesheet" th:href="@{/css/navbar.css}">
-    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}">
-    <link rel="stylesheet" th:href="@{/css/language-switcher.css}">
     
     <style>
         :root {
@@ -1050,4 +1046,6 @@
         });
     </script>
 </body>
+<script th:src="@{/js/languageSwitch.js}"></script>
+
 </html> 
