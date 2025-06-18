@@ -56,13 +56,14 @@ public interface IJobPostRepository extends JpaRepository<JobPost, Integer> {
 
     @Query("SELECT jp FROM JobPost jp " +
             "WHERE jp.displayStatus = 'ACTIVE' " +
+            "AND jp.appliedQuality > 0 " +
             "ORDER BY jp.appliedQuality DESC")
     List<JobPost> findTopJobsByAppliedQuality();
 
-
-    // Giới hạn số lượng top job muốn lấy (nếu muốn)
+    // THÊM điều kiện appliedQuality > 0 cho query có limit
     @Query("SELECT jp FROM JobPost jp " +
             "WHERE jp.displayStatus = 'ACTIVE' " +
+            "AND jp.appliedQuality > 0 " +
             "ORDER BY jp.appliedQuality DESC")
     List<JobPost> findTopJobsByAppliedQualityLimit(Pageable pageable);
 
