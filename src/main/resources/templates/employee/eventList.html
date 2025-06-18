@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sự kiện của doanh nghiệp</title>
+    <link rel="stylesheet" th:href="@{/css/navbarViewJobPost.css}" />
+    <style>
+    /* Flash message (success) */
+    .flash-message {
+        display: flex;
+        align-items: center;
+        background: #e0ffe6;
+        color: #218838;
+        border: 2px solid #34c759;
+        border-radius: 8px;
+        padding: 16px 24px;
+        font-size: 1.15rem;
+        font-weight: 600;
+        margin: 20px auto 0 auto;
+        max-width: 450px;
+        box-shadow: 0 4px 16px rgba(52,199,89,0.12);
+        position: relative;
+        animation: fadeIn 0.7s;
+        z-index: 1000;
+    }
+    .flash-message .icon {
+        font-size: 1.5em;
+        margin-right: 12px;
+    }
+    .flash-message .close-btn {
+        position: absolute;
+        right: 12px;
+        top: 10px;
+        background: none;
+        border: none;
+        font-size: 1.2em;
+        color: #218838;
+        cursor: pointer;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px);}
+        to { opacity: 1; transform: translateY(0);}
+    }
+    </style>
+</head>
+<body>
+<div th:replace="~{navbar/navbarEmployee :: navbarAdmin}"></div>
+<div class="main-content">
+    <h1 class="page-title" style="text-align:center; color:#6c3ae6; font-size:2.5rem; font-weight:800; margin-bottom:2rem;">Các Sự Kiện Của Bạn</h1>
+    <!-- Flash message (success) -->
+    <div th:if="${successMsg}" class="flash-message" id="flashMessage">
+        <span class="icon">✔️</span>
+        <span th:text="${successMsg}"></span>
+        <button class="close-btn" onclick="document.getElementById('flashMessage').style.display='none'">&times;</button>
+    </div>
+    <div class="table-container">
+        <!-- Empty state nếu chưa có event -->
+        <div th:if="${eventsPage == null or eventsPage.content.isEmpty()}" class="empty-state">
+            <i class="bi bi-calendar3"></i>
+            <h3>Chưa có sự kiện nào</h3>
+            <p>Bạn chưa tạo sự kiện nào. Hãy bắt đầu tạo sự kiện đầu tiên!</p>
+            <a th:href="@{/Employer/Events/Create}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i>
+                Tạo sự kiện mới
+            </a>
+        </div>
+        <!-- Table với event -->
+        <table th:if="${eventsPage != null and !eventsPage.content.isEmpty()}">
+            <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên sự kiện</th>
+                <th>Địa điểm</th>
+                <th>Ngày tổ chức</th>
+                <th>Số lượng tối đa</th>
+                <th>Trạng thái</th>
+                <th>Ngày tạo</th>
+                <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <th:block th:each="event,iter : ${eventsPage.content}">
+                <tr>
+                    <td th:text="${iter.index + 1}"></td>
+                    <td th:text="${event.eventTitle}"></td>
+                    <td th:text="${event.eventLocation}"></td>
+                    <td th:text="${#temporals.format(event.eventDate, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td th:text="${event.maxParticipants}"></td>
+                    <td>
+                        <span class="status-badge" th:text="${event.eventStatus}"></span>
+                    </td>
+                    <td th:text="${#temporals.format(event.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td>
+                        <div class="action-buttons">
+                            <a th:href="@{'/Employer/Events/Edit/' + ${event.eventId}}" class="btn btn-primary">
+                                <i class="bi bi-pencil-square"></i> Sửa
+                            </a>
+                            <form th:action="@{'/Employer/Events/Cancel/' + ${event.eventId}}" method="post" class="delete-form" onsubmit="return confirm('Bạn có chắc chắn muốn hủy sự kiện này?')">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-x-circle"></i> Hủy
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </th:block>
+            </tbody>
+        </table>
+    </div>
+    <!-- Nút tạo mới (floating action button) -->
+    <a th:href="@{/Employer/Events/Create}" class="fab">
+        <i class="bi bi-plus"></i>
+    </a>
+</div>
+<script src="/js/navbarAdmin.js"></script>
+<script>
+    setTimeout(function() {
+        var msg = document.getElementById('flashMessage');
+        if(msg) msg.style.display = 'none';
+    }, 3000);
+</script>
+</body>
+</html>

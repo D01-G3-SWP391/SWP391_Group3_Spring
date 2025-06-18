@@ -1,7 +1,6 @@
 package com.example.swp391_d01_g3.controller.event;
 
 import com.example.swp391_d01_g3.dto.EventRegistrationDTO;
-import com.example.swp391_d01_g3.dto.EventDTO;
 import com.example.swp391_d01_g3.model.Account;
 import com.example.swp391_d01_g3.model.Event;
 import com.example.swp391_d01_g3.model.EventForm;
@@ -22,8 +21,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Controller
 @RequestMapping("/Events")
@@ -38,8 +37,7 @@ public class EventController {
     @Autowired
     private IAccountService accountService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
 
     /**
      * Hiển thị danh sách events với phân trang và tìm kiếm
@@ -52,49 +50,39 @@ public class EventController {
             @RequestParam(value = "status", required = false) String status,
             Model model,
             Authentication authentication) {
+        
         try {
+            // Tạo Pageable object với sắp xếp theo ngày tạo
             Pageable pageable = PageRequest.of(page, size, Sort.by("eventDate").ascending());
+            
+            // Lấy dữ liệu events
             Page<Event> eventsPage;
+            
             if (search != null && !search.trim().isEmpty()) {
+                // Tìm kiếm theo title hoặc description
                 eventsPage = eventService.searchEvents(search.trim(), pageable);
                 model.addAttribute("search", search);
             } else if (status != null && !status.trim().isEmpty()) {
+                // Lọc theo status
                 Event.ApprovalStatus approvalStatus = Event.ApprovalStatus.valueOf(status.toUpperCase());
                 eventsPage = eventService.findByApprovalStatus(approvalStatus, pageable);
                 model.addAttribute("selectedStatus", status);
             } else {
-                eventsPage = eventService.findByApprovalStatus(Event.ApprovalStatus.APPROVED, pageable);
+                // Chỉ hiển thị events đã được approve
+                eventsPage = eventService.findByApprovalStatusAndEventDateAfterOrderByEventDateAsc(Event.ApprovalStatus.APPROVED, LocalDateTime.now(), pageable);
+                
             }
-            List<Event> events = eventsPage.getContent();
-            Integer studentId = null;
-            if (authentication != null && authentication.isAuthenticated()) {
-                Student student = studentService.findByEmail(authentication.getName());
-                if (student != null) studentId = student.getStudentId();
-            }
-            // Lấy tất cả eventId user đã đăng ký (tối ưu, tránh gọi DB nhiều lần)
-            List<EventDTO> eventDTOs = new java.util.ArrayList<>();
-            if (studentId != null) {
-                List<EventForm> registeredForms = eventService.getEventFormsByStudentId(studentId);
-                Set<Integer> registeredEventIds = new java.util.HashSet<>();
-                for (EventForm ef : registeredForms) {
-                    registeredEventIds.add(ef.getEvent().getEventId());
-                }
-                for (Event event : events) {
-                    boolean registered = registeredEventIds.contains(event.getEventId());
-                    eventDTOs.add(new EventDTO(event, registered));
-                }
-            } else {
-                for (Event event : events) {
-                    eventDTOs.add(new EventDTO(event, false));
-                }
-            }
-            // Upcoming events, statistics giữ nguyên
+            
+            // Lấy upcoming events cho sidebar
             List<Event> upcomingEvents = eventService.getUpcomingEvents(5);
+            
+            // Lấy event statistics cho categories
             long totalEvents = eventService.countApprovedEvents();
             long itEvents = eventService.countEventsByJobField("IT");
             long marketingEvents = eventService.countEventsByJobField("Marketing");
             long bankingEvents = eventService.countEventsByJobField("Banking");
-            model.addAttribute("eventDTOs", eventDTOs);
+            
+            // Add data to model
             model.addAttribute("eventsPage", eventsPage);
             model.addAttribute("upcomingEvents", upcomingEvents);
             model.addAttribute("totalEvents", totalEvents);
@@ -103,10 +91,22 @@ public class EventController {
             model.addAttribute("bankingEvents", bankingEvents);
             model.addAttribute("currentPage", page);
             model.addAttribute("totalPages", eventsPage.getTotalPages());
-            return "events/eventsList";
+            
+            // Thêm: truyền registeredEventIds nếu đã đăng nhập
+            if (authentication != null && authentication.isAuthenticated()) {
+                String email = authentication.getName();
+                Student student = studentService.findByEmail(email);
+                if (student != null) {
+                    List<Integer> registeredEventIds = eventService.findRegisteredEventIdsByStudentId(student.getStudentId());
+                    model.addAttribute("registeredEventIds", registeredEventIds);
+                }
+            }
+            
+            return "events/eventPost";
+            
         } catch (Exception e) {
             model.addAttribute("error", "Đã xảy ra lỗi khi tải danh sách sự kiện");
-            return "events/eventsList";
+            return "events/eventPost";
         }
     }
 
@@ -158,10 +158,10 @@ public class EventController {
             Authentication authentication) {
         
         try {
-            // Log request data
-            System.out.println("Received registration request for event: " + eventId);
-            System.out.println("Registration data: " + registrationDTO.toString());
-            System.out.println("Authentication: " + (authentication != null ? authentication.getName() : "null"));
+//            // Log request data
+//            System.out.println("Received registration request for event: " + eventId);
+//            System.out.println("Registration data: " + registrationDTO.toString());
+//            System.out.println("Authentication: " + (authentication != null ? authentication.getName() : "null"));
             
             if (authentication == null || !authentication.isAuthenticated()) {
                 System.out.println("Authentication check failed");
@@ -248,29 +248,4 @@ public class EventController {
         }
     }
 
-    /**
-     * Hủy đăng ký event
-     */
-    @PostMapping("/{eventId}/unregister")
-    @ResponseBody
-    public String unregisterEvent(@PathVariable Integer eventId, Authentication authentication) {
-        try {
-            if (authentication == null || !authentication.isAuthenticated()) {
-                return "error:Bạn cần đăng nhập";
-            }
-            
-            String email = authentication.getName();
-            Student student = studentService.findByEmail(email);
-            
-            if (student == null) {
-                return "error:Không tìm thấy thông tin sinh viên";
-            }
-            
-            eventService.unregisterEvent(eventId, student.getStudentId());
-            return "success:Hủy đăng ký thành công!";
-            
-        } catch (Exception e) {
-            return "error:Đã xảy ra lỗi khi hủy đăng ký";
-        }
-    }
 } 

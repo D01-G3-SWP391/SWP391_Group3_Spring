@@ -5,6 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Các Công Việc Của Bạn</title>
     <link rel="stylesheet" th:href="@{/css/navbarViewJobPost.css}" />
+    <style>
+    /* Flash message (success) */
+    .flash-message {
+        display: flex;
+        align-items: center;
+        background: #e0ffe6;
+        color: #218838;
+        border: 2px solid #34c759;
+        border-radius: 8px;
+        padding: 16px 24px;
+        font-size: 1.15rem;
+        font-weight: 600;
+        margin: 20px auto 0 auto;
+        max-width: 450px;
+        box-shadow: 0 4px 16px rgba(52,199,89,0.12);
+        position: relative;
+        animation: fadeIn 0.7s;
+        z-index: 1000;
+    }
+    .flash-message .icon {
+        font-size: 1.5em;
+        margin-right: 12px;
+    }
+    .flash-message .close-btn {
+        position: absolute;
+        right: 12px;
+        top: 10px;
+        background: none;
+        border: none;
+        font-size: 1.2em;
+        color: #218838;
+        cursor: pointer;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px);}
+        to { opacity: 1; transform: translateY(0);}
+    }
+    </style>
 </head>
 <body>
 <div th:replace="~{navbar/navbarEmployee :: navbarAdmin}"></div>
@@ -14,6 +52,12 @@
 <!-- Main content area -->
 <div class="main-content">
     <h1>Các Công Việc Của Bạn</h1>
+    <!-- Flash message (success) -->
+    <div th:if="${successMsg}" class="flash-message" id="flashMessage">
+        <span class="icon">✔️</span>
+        <span th:text="${successMsg}"></span>
+        <button class="close-btn" onclick="document.getElementById('flashMessage').style.display='none'">&times;</button>
+    </div>
 
     <!-- Statistics cards (optional) -->
     <div class="stats-container">
@@ -130,5 +174,11 @@
 </div>
 
 <script src="/js/navbarAdmin.js"></script>
+<script>
+    setTimeout(function() {
+        var msg = document.getElementById('flashMessage');
+        if(msg) msg.style.display = 'none';
+    }, 3000);
+</script>
 </body>
 </html>

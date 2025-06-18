@@ -11,13 +11,12 @@ public class JobPostDTO {
     private String jobTitle;
 
     @NotEmpty(message = "Khu vực không được để trống.")
-    @Pattern(regexp = "^[\\p{L}\\s]+$", message = "Khu vực không được chứa số, chỉ bao gồm chữ và khoảng trắng.")
     private String jobLocation;
 
     @Size(max = 50, message = "Lương tối đa 50 ký tự.")
     private String jobSalary;
 
-    @Size(max = 500, message = "Yêu cầu tối đa 500 ký tự.")
+    @NotEmpty(message = "Yêu cầu công việc không được để trống.")
     private String jobRequirements;
 
     @NotEmpty(message = "Mô tả công việc không được để trống.")
