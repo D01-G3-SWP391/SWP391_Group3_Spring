@@ -1,10 +1,9 @@
 package com.example.swp391_d01_g3.controller.admin;
 
-import com.example.swp391_d01_g3.model.Account;
-import com.example.swp391_d01_g3.model.Employer;
-import com.example.swp391_d01_g3.model.Student;
+import com.example.swp391_d01_g3.model.*;
 import com.example.swp391_d01_g3.service.admin.IAdminEmployerService;
 import com.example.swp391_d01_g3.service.admin.IAdminStudentService;
+import com.example.swp391_d01_g3.service.blog.IBlogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/Admin")
@@ -24,9 +25,59 @@ public class Dashboard {
     private IAdminEmployerService adminEmployerService;
     private static final Logger logger = LoggerFactory.getLogger(Dashboard.class);
 
+    @Autowired
+    private IBlogService blogService;
+
     @GetMapping("")
     public String showDashboard() {
         return "admin/dashboardPage";
+    }
+
+    @GetMapping("/blogs/{id}/edit")
+    public String editBlogForm(@PathVariable Long id, Model model) {
+        BlogPost blog = blogService.getBlogPostById(id).orElseThrow();
+        model.addAttribute("blog", blog);
+        model.addAttribute("resourceTypes", Resource.ResourceType.values());
+        model.addAttribute("statuses", BlogPost.BlogStatus.values());
+        model.addAttribute("allResources", blogService.getAllResources());
+        return "blog/editBlog";
+    }
+
+    @PostMapping("/blogs/{id}/edit")
+    public String updateBlog(@PathVariable Long id,
+                             @ModelAttribute BlogPost updatedBlog,
+                             RedirectAttributes redirectAttributes) {
+        blogService.updateBlog(id, updatedBlog);
+        redirectAttributes.addFlashAttribute("success", "Cập nhật blog thành công!");
+        return "redirect:/Admin/blogs";
+    }
+
+
+    // Trang list blog
+    @GetMapping("/blogs")
+    public String listBlogs(Model model) {
+        List<BlogPost> blogs = blogService.getAllBlogPosts();
+        model.addAttribute("blogs", blogs);
+        return "blog/managementBlog";
+    }
+
+    // Trang chi tiết blog
+    @GetMapping("/blogs/{id}")
+    public String blogDetail(@PathVariable Long id, Model model) {
+        BlogPost blog = blogService.getBlogPostById(id).orElse(null);
+        if (blog == null) return "redirect:/admin/blogs";
+        List<BlogImage> images = blogService.getImagesForBlog(id);
+        model.addAttribute("blog", blog);
+        model.addAttribute("images", images);
+        return "blog/detailBlog";
+    }
+
+    // Đổi status (POST)
+    @PostMapping("/blogs/{id}/status")
+    public String updateStatus(@PathVariable Long id, @RequestParam String status) {
+        BlogPost.BlogStatus newStatus = BlogPost.BlogStatus.valueOf(status);
+        blogService.updateBlogStatus(id, newStatus);
+        return "redirect:/Admin/blogs";
     }
 
     @GetMapping("/ListStudent")
