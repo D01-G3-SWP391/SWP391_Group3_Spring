@@ -35,11 +35,6 @@
         .action-buttons {
             position: relative;
             overflow: visible !important;
-            display: flex !important;
-            align-items: center !important;
-            gap: 8px !important;
-            justify-content: center !important;
-            min-height: 50px;
         }
         
         .dropdown {
@@ -49,7 +44,6 @@
         
         /* Ensure dropdown shows on top */
         .dropdown-menu {
-            display: none !important; /* Ẩn mặc định */
             position: absolute !important;
             z-index: 9999 !important;
             min-width: 10rem;
@@ -68,11 +62,6 @@
             left: auto !important;
             right: 0 !important;
             transform: none !important;
-        }
-        
-        /* Hiển thị khi có class show */
-        .dropdown-menu.show {
-            display: block !important;
         }
         
         .dropdown-item {
@@ -252,40 +241,39 @@
                                   th:text="${jobApplication.status}"></span>
                         </td>
                         <td>
-                                                    <div class="action-buttons" style="display: flex; align-items: center; gap: 8px; justify-content: center;">
-                            <button class="btn-view-details" th:onclick="'toggleDetails(' + ${iterStat.index} + ')'" th:id="'btn-details-' + ${iterStat.index}">
-                                <i class="bi bi-chevron-down"></i>
-                                <span>View Details</span>
-                            </button>
-                            <div class="dropdown">
-                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                        type="button" 
-                                        th:id="'dropdownMenuButton' + ${jobApplication.applicationId}" 
-                                        data-bs-toggle="dropdown" 
-                                        data-bs-auto-close="true"
-                                        aria-expanded="false"
-                                        style="padding: 8px 12px;">
-                                    <i class="bi bi-gear"></i>
+                            <div class="cell action-col" style="display: flex; align-items: center; gap: 8px;">
+                                <button class="btn-view-details" th:onclick="'toggleDetails(' + ${iterStat.index} + ')'" th:id="'btn-details-' + ${iterStat.index}">
+                                    <i class="bi bi-chevron-down"></i>
+                                    <span>View Details</span>
                                 </button>
-                                
-                                <ul class="dropdown-menu" th:aria-labelledby="'dropdownMenuButton' + ${jobApplication.applicationId}">
-                                    <li th:each="statusOption : ${statuses}">
-                                        <form th:action="@{/Employer/Applications/{id}/updateStatus(id=${jobApplication.applicationId})}"
-                                              method="post" class="d-inline status-form w-100">
-                                            <input type="hidden" name="status" th:value="${statusOption.name()}">
-                                            <button type="submit" class="dropdown-item w-100"
-                                                    th:text="${statusOption.name()}"
-                                                    th:disabled="${jobApplication.status.name() == statusOption.name()}"
-                                                    th:attr="data-application-id=${jobApplication.applicationId},data-status=${statusOption.name()}"
-                                                    onclick="return handleStatusClick(event, this)"
-                                                    style="text-align: left; border: none; background: none;">
-                                                <span th:text="${statusOption.name()}"></span>
-                                            </button>
-                                        </form>
-                                    </li>
-                                </ul>
+                                <div class="dropdown" style="position: relative; margin-left: 8px;">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                                            type="button" 
+                                            th:id="'dropdownMenuButton' + ${jobApplication.applicationId}" 
+                                            data-bs-toggle="dropdown" 
+                                            data-bs-auto-close="true"
+                                            aria-expanded="false">
+                                        <i class="bi bi-gear"></i>
+                                    </button>
+                                    
+                                    <ul class="dropdown-menu" th:aria-labelledby="'dropdownMenuButton' + ${jobApplication.applicationId}">
+                                        <li th:each="statusOption : ${statuses}">
+                                            <form th:action="@{/Employer/Applications/{id}/updateStatus(id=${jobApplication.applicationId})}"
+                                                  method="post" class="d-inline status-form w-100">
+                                                <input type="hidden" name="status" th:value="${statusOption.name()}">
+                                                <button type="submit" class="dropdown-item w-100"
+                                                        th:text="${statusOption.name()}"
+                                                        th:disabled="${jobApplication.status.name() == statusOption.name()}"
+                                                        th:attr="data-application-id=${jobApplication.applicationId},data-status=${statusOption.name()}"
+                                                        onclick="return handleStatusClick(event, this)"
+                                                        style="text-align: left; border: none; background: none;">
+                                                    <span th:text="${statusOption.name()}"></span>
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
                         </td>
                     </tr>
                     <!-- Details row hiện ngay dưới mỗi row -->
