@@ -46,7 +46,7 @@ body {
 
 /* ===== SEARCH SECTION ===== */
 .search-section {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #6c3ae6;
     padding: 20px;
     border-radius: 15px;
     box-shadow:
@@ -169,7 +169,7 @@ table {
 }
 
 table thead {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #6c3ae6;
     color: white;
 }
 

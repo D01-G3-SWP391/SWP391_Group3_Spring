@@ -1,6 +1,7 @@
 package com.example.swp391_d01_g3.repository;
 
 import com.example.swp391_d01_g3.model.Event;
+import com.example.swp391_d01_g3.model.Employer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -85,5 +86,9 @@ public interface IEventRepository extends JpaRepository<Event, Integer> {
     Page<Event> findDeletableEvents(@Param("cancelledStatus") Event.EventStatus cancelledStatus,
                                     @Param("cutoffDate") LocalDateTime cutoffDate,
                                     Pageable pageable);
+
+    Page<Event> findByEmployer(Employer employer, Pageable pageable);
+
+    Page<Event> findByEventTitleContainingIgnoreCase(String keyword, Pageable pageable);
 
 } 
