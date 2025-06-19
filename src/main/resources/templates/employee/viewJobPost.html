@@ -51,7 +51,6 @@
                 <th>STT</th>
                 <th>Tên Công Việc</th>
                 <th>Loại Công Việc</th>
-                <th>Mô tả Công Việc</th>
                 <th>Trạng Thái</th>
                 <th>Ngày Tạo</th>
                 <th>Hành Động</th>
@@ -68,9 +67,6 @@
                     </td>
                     <td>
                         <span class="job-type-badge" th:text="${jobPost.jobType}"></span>
-                    </td>
-                    <td>
-                        <div class="job-description" th:utext="${jobPost.jobRequirements}"></div>
                     </td>
                     <td>
                         <span class="status-badge" th:text="${jobPost.approvalStatus}"></span>
