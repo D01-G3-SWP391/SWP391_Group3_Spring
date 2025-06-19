@@ -216,4 +216,26 @@ public class EmailService {
             
         return body.toString();
     }
+
+    /**
+     * Gửi email lịch phỏng vấn cho ứng viên
+     */
+    public void sendInterviewScheduleEmail(String to, String candidateName, String jobTitle, String interviewTime, String interviewType, String meetingLink, String note) {
+        String subject = "Lịch phỏng vấn vị trí " + jobTitle + " tại JOB4YOU";
+        StringBuilder body = new StringBuilder();
+        body.append("Xin chào ").append(candidateName).append(",\n\n");
+        body.append("Chúc mừng bạn đã vượt qua vòng hồ sơ!\n");
+        body.append("Chúng tôi xin mời bạn tham gia phỏng vấn với thông tin sau:\n");
+        body.append("- Thời gian: ").append(interviewTime).append("\n");
+        body.append("- Hình thức: ").append(interviewType).append("\n");
+        if (meetingLink != null && !meetingLink.isEmpty()) {
+            body.append("- Link phỏng vấn: ").append(meetingLink).append("\n");
+        }
+        if (note != null && !note.isEmpty()) {
+            body.append("- Ghi chú: ").append(note).append("\n");
+        }
+        body.append("\nVui lòng phản hồi email này nếu bạn có thắc mắc.\n");
+        body.append("Trân trọng,\nĐội ngũ JOB4YOU");
+        sendEmail(to, subject, body.toString());
+    }
 }

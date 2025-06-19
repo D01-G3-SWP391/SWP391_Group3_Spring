@@ -5,44 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sự kiện của doanh nghiệp</title>
     <link rel="stylesheet" th:href="@{/css/navbarViewJobPost.css}" />
-    <style>
-    /* Flash message (success) */
-    .flash-message {
-        display: flex;
-        align-items: center;
-        background: #e0ffe6;
-        color: #218838;
-        border: 2px solid #34c759;
-        border-radius: 8px;
-        padding: 16px 24px;
-        font-size: 1.15rem;
-        font-weight: 600;
-        margin: 20px auto 0 auto;
-        max-width: 450px;
-        box-shadow: 0 4px 16px rgba(52,199,89,0.12);
-        position: relative;
-        animation: fadeIn 0.7s;
-        z-index: 1000;
-    }
-    .flash-message .icon {
-        font-size: 1.5em;
-        margin-right: 12px;
-    }
-    .flash-message .close-btn {
-        position: absolute;
-        right: 12px;
-        top: 10px;
-        background: none;
-        border: none;
-        font-size: 1.2em;
-        color: #218838;
-        cursor: pointer;
-    }
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-10px);}
-        to { opacity: 1; transform: translateY(0);}
-    }
-    </style>
 </head>
 <body>
 <div th:replace="~{navbar/navbarEmployee :: navbarAdmin}"></div>
@@ -112,6 +74,44 @@
     <a th:href="@{/Employer/Events/Create}" class="fab">
         <i class="bi bi-plus"></i>
     </a>
+    <div th:if="${eventsPage != null and eventsPage.totalPages > 1}" class="bottom-pagination">
+        <div class="pagination-wrapper">
+            <!-- Previous button -->
+            <a th:if="${eventsPage.hasPrevious()}"
+               th:href="@{/Employer/Events(page=${eventsPage.number - 1})}"
+               class="pagination-btn prev-btn">
+                <i class="bi bi-chevron-left"></i>
+                <span>Trang trước</span>
+            </a>
+            <span th:unless="${eventsPage.hasPrevious()}" class="pagination-btn prev-btn disabled">
+                <i class="bi bi-chevron-left"></i>
+                <span>Trang trước</span>
+            </span>
+
+            <div class="page-numbers">
+                <th:block th:each="pageNum : ${#numbers.sequence(0, eventsPage.totalPages - 1)}">
+                    <a th:if="${pageNum >= eventsPage.number - 2 and pageNum <= eventsPage.number + 2 and pageNum != eventsPage.number}"
+                       th:href="@{/Employer/Events(page=${pageNum})}"
+                       class="page-number"
+                       th:text="${pageNum + 1}">1</a>
+                    <span th:if="${pageNum >= eventsPage.number - 2 and pageNum <= eventsPage.number + 2 and pageNum == eventsPage.number}"
+                          class="page-number active"
+                          th:text="${pageNum + 1}">1</span>
+                </th:block>
+            </div>
+
+            <a th:if="${eventsPage.hasNext()}"
+               th:href="@{/Employer/Events(page=${eventsPage.number + 1})}"
+               class="pagination-btn next-btn">
+                <span>Trang sau</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+            <span th:unless="${eventsPage.hasNext()}" class="pagination-btn next-btn disabled">
+                <span>Trang sau</span>
+                <i class="bi bi-chevron-right"></i>
+            </span>
+        </div>
+    </div>
 </div>
 <script src="/js/navbarAdmin.js"></script>
 <script>

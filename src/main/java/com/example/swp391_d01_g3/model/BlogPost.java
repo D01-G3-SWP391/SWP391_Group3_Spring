@@ -51,7 +51,7 @@ public class BlogPost {
 
     
     public enum BlogStatus {
-        DRAFT, PUBLISHED, ARCHIVED, DELETED
+        DRAFT, PUBLISHED, ARCHIVED
     }
     
     // Constructors

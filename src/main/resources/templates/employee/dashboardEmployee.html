@@ -9,11 +9,71 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+    <link rel="stylesheet" th:href="@{/css/dashboardEmployer.css}" />
   </head>
   <link rel="stylesheet" th:href="@{/css/navbarStudent_Employer.css}" />
   <body>
     <div th:replace="~{navbar/navbarEmployee :: navbarAdmin}"></div>
     <p th:text="#{employer.dashboard.welcome}">Welcome to the THCLT JOBS Employer Dashboard.</p>
+    <!-- Dashboard Cards Section -->
+    <div class="dashboard-cards">
+      <!-- Card hiện tại của bạn... -->
+
+      <!-- **THÊM CARD MỚI CHO JOB APPLICATIONS** -->
+      <div class="dashboard-card applications-card">
+        <div class="card-header">
+          <div class="card-icon">
+            <i class="bi bi-people-fill"></i>
+          </div>
+          <div class="card-title">
+            <h3>Ứng Viên</h3>
+            <p>Quản lý ứng viên ứng tuyển</p>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-stats">
+            <div class="stat-item">
+              <span class="stat-number">25</span>
+              <span class="stat-label">Tổng ứng viên</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">8</span>
+              <span class="stat-label">Chờ xử lý</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer">
+          <a th:href="@{/Employer/Applications}" class="btn-view-applications">
+            <i class="bi bi-eye"></i>
+            <span>Xem Danh Sách Ứng Viên</span>
+            <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- **HOẶC THÊM NÚT NHANH VÀO QUICK ACTIONS** -->
+    <div class="quick-actions">
+      <h2>Thao Tác Nhanh</h2>
+      <div class="action-buttons">
+        <!-- Các nút hiện tại... -->
+
+        <!-- **NÚT XEM ỨNG VIÊN** -->
+        <a th:href="@{/Employer/Applications}" class="quick-action-btn applications-btn">
+          <div class="btn-icon">
+            <i class="bi bi-people-fill"></i>
+          </div>
+          <div class="btn-content">
+            <h4>Xem Ứng Viên</h4>
+            <p>Quản lý danh sách ứng viên</p>
+          </div>
+          <div class="btn-arrow">
+            <i class="bi bi-chevron-right"></i>
+          </div>
+        </a>
+      </div>
+    </div>
+
     <script th:src="@{/js/navbarAdmin.js}"></script>
     <script th:src="@{/js/languageSwitch.js}"></script>
 

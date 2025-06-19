@@ -35,7 +35,7 @@ public class EmployerEventController {
     // List events của employer
     @GetMapping("")
     public String listEvents(@RequestParam(value = "page", defaultValue = "0") int page,
-                             @RequestParam(value = "size", defaultValue = "6") int size,
+                             @RequestParam(value = "size", defaultValue = "3") int size,
                              Principal principal,
                              Model model) {
         String email = principal.getName();

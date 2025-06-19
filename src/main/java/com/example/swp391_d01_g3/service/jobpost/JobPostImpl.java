@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,6 +94,45 @@ public class JobPostImpl implements IJobpostService {
     public List<JobPost> getTopJobsLimit(int limit) {
         Pageable pageable = PageRequest.of(0, limit);
         return iJobPostRepository.findTopJobsByAppliedQualityLimit(pageable);
+    }
+//    pendding
+    @Override
+    public long countJobPostsByEmployerEmail(String employerEmail) {
+        Employer employer = iEmployerService.findByEmail(employerEmail);
+        if (employer == null) {
+            return 0;
+        }
+        return iJobPostRepository.countByEmployer(employer);
+    }
+
+    @Override
+    public long countJobPostsByEmployerEmailAndStatus(String employerEmail, String status) {
+        Employer employer = iEmployerService.findByEmail(employerEmail);
+        if (employer == null) {
+            return 0;
+        }
+
+        // ✅ Convert String to JobPost.ApprovalStatus enum
+        JobPost.ApprovalStatus approvalStatus;
+        try {
+            approvalStatus = JobPost.ApprovalStatus.valueOf(status.toUpperCase().trim());
+        } catch (IllegalArgumentException e) {
+            System.err.println("Invalid approval status: " + status + ". Valid values are: " +
+                    Arrays.toString(JobPost.ApprovalStatus.values()));
+            return 0;
+        }
+
+        return iJobPostRepository.countByEmployerAndApprovalStatus(employer, approvalStatus);
+    }
+
+    //phan trang JobPost
+    @Override
+    public Page<JobPost> findJobPostsByEmployerEmail(String email, Pageable pageable) {
+        Employer employer = iEmployerService.findByEmail(email); // Tìm employer theo email
+        if (employer == null) {
+            return Page.empty(pageable);
+        }
+        return iJobPostRepository.findByEmployerOrderByCreatedAtDesc(employer, pageable); // Lọc JobPost theo employer đó
     }
 
 
