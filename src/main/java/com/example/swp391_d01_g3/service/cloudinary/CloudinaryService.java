@@ -112,4 +112,34 @@ public class CloudinaryService {
         
         return null;
     }
+
+    /**
+     * Upload any file (PDF, DOCX, etc.) to Cloudinary as raw resource
+     * @param file MultipartFile to upload
+     * @param folder Folder in Cloudinary to store the file
+     * @return URL of uploaded file
+     * @throws IOException if upload fails
+     */
+    public String uploadFile(MultipartFile file, String folder) throws IOException {
+        // Validate file size (max 10MB)
+        if (file.getSize() > 10 * 1024 * 1024) {
+            throw new IllegalArgumentException("Kích thước file không được vượt quá 10MB");
+        }
+        String contentType = file.getContentType();
+        String publicId = folder + "/" + UUID.randomUUID().toString();
+        Map<String, Object> options = new java.util.HashMap<>();
+        options.put("public_id", publicId);
+        options.put("folder", folder);
+        if (contentType != null && (contentType.equals("image/png") || contentType.equals("image/jpeg") || contentType.equals("image/jpg") || contentType.equals("image/gif"))) {
+            options.put("resource_type", "image");
+        } else {
+            options.put("resource_type", "raw");
+        }
+        try {
+            Map<String, Object> uploadResult = cloudinary.uploader().upload(file.getBytes(), options);
+            return (String) uploadResult.get("secure_url");
+        } catch (Exception e) {
+            throw new IOException("Lỗi khi upload file lên Cloudinary: " + e.getMessage(), e);
+        }
+    }
 } 
