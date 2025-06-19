@@ -15,6 +15,7 @@ public interface IJobApplicationRepository extends JpaRepository<JobApplication,
 
     @Query("SELECT ja FROM JobApplication ja WHERE ja.student.studentId = :studentId")
     List<JobApplication> findByStudentId(@Param("studentId") Integer studentId);
+
     @Query("SELECT ja FROM JobApplication ja " +
             "JOIN FETCH ja.student s " +
             "JOIN FETCH ja.jobPost jp " +
