@@ -44,6 +44,12 @@
             </a>
         </li>
         <li>
+            <a th:href="@{/Employer/Events}">
+                <i class="bi bi-briefcase"></i>
+                <span th:text="#{nav.events}">Sự kiện</span>
+            </a>
+        </li>
+        <li>
             <a th:href="@{/Employer/ChangePassword}">
                 <i class="bi bi-gear"></i>
                 <span th:text="#{nav.changePassword}">Change Password</span>
@@ -57,6 +63,7 @@
         </li>
     </ul>
 </nav>
+</div>
 <script src="/js/navbarAdmin.js"></script>
 <script th:src="@{/js/languageSwitch.js}"></script>
 <script>

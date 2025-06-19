@@ -41,43 +41,44 @@ public interface IBlogPostRepository extends JpaRepository<BlogPost, Long> {
     // Phân trang cho blog posts đã published
     @Query("SELECT bp FROM BlogPost bp WHERE bp.status = 'PUBLISHED' ORDER BY bp.publishedAt DESC")
     Page<BlogPost> findAllPublishedWithPagination(Pageable pageable);
-    
+
     // Tìm kiếm với phân trang
     @Query("SELECT bp FROM BlogPost bp WHERE bp.status = 'PUBLISHED' AND " +
-           "(bp.title LIKE %:keyword% OR bp.summary LIKE %:keyword% OR bp.content LIKE %:keyword%)")
+            "(bp.title LIKE %:keyword% OR bp.summary LIKE %:keyword% OR bp.content LIKE %:keyword%)")
     Page<BlogPost> searchPublishedPosts(@Param("keyword") String keyword, Pageable pageable);
-    
+
     // Lọc theo resource type với phân trang
     @Query("SELECT bp FROM BlogPost bp WHERE bp.status = 'PUBLISHED' AND bp.resource.resourceType = :resourceType")
     Page<BlogPost> findByResourceTypeWithPagination(@Param("resourceType") Resource.ResourceType resourceType, Pageable pageable);
-    
+
     // Lấy tất cả resource types đã có blog posts
     @Query("SELECT DISTINCT bp.resource.resourceType FROM BlogPost bp WHERE bp.status = 'PUBLISHED'")
     List<Resource.ResourceType> findAllPublishedResourceTypes();
-    
+
     // Lấy bài viết nổi bật (theo lượt xem hoặc ngày publish mới nhất)
     @Query("SELECT bp FROM BlogPost bp WHERE bp.status = 'PUBLISHED' ORDER BY bp.publishedAt DESC")
     List<BlogPost> findFeaturedPosts(Pageable pageable);
-    
+
     // Lấy bài viết liên quan theo resource type (loại trừ bài hiện tại)
     @Query("SELECT bp FROM BlogPost bp WHERE bp.status = 'PUBLISHED' AND bp.resource.resourceType = :resourceType AND bp.blogPostId != :excludeId ORDER BY bp.publishedAt DESC")
     List<BlogPost> findRelatedPosts(@Param("resourceType") Resource.ResourceType resourceType, @Param("excludeId") Long excludeId, Pageable pageable);
-    
+
     // Lấy bài viết tiếp theo (theo thứ tự publishedAt) với Pageable
     @Query("SELECT bp FROM BlogPost bp WHERE bp.status = 'PUBLISHED' AND bp.publishedAt > " +
-           "(SELECT bp2.publishedAt FROM BlogPost bp2 WHERE bp2.blogPostId = :currentId) " +
-           "ORDER BY bp.publishedAt ASC")
+            "(SELECT bp2.publishedAt FROM BlogPost bp2 WHERE bp2.blogPostId = :currentId) " +
+            "ORDER BY bp.publishedAt ASC")
     List<BlogPost> findNextPostWithLimit(@Param("currentId") Long currentId, Pageable pageable);
-    
+
     // Lấy bài viết trước đó (theo thứ tự publishedAt) với Pageable
     @Query("SELECT bp FROM BlogPost bp WHERE bp.status = 'PUBLISHED' AND bp.publishedAt < " +
-           "(SELECT bp2.publishedAt FROM BlogPost bp2 WHERE bp2.blogPostId = :currentId) " +
-           "ORDER BY bp.publishedAt DESC")
+            "(SELECT bp2.publishedAt FROM BlogPost bp2 WHERE bp2.blogPostId = :currentId) " +
+            "ORDER BY bp.publishedAt DESC")
     List<BlogPost> findPreviousPostWithLimit(@Param("currentId") Long currentId, Pageable pageable);
-    
+
     // Tăng view count (giả sử có field viewCount)
     @Modifying
     @Transactional
     @Query("UPDATE BlogPost bp SET bp.updatedAt = CURRENT_TIMESTAMP WHERE bp.blogPostId = :id")
     void incrementViewCount(@Param("id") Long id);
+
 }

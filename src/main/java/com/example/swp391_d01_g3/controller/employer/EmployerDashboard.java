@@ -1,18 +1,16 @@
 package com.example.swp391_d01_g3.controller.employer;
 
-import com.example.swp391_d01_g3.dto.EmployerDTO;
 import com.example.swp391_d01_g3.dto.EmployerEditDTO;
-import com.example.swp391_d01_g3.model.Account;
-import com.example.swp391_d01_g3.model.Employer;
-import com.example.swp391_d01_g3.model.JobApplication;
-import com.example.swp391_d01_g3.model.JobField;
+import com.example.swp391_d01_g3.model.*;
 import com.example.swp391_d01_g3.service.changePassword.ChangePassword;
 import com.example.swp391_d01_g3.service.cloudinary.CloudinaryService;
 import com.example.swp391_d01_g3.service.employer.IEmployerService;
+import com.example.swp391_d01_g3.service.interview.IInterViewService;
 import com.example.swp391_d01_g3.service.jobapplication.IJobApplicationService;
 import com.example.swp391_d01_g3.service.jobfield.IJobfieldService;
 import com.example.swp391_d01_g3.service.security.IAccountService;
 import com.example.swp391_d01_g3.service.security.IAccountServiceImpl;
+import com.example.swp391_d01_g3.service.email.EmailService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,11 +26,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.File;
-import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/Employer")
@@ -44,7 +40,7 @@ public class EmployerDashboard {
     private IEmployerService employerService;
 
     @Autowired
-    private IAccountService IAccountService;
+    private IAccountService accountService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -61,6 +57,11 @@ public class EmployerDashboard {
     @Autowired
     private IJobApplicationService iJobApplicationService;
 
+    @Autowired
+    private EmailService emailService;
+    @Autowired
+    private IInterViewService iInterViewService;
+
     @GetMapping("")
     public String showEmployeeDashboard() {
         return "employee/dashboardEmployee";
@@ -70,7 +71,7 @@ public class EmployerDashboard {
     public String showProfile(Model model, Principal principal) {
         if (principal != null) {
             String currentUserEmail = principal.getName();
-            Account currentAccount = IAccountService.findByEmail(currentUserEmail);
+            Account currentAccount = accountService.findByEmail(currentUserEmail);
 
             if (currentAccount != null) {
                 Employer employer = employerService.findByUserId(currentAccount.getUserId());
@@ -103,7 +104,7 @@ public class EmployerDashboard {
     public String showChangePasswordForm(Model model, Principal principal) {
         if (principal != null) {
             String currentUserEmail = principal.getName();
-            Account currentAccount = IAccountService.findByEmail(currentUserEmail);
+            Account currentAccount = accountService.findByEmail(currentUserEmail);
             
             if (currentAccount != null) {
                 Employer employer = employerService.findByUserId(currentAccount.getUserId());
@@ -128,7 +129,7 @@ public class EmployerDashboard {
         }
         
         String currentUserEmail = principal.getName();
-        Account account = IAccountService.findByEmail(currentUserEmail);
+        Account account = accountService.findByEmail(currentUserEmail);
         
         if (account == null) {
             redirectAttributes.addFlashAttribute("error", "Không tìm thấy tài khoản.");
@@ -183,7 +184,7 @@ public class EmployerDashboard {
     public String showEditForm(Model model, Principal principal) {
         if (principal != null) {
             String email = principal.getName();
-            Account employerAccount = IAccountService.findByEmail(email);
+            Account employerAccount = accountService.findByEmail(email);
             Employer employerDetails = null;
             if (employerAccount != null) {
                 employerDetails = employerService.findByUserId(employerAccount.getUserId());
@@ -215,7 +216,7 @@ public class EmployerDashboard {
         }
 
         String currentUserEmail = principal.getName();
-        Account currentAccount = IAccountService.findByEmail(currentUserEmail);
+        Account currentAccount = accountService.findByEmail(currentUserEmail);
 
         if (currentAccount == null) {
             redirectAttributes.addFlashAttribute("error", "Không tìm thấy tài khoản.");
@@ -230,7 +231,7 @@ public class EmployerDashboard {
         // Cập nhật thông tin Account
         currentAccount.setFullName(employerEditDTO.getFullName());
         currentAccount.setPhone(employerEditDTO.getPhone());
-        IAccountService.save(currentAccount);
+        accountService.save(currentAccount);
 
         // Cập nhật thông tin Employer
         Employer employer = employerService.findByUserId(currentAccount.getUserId());
@@ -245,7 +246,7 @@ public class EmployerDashboard {
             // Xử lý upload logo nếu có file mới
             System.out.println("🔍 Checking logo file...");
             if (logoFile != null && !logoFile.isEmpty()) {
-//                System.out.println("📤 Logo file detected: " + logoFile.getOriginalFilename());
+//                System.out.println("Logo file detected: " + logoFile.getOriginalFilename());
                 try {
                     // Xóa logo cũ từ Cloudinary nếu tồn tại
                     String oldLogoUrl = employer.getLogoUrl();
@@ -322,7 +323,6 @@ public class EmployerDashboard {
         } else {
             applications = iJobApplicationService.getApplicationsByEmployerId(employer.getEmployerId(), pageable);
         }
-
         model.addAttribute("applications", applications);
         model.addAttribute("statuses", JobApplication.ApplicationStatus.values());
 
@@ -361,6 +361,51 @@ public class EmployerDashboard {
             redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật trạng thái!");
         }
 
+        return "redirect:/Employer/Applications";
+    }
+
+    @PostMapping("/Applications/{applicationId}/sendInterviewMail")
+    public String sendInterviewMail(
+            @PathVariable Integer applicationId,
+            @RequestParam String interviewTime,
+            @RequestParam String interviewType,
+            @RequestParam(required = false) String meetingLink,
+            @RequestParam(required = false) String note,
+            RedirectAttributes redirectAttributes,
+            Authentication authentication) {
+        try {
+            String employerEmail = authentication.getName();
+            Employer employer = employerService.findByEmail(employerEmail);
+            JobApplication application = iJobApplicationService.findById(applicationId)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn ứng tuyển"));
+            // Kiểm tra quyền
+            if (!application.getJobPost().getEmployer().getEmployerId().equals(employer.getEmployerId())) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Bạn không có quyền thực hiện hành động này!");
+                return "redirect:/Employer/Applications";
+            }
+            // Lưu lịch phỏng vấn vào bảng Interview
+            Interview interview = new com.example.swp391_d01_g3.model.Interview();
+            interview.setJobApplication(application);
+            interview.setInterviewType(interviewType);
+            interview.setMeetingLink(meetingLink);
+            interview.setNote(note);
+            interview.setInterviewStatus("SCHEDULED");
+            java.time.LocalDateTime interviewDate = java.time.LocalDateTime.parse(interviewTime);
+            interview.setInterviewDate(interviewDate);
+            iInterViewService.save(interview);
+            // Lấy thông tin ứng viên
+            String candidateEmail = application.getEmail();
+            String candidateName = application.getFullName();
+            String candidatePhone = application.getPhone(); // nếu muốn dùng
+            String jobTitle = application.getJobPost().getJobTitle();
+            // Gọi service gửi mail
+            emailService.sendInterviewScheduleEmail(candidateEmail, candidateName, jobTitle, interviewTime, interviewType, meetingLink, note);
+            // Cập nhật trạng thái ứng viên sang INTERVIEW
+            iJobApplicationService.updateApplicationStatus(applicationId, JobApplication.ApplicationStatus.INTERVIEW);
+            redirectAttributes.addFlashAttribute("successMessage", "Đã gửi lịch phỏng vấn cho ứng viên!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi gửi lịch phỏng vấn!");
+        }
         return "redirect:/Employer/Applications";
     }
 

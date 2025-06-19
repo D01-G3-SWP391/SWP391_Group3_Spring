@@ -1,7 +1,9 @@
 package com.example.swp391_d01_g3.service.blog;
 
+import com.example.swp391_d01_g3.model.BlogImage;
 import com.example.swp391_d01_g3.model.BlogPost;
 import com.example.swp391_d01_g3.model.Resource;
+import com.example.swp391_d01_g3.repository.IBlogImageRepository;
 import com.example.swp391_d01_g3.repository.IBlogPostRepository;
 import com.example.swp391_d01_g3.repository.IResourceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,6 +25,9 @@ public class BlogServiceImpl implements IBlogService {
 
     @Autowired
     private IResourceRepository resourceRepository;
+
+    @Autowired
+    private IBlogImageRepository  blogImageRepository;
 
     @Override
     public List<BlogPost> getAllPublishedBlogPosts() {
@@ -140,4 +146,57 @@ public class BlogServiceImpl implements IBlogService {
         List<BlogPost> previousPosts = blogPostRepository.findPreviousPostWithLimit(currentId, limit);
         return previousPosts.isEmpty() ? Optional.empty() : Optional.of(previousPosts.get(0));
     }
+
+    @Override
+    public List<BlogPost> getAllBlogPosts() {
+        return blogPostRepository.findAll();
+    }
+
+    @Override
+    public long countImagesForBlog(Long blogPostId) {
+        return blogImageRepository.countByBlogPost_BlogPostId(blogPostId);
+    }
+
+    @Override
+    public List<BlogImage> getImagesForBlog(Long blogPostId) {
+        return blogImageRepository.findByBlogPost_BlogPostId(blogPostId);
+    }
+
+    @Override
+    public void updateBlogStatus(Long blogPostId, BlogPost.BlogStatus newStatus) {
+        BlogPost blog = blogPostRepository.findById(blogPostId).orElse(null);
+        if (blog != null) {
+            blog.setStatus(newStatus);
+            blogPostRepository.save(blog);
+        }
+    }
+
+    @Override
+    public void updateBlog(Long id, BlogPost updatedBlog) {
+        BlogPost blog = blogPostRepository.findById(id).orElseThrow();
+        blog.setTitle(updatedBlog.getTitle());
+        blog.setSummary(updatedBlog.getSummary());
+        blog.setContent(updatedBlog.getContent());
+        blog.setStatus(updatedBlog.getStatus());
+        blog.setUpdatedAt(LocalDateTime.now());
+        // Xử lý resource đúng cách
+        if (updatedBlog.getResource() != null && updatedBlog.getResource().getResourceId() != null) {
+            Resource resource = resourceRepository.findById(updatedBlog.getResource().getResourceId()).orElse(null);
+            blog.setResource(resource);
+        } else {
+            blog.setResource(null);
+        }
+        blogPostRepository.save(blog);
+    }
+    @Override
+    public void save(BlogPost blog) {
+        blogPostRepository.save(blog);
+    }
+
+    @Override
+    public List<Resource> getAllResources() {
+        return resourceRepository.findAll();
+    }
+
+
 } 

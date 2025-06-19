@@ -39,6 +39,15 @@ public class Account {
 
     }
 
+    public Account(String fullName, String email, String password, String phone, Role role, Status status) {
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.role = role;
+        this.status = status;
+    }
+
     public enum Role {
         student, employer, admin
     }

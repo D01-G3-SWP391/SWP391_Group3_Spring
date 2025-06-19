@@ -41,41 +41,41 @@ public class JobPostController {
 
 
 
-@PostMapping("/CreateJobPost")
-public String createJobPost(
-        @ModelAttribute("jobPostDTO") @Valid JobPostDTO dto,
-        BindingResult result,
-        Model model,
-        Principal principal,
-        RedirectAttributes ra
-) {
-    if (result.hasErrors()) {
-        model.addAttribute("jobFields", iJobfieldService.findAll());
-        model.addAttribute("jobTypes", JobPost.JobType.values());
-        return "employee/createJobPost";
+    @PostMapping("/CreateJobPost")
+    public String createJobPost(
+            @ModelAttribute("jobPostDTO") @Valid JobPostDTO dto,
+            BindingResult result,
+            Model model,
+            Principal principal,
+            RedirectAttributes ra
+    ) {
+        if (result.hasErrors()) {
+            model.addAttribute("jobFields", iJobfieldService.findAll());
+            model.addAttribute("jobTypes", JobPost.JobType.values());
+            return "employee/createJobPost";
+        }
+
+        Employer emp = iEmployerService.findByEmail(principal.getName());
+        JobField field = iJobfieldService.findById(dto.getJobFieldId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid JobField Id: " + dto.getJobFieldId()));
+
+        JobPost job = new JobPost();
+        job.setEmployer(emp);
+        job.setJobField(field);
+        job.setJobTitle(dto.getJobTitle());
+        job.setJobLocation(dto.getJobLocation());
+        job.setJobSalary(dto.getJobSalary());
+        job.setJobRequirements(dto.getJobRequirements());
+        job.setJobDescription(dto.getJobDescription());
+        job.setJobType(JobPost.JobType.valueOf(dto.getJobType()));
+        job.setAppliedQuality(0);
+        // createdAt, approvalStatus, displayStatus dùng mặc định
+
+        // 4) Lưu và thông báo thành công
+        iJobpostService.save(job);
+        ra.addFlashAttribute("successMsg", "Đăng việc thành công!");
+        return "redirect:/Employer/JobPosts";
     }
-
-    Employer emp = iEmployerService.findByEmail(principal.getName());
-    JobField field = iJobfieldService.findById(dto.getJobFieldId())
-            .orElseThrow(() -> new IllegalArgumentException("Invalid JobField Id: " + dto.getJobFieldId()));
-
-    JobPost job = new JobPost();
-    job.setEmployer(emp);
-    job.setJobField(field);
-    job.setJobTitle(dto.getJobTitle());
-    job.setJobLocation(dto.getJobLocation());
-    job.setJobSalary(dto.getJobSalary());
-    job.setJobRequirements(dto.getJobRequirements());
-    job.setJobDescription(dto.getJobDescription());
-    job.setJobType(JobPost.JobType.valueOf(dto.getJobType()));
-    job.setAppliedQuality(0);
-    // createdAt, approvalStatus, displayStatus dùng mặc định
-
-    // 4) Lưu và thông báo thành công
-    iJobpostService.save(job);
-    ra.addFlashAttribute("successMsg", "Đăng việc thành công!");
-    return "redirect:/Employer/JobPosts";
-}
     @GetMapping("/CreateJobPost")
     public String showCreateForm(Model model) {
         model.addAttribute("jobPostDTO", new JobPostDTO());
@@ -87,7 +87,7 @@ public String createJobPost(
         @GetMapping("/JobPosts")
         public String viewJobPosts(
                 @RequestParam(defaultValue = "0") int page,
-                @RequestParam(defaultValue = "5") int size,
+                @RequestParam(defaultValue = "1") int size,
                 Model model,
                 Authentication authentication) {
 
@@ -132,7 +132,8 @@ public String createJobPost(
             @PathVariable("jobPostId") Integer jobPostId,
             @ModelAttribute("jobPost") JobPost jobPost,
             @RequestParam("jobFieldId") Integer jobFieldId,
-            Authentication authentication) {
+            Authentication authentication,
+            RedirectAttributes ra) {
 
         String employerEmail = authentication.getName();
         Employer employer = iEmployerService.findByEmail(employerEmail);
@@ -148,11 +149,12 @@ public String createJobPost(
             jobPost.setApprovalStatus(JobPost.ApprovalStatus.PENDING);
         }
         iJobpostService.save(jobPost);
+        ra.addFlashAttribute("successMsg", "Cập nhật công việc thành công!");
         return "redirect:/Employer/JobPosts";  // Redirect đến endpoint mới
     }
 
     @PostMapping("/DeleteJobPost/{jobPostId}")
-    public String deleteJobPost(@PathVariable("jobPostId") Integer jobPostId, Authentication authentication) {
+    public String deleteJobPost(@PathVariable("jobPostId") Integer jobPostId, Authentication authentication, RedirectAttributes ra) {
         String employerEmail = authentication.getName();
         Employer employer = iEmployerService.findByEmail(employerEmail);
 
@@ -163,7 +165,7 @@ public String createJobPost(
             throw new SecurityException("You do not have permission to delete this job post");
         }
         iJobpostService.deleteById(jobPostId);
-
+        ra.addFlashAttribute("successMsg", "Xóa công việc thành công!");
         return "redirect:/Employer/JobPosts";  // Redirect đến endpoint mới
     }
 }

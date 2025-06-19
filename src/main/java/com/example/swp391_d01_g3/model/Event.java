@@ -1,6 +1,8 @@
 package com.example.swp391_d01_g3.model;
 
 import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,12 +19,14 @@ public class Event {
     private String eventDescription;
     
     @Column(name = "event_date", nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime eventDate;
     
     @Column(name = "event_location", length = 255)
     private String eventLocation;
     
     @Column(name = "registration_deadline")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime registrationDeadline;
     
     @Column(name = "max_participants")

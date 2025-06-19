@@ -81,23 +81,30 @@
                     <div class="job-hero-right">
                         <div class="job-actions">
                             <!-- Hiển thị nút đăng nhập cho người dùng chưa xác thực -->
-                            <div sec:authorize="!isAuthenticated()">
+                            <div sec:authorize="isAnonymous()">
                                 <a th:href="@{/Login}" class="btn-primary-large">
                                     <i class="fas fa-sign-in-alt"></i>
                                     <span>Đăng nhập để ứng tuyển</span>
                                 </a>
                             </div>
+                            <div sec:authorize="isAuthenticated() and !hasRole('student')">
+                                <a readonly="" class="btn-primary-large">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                    <span>Ko co quyen ung tuyen</span>
+                                </a>
+                            </div>
                             <!-- Hiển thị nút ứng tuyển cho người dùng đã xác thực -->
-                            <div sec:authorize="isAuthenticated()">
+                            <div sec:authorize="isAuthenticated() and hasRole('student')">
                                 <button class="btn-primary-large" onclick="showApplyForm()">
                                     <i class="fas fa-paper-plane"></i>
                                     <span>Ứng tuyển ngay</span>
                                 </button>
+                                <button class="btn-save-large" style="margin-top: 7px">
+                                    <i class="far fa-heart"></i>
+                                    <span>Lưu việc làm</span>
+                                </button>
                             </div>
-                            <button class="btn-save-large">
-                                <i class="far fa-heart"></i>
-                                <span>Lưu việc làm</span>
-                            </button>
+
                         </div>
                     </div>
                 </div>

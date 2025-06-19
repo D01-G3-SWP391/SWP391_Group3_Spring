@@ -1,0 +1,103 @@
+body.edit-blog-bg {
+    background: linear-gradient(135deg, #e6effa 0%, #d1e0ff 100%);
+    min-height: 100vh;
+    font-family: 'Inter', Arial, sans-serif;
+}
+
+.main-content {
+    padding-top: -2px !important;
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        padding-top: 64px !important;
+    }
+}
+
+.edit-blog-title h2 {
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: #1a2b49;
+    margin-bottom: 0;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+    position: relative;
+    display: inline-block;
+}
+.edit-blog-title h2 i {
+    margin-right: 10px;
+    color: #2563eb;
+}
+
+.edit-blog-container {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px 0 rgba(31,38,135,0.10);
+    padding: 40px 36px 32px 36px;
+    max-width: 1300px;
+    width: 100%;
+    margin-bottom: 40px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #374151;
+}
+
+.form-control, .form-select {
+    border-radius: 10px;
+    border: 1.5px solid #d1d5db;
+    padding: 12px;
+    font-size: 1rem;
+    background: #f9fafb;
+    transition: border-color 0.2s;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    background: #fff;
+}
+
+.btn-equal {
+    background: linear-gradient(to right, #007bff, #00c6ff) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    color: white !important;
+    padding: 12px 24px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2) !important;
+}
+
+.btn-equal:hover {
+    background: linear-gradient(to right, #0056b3, #0096c7) !important;
+    color: white !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3) !important;
+}
+
+.btn-secondary {
+    background: #64748b;
+    border: none;
+    font-weight: 600;
+    border-radius: 8px;
+    color: #fff;
+    padding: 12px 24px;
+}
+
+.btn-secondary:hover {
+    background: #334155;
+}
+
+@media (max-width: 800px) {
+    .edit-blog-container {
+        padding: 20px 8px;
+        max-width: 99vw;
+    }
+    .edit-blog-title h2 {
+        font-size: 1.3rem;
+    }
+}

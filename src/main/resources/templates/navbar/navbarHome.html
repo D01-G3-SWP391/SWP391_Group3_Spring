@@ -41,84 +41,67 @@
         </div>
 
 
+        <!-- NAVBAR-RIGHT (đặt trong .navbar-right) -->
         <div class="navbar-right">
-          <!-- Authenticated User Section -->
-          <div sec:authorize="isAuthenticated()" class="authenticated-section">
+
+          <!-- 1. FAV JOBS – chỉ STUDENT -->
+          <div sec:authorize="hasRole('student')">
             <div class="dropdown">
-              <input
-                      type="checkbox"
-                      id="fav-jobs-toggle"
-                      class="dropdown-toggle"
-              />
+              <input type="checkbox" id="fav-jobs-toggle" class="dropdown-toggle"/>
               <label for="fav-jobs-toggle" class="nav-link user-greeting">
                 <span th:text="#{nav.favJobs}"></span>
                 <i class="bi bi-heart-fill"></i>
                 <i class="bi bi-caret-down-fill"></i>
               </label>
+
               <div class="dropdown-menu">
-                <!-- Add your favorite jobs items here -->
+                <!-- favourite jobs here -->
                 <a class="dropdown-item" href="#">
-                  <i class="bi bi-briefcase-fill me-2"></i>
-                  Job 1
+                  <i class="bi bi-briefcase-fill me-2"></i> Job 1
                 </a>
                 <a class="dropdown-item" href="#">
-                  <i class="bi bi-briefcase-fill me-2"></i>
-                  Job 2
+                  <i class="bi bi-briefcase-fill me-2"></i> Job 2
                 </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" th:href="@{/favorite-jobs}">
-                  <i class="bi bi-list me-2"></i>
-                  Xem tất cả
+                  <i class="bi bi-list me-2"></i> Xem tất cả
                 </a>
               </div>
             </div>
-            <div th:if="${userEmail}" class="dropdown">
-              <input
-                type="checkbox"
-                id="dropdown-toggle"
-                class="dropdown-toggle"
-              />
-              <label for="dropdown-toggle" class="nav-link user-greeting">
+          </div>
+
+          <!-- 2. ACCOUNT + LOGOUT – bất kỳ người dùng đã đăng nhập -->
+          <div sec:authorize="isAuthenticated()" class="authenticated-section">
+            <div class="dropdown" th:if="${userEmail}">
+              <input type="checkbox" id="account-toggle" class="dropdown-toggle"/>
+              <label for="account-toggle" class="nav-link user-greeting">
                 <span th:text="#{app.account}"></span>
                 <i class="bi bi-person-circle"></i>
                 <i class="bi bi-caret-down-fill"></i>
               </label>
+
               <div class="dropdown-menu">
-                <a
-                  class="dropdown-item"
-                  th:href="@{/Student}"
-                  sec:authorize="hasRole('student')"
-                  th:text="#{nav.account}">Tài khoản</a
-                >
-                <a
-                  class="dropdown-item"
-                  th:href="@{/Employer}"
-                  sec:authorize="hasRole('employer')"
-                  th:text="#{nav.account}">Tài khoản</a
-                >
-                <a
-                  class="dropdown-item"
-                  th:href="@{/Admin}"
-                  sec:authorize="hasRole('admin')"
-                  th:text="#{nav.account}">Tài khoản</a
-                >
+                <a class="dropdown-item" th:href="@{/Student}"  sec:authorize="hasRole('student')"  th:text="#{nav.account}">Tài khoản</a>
+                <a class="dropdown-item" th:href="@{/Employer}" sec:authorize="hasRole('employer')" th:text="#{nav.account}">Tài khoản</a>
+                <a class="dropdown-item" th:href="@{/Admin}"    sec:authorize="hasRole('admin')"    th:text="#{nav.account}">Tài khoản</a>
               </div>
             </div>
-            <a th:href="@{/logout}" class="nav-action-btn nav-logout-btn"
-              ><i class="bi bi-box-arrow-in-right"></i> <span th:text="#{nav.logout}">Logout</span></a
-            >
+
+            <a th:href="@{/logout}" class="nav-action-btn nav-logout-btn">
+              <i class="bi bi-box-arrow-in-right"></i> <span th:text="#{nav.logout}">Logout</span>
+            </a>
           </div>
 
-          <!-- Anonymous User Section -->
+          <!-- 3. REGISTER + LOGIN – khách chưa đăng nhập -->
           <div sec:authorize="isAnonymous()" class="anonymous-section">
-            <a th:href="@{/Register}" class="nav-action-btn nav-register-btn"
-              ><i class="bi bi-person-plus-fill"></i> <span th:text="#{nav.register}">Đăng ký</span></a
-            >
-            <a th:href="@{/Login}" class="nav-action-btn nav-login-btn"
-              ><i class="bi bi-box-arrow-in-right"></i> <span th:text="#{nav.login}">Đăng nhập</span></a
-            >
+            <a th:href="@{/Register}" class="nav-action-btn nav-register-btn">
+              <i class="bi bi-person-plus-fill"></i> <span th:text="#{nav.register}">Đăng ký</span>
+            </a>
+            <a th:href="@{/Login}" class="nav-action-btn nav-login-btn">
+              <i class="bi bi-box-arrow-in-right"></i> <span th:text="#{nav.login}">Đăng nhập</span>
+            </a>
           </div>
-          <div class="language-switcher-container">
+        <div class="language-switcher-container">
             <button class="language-switcher" th:text="#{app.language}">LANGUAGE</button>
             <div class="language-dropdown">
               <a href="?lang=en" class="language-option" th:classappend="${#locale.language == 'en'} ? 'active'">

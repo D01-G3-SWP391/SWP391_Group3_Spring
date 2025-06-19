@@ -38,10 +38,7 @@ public class ConfigI18N implements WebMvcConfigurer {
     
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Cấu hình để serve files từ thư mục uploads
-        registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:uploads/")
-                .setCachePeriod(3600); // Cache trong 1 tiếng
+        // Đã bỏ cấu hình phục vụ uploads/** vì đã chuyển sang Cloudinary
     }
 
 

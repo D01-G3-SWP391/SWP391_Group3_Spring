@@ -26,4 +26,8 @@ public interface IBlogImageRepository extends JpaRepository<BlogImage, Long> {
 
     // Xóa tất cả ảnh của một blog post
     void deleteByBlogPost_BlogPostId(Long blogPostId);
+
+    // Thêm vào IBlogImageRepository:
+    long countByBlogPost_BlogPostId(Long blogPostId);
+
 }

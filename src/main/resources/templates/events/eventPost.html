@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sự kiện - JOB4YOU</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}">
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!--    <link rel="stylesheet" th:href="@{/css/index.css}"/>-->
+    <link rel="stylesheet" th:href="@{/css/owlcarousel/owl.carousel.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/animate/animate.min.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+    
+    <!-- AOS Library for Scroll Animations -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Swiper for Carousels -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}">
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}">
+    <link rel="stylesheet" th:href="@{/css/eventPost.css}"/>
+
+</head>
+<body>
+    <!-- Include Navbar -->
+    <div th:replace="~{navbar/navbarHome :: home}"></div>
+
+    <!-- Carousel Section -->
+    <div class="container py-5">
+        <div class="carousel-section">
+            <div id="eventsCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#eventsCarousel" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#eventsCarousel" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#eventsCarousel" data-bs-slide-to="2"></button>
+                </div>
+                <div class="carousel-inner">
+                    <!-- First Slide -->
+                    <div class="carousel-item active" style="background-image: url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=2000&q=80')">
+                        <div class="carousel-overlay">
+                            <div class="carousel-content">
+                                <h2 class="carousel-title">Sự kiện nghề nghiệp</h2>
+                                <p class="carousel-description">Khám phá các sự kiện, hội thảo và cơ hội networking từ các doanh nghiệp hàng đầu</p>
+                                <div class="carousel-meta">
+                                    <div class="carousel-meta-item">
+                                        <i class="bi bi-calendar-event"></i>
+                                        <span>Cập nhật hàng tuần</span>
+                                    </div>
+                                    <div class="carousel-meta-item">
+                                        <i class="bi bi-building"></i>
+                                        <span>Từ các công ty hàng đầu</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Second Slide -->
+                    <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1559223607-a43c990c692c?auto=format&fit=crop&w=2000&q=80')">
+                        <div class="carousel-overlay">
+                            <div class="carousel-content">
+                                <h2 class="carousel-title">Hội thảo chuyên môn</h2>
+                                <p class="carousel-description">Tham gia các buổi hội thảo để nâng cao kiến thức và kỹ năng chuyên môn</p>
+                                <div class="carousel-meta">
+                                    <div class="carousel-meta-item">
+                                        <i class="bi bi-people"></i>
+                                        <span>Chuyên gia hàng đầu</span>
+                                    </div>
+                                    <div class="carousel-meta-item">
+                                        <i class="bi bi-award"></i>
+                                        <span>Chứng chỉ sau khóa học</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Third Slide -->
+                    <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=2000&q=80')">
+                        <div class="carousel-overlay">
+                            <div class="carousel-content">
+                                <h2 class="carousel-title">Cơ hội việc làm</h2>
+                                <p class="carousel-description">Kết nối trực tiếp với nhà tuyển dụng thông qua các sự kiện tuyển dụng</p>
+                                <div class="carousel-meta">
+                                    <div class="carousel-meta-item">
+                                        <i class="bi bi-briefcase"></i>
+                                        <span>Phỏng vấn trực tiếp</span>
+                                    </div>
+                                    <div class="carousel-meta-item">
+                                        <i class="bi bi-graph-up"></i>
+                                        <span>Cơ hội thăng tiến</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#eventsCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#eventsCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="container py-5">
+            <div class="row align-items-stretch">
+                <!-- Main Events Grid -->
+                <div class="col-lg-8 d-flex flex-column">
+                    <div class="search-section">
+                        <form class="search-form" th:action="@{/Events}" method="get">
+                            <div class="row g-3">
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control" name="search" 
+                                           th:value="${search}" placeholder="Tìm kiếm sự kiện...">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="events-grid">
+                        <div th:each="event : ${eventsPage.content}" class="event-card" data-aos="fade-up" data-aos-delay="100">
+                            <div class="event-image" style="height: 160px; display: flex; align-items: center; justify-content: center; background: #f8f8fd;">
+                                <img th:src="${event.employer.logoUrl}"
+                                     style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;"
+                                     onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=800&q=80';"
+                                     alt="Logo doanh nghiệp">
+                                <div class="event-date" style="position: absolute; top: 16px; left: 16px;">
+                                    <i class="bi bi-calendar3"></i>
+                                    <span th:text="${#temporals.format(event.eventDate, 'dd/MM/yyyy')}"></span>
+                                </div>
+                            </div>
+                            <div class="event-content">
+                                <h3 class="event-title">
+                                    <a th:href="@{/Events/{id}(id=${event.eventId})}" th:text="${event.eventTitle}"></a>
+                                </h3>
+                                <div class="event-company">
+                                    <i class="bi bi-building"></i>
+                                    <span th:text="${event.employer.companyName}"></span>
+                                </div>
+                                <div class="event-location">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <span th:text="${event.eventLocation}"></span>
+                                </div>
+                                <div class="event-meta mt-auto">
+                                    <div class="event-participants">
+                                        <i class="bi bi-people"></i>
+                                        <span th:text="${event.currentParticipants} + '/' + ${event.maxParticipants != null ? event.maxParticipants : '∞'}"></span>
+                                    </div>
+                                </div>
+                                <div class="event-actions">
+                                    <a th:href="@{/Events/{id}(id=${event.eventId})}" class="btn btn-outline-primary">Xem chi tiết</a>
+                                    <button
+                                        th:if="${registeredEventIds != null and registeredEventIds.contains(event.eventId)}"
+                                        class="btn btn-success" disabled>Đã đăng ký</button>
+                                    <div sec:authorize="!isAuthenticated()">
+                                        <a th:href="@{/Login}" class="btn btn-primary">
+                                            <i class="fas fa-sign-in-alt"></i>
+                                            <span>Đăng nhập để tham gia</span>
+                                        </a>
+                                    </div>
+                                    <!-- Hiển thị nút ứng tuyển cho người dùng đã xác thực -->
+                                    <div sec:authorize="isAuthenticated()">
+                                        <button
+                                                th:if="${registeredEventIds == null or !registeredEventIds.contains(event.eventId)}"
+                                                th:onclick="'registerEvent(' + ${event.eventId} + ')'"
+                                                class="btn btn-primary">Đăng ký tham gia</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <div class="sidebar h-100">
+                        <!-- Upcoming Events -->
+                        <div class="sidebar-section">
+                            <h4 class="sidebar-title">
+                                <i class="fas fa-calendar-alt"></i>
+                                Sự kiện sắp diễn ra
+                            </h4>
+                            <div class="upcoming-events">
+                                <div class="upcoming-event" th:each="event : ${upcomingEvents}">
+                                    <div class="event-date-text">
+                                        <span class="event-day" th:text="${#temporals.format(event.eventDate, 'dd')}">10</span>
+                                        <span class="event-month" th:text="${#temporals.format(event.eventDate, 'MM')}">07</span>
+                                        <span class="event-year" th:text="${#temporals.format(event.eventDate, 'yyyy')}">2025</span>
+                                    </div>
+                                    <div class="event-info">
+                                        <h5 class="event-name" th:text="${event.eventTitle}">Workshop Game Development</h5>
+                                        <div class="event-meta">
+                                            <span class="company">
+                                                <i class="fas fa-building"></i>
+                                                <span th:text="${event.employer.companyName}">VNG Corporation</span>
+                                            </span>
+                                            <span class="location">
+                                                <i class="fas fa-map-marker-alt"></i>
+                                                <span th:text="${event.eventLocation}">TP.HCM</span>
+                                            </span>
+                                        </div>
+                                        <div class="event-actions mt-2">
+
+                                            <a th:href="@{/Events/{id}(id=${event.eventId})}" class="btn btn-outline-primary btn-sm me-2">Xem chi tiết</a>
+                                            <button
+                                                th:if="${registeredEventIds != null and registeredEventIds.contains(event.eventId)}"
+                                                class="btn btn-success btn-sm" disabled>Đã đăng ký</button>
+                                            <div sec:authorize="!isAuthenticated()">
+                                                <a th:href="@{/Login}" class="btn btn-primary">
+                                                    <i class="fas fa-sign-in-alt"></i>
+                                                    <span>Đăng nhập để tham gia</span>
+                                                </a>
+                                            </div>
+                                            <!-- Hiển thị nút ứng tuyển cho người dùng đã xác thực -->
+                                            <div sec:authorize="isAuthenticated()">
+                                                <button
+                                                        th:if="${registeredEventIds == null or !registeredEventIds.contains(event.eventId)}"
+                                                        th:onclick="'registerEvent(' + ${event.eventId} + ')'"
+                                                        class="btn btn-primary">Đăng ký tham gia</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Categories -->
+                        <div class="sidebar-section">
+                            <h4 class="sidebar-title">
+                                <i class="fas fa-tags"></i>
+                                Danh mục sự kiện
+                            </h4>
+                            <div class="categories-list">
+                                <a href="#" class="category-item">
+                                    <span class="category-name">
+                                        <i class="fas fa-briefcase"></i>
+                                        Tất cả sự kiện
+                                    </span>
+                                    <span class="category-count" th:text="${totalEvents}">150</span>
+                                </a>
+                                <a href="#" class="category-item">
+                                    <span class="category-name">
+                                        <i class="fas fa-laptop-code"></i>
+                                        Công nghệ thông tin
+                                    </span>
+                                    <span class="category-count" th:text="${itEvents}">45</span>
+                                </a>
+                                <a href="#" class="category-item">
+                                    <span class="category-name">
+                                        <i class="fas fa-chart-line"></i>
+                                        Marketing
+                                    </span>
+                                    <span class="category-count" th:text="${marketingEvents}">30</span>
+                                </a>
+                                <a href="#" class="category-item">
+                                    <span class="category-name">
+                                        <i class="fas fa-coins"></i>
+                                        Tài chính - Ngân hàng
+                                    </span>
+                                    <span class="category-count" th:text="${bankingEvents}">25</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Pagination dưới cùng -->
+            <nav th:if="${eventsPage.totalPages > 1}" aria-label="Page navigation" class="mt-4">
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${eventsPage.first} ? 'disabled'">
+                        <a class="page-link" th:href="@{/Events(page=${eventsPage.number - 1}, search=${search})}">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                    
+                    <li class="page-item" 
+                        th:each="pageNum : ${#numbers.sequence(0, eventsPage.totalPages - 1)}"
+                        th:classappend="${pageNum == eventsPage.number} ? 'active'">
+                        <a class="page-link" th:href="@{/Events(page=${pageNum}, search=${search})}" 
+                           th:text="${pageNum + 1}"></a>
+                    </li>
+                    
+                    <li class="page-item" th:classappend="${eventsPage.last} ? 'disabled'">
+                        <a class="page-link" th:href="@{/Events(page=${eventsPage.number + 1}, search=${search})}">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- AOS Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Swiper JS -->
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Make registerEvent global
+        window.registerEvent = function(eventId) {
+            // Show modal and set event ID
+            document.getElementById('eventId').value = eventId;
+            var registrationModal = new bootstrap.Modal(document.getElementById('registrationModal'));
+            registrationModal.show();
+        };
+
+        // Initialize AOS with custom settings to prevent scroll conflicts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize AOS with reduced settings
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true,
+                mirror: false,
+                disable: 'mobile' // Disable on mobile to prevent conflicts
+            });
+
+            // Registration form handling
+            initializeRegistrationForm();
+            
+            // Initialize other UI components
+            initializeUIComponents();
+        });
+
+        // Separate registration form logic
+        function initializeRegistrationForm() {
+            const submitButton = document.getElementById('submitRegistration');
+            const registrationModal = document.getElementById('registrationModal');
+
+            if (submitButton) {
+                submitButton.addEventListener('click', handleRegistrationSubmit);
+            }
+
+            if (registrationModal) {
+                registrationModal.addEventListener('hidden.bs.modal', function () {
+                    const form = document.getElementById('registrationForm');
+                    form.reset();
+                    form.classList.remove('was-validated');
+                });
+            }
+        }
+
+        // Handle form submission
+        function handleRegistrationSubmit() {
+            const form = document.getElementById('registrationForm');
+            
+            // Check form validation
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+                return;
+            }
+            
+            const eventId = document.getElementById('eventId').value;
+            const formData = {
+                fullName: document.getElementById('fullName').value,
+                phone: document.getElementById('phone').value,
+                organization: document.getElementById('organization').value,
+                notes: document.getElementById('notes').value
+            };
+            
+            const button = this;
+            const modalElement = document.getElementById('registrationModal');
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            
+            // Add loading state
+            const originalText = button.innerHTML;
+            button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang xử lý...';
+            button.disabled = true;
+            
+            fetch(`/Events/${eventId}/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`Network response was not ok (${response.status}): ${text}`);
+                    });
+                }
+                return response.text();
+            })
+            .then(data => {
+                try {
+                    if (data.startsWith('success:')) {
+                        modal.hide();
+                        showToast('Thành công', data.substring(8), 'success');
+                        setTimeout(() => location.reload(), 1500);
+                    } else if (data.startsWith('error:')) {
+                        showToast('Lỗi', data.substring(6), 'error');
+                    } else {
+                        showToast('Lỗi', 'Đã xảy ra lỗi không xác định', 'error');
+                    }
+                } catch (e) {
+                    showToast('Lỗi', 'Đã xảy ra lỗi khi xử lý phản hồi từ máy chủ', 'error');
+                }
+            })
+            .catch(error => {
+                showToast('Lỗi', 'Đã xảy ra lỗi khi đăng ký sự kiện: ' + error.message, 'error');
+            })
+            .finally(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            });
+        }
+
+        // Separate UI components initialization
+        function initializeUIComponents() {
+            // Image loading animation
+            const images = document.querySelectorAll('.event-image');
+            images.forEach(img => {
+                img.classList.add('loading-skeleton');
+                img.addEventListener('load', function() {
+                    img.classList.remove('loading-skeleton');
+                });
+            });
+        }
+
+        // Toast function
+        function showToast(title, message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-white bg-${type} border-0`;
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <strong>${title}</strong><br>
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            `;
+            
+            const container = document.getElementById('toast-container') || document.body;
+            container.appendChild(toast);
+            
+            const bsToast = new bootstrap.Toast(toast, {
+                autohide: true,
+                delay: 5000
+            });
+            
+            bsToast.show();
+            
+            toast.addEventListener('hidden.bs.toast', function () {
+                toast.remove();
+            });
+        }
+    </script>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3"></div>
+
+    <!-- Registration Modal -->
+    <div class="modal fade" id="registrationModal" tabindex="-1" aria-labelledby="registrationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registrationModalLabel">Đăng ký tham gia sự kiện</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="registrationForm" class="needs-validation" novalidate>
+                        <input type="hidden" id="eventId" name="eventId">
+                        
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Họ và tên người tham gia <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="fullName" name="fullName" required
+                                   minlength="5" maxlength="100">
+                            <div class="invalid-feedback">
+                                Vui lòng nhập họ và tên (5-100 ký tự)
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Số điện thoại người tham gia <span class="text-danger">*</span></label>
+                            <input type="tel" class="form-control" id="phone" name="phone" required
+                                   pattern="[0-9]{10,11}">
+                            <div class="invalid-feedback">
+                                Vui lòng nhập số điện thoại hợp lệ (10-11 số)
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="organization" class="form-label">Trường/Công ty <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="organization" name="organization" required>
+                            <div class="invalid-feedback">
+                                Vui lòng nhập tên trường/công ty
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">Ghi chú</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3" 
+                                    placeholder="Nhập thông tin bổ sung hoặc yêu cầu đặc biệt (nếu có)"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" id="submitRegistration">Xác nhận đăng ký</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

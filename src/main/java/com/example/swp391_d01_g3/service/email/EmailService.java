@@ -128,13 +128,17 @@ public class EmailService {
         Account savedAccount = accountRepository.save(account);
         
         // Gửi email chào mừng sau khi tạo account thành công
-        String roleText = account.getRole().name();
+        String roleText = account.getRole() != null ? account.getRole().name().toLowerCase() : "";
         String role = switch (roleText) {
             case "student" -> "Student";
             case "employer" -> "Employer";
-            default -> "User";
+            default -> null;
         };
-        sendWelcomeEmail(savedAccount.getEmail(), savedAccount.getFullName(), role);
+        if (role != null) {
+            sendWelcomeEmail(savedAccount.getEmail(), savedAccount.getFullName(), role);
+        } else {
+            System.err.println("Không xác định được vai trò, không gửi email chào mừng!");
+        }
         
         System.out.println("Account created successfully after verification for: " + savedAccount.getEmail());
         return savedAccount;
@@ -188,10 +192,6 @@ public class EmailService {
         }
         
         body.append("📧 Email đăng nhập: ").append(email).append("\n");
-        if (!role.equals("Google")) {
-            body.append("👤 Vai trò: ").append(roleText).append("\n");
-        }
-        body.append("\n");
         
         // Thêm hướng dẫn theo role
         body.append("🚀 Bạn có thể bắt đầu:\n");
@@ -215,5 +215,27 @@ public class EmailService {
             .append("🌐 Website: http://localhost:8080");
             
         return body.toString();
+    }
+
+    /**
+     * Gửi email lịch phỏng vấn cho ứng viên
+     */
+    public void sendInterviewScheduleEmail(String to, String candidateName, String jobTitle, String interviewTime, String interviewType, String meetingLink, String note) {
+        String subject = "Lịch phỏng vấn vị trí " + jobTitle + " tại JOB4YOU";
+        StringBuilder body = new StringBuilder();
+        body.append("Xin chào ").append(candidateName).append(",\n\n");
+        body.append("Chúc mừng bạn đã vượt qua vòng hồ sơ!\n");
+        body.append("Chúng tôi xin mời bạn tham gia phỏng vấn với thông tin sau:\n");
+        body.append("- Thời gian: ").append(interviewTime).append("\n");
+        body.append("- Hình thức: ").append(interviewType).append("\n");
+        if (meetingLink != null && !meetingLink.isEmpty()) {
+            body.append("- Link phỏng vấn: ").append(meetingLink).append("\n");
+        }
+        if (note != null && !note.isEmpty()) {
+            body.append("- Ghi chú: ").append(note).append("\n");
+        }
+        body.append("\nVui lòng phản hồi email này nếu bạn có thắc mắc.\n");
+        body.append("Trân trọng,\nĐội ngũ JOB4YOU");
+        sendEmail(to, subject, body.toString());
     }
 }

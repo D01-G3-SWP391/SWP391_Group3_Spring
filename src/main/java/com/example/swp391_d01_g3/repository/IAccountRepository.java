@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface IAccountRepository extends JpaRepository<Account,Long> {
+public interface IAccountRepository extends JpaRepository<Account,Integer> {
     Account findByEmail (String email);
     List<Account> findByRole(Account.Role role);
     List<Account> findAll();

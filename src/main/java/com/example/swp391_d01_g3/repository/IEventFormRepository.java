@@ -24,23 +24,9 @@ public interface IEventFormRepository extends JpaRepository<EventForm, Integer> 
     // THÊM: Tìm tất cả EventForm theo eventId (cần cho delete cascade)
     List<EventForm> findByEventEventId(Integer eventId);
 
-    // Lấy tất cả registrations của student
-    List<EventForm> findByStudentStudentIdOrderByRegistrationDateDesc(Integer studentId);
-
-    // Lấy tất cả registrations của event
-    List<EventForm> findByEventEventIdOrderByRegistrationDateAsc(Integer eventId);
-
-    // Lấy registrations với phân trang cho student
-    Page<EventForm> findByStudentStudentIdOrderByRegistrationDateDesc(Integer studentId, Pageable pageable);
-
-    // Lấy registrations với phân trang cho event
-    Page<EventForm> findByEventEventIdOrderByRegistrationDateAsc(Integer eventId, Pageable pageable);
-
     // Đếm số lượng registrations của event
     long countByEventEventId(Integer eventId);
 
-    // Đếm số lượng registrations của student
-    long countByStudentStudentId(Integer studentId);
 
     // THÊM: Xóa tất cả EventForm theo eventId (cho cascade delete)
     @Modifying
@@ -68,4 +54,8 @@ public interface IEventFormRepository extends JpaRepository<EventForm, Integer> 
             "JOIN FETCH ef.student s " +
             "WHERE ef.event.eventId = :eventId")
     List<EventForm> findEventRegistrationsWithDetails(@Param("eventId") Integer eventId);
+
+    // Lấy danh sách eventId mà student đã đăng ký
+    @Query("SELECT ef.event.eventId FROM EventForm ef WHERE ef.student.studentId = :studentId")
+    List<Integer> findRegisteredEventIdsByStudentId(@Param("studentId") Integer studentId);
 }

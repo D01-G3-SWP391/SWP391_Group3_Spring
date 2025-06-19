@@ -151,12 +151,17 @@
                                 <i class="bi bi-eye-fill"></i>
                                 <span>Xem công việc</span>
                             </a>
-                            <a th:href="@{/{cvPath}(cvPath=${jobApp.cvUrl})}"
-                               target="_blank" class="btn btn-success"
-                               th:if="${jobApp.cvUrl != null and !#strings.isEmpty(jobApp.cvUrl)}">
-                                <i class="bi bi-file-earmark-pdf-fill"></i>
-                                <span>Xem CV</span>
-                            </a>
+                        </div>
+                        <!-- Hiển thị CV trực tiếp bằng iframe hoặc img nếu có -->
+                        <div th:if="${jobApp.cvUrl != null and !#strings.isEmpty(jobApp.cvUrl)}" style="text-align: center; margin: 0 auto; max-width: 800px;">
+                            <img th:if="${#strings.endsWith(jobApp.cvUrl, '.jpg') or #strings.endsWith(jobApp.cvUrl, '.jpeg') or #strings.endsWith(jobApp.cvUrl, '.png') or #strings.endsWith(jobApp.cvUrl, '.gif')}"
+                                 th:src="${jobApp.cvUrl}" alt="CV Image" style="max-width:100%; max-height:800px; display:block; margin:0 auto; border-radius: 8px; box-shadow: 0 4px 16px rgba(80,37,196,0.12);"/>
+
+                            <!-- PDF Preview -->
+                            <iframe th:if="${!(#strings.endsWith(jobApp.cvUrl, '.jpg') or #strings.endsWith(jobApp.cvUrl, '.jpeg') or #strings.endsWith(jobApp.cvUrl, '.png') or #strings.endsWith(jobApp.cvUrl, '.gif'))}"
+                                    th:src="'https://docs.google.com/viewer?url=' + ${jobApp.cvUrl} + '&embedded=true'"
+                                    style="width:100%; height:800px; border:none; border-radius: 8px; box-shadow: 0 4px 16px rgba(80,37,196,0.12);">
+                            </iframe>
                         </div>
                     </div>
                 </div>
