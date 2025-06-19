@@ -12,23 +12,23 @@ body {
     color: #2c3e50;
 }
 
-/* ===== MAIN CONTENT LAYOUT - CĂN GIỮA HOÀN HẢO ===== */
+/* ===== MAIN CONTENT LAYOUT ===== */
 .main-content {
-    margin-top: 50px; /* Giảm margin-top */
-    margin-left: 280px; /* Tăng margin-left để tránh sidebar */
-    padding: 20px 15px; /* Giảm padding */
-    max-width: calc(100vw - 320px); /* Thu nhỏ width */
+    margin-top: 50px;
+    margin-left: 280px;
+    padding: 20px 15px;
+    max-width: calc(100vw - 320px);
     min-height: calc(100vh - 100px);
     width: auto;
     transition: margin-left 0.3s ease;
 }
 
 .main-content h1 {
-    font-size: 1.8rem; /* Giảm font-size */
+    font-size: 1.8rem;
     font-weight: 700;
     color: #2c3e50;
     text-align: center;
-    margin-bottom: 25px; /* Giảm margin-bottom */
+    margin-bottom: 25px;
     position: relative;
 }
 
@@ -124,7 +124,7 @@ body {
     transform: translateY(-2px);
 }
 
-/* ===== TABLE CONTAINER ===== */
+/* ===== TABLE CONTAINER - TỐI ƯU HÓA HOÀN TOÀN ===== */
 .table-container {
     background: white;
     border-radius: 15px;
@@ -138,6 +138,12 @@ body {
     width: 100%;
     margin-left: auto;
     margin-right: auto;
+    /* CRITICAL: Cho phép dropdown hiển thị ra ngoài */
+    overflow: visible !important;
+    position: relative;
+    /* Đảm bảo có đủ không gian */
+    min-height: 400px;
+    padding-bottom: 120px;
 }
 
 /* ===== PAGINATION INFO ===== */
@@ -157,15 +163,18 @@ body {
     font-weight: 700;
 }
 
-/* ===== TABLE STYLES ===== */
+/* ===== TABLE STYLES - TỐI ƯU HÓA DROPDOWN ===== */
 table {
     width: 100%;
     border-collapse: collapse;
     margin: 20px auto;
     background: white;
     border-radius: 15px;
-    overflow: hidden;
+    /* CRITICAL: Cho phép dropdown tràn ra ngoài */
+    overflow: visible !important;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    min-height: 200px;
+    position: relative;
 }
 
 table thead {
@@ -183,9 +192,22 @@ table thead th {
     border: none;
 }
 
+table tbody {
+    min-height: 150px;
+    position: relative;
+}
+
 table tbody tr {
     transition: all 0.3s ease;
     border-bottom: 1px solid #f1f3f4;
+    min-height: 80px;
+    position: relative;
+}
+
+/* CRITICAL: Z-index cho hàng có dropdown đang mở */
+table tbody tr:has(.dropdown-menu.show) {
+    z-index: 1000;
+    position: relative;
 }
 
 table tbody tr:hover {
@@ -204,6 +226,15 @@ table tbody td {
     border: none;
     font-size: 14px;
     text-align: center;
+    min-height: 70px;
+    position: relative;
+    /* CRITICAL: Cho phép dropdown tràn ra ngoài cell */
+    overflow: visible;
+}
+
+/* Tăng khoảng cách cho hàng cuối */
+table tbody tr:last-child td {
+    padding-bottom: 40px;
 }
 
 /* ===== CANDIDATE INFO STYLES ===== */
@@ -271,12 +302,15 @@ table tbody td {
     border: 1px solid #f5c6cb;
 }
 
-/* ===== ACTION BUTTONS ===== */
+/* ===== ACTION BUTTONS - TỐI ƯU HÓA DROPDOWN ===== */
 .action-buttons {
     display: flex;
     gap: 8px;
     align-items: center;
     justify-content: center;
+    position: relative;
+    min-height: 50px;
+    z-index: 1;
 }
 
 .action-buttons .btn {
@@ -316,12 +350,65 @@ table tbody td {
     color: white;
 }
 
+/* ===== DROPDOWN THÔNG MINH - GIẢI PHÁP HOÀN HẢO ===== */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    position: relative;
+    z-index: 2;
+}
+
 .dropdown-menu {
     border: none;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     border-radius: 12px;
     padding: 8px 0;
     margin-top: 8px;
+    /* CRITICAL: Z-index cao nhất */
+    z-index: 1050 !important;
+    position: absolute !important;
+    min-width: 160px;
+    /* Vị trí mặc định */
+    top: 100%;
+    left: 0;
+    transform: translateY(0);
+    /* Animation mượt mà */
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: top center;
+    /* Đảm bảo không bị cắt */
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.dropdown-menu.show {
+    display: block !important;
+    opacity: 1;
+    visibility: visible;
+    animation: dropdownFadeIn 0.3s ease-out;
+}
+
+/* CRITICAL: Dropdown hiển thị lên trên khi cần */
+.dropdown-menu.dropup {
+    top: auto !important;
+    bottom: 100% !important;
+    margin-top: 0;
+    margin-bottom: 8px;
+    transform-origin: bottom center;
+}
+
+.dropdown-menu.dropup.show {
+    animation: dropdownFadeInUp 0.3s ease-out;
+}
+
+/* Dropdown hiển thị bên trái khi cần */
+.dropdown-menu.dropleft {
+    left: auto !important;
+    right: 0 !important;
 }
 
 .dropdown-item {
@@ -332,16 +419,43 @@ table tbody td {
     background: none;
     width: 100%;
     text-align: left;
+    color: #495057;
+    text-decoration: none;
+    display: block;
 }
 
 .dropdown-item:hover {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
+    text-decoration: none;
 }
 
 .dropdown-item:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+/* ===== ANIMATIONS CHO DROPDOWN ===== */
+@keyframes dropdownFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes dropdownFadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 /* ===== EMPTY STATE ===== */
@@ -564,18 +678,18 @@ table tbody td {
     animation: gentlePulse 2s infinite;
 }
 
-/* ===== RESPONSIVE DESIGN - KHẮC PHỤC TRÀN NAVBAR ===== */
+/* ===== RESPONSIVE DESIGN - TỐI ƯU HÓA DROPDOWN ===== */
 @media (max-width: 1200px) {
     .main-content {
         max-width: 95%;
         padding: 25px 15px;
-        margin-top: 110px; /* Tăng từ 90px lên 110px */
+        margin-top: 110px;
     }
 }
 
 @media (max-width: 992px) {
     .main-content {
-        margin-top: 130px; /* Thêm breakpoint mới */
+        margin-top: 130px;
         padding: 20px 10px;
         max-width: 98%;
     }
@@ -591,12 +705,14 @@ table tbody td {
 
     .table-container {
         padding: 20px 15px;
+        min-height: 450px;
+        padding-bottom: 150px;
     }
 }
 
 @media (max-width: 768px) {
     .main-content {
-        margin-top: 110px; /* Tăng từ 80px lên 150px */
+        margin-top: 110px;
         padding: 20px 10px;
         max-width: 98%;
     }
@@ -615,10 +731,28 @@ table tbody td {
         padding: 20px 15px;
         border-radius: 15px;
         overflow-x: auto;
+        overflow-y: visible !important;
+        min-height: 500px;
+        padding-bottom: 180px;
     }
 
     table {
         min-width: 500px;
+    }
+
+    /* CRITICAL: Dropdown responsive */
+    .dropdown-menu {
+        min-width: 140px;
+        font-size: 13px;
+        /* Ưu tiên hiển thị lên trên trên mobile */
+        top: auto !important;
+        bottom: 100% !important;
+        margin-bottom: 8px;
+        margin-top: 0;
+    }
+
+    .dropdown-menu.show {
+        animation: dropdownFadeInUp 0.3s ease-out;
     }
 
     .bottom-pagination {
@@ -648,11 +782,24 @@ table tbody td {
     .main-content {
         padding: 15px 5px;
         max-width: 100%;
-        margin-top: 170px; /* Tăng thêm cho màn hình rất nhỏ */
+        margin-top: 170px;
     }
 
     .table-container {
         padding: 15px 10px;
+        min-height: 600px;
+        padding-bottom: 220px;
+    }
+
+    /* CRITICAL: Dropdown cho màn hình rất nhỏ */
+    .dropdown-menu {
+        min-width: 120px;
+        font-size: 12px;
+        /* Luôn hiển thị lên trên */
+        top: auto !important;
+        bottom: 100% !important;
+        margin-bottom: 5px;
+        margin-top: 0;
     }
 
     .pagination-btn {
@@ -667,10 +814,9 @@ table tbody td {
     }
 }
 
-/* ===== BREAKPOINT BỔ SUNG CHO MÀN HÌNH RẤT NHỎ ===== */
 @media (max-width: 360px) {
     .main-content {
-        margin-top: 180px; /* Đảm bảo không tràn trên màn hình rất nhỏ */
+        margin-top: 180px;
         padding: 10px 5px;
     }
 
@@ -680,6 +826,8 @@ table tbody td {
 
     .table-container {
         padding: 15px 8px;
+        min-height: 650px;
+        padding-bottom: 250px;
     }
 }
 

@@ -1,0 +1,19 @@
+.main-content {
+    margin-top: 90px;
+    padding: 30px 20px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.status-badge.pending { background: #fff3cd; color: #856404; }
+.status-badge.under_review { background: #d1ecf1; color: #0c5460; }
+.status-badge.resolved { background: #d4edda; color: #155724; }
+.status-badge.rejected { background: #f8d7da; color: #721c24; }
+.status-badge.closed { background: #e2e3e5; color: #383d41; }
