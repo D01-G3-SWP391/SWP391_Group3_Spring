@@ -96,6 +96,144 @@
             border-bottom: 0;
             border-left: 0.3em solid transparent;
         }
+
+        /* Flash Message Styles */
+        .flash-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 1px solid #c3e6cb;
+            border-radius: 10px;
+            color: #155724;
+            font-weight: 500;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: slideInDown 0.5s ease-out;
+        }
+
+        .flash-message.error {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .flash-message .icon {
+            font-size: 1.2em;
+            flex-shrink: 0;
+        }
+
+        .flash-message .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            color: inherit;
+            cursor: pointer;
+            margin-left: auto;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .flash-message .close-btn:hover {
+            opacity: 1;
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Bottom Pagination Styles */
+        .bottom-pagination {
+            margin-top: 3rem;
+            display: flex;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+
+        .pagination-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+
+        .pagination-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: linear-gradient(135deg, #6c3ae6 0%, #8b5cf6 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .pagination-btn:hover {
+            background: linear-gradient(135deg, #5b2bd5 0%, #7c3aed 100%);
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+
+        .pagination-btn.disabled {
+            background: #e9ecef;
+            color: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .pagination-btn.disabled:hover {
+            background: #e9ecef;
+            color: #6c757d;
+            transform: none;
+        }
+
+        .page-numbers {
+            display: flex;
+            gap: 0.25rem;
+            margin: 0 1rem;
+        }
+
+        .page-number {
+            padding: 0.75rem 1rem;
+            background: #f8f9fa;
+            color: #495057;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            min-width: 45px;
+            text-align: center;
+        }
+
+        .page-number:hover {
+            background: linear-gradient(135deg, #6c3ae6 0%, #8b5cf6 100%);
+            color: white;
+            text-decoration: none;
+            transform: translateY(-2px);
+        }
+
+        .page-number.active {
+            background: linear-gradient(135deg, #6c3ae6 0%, #8b5cf6 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 58, 230, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -105,13 +243,16 @@
 <div class="main-content">
     <h1>Danh Sách Ứng Viên</h1>
 
-    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+    <!-- Flash message (success) -->
+    <div th:if="${successMessage}" class="flash-message" id="flashMessage">
+        <span class="icon">✔️</span>
         <span th:text="${successMessage}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <button class="close-btn" onclick="document.getElementById('flashMessage').style.display='none'">&times;</button>
     </div>
-    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <div th:if="${errorMessage}" class="flash-message error" id="errorFlashMessage">
+        <span class="icon">❌</span>
         <span th:text="${errorMessage}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <button class="close-btn" onclick="document.getElementById('errorFlashMessage').style.display='none'">&times;</button>
     </div>
 
     <div class="search-section mb-4">
@@ -249,33 +390,45 @@
         </div>
     </div>
 
-    <div th:if="${applications != null and !applications.content.isEmpty()}" class="simple-pagination">
-        <!-- Previous button -->
-        <a th:if="${applications.hasPrevious()}"
-           th:href="@{/Employer/Applications(page=${applications.number - 1}, size=${applications.size}, searchName=${searchName})}"
-           class="btn btn-outline-primary me-2">
-            <i class="bi bi-chevron-left"></i> Trang trước
-        </a>
-        <span th:unless="${applications.hasPrevious()}" class="btn btn-outline-secondary me-2 disabled">
-            <i class="bi bi-chevron-left"></i> Trang trước
-        </span>
+    <div th:if="${applications != null and applications.totalPages > 1}" class="bottom-pagination">
+        <div class="pagination-wrapper">
+            <!-- Previous button -->
+            <a th:if="${applications.hasPrevious()}"
+               th:href="@{/Employer/Applications(page=${applications.number - 1}, size=${applications.size}, searchName=${searchName})}"
+               class="pagination-btn prev-btn">
+                <i class="bi bi-chevron-left"></i>
+                <span>Trang trước</span>
+            </a>
+            <span th:unless="${applications.hasPrevious()}" class="pagination-btn prev-btn disabled">
+                <i class="bi bi-chevron-left"></i>
+                <span>Trang trước</span>
+            </span>
 
-        <span class="mx-3 page-info">
-            Trang <strong th:text="${applications.number + 1}">1</strong>
-            / <strong th:text="${applications.totalPages}">1</strong>
-        </span>
+            <div class="page-numbers">
+                <th:block th:each="pageNum : ${#numbers.sequence(0, applications.totalPages - 1)}">
+                    <a th:if="${pageNum >= applications.number - 2 and pageNum <= applications.number + 2 and pageNum != applications.number}"
+                       th:href="@{/Employer/Applications(page=${pageNum}, size=${applications.size}, searchName=${searchName})}"
+                       class="page-number"
+                       th:text="${pageNum + 1}">1</a>
+                    <span th:if="${pageNum >= applications.number - 2 and pageNum <= applications.number + 2 and pageNum == applications.number}"
+                          class="page-number active"
+                          th:text="${pageNum + 1}">1</span>
+                </th:block>
+            </div>
 
-        <a th:if="${applications.hasNext()}"
-           th:href="@{/Employer/Applications(page=${applications.number + 1}, size=${applications.size}, searchName=${searchName})}"
-           class="btn btn-outline-primary ms-2">
-            Trang sau <i class="bi bi-chevron-right"></i>
-        </a>
-        <span th:unless="${applications.hasNext()}" class="btn btn-outline-secondary ms-2 disabled">
-            Trang sau <i class="bi bi-chevron-right"></i>
-        </span>
+            <a th:if="${applications.hasNext()}"
+               th:href="@{/Employer/Applications(page=${applications.number + 1}, size=${applications.size}, searchName=${searchName})}"
+               class="pagination-btn next-btn">
+                <span>Trang sau</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+            <span th:unless="${applications.hasNext()}" class="pagination-btn next-btn disabled">
+                <span>Trang sau</span>
+                <i class="bi bi-chevron-right"></i>
+            </span>
+        </div>
     </div>
 </div>
-
 <!-- Modal Gửi Lịch Phỏng Vấn -->
 <div class="modal fade" id="interviewModal" tabindex="-1" aria-labelledby="interviewModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -348,6 +501,17 @@ function handleStatusClick(event, btn) {
     // Cho phép submit bình thường với các trạng thái khác
     return true;
 }
+
+// Auto hide flash messages after 3 seconds
+setTimeout(function() {
+    var successMsg = document.getElementById('flashMessage');
+    if(successMsg) successMsg.style.display = 'none';
+}, 3000);
+
+setTimeout(function() {
+    var errorMsg = document.getElementById('errorFlashMessage');
+    if(errorMsg) errorMsg.style.display = 'none';
+}, 3000);
 </script>
 </body>
 </html>
