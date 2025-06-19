@@ -40,17 +40,19 @@ public interface IJobPostRepository extends JpaRepository<JobPost, Integer> {
             "JOIN e.jobField jf " +
             "WHERE (:keyword IS NULL OR jp.jobTitle LIKE %:keyword%) " +
             "AND (:location IS NULL OR jp.jobLocation = :location) " +
-            "AND (:salary IS NULL OR jp.jobSalary >= :salary) " +
-            "AND (:jobType IS NULL OR jp.jobType = :jobType) " +
+            "AND (:salary IS NULL OR jp.jobSalary LIKE CONCAT('%', :salary, '%')) " +
+            "AND (:jobType IS NULL OR LOWER(jp.jobType) LIKE LOWER(CONCAT('%', :jobType, '%'))) " + // Dùng LIKE
             "AND (:jobFieldId IS NULL OR jf.jobFieldId = :jobFieldId) " +
             "AND (:companyName IS NULL OR e.companyName = :companyName)")
     List<JobPost> searchJobs(
             @Param("keyword") String keyword,
             @Param("location") String location,
-            @Param("salary") Integer salary,
-            @Param("jobType") String jobType,
+            @Param("salary") String salary,
+            @Param("jobType") String jobType,  // Giữ nguyên kiểu String
             @Param("jobFieldId") Integer jobFieldId,
-            @Param("companyName") String companyName);
+            @Param("companyName") String companyName
+    );
+
 
 
 

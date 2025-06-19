@@ -105,14 +105,20 @@
                         <form th:action="@{/HomePage/search}" method="post" class="search-form" id="candidateForm">
                             <div class="search-fields">
                                 <div class="search-field">
-                                    <i class="fas fa-dollar-sign field-icon"></i>
-                                    <input 
-                                        type="number" 
-                                        name="salary" 
-                                        th:value="${param.salary}"
-                                        placeholder="Minimum Salary..." 
-                                        class="search-input"
-                                    />
+                                    <i class="fas fa-money-bill-wave field-icon"></i>
+                                    <select name="salary" class="search-select">
+                                        <option value="">Salary</option>
+                                        <option value="2-3 triệu">2 - 3 triệu</option>
+                                        <option value="3-5">3 - 5 triệu</option>
+                                        <option value="5-7 triệu">5 - 7 triệu</option>
+                                        <option value="7-10 triệu">7 - 10 triệu</option>
+                                        <option value="10-15 triệu">10 - 15 triệu</option>
+                                        <option value="15-20 triệu">15 - 20 triệu</option>
+                                        <option value="20-30 triệu">20 - 30 triệu</option>
+                                        <option value="30-40 triệu">30 - 40 triệu</option>
+                                        <option value=">50 triệu">Trên 50 triệu</option>
+                                        <option value="Thỏa thuận">Thỏa thuận</option>
+                                    </select>
                                 </div>
                                 
                                 <div class="search-field">

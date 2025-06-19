@@ -28,7 +28,7 @@ public class HomePageFeatures {
             @RequestParam(required = false) String location,
             @RequestParam(required = false) String jobType,
             @RequestParam(name = "fieldId", required = false) Integer fieldId,
-            @RequestParam(required = false) Integer salary,
+            @RequestParam(required = false) String salary,
             @RequestParam(required = false) String companyName,
             Model model,
             Principal principal) {

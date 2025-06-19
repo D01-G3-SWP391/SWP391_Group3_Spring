@@ -25,7 +25,7 @@ public interface IJobpostService  {
 
     // Hàm search với đầy đủ các tiêu chí
     List<JobPost> searchJobs(String keyword, String location, String jobType,
-                             Integer fieldId, Integer salary,
+                             Integer fieldId, String salary,
                              String companyName);
 
     List<JobPost> getTopJobs();

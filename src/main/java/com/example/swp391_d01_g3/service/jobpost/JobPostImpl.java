@@ -74,11 +74,11 @@ public class JobPostImpl implements IJobpostService {
 
     @Override
     public List<JobPost> searchJobs(String keyword, String location, String jobType,
-                                    Integer fieldId, Integer salary, String companyName) {
+                                    Integer fieldId, String salary, String companyName) {
         return iJobPostRepository.searchJobs(
                 (keyword == null || keyword.isEmpty()) ? null : keyword,
                 (location == null || location.isEmpty()) ? null : location,
-                (salary == null || salary == 0) ? null : salary,
+                (salary == null || salary.isEmpty()) ? null : salary,
                 (jobType == null || jobType.isEmpty()) ? null : jobType,
                 (fieldId == null || fieldId == 0) ? null : fieldId,
                 (companyName == null || companyName.isEmpty()) ? null : companyName
