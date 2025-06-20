@@ -167,11 +167,11 @@
                     <div class="tab-navigation">
                         <button class="tab-button active" onclick="openTab('description')">
                             <i class="fas fa-file-alt"></i>
-                            <span th:text="#{job.description.tabs.description}">Mô tả công việc</span>
+                            <span th:utext="#{job.description.tabs.description}">Mô tả công việc</span>
                         </button>
                         <button class="tab-button" onclick="openTab('requirements')">
                             <i class="fas fa-list-check"></i>
-                            <span th:text="#{job.description.tabs.requirements}">Yêu cầu công việc</span>
+                            <span th:utext="#{job.description.tabs.requirements}">Yêu cầu công việc</span>
                         </button>
                         <button class="tab-button" onclick="openTab('company')">
                             <i class="fas fa-building"></i>
@@ -487,6 +487,9 @@
             });
         });
     </script>
+
+<!-- Add notification bell -->
+<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
     <script th:src="@{/js/languageSwitch.js}"></script>
 </body>
 </html>

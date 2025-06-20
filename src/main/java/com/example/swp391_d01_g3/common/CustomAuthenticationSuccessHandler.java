@@ -84,7 +84,8 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         
         if (targetUrl == null || targetUrl.isEmpty() || targetUrl.contains("favicon.ico") ||
                 targetUrl.contains("error") || targetUrl.startsWith("/.well-known") ||
-                targetUrl.endsWith(".css") || targetUrl.endsWith(".js") || targetUrl.endsWith(".json")) {
+                targetUrl.endsWith(".css") || targetUrl.endsWith(".js") || targetUrl.endsWith(".json") ||
+                targetUrl.startsWith("/notifications/") || targetUrl.startsWith("/api/")) {
             if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_admin"))) {
                 targetUrl = "/Admin";
             } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_employer"))) {
@@ -96,6 +97,8 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             }
         }
         clearAuthenticationAttributes(request);
+        // Clear the REDIRECT_URL from session after using it
+        request.getSession().removeAttribute("REDIRECT_URL");
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface INotificationRepository extends JpaRepository<Notification, Integer> {
+public interface INotificationRepository extends JpaRepository<Notification, Long> {
     
     @Query("SELECT n FROM Notification n WHERE n.user.userId = :userId ORDER BY n.createdAt DESC")
     List<Notification> findByUserIdOrderByCreatedAtDesc(@Param("userId") Integer userId);

@@ -14,6 +14,7 @@
     <link rel="stylesheet" th:href="@{/css/newRegister.css}" />
     <link rel="stylesheet" th:href="@{/css/registerEnhanced.css}" />
     <link rel="stylesheet" th:href="@{/css/validation-enhanced.css}" />
+    <link rel="stylesheet" th:href="@{/css/registerEmployerEnhanced.css}" />
     <link
             href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
             rel="stylesheet"
@@ -28,127 +29,137 @@
     <form class="login-form" method="post" th:action="@{/Register/registerEmployer}" th:object="${accountEmployerDTO}" id="registerForm">
         <p class="subtitle" th:utext="#{register.employer.subtitle}">Hoặc <a th:href="@{/Login}">đăng nhập NGAY</a> nếu bạn đã có tài khoản.</p>
         
-        <!-- Login Information Section -->
-        <h3 style="margin-top: 30px; margin-bottom: 20px; color: #333; font-weight: 600; border-bottom: 2px solid #007bff; padding-bottom: 10px;">
-            <i class="bi bi-shield-lock" style="color: #007bff; margin-right: 8px;"></i><span th:text="#{register.employer.loginInfo}">Thông tin đăng nhập</span>
-        </h3>
-        
-        <!-- Email -->
-        <div class="form-group">
-            <input type="email" id="email" name="email" th:placeholder="#{register.employer.email.placeholder}" th:field="*{email}" required>
-            <span class="error-message server-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
-            <span class="error-message" id="emailError"></span>
-            <div class="form-tooltip" th:text="#{register.employer.tooltip.email}">Nhập email để đăng nhập và nhận thông báo</div>
-        </div>
-        
-        <!-- Password -->
-        <div class="form-group">
-            <input type="password" id="password" name="password" th:placeholder="#{register.employer.password.placeholder}" th:field="*{password}" required>
-            <span class="error-message server-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
-            <span class="error-message" id="passwordError"></span>
-            <div class="password-strength" id="passwordStrength"></div>
-            <div class="form-tooltip" th:text="#{register.employer.tooltip.password}">Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số</div>
-        </div>
-        
-        <!-- Confirm Password -->
-        <div class="form-group">
-            <input type="password" id="confirmPassword" name="confirmPassword" th:placeholder="#{register.employer.confirmPassword.placeholder}" th:field="*{confirmPassword}" required>
-            <span class="error-message server-error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></span>
-            <span class="error-message" id="confirmPasswordError"></span>
-            <div class="form-tooltip" th:text="#{register.employer.tooltip.confirmPassword}">Nhập lại mật khẩu để xác nhận</div>
-        </div>
-        
-        <!-- Contact Information Section -->
-        <h3 style="margin-top: 40px; margin-bottom: 20px; color: #333; font-weight: 600; border-bottom: 2px solid #28a745; padding-bottom: 10px;">
-            <i class="bi bi-person-lines-fill" style="color: #28a745; margin-right: 8px;"></i><span th:text="#{register.employer.contactInfo}">Thông tin liên hệ</span>
-        </h3>
-        
-        <!-- Full Name -->
-        <div class="form-group">
-            <input type="text" id="fullName" name="fullname" th:placeholder="#{register.employer.fullName.placeholder}" th:field="*{fullName}" required>
-            <span class="error-message server-error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></span>
-            <span class="error-message" id="fullNameError"></span>
-            <div class="form-tooltip" th:text="#{register.employer.tooltip.fullName}">Tên người đại diện công ty</div>
-        </div>
-        
-        <!-- Phone -->
-        <div class="form-group">
-            <input type="tel" id="phone" name="phone" th:placeholder="#{register.employer.phone.placeholder}" th:field="*{phone}" required>
-            <span class="error-message server-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></span>
-            <span class="error-message" id="phoneError"></span>
-            <div class="form-tooltip" th:text="#{register.employer.tooltip.phone}">Số điện thoại liên hệ (10-11 chữ số)</div>
-        </div>
-        
-        <!-- Company Information Section -->
-        <h3 style="margin-top: 40px; margin-bottom: 20px; color: #333; font-weight: 600; border-bottom: 2px solid #17a2b8; padding-bottom: 10px;">
-            <i class="bi bi-building" style="color: #17a2b8; margin-right: 8px;"></i><span th:text="#{register.employer.companyInfo}">Thông tin công ty</span>
-        </h3>
-        
-        <!-- Company Name -->
-        <div class="form-group">
-            <input type="text" id="companyName" name="company_name" th:placeholder="#{register.employer.companyName.placeholder}" th:field="*{companyName}" required>
-            <span class="error-message server-error" th:if="${#fields.hasErrors('companyName')}" th:errors="*{companyName}"></span>
-            <span class="error-message" id="companyNameError"></span>
-            <div class="form-tooltip" th:text="#{register.employer.tooltip.companyName}">Tên chính thức của công ty</div>
-        </div>
-        
-        <!-- Company Address -->
-        <div class="form-group">
-            <input type="text" id="companyAddress" name="company_address" th:placeholder="#{register.employer.companyAddress.placeholder}" th:field="*{companyAddress}" required>
-            <span class="error-message server-error" th:if="${#fields.hasErrors('companyAddress')}" th:errors="*{companyAddress}"></span>
-            <span class="error-message" id="companyAddressError"></span>
-            <div class="form-tooltip" th:text="#{register.employer.tooltip.companyAddress}">Địa chỉ trụ sở chính của công ty</div>
-        </div>
-        
-        <!-- Company Description -->
-<!--        <div class="form-group">-->
-<!--            <textarea id="companyDescription" name="company_des" placeholder="Mô tả công ty *" th:field="*{companyDescription}" required -->
-<!--                      style="min-height: 120px; resize: vertical; padding: 15px; border: 2px solid #e1e5e9; border-radius: 10px; -->
-<!--                             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 16px; -->
-<!--                             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); width: 100%; box-sizing: border-box;"></textarea>-->
-<!--            <span class="error-message server-error" th:if="${#fields.hasErrors('companyDescription')}" th:errors="*{companyDescription}"></span>-->
-<!--            <span class="error-message" id="companyDescriptionError"></span>-->
-<!--            <div class="form-tooltip">Mô tả về hoạt động và văn hóa công ty (ít nhất 10 ký tự)</div>-->
-<!--        </div>-->
-        
-        <!-- Job Field -->
-        <div class="form-group">
-                         <select id="jobsFieldId" name="jobsFieldId" th:field="*{jobsFieldId}" required
-                     style="width: 100%; padding: 15px; border: 2px solid #e1e5e9; border-radius: 10px; 
-                            font-size: 16px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-                            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); background-color: #fff; 
-                            appearance: none; background-repeat: no-repeat; background-position: right 15px center; background-size: 20px;">
-                <option value="" th:text="#{register.employer.jobField.placeholder}">-- Chọn lĩnh vực công việc --</option>
-                <option th:each="field : ${jobFields}"
-                        th:value="${field.jobFieldId}"
-                        th:text="${field.jobFieldName}">
-                </option>
-            </select>
-            <span class="error-message server-error" th:if="${#fields.hasErrors('jobsFieldId')}" th:errors="*{jobsFieldId}"></span>
-            <span class="error-message" id="jobsFieldIdError"></span>
-            <div class="form-tooltip" th:text="#{register.employer.tooltip.jobField}">Chọn lĩnh vực chính mà công ty hoạt động</div>
-        </div>
-        
-        <!-- Terms and Conditions -->
-        <div class="form-group terms-checkbox-container" id="termsContainer">
-            <label class="terms-checkbox-label" for="agreeTerms">
-                <div class="custom-checkbox">
-                    <input type="checkbox" id="agreeTerms" required>
-                    <span class="checkmark"></span>
+        <div class="form-columns">
+            <!-- Left Column: Login Information -->
+            <div class="left-column">
+                <!-- Login Information Section -->
+                <div>
+                    <h3 style="margin-top: 30px; margin-bottom: 20px; color: #333; font-weight: 600; border-bottom: 2px solid #007bff; padding-bottom: 10px;">
+                        <i class="bi bi-shield-lock" style="color: #007bff; margin-right: 8px;"></i><span th:text="#{register.employer.loginInfo}">Thông tin đăng nhập</span>
+                    </h3>
+                    
+                    <!-- Email -->
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" th:placeholder="#{register.employer.email.placeholder}" th:field="*{email}" required>
+                        <span class="error-message server-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                        <span class="error-message" id="emailError"></span>
+                        <div class="form-tooltip" th:text="#{register.employer.tooltip.email}">Nhập email để đăng nhập và nhận thông báo</div>
+                    </div>
+                    
+                    <!-- Password -->
+                    <div class="form-group">
+                        <input type="password" id="password" name="password" th:placeholder="#{register.employer.password.placeholder}" th:field="*{password}" required>
+                        <span class="error-message server-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+                        <span class="error-message" id="passwordError"></span>
+                        <div class="password-strength" id="passwordStrength"></div>
+                        <div class="form-tooltip" th:text="#{register.employer.tooltip.password}">Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số</div>
+                    </div>
+                    
+                    <!-- Confirm Password -->
+                    <div class="form-group">
+                        <input type="password" id="confirmPassword" name="confirmPassword" th:placeholder="#{register.employer.confirmPassword.placeholder}" th:field="*{confirmPassword}" required>
+                        <span class="error-message server-error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></span>
+                        <span class="error-message" id="confirmPasswordError"></span>
+                        <div class="form-tooltip" th:text="#{register.employer.tooltip.confirmPassword}">Nhập lại mật khẩu để xác nhận</div>
+                    </div>
                 </div>
-                <div class="terms-text" th:utext="#{register.employer.agreeTerms}">
-                    Tôi đồng ý với <a href="#" onclick="event.preventDefault();">Điều khoản sử dụng</a> và <a href="#" onclick="event.preventDefault();">Chính sách bảo mật</a>
+            </div>
+            
+            <!-- Right Column: Company Information -->
+            <div class="right-column">
+                <!-- Company Information Section -->
+                <div>
+                    <h3 style="margin-top: 30px; margin-bottom: 20px; color: #333; font-weight: 600; border-bottom: 2px solid #17a2b8; padding-bottom: 10px;">
+                        <i class="bi bi-building" style="color: #17a2b8; margin-right: 8px;"></i><span th:text="#{register.employer.companyInfo}">Thông tin công ty</span>
+                    </h3>
+                    
+                    <!-- Company Name -->
+                    <div class="form-group">
+                        <input type="text" id="companyName" name="company_name" th:placeholder="#{register.employer.companyName.placeholder}" th:field="*{companyName}" required>
+                        <span class="error-message server-error" th:if="${#fields.hasErrors('companyName')}" th:errors="*{companyName}"></span>
+                        <span class="error-message" id="companyNameError"></span>
+                        <div class="form-tooltip" th:text="#{register.employer.tooltip.companyName}">Tên chính thức của công ty</div>
+                    </div>
+                    
+                    <!-- Company Address -->
+                    <div class="form-group">
+                        <input type="text" id="companyAddress" name="company_address" th:placeholder="#{register.employer.companyAddress.placeholder}" th:field="*{companyAddress}" required>
+                        <span class="error-message server-error" th:if="${#fields.hasErrors('companyAddress')}" th:errors="*{companyAddress}"></span>
+                        <span class="error-message" id="companyAddressError"></span>
+                        <div class="form-tooltip" th:text="#{register.employer.tooltip.companyAddress}">Địa chỉ trụ sở chính của công ty</div>
+                    </div>
+                    
+                    <!-- Job Field -->
+                    <div class="form-group">
+                        <select id="jobsFieldId" name="jobsFieldId" th:field="*{jobsFieldId}" required
+                             style="width: 100%; padding: 15px; border: 2px solid #e1e5e9; border-radius: 10px; 
+                                    font-size: 16px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); background-color: #fff; 
+                                    appearance: none; background-repeat: no-repeat; background-position: right 15px center; background-size: 20px;">
+                            <option value="" th:text="#{register.employer.jobField.placeholder}">-- Chọn lĩnh vực công việc --</option>
+                            <option th:each="field : ${jobFields}"
+                                    th:value="${field.jobFieldId}"
+                                    th:text="${field.jobFieldName}">
+                            </option>
+                        </select>
+                        <span class="error-message server-error" th:if="${#fields.hasErrors('jobsFieldId')}" th:errors="*{jobsFieldId}"></span>
+                        <span class="error-message" id="jobsFieldIdError"></span>
+                        <div class="form-tooltip" th:text="#{register.employer.tooltip.jobField}">Chọn lĩnh vực chính mà công ty hoạt động</div>
+                    </div>
                 </div>
-            </label>
-            <span class="error-message" id="agreeTermsError"></span>
+            </div>
         </div>
         
-        <button type="submit" class="content-btn content-btn-primary login-page-btn btn-submit" id="submitBtn">
-            <i class="bi bi-building-add"></i> <span th:text="#{register.employer.submitButton}">Đăng ký tài khoản</span>
-        </button>
+        <!-- Contact Information Section - Full Width -->
+        <div class="contact-section-full">
+            <h3 style="margin-top: 40px; margin-bottom: 20px; color: #333; font-weight: 600; border-bottom: 2px solid #28a745; padding-bottom: 10px;">
+                <i class="bi bi-person-lines-fill" style="color: #28a745; margin-right: 8px;"></i><span th:text="#{register.employer.contactInfo}">Thông tin liên hệ</span>
+            </h3>
+            
+            <div class="contact-fields">
+                <!-- Full Name -->
+                <div class="form-group">
+                    <input type="text" id="fullName" name="fullname" th:placeholder="#{register.employer.fullName.placeholder}" th:field="*{fullName}" required>
+                    <span class="error-message server-error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></span>
+                    <span class="error-message" id="fullNameError"></span>
+                    <div class="form-tooltip" th:text="#{register.employer.tooltip.fullName}">Tên người đại diện công ty</div>
+                </div>
+                
+                <!-- Phone -->
+                <div class="form-group">
+                    <input type="tel" id="phone" name="phone" th:placeholder="#{register.employer.phone.placeholder}" th:field="*{phone}" required>
+                    <span class="error-message server-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></span>
+                    <span class="error-message" id="phoneError"></span>
+                    <div class="form-tooltip" th:text="#{register.employer.tooltip.phone}">Số điện thoại liên hệ (10-11 chữ số)</div>
+                </div>
+            </div>
+        </div>
         
-        <div style="text-align: center; margin-top: 20px; color: #666; font-size: 14px;">
-            <p th:text="#{register.employer.otpNotice}">Bằng cách đăng ký, bạn sẽ nhận được mã OTP qua email để xác thực tài khoản.</p>
+        <!-- Terms and Conditions - Full Width -->
+        <div class="terms-section-full">
+            <div class="form-group terms-checkbox-container" id="termsContainer">
+                <label class="terms-checkbox-label" for="agreeTerms">
+                    <div class="custom-checkbox">
+                        <input type="checkbox" id="agreeTerms" required>
+                        <span class="checkmark"></span>
+                    </div>
+                    <div class="terms-text" th:utext="#{register.employer.agreeTerms}">
+                        Tôi đồng ý với <a href="#" onclick="event.preventDefault();">Điều khoản sử dụng</a> và <a href="#" onclick="event.preventDefault();">Chính sách bảo mật</a>
+                    </div>
+                </label>
+                <span class="error-message" id="agreeTermsError"></span>
+            </div>
+        </div>
+        
+        <!-- Submit Button - Centered between columns -->
+        <div class="submit-container">
+            <button type="submit" class="content-btn content-btn-primary login-page-btn btn-submit" id="submitBtn">
+                <i class="bi bi-building-add"></i> <span th:text="#{register.employer.submitButton}">Đăng ký tài khoản</span>
+            </button>
+            
+                         <div style="text-align: center; margin-top: 20px; color: #666; font-size: 14px;">
+                 <p th:text="#{register.employer.otpNotice}">Bằng cách đăng ký, bạn sẽ nhận được mã OTP qua email để xác thực tài khoản.</p>
+             </div>
         </div>
     </form>
 </div>
@@ -163,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const confirmPasswordInput = document.getElementById('confirmPassword');
     const companyNameInput = document.getElementById('companyName');
     const companyAddressInput = document.getElementById('companyAddress');
-    const companyDescriptionInput = document.getElementById('companyDescription');
+
     const jobsFieldIdSelect = document.getElementById('jobsFieldId');
     const agreeTermsCheckbox = document.getElementById('agreeTerms');
     const submitBtn = document.getElementById('submitBtn');
@@ -399,7 +410,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Add blur event listeners để track touched fields
     [fullNameInput, emailInput, phoneInput, passwordInput, confirmPasswordInput, 
-     companyNameInput, companyAddressInput, companyDescriptionInput, jobsFieldIdSelect].forEach(input => {
+     companyNameInput, companyAddressInput, jobsFieldIdSelect].forEach(input => {
         input.addEventListener('blur', function() {
             touchedFields.add(this.id);
             // Validate when field loses focus
@@ -424,9 +435,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     break;
                 case 'companyAddress':
                     validateField(this, validateCompanyAddress);
-                    break;
-                case 'companyDescription':
-                    validateField(this, validateCompanyDescription);
                     break;
                 case 'jobsFieldId':
                     validateField(this, validateJobField);
@@ -481,9 +489,7 @@ document.addEventListener('DOMContentLoaded', function() {
         validateField(this, validateCompanyAddress);
     });
     
-    companyDescriptionInput.addEventListener('input', function() {
-        validateField(this, validateCompanyDescription);
-    });
+
     
     jobsFieldIdSelect.addEventListener('change', function() {
         validateField(this, validateJobField);
@@ -522,7 +528,7 @@ document.addEventListener('DOMContentLoaded', function() {
         touchedFields.add('confirmPassword');
         touchedFields.add('companyName');
         touchedFields.add('companyAddress');
-        touchedFields.add('companyDescription');
+
         touchedFields.add('jobsFieldId');
         touchedFields.add('agreeTerms');
         
@@ -534,7 +540,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const confirmPasswordError = validateConfirmPassword(passwordInput.value, confirmPasswordInput.value);
         const companyNameError = validateCompanyName(companyNameInput.value);
         const companyAddressError = validateCompanyAddress(companyAddressInput.value);
-        const companyDescriptionError = validateCompanyDescription(companyDescriptionInput.value);
+
         const jobFieldError = validateJobField(jobsFieldIdSelect.value);
         
         if (fullNameError) {
@@ -572,10 +578,7 @@ document.addEventListener('DOMContentLoaded', function() {
             hasErrors = true;
         }
         
-        if (companyDescriptionError) {
-            showError(companyDescriptionInput, companyDescriptionError);
-            hasErrors = true;
-        }
+
         
         if (jobFieldError) {
             showError(jobsFieldIdSelect, jobFieldError);
@@ -613,24 +616,13 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 submitBtn.classList.remove('error-shake');
             }, 500);
-        } else {
-            // Show loading state
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner"></span>Đang đăng ký...';
+            return false;
         }
-    });
-    
-    // Style the textarea to match other inputs
-    companyDescriptionInput.addEventListener('focus', function() {
-        this.style.borderColor = '#007bff';
-        this.style.boxShadow = '0 0 0 4px rgba(0, 123, 255, 0.15)';
-        this.style.transform = 'translateY(-2px)';
-    });
-    
-    companyDescriptionInput.addEventListener('blur', function() {
-        this.style.borderColor = '#e1e5e9';
-        this.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
-        this.style.transform = 'translateY(0)';
+        
+        // Show loading state
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner"></span>Đang xử lý...';
+        form.classList.add('loading');
     });
     
     // Style the select to match other inputs

@@ -9,8 +9,8 @@ public interface INotificationService {
     List<Notification> getUserNotifications(Integer userId);
     List<Notification> getLatestUserNotifications(Integer userId, int limit);
     int getUnreadNotificationCount(Integer userId);
-    void markAsRead(Integer notificationId);
+    void markAsRead(Long notificationId);
     void markAllAsRead(Integer userId);
-    void deleteNotification(Integer notificationId);
+    void deleteNotification(Long notificationId);
     void deleteAllNotifications(Integer userId);
 } 

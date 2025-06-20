@@ -9,6 +9,7 @@ import com.example.swp391_d01_g3.service.employer.IEmployerService;
 import com.example.swp391_d01_g3.service.student.IStudentService;
 import com.example.swp391_d01_g3.service.security.IAccountService;
 import com.example.swp391_d01_g3.service.jobfield.IJobfieldService;
+import com.example.swp391_d01_g3.util.AuthenticationHelper;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
@@ -43,15 +44,39 @@ public class Register {
     private EmailService emailService;
 
     @GetMapping("")
-    public String showRegister (){
+    public String showRegister(){
+        String redirectUrl = AuthenticationHelper.getRedirectUrlForAuthenticatedUser();
+        if (redirectUrl != null) {
+            return redirectUrl;
+        }
         return "register/registerPage";
     }
+    
     @GetMapping("/Student")
     public String showRegisterStudent(Model model){
+        String redirectUrl = AuthenticationHelper.getRedirectUrlForAuthenticatedUser();
+        if (redirectUrl != null) {
+            return redirectUrl;
+        }
+        
         AccountDTO accountDTO = new AccountDTO();
         model.addAttribute("accountDTO",accountDTO);
         return "register/registerStudentPage";
     }
+
+    @GetMapping("/Employer")
+    public String showRegisterEmployer(Model model){
+        String redirectUrl = AuthenticationHelper.getRedirectUrlForAuthenticatedUser();
+        if (redirectUrl != null) {
+            return redirectUrl;
+        }
+        
+        EmployerDTO employerDTO = new EmployerDTO();
+        model.addAttribute("jobFields",iJobfieldService.findAll());
+        model.addAttribute("accountEmployerDTO", employerDTO);
+        return "register/registerEmployerPage";
+    }
+
     @PostMapping("/registerStudent")
     public String registerStudent(@Valid @ModelAttribute("accountDTO") AccountDTO accountDTO, 
                                   BindingResult bindingResult,
@@ -132,13 +157,6 @@ public class Register {
             return "register/registerStudentPage";
         }
     }
-    @GetMapping("/Employer")
-    public String showRegisterEmployer(Model model){
-        EmployerDTO employerDTO = new EmployerDTO();
-        model.addAttribute("jobFields",iJobfieldService.findAll());
-        model.addAttribute("accountEmployerDTO", employerDTO);
-        return "register/registerEmployerPage";
-    }
     @PostMapping("/registerEmployer")
     public String registerEmployer(@Valid @ModelAttribute("accountEmployerDTO") EmployerDTO employerDTO,
                                    BindingResult bindingResult,
@@ -208,7 +226,6 @@ public class Register {
             // Lưu thông tin employer
             pendingRegistration.setCompanyName(employerDTO.getCompanyName());
             pendingRegistration.setCompanyAddress(employerDTO.getCompanyAddress());
-//            pendingRegistration.setCompanyDescription(employerDTO.getCompanyDescription());
             pendingRegistration.setLogoUrl(employerDTO.getLogoUrl());
             pendingRegistration.setJobsFieldId(employerDTO.getJobsFieldId());
             

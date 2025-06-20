@@ -884,6 +884,7 @@
   gap: 1.5rem !important;
   max-width: none !important;
   margin-bottom: 50px;
+  margin-top: 20px;
 }
 
 /* Alternative approach - Create specific class for search results */

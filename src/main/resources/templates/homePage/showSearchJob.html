@@ -62,12 +62,11 @@
                         <form th:action="@{/HomePage/search}" method="post" class="search-form active" id="jobForm">
                             <div class="search-fields">
                                 <div class="search-field">
-                                    <i class="fas fa-search field-icon"></i>
-                                    <input 
+                                    <input
                                         type="text" 
                                         name="keyword" 
                                         th:value="${param.keyword}"
-                                        placeholder="eg. Graphic, Web Developer..." 
+                                        placeholder=" Graphic, Web Developer..."
                                         class="search-input"
                                     />
                                 </div>
@@ -85,8 +84,7 @@
                                 </div>
                                 
                                 <div class="search-field">
-                                    <i class="fas fa-map-marker-alt field-icon"></i>
-                                    <input 
+                                    <input
                                         type="text" 
                                         name="location" 
                                         th:value="${param.location}"
@@ -105,8 +103,7 @@
                         <form th:action="@{/HomePage/search}" method="post" class="search-form" id="candidateForm">
                             <div class="search-fields">
                                 <div class="search-field">
-                                    <i class="fas fa-dollar-sign field-icon"></i>
-                                    <input 
+                                    <input
                                         type="number" 
                                         name="salary" 
                                         th:value="${param.salary}"
@@ -125,8 +122,7 @@
                                 </div>
                                 
                                 <div class="search-field">
-                                    <i class="fas fa-building field-icon"></i>
-                                    <input 
+                                    <input
                                         type="text" 
                                         name="companyName" 
                                         th:value="${param.companyName}"
@@ -318,6 +314,9 @@
             }
         }
     </script>
+
+<!-- Add notification bell -->
+<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
 </body>
 <script th:src="@{/js/languageSwitch.js}"></script>
 
