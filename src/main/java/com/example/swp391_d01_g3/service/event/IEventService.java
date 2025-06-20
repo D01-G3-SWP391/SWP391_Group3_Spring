@@ -101,4 +101,9 @@ public interface IEventService {
     Event getEventById(Long id);
     Page<Event> findByApprovalStatusAndEventDateAfterOrderByEventDateAsc(
             Event.ApprovalStatus status, LocalDateTime currentTime, Pageable pageable);
+
+    /**
+     * Tìm events đã approve, active và chưa quá hạn
+     */
+    Page<Event> findActiveApprovedEvents(LocalDateTime currentTime, Pageable pageable);
 } 

@@ -1,0 +1,46 @@
+.report-button-container {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.report-button {
+    cursor: pointer;
+    width: 48px;
+    height: 48px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+}
+
+.report-button:hover {
+    background-color: #c82333;
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+    text-decoration: none;
+}
+
+.report-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+}
+
+/* Animation cho nút report */
+.report-button {
+    animation: reportPulse 3s infinite;
+}
+
+@keyframes reportPulse {
+    0%, 70%, 100% {
+        transform: scale(1);
+    }
+    15%, 30% {
+        transform: scale(1.05);
+    }
+}

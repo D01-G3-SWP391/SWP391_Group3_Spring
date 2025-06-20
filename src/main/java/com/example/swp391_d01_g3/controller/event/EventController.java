@@ -75,8 +75,8 @@ public class EventController {
                 eventsPage = eventService.findByApprovalStatus(approvalStatus, pageable);
                 model.addAttribute("selectedStatus", status);
             } else {
-                // Chỉ hiển thị events đã được approve
-                eventsPage = eventService.findByApprovalStatusAndEventDateAfterOrderByEventDateAsc(Event.ApprovalStatus.APPROVED, LocalDateTime.now(), pageable);
+                // Chỉ hiển thị events đã được approve và active
+                eventsPage = eventService.findActiveApprovedEvents(LocalDateTime.now(), pageable);
                 
             }
             

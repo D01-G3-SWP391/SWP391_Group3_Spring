@@ -20,23 +20,30 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class ReportController {
     @Autowired
     private IReportService reportService;
+    private String getUserRole(Authentication authentication) {
+        if (authentication.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_employer"))) {
+            return "EMPLOYER";
+        }
+        return "STUDENT";
+    }
 
-    // Hiển thị form tạo báo cáo
     @GetMapping("/CreateReport")
     public String showCreateReportForm(Model model, Authentication authentication) {
         model.addAttribute("reportDTO", new ReportDTO());
         model.addAttribute("reportTypes", Report.ReportType.values());
         model.addAttribute("entityTypes", Report.ReportedEntityType.values());
-        String userRole = "STUDENT"; // Mặc định
-        if (authentication.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_employer"))) {
-            userRole = "EMPLOYER";
-        }
-        model.addAttribute("userRole", userRole);
-        return "report/createReport";
-    }
 
-    // Xử lý tạo báo cáo
+        String userRole = getUserRole(authentication);
+        model.addAttribute("userRole", userRole);
+
+        // ✅ Phân quyền template theo role
+        if ("EMPLOYER".equals(userRole)) {
+            return "report/createReportEmployer";
+        } else {
+            return "report/createReportStudent";
+        }
+    }
     @PostMapping("/CreateReport")
     public String createReport(@Valid @ModelAttribute("reportDTO") ReportDTO reportDTO,
                                BindingResult bindingResult,
@@ -44,26 +51,22 @@ public class ReportController {
                                Model model,
                                RedirectAttributes redirectAttributes) {
 
-        // ✅ QUAN TRỌNG: Luôn add các attributes cần thiết vào model
         model.addAttribute("reportTypes", Report.ReportType.values());
         model.addAttribute("entityTypes", Report.ReportedEntityType.values());
-        String userRole = "STUDENT"; // Mặc định
-        if (authentication.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_employer"))) {
-            userRole = "EMPLOYER";
-        }
+
+        String userRole = getUserRole(authentication);
         model.addAttribute("userRole", userRole);
 
-        // ✅ Kiểm tra validation errors
         if (bindingResult.hasErrors()) {
-            // reportDTO đã được bind tự động, chỉ cần return view
-            return "report/createReport";
+            if ("EMPLOYER".equals(userRole)) {
+                return "report/createReportEmployer";
+            } else {
+                return "report/createReportStudent";
+            }
         }
 
         try {
             String userEmail = authentication.getName();
-
-            // Tạo Entity từ DTO
             Report report = new Report();
             report.setReportType(reportDTO.getReportType());
             report.setReportedEntityType(reportDTO.getReportedEntityType());
@@ -72,7 +75,6 @@ public class ReportController {
             report.setDescription(reportDTO.getDescription());
             report.setReporterEmail(userEmail);
 
-            // Xác định loại người báo cáo
             if (userRole.equals("EMPLOYER")) {
                 report.setReporterType(Report.ReporterType.EMPLOYER);
             } else {
@@ -85,14 +87,16 @@ public class ReportController {
             return "redirect:/Report/ShowReport";
 
         } catch (Exception e) {
-            // ✅ Khi có exception, đảm bảo model có đầy đủ attributes
             model.addAttribute("errorMessage", "Có lỗi xảy ra khi gửi báo cáo: " + e.getMessage());
-            return "report/createReport";
+
+            if ("EMPLOYER".equals(userRole)) {
+                return "report/createReportEmployer";
+            } else {
+                return "report/createReportStudent";
+            }
         }
     }
 
-
-    // Xem báo cáo của người dùng
     @GetMapping("/ShowReport")
     public String viewMyReports(@RequestParam(defaultValue = "0") int page,
                                 @RequestParam(defaultValue = "10") int size,
@@ -102,11 +106,8 @@ public class ReportController {
         String userEmail = authentication.getName();
         Pageable pageable = PageRequest.of(page, size);
         Page<Report> reports = reportService.getReportsByReporter(userEmail, pageable);
-        String userRole = "STUDENT"; // Mặc định
-        if (authentication.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_employer"))) {
-            userRole = "EMPLOYER";
-        }
+
+        String userRole = getUserRole(authentication);
 
         model.addAttribute("reports", reports);
         model.addAttribute("statuses", Report.ReportStatus.values());
@@ -120,8 +121,6 @@ public class ReportController {
     }
 
 
-
-    // Xem chi tiết báo cáo
     @GetMapping("/Detail/{reportId}")
     public String viewReportDetail(@PathVariable Integer reportId,
                                    Model model,
@@ -135,16 +134,20 @@ public class ReportController {
         if (!report.getReporterEmail().equals(userEmail)) {
             return "redirect:/Report/ShowReport";
         }
-        String userRole = "STUDENT"; // Mặc định
-        if (authentication.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ROLE_employer"))) {
-            userRole = "EMPLOYER";
-        }
+
+        String userRole = getUserRole(authentication);
 
         model.addAttribute("report", report);
         model.addAttribute("userRole", userRole);
-        return "report/reportDetail";
+
+        // ✅ Phân quyền template theo role
+        if ("EMPLOYER".equals(userRole)) {
+            return "report/reportDetailEmployer"; // Template riêng cho employer
+        } else {
+            return "report/reportDetailStudent"; // Template riêng cho student
+        }
     }
+
     @PostMapping("/Delete/{reportId}")
     public String deleteMyReport(@PathVariable Integer reportId,
                                  Authentication authentication,
@@ -152,7 +155,6 @@ public class ReportController {
         try {
             String userEmail = authentication.getName();
 
-            // Kiểm tra báo cáo có tồn tại và thuộc về user không
             Report report = reportService.getReportById(reportId)
                     .orElseThrow(() -> new RuntimeException("Báo cáo không tồn tại"));
 

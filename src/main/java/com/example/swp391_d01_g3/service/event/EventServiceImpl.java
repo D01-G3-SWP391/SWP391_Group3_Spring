@@ -34,16 +34,15 @@ public class EventServiceImpl implements IEventService {
 
     @Override
     public Page<Event> searchEvents(String keyword, Pageable pageable) {
-        return eventRepository.findByApprovalStatusAndEventTitleContainingIgnoreCaseOrEventDescriptionContainingIgnoreCase(
-                Event.ApprovalStatus.APPROVED, keyword, keyword, pageable);
+        return eventRepository.findByApprovalStatusAndEventStatusAndEventTitleContainingIgnoreCaseOrEventDescriptionContainingIgnoreCase(
+                Event.ApprovalStatus.APPROVED, Event.EventStatus.ACTIVE, keyword, keyword, pageable);
     }
 
     @Override
     public List<Event> getUpcomingEvents(int limit) {
         LocalDateTime now = LocalDateTime.now();
         Pageable pageable = PageRequest.of(0, limit, Sort.by("eventDate").ascending());
-        return eventRepository.findByApprovalStatusAndEventDateAfterOrderByEventDateAsc(
-                Event.ApprovalStatus.APPROVED, now, pageable).getContent();
+        return eventRepository.findActiveApprovedEvents(now, pageable).getContent();
     }
 
     @Override
@@ -60,10 +59,11 @@ public class EventServiceImpl implements IEventService {
         }
         
         Pageable pageable = PageRequest.of(0, limit);
-        return eventRepository.findRelatedEvents(
+        return eventRepository.findRelatedActiveEvents(
                 eventId, 
                 currentEvent.getEmployer().getEmployerId(),
-                Event.ApprovalStatus.APPROVED, 
+                Event.ApprovalStatus.APPROVED,
+                Event.EventStatus.ACTIVE,
                 pageable);
     }
 
@@ -102,12 +102,12 @@ public class EventServiceImpl implements IEventService {
 
     @Override
     public long countApprovedEvents() {
-        return eventRepository.countByApprovalStatus(Event.ApprovalStatus.APPROVED);
+        return eventRepository.countByApprovalStatusAndEventStatus(Event.ApprovalStatus.APPROVED, Event.EventStatus.ACTIVE);
     }
 
     @Override
     public long countEventsByJobField(String jobFieldName) {
-        return eventRepository.countEventsByJobField(jobFieldName, Event.ApprovalStatus.APPROVED);
+        return eventRepository.countEventsByJobFieldAndEventStatus(jobFieldName, Event.ApprovalStatus.APPROVED, Event.EventStatus.ACTIVE);
     }
 
     @Override
@@ -173,5 +173,10 @@ public class EventServiceImpl implements IEventService {
     @Override
     public Event getEventById(Long id) {
         return eventRepository.findById(Math.toIntExact(id)).orElse(null);
+    }
+
+    @Override
+    public Page<Event> findActiveApprovedEvents(LocalDateTime currentTime, Pageable pageable) {
+        return eventRepository.findActiveApprovedEvents(currentTime, pageable);
     }
 } 

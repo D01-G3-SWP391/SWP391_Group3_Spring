@@ -12,7 +12,6 @@
 </head>
 <body>
 <div th:replace="~{navbar/navbarEmployee :: navbarAdmin}" th:if="${userRole == 'EMPLOYER'}"></div>
-<div th:replace="~{navbar/navbarStudent :: navbarAdmin}" th:if="${userRole == 'STUDENT'}"></div>
 <script src="/js/navbarAdmin.js"></script>
 
 <div class="main-content">
