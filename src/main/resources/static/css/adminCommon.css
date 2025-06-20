@@ -1,11 +1,13 @@
-/* Admin Common Styles */
+/* ===== ADMIN COMMON STYLES ===== */
+
+/* Base Styles */
 body {
     font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
     background: linear-gradient(135deg, #f0f4ff 0%, #e6e9ff 100%);
     margin: 0;
     min-height: 100vh;
     transition: margin-left 0.3s ease;
-    overflow-x: hidden; /* SỬA: Ngăn thanh cuộn ngang */
+    overflow-x: hidden;
 }
 
 /* Main content area */
@@ -14,44 +16,26 @@ body {
     transition: margin-left 0.3s ease;
     min-height: 100vh;
     padding: 0;
-    width: calc(100vw - 280px); /* SỬA: Đảm bảo không vượt quá viewport */
-    overflow-x: hidden; /* SỬA: Ngăn thanh cuộn ngang */
-    box-sizing: border-box; /* SỬA: Tính toán padding đúng */
+    width: calc(100vw - 280px);
+    overflow-x: hidden;
+    box-sizing: border-box;
 }
 
 .admin-vertical-navbar.collapsed ~ .main-content {
     margin-left: 80px;
-    width: calc(100vw - 80px); /* SỬA: Điều chỉnh width khi navbar collapsed */
+    width: calc(100vw - 80px);
 }
 
 .container-fluid {
     padding: 40px 30px;
-    max-width: calc(100vw - 320px); /* SỬA: Thay vì 1400px cố định */
+    max-width: calc(100vw - 320px);
     margin: 0 auto;
-    box-sizing: border-box; /* SỬA: Tính toán padding đúng */
+    box-sizing: border-box;
 }
 
-/* SỬA: Thêm responsive breakpoint mới */
-@media (max-width: 1680px) {
-    .container-fluid {
-        max-width: calc(100vw - 320px);
-        padding: 30px 20px;
-    }
-}
+/* ===== PAGE HEADERS ===== */
 
-@media (max-width: 768px) {
-    .main-content {
-        margin-left: 80px;
-        width: calc(100vw - 80px); /* SỬA: Cập nhật width */
-    }
-
-    .container-fluid {
-        padding: 20px 15px;
-        max-width: calc(100vw - 120px); /* SỬA: Điều chỉnh cho mobile */
-    }
-}
-
-/* Page headers */
+/* Page headers with centered styling */
 h2 {
     color: #1e293b;
     font-size: 32px;
@@ -75,7 +59,67 @@ h2::after {
     border-radius: 3px;
 }
 
-/* Alert messages */
+/* ===== HEADER STYLING - Căn giữa title với buttons ===== */
+
+/* Header with Back Button - Căn giữa title và align với buttons */
+.d-flex.justify-content-between.align-items-center {
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    position: relative;
+    min-height: 60px;
+}
+
+/* Căn giữa EVENT DETAILS title và align với buttons */
+.d-flex.justify-content-between.align-items-center h2 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    font-weight: 700;
+    color: #1a2b49;
+    text-align: center;
+    line-height: 1.2;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    font-size: 1.75rem;
+    top: -5px; /* Đẩy chữ lên một chút */
+}
+
+/* Căn giữa subtitle */
+.d-flex.justify-content-between.align-items-center p {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 45px;
+    margin: 0;
+    text-align: center;
+    color: #6c757d;
+    font-size: 14px;
+    line-height: 1;
+}
+
+/* Đảm bảo div chứa title không ảnh hưởng layout */
+.d-flex.justify-content-between.align-items-center > div:first-child {
+    flex: 1;
+    position: relative;
+}
+
+/* Đảm bảo các nút không bị ảnh hưởng và align đúng */
+.d-flex.justify-content-between.align-items-center .d-flex.gap-2 {
+    margin-left: auto;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    gap: 8px;
+}
+
+/* ===== ALERT MESSAGES ===== */
+
 .alert {
     border: none;
     border-radius: 12px;
@@ -96,7 +140,14 @@ h2::after {
     border-left: 4px solid #ef4444;
 }
 
-/* Filter form */
+.alert-warning {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #92400e;
+    border-left: 4px solid #f59e0b;
+}
+
+/* ===== FILTER FORM ===== */
+
 .filter-form {
     background: #ffffff;
     padding: 25px;
@@ -142,7 +193,8 @@ h2::after {
     box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
 }
 
-/* Tables */
+/* ===== TABLES ===== */
+
 .admin-table {
     background: #ffffff;
     border-radius: 16px;
@@ -177,7 +229,16 @@ h2::after {
     border-bottom: none;
 }
 
-/* Avatar */
+/* Table cell styling for actions */
+.admin-table td:last-child {
+    text-align: center;
+    vertical-align: middle;
+    padding: 12px 8px;
+    min-width: 140px;
+}
+
+/* ===== AVATAR ===== */
+
 .avatar {
     width: 50px;
     height: 50px;
@@ -192,9 +253,20 @@ h2::after {
     transform: scale(1.1);
 }
 
-/* Status badges */
+/* Avatar Center Alignment */
+.admin-table td:first-child {
+    text-align: center;
+}
+
+.avatar {
+    display: block;
+    margin: 0 auto;
+}
+
+/* ===== STATUS BADGES ===== */
+
 .status-active {
-    color: #065f46;
+    color: #059669;
     font-weight: 600;
     background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
     padding: 6px 12px;
@@ -204,7 +276,7 @@ h2::after {
 }
 
 .status-banned {
-    color: #991b1b;
+    color: #dc2626;
     font-weight: 600;
     background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
     padding: 6px 12px;
@@ -213,84 +285,121 @@ h2::after {
     border: 1px solid #ef4444;
 }
 
-/* Action buttons */
-/* Action Buttons - Căn hàng ngang */
-.action-btns {
-    display: flex !important;
-    flex-direction: row !important;
-    gap: 10px;
-    align-items: center;
-    justify-content: flex-start;
-    flex-wrap: nowrap;
-    min-width: 260px;
-    padding: 8px 0;
-}
-
-.action-btn {
-    border-radius: 8px !important;
-    padding: 8px 14px !important;
-    font-size: 12px !important;
-    font-weight: 600 !important;
-    transition: all 0.3s ease !important;
-    border: none !important;
-    min-width: 75px;
-    height: 36px;
-    text-align: center;
-    white-space: nowrap;
-    display: inline-flex !important;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none !important;
-    flex-shrink: 0; /* Ngăn button bị co lại */
-}
-
-.action-btn i {
-    margin-right: 5px;
-    font-size: 11px;
-}
-
-.action-btn .btn-text {
-    font-size: 12px;
+.status-pending {
+    color: #d97706;
     font-weight: 600;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    border: 1px solid #f59e0b;
 }
+
+/* Status badge styling */
+.status-badge {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ===== ACTION BUTTONS LAYOUT - View và Change Status bên cạnh nhau, Edit ở dưới căn giữa ===== */
+
+/* Action buttons layout */
 .action-btns {
     display: flex;
+    flex-direction: column;
     gap: 8px;
     align-items: center;
-    flex-wrap: wrap;
+    width: 100%;
+    min-width: 120px;
+}
+
+/* Container cho View và Change Status buttons */
+.action-btns-top {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Container cho Edit button */
+.action-btns-bottom {
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
 .action-btns .btn {
     border-radius: 8px;
-    padding: 8px 16px;
-    font-size: 13px;
+    padding: 6px 12px;
+    font-size: 12px;
     font-weight: 600;
     transition: all 0.3s ease;
     border: none;
+    min-width: 55px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    white-space: nowrap;
 }
 
 .action-btns .btn-primary {
     background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
     color: white;
-    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+    box-shadow: 0 2px 6px rgba(79, 70, 229, 0.3);
 }
 
 .action-btns .btn-primary:hover {
     background: linear-gradient(135deg, #3730a3 0%, #5b21b6 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.4);
+    color: white;
 }
 
 .action-btns .btn-danger {
     background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     color: white;
-    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
 }
 
 .action-btns .btn-danger:hover {
     background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4);
+    color: white;
+}
+
+.action-btns .btn-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+    box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
+}
+
+.action-btns .btn-warning:hover {
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
+    color: white;
+}
+
+.action-btns .btn-info {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    color: white;
+    box-shadow: 0 2px 6px rgba(23, 162, 184, 0.3);
+    min-width: 70px;
+}
+
+.action-btns .btn-info:hover {
+    background: linear-gradient(135deg, #138496 0%, #117a8b 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(23, 162, 184, 0.4);
+    color: white;
 }
 
 .action-btns .btn-success {
@@ -305,86 +414,120 @@ h2::after {
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-    .main-content {
-        margin-left: 80px;
-    }
+/* ===== DROPDOWN STYLING FOR STATUS CHANGE ===== */
 
-    .container-fluid {
-        padding: 20px 15px;
-    }
-
-    .admin-table th, .admin-table td {
-        padding: 12px 8px;
-        font-size: 13px;
-    }
-
-    .avatar {
-        width: 40px;
-        height: 40px;
-    }
-
-    .action-btns {
-        flex-direction: column;
-        gap: 6px;
-    }
-
-    .action-btns .btn {
-        font-size: 12px;
-        padding: 6px 12px;
-    }
-
-    h2 {
-        font-size: 24px;
-    }
-}
-/* Job Posts Management Styles */
-.status-pending {
-    color: #ffc107;
-    font-weight: 600;
-    background-color: #fff3cd;
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 14px;
-}
-
-.badge.bg-info {
-    background: linear-gradient(to right, #17a2b8, #20c997) !important;
-}
-
-/* Table improvements */
-.admin-table th {
-    font-size: 13px;
-}
-
-.admin-table td {
-    font-size: 14px;
-}
-/* Status pending styling */
-.status-pending {
-    color: #d97706;
-    font-weight: 600;
-    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 13px;
-    border: 1px solid #f59e0b;
-}
-
-/* Job description and requirements styling */
-.job-description, .job-requirements {
-    background: #f8f9fa;
-    padding: 20px;
+.dropdown-menu {
+    min-width: 200px;
     border-radius: 8px;
-    border-left: 4px solid #007bff;
-    line-height: 1.6;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e2e8f0;
 }
 
-.job-description p, .job-requirements p {
-    margin: 0;
+.dropdown-header {
+    font-weight: 600;
     color: #495057;
-    font-size: 15px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 8px 16px;
+}
+
+.dropdown-item {
+    padding: 8px 16px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+.dropdown-item:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #f8f9fa;
+}
+
+.dropdown-item.text-success:hover:not(:disabled) {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.dropdown-item.text-danger:hover:not(:disabled) {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.dropdown-item.text-warning:hover:not(:disabled) {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+/* ===== ICON SPACING ===== */
+
+.action-btns .btn i {
+    margin-right: 4px;
+    font-size: 11px;
+}
+
+.dropdown-item i {
+    margin-right: 8px;
+    font-size: 13px;
+}
+
+/* ===== BUTTON STYLES ===== */
+
+/* Base button styling */
+.btn {
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    padding: 10px 20px;
+}
+
+.btn-secondary {
+    background: linear-gradient(to right, #6c757d, #5a6268);
+    border: none;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(to right, #5a6268, #495057);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+    color: white;
+}
+
+.btn-warning {
+    background: linear-gradient(to right, #ffc107, #e0a800);
+    border: none;
+    color: #212529;
+}
+
+.btn-warning:hover {
+    background: linear-gradient(to right, #e0a800, #d39e00);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+    color: #212529;
+}
+
+.btn-info {
+    background: linear-gradient(to right, #17a2b8, #138496);
+    border: none;
+    color: white;
+}
+
+.btn-info:hover {
+    background: linear-gradient(to right, #138496, #117a8b);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+    color: white;
+}
+
+.btn-lg {
+    padding: 12px 24px;
+    font-size: 16px;
 }
 
 /* Button equal styles */
@@ -427,24 +570,247 @@ h2::after {
     gap: 12px !important;
     align-items: center;
 }
-.dropdown-item {
-    padding: 8px 16px;
-    transition: background-color 0.3s ease;
+
+/* Badge Styles */
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.dropdown-item:hover {
-    background-color: #f8f9fa;
+.badge.bg-primary {
+    background: linear-gradient(to right, #007bff, #0056b3) !important;
 }
 
-.dropdown-item.text-success:hover {
-    background-color: #d4edda;
+.badge.bg-success {
+    background: linear-gradient(to right, #28a745, #1e7e34) !important;
 }
 
-.dropdown-item.text-danger:hover {
-    background-color: #f8d7da;
+.badge.bg-info {
+    background: linear-gradient(to right, #17a2b8, #20c997) !important;
 }
 
-.dropdown-item.text-warning:hover {
-    background-color: #fff3cd;
+/* ===== JOB DESCRIPTION AND REQUIREMENTS STYLING ===== */
+
+.job-description, .job-requirements, .event-description {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #007bff;
+    line-height: 1.6;
 }
 
+.job-description p, .job-requirements p, .event-description p {
+    margin: 0;
+    color: #495057;
+    font-size: 15px;
+}
+
+/* ===== PAGINATION STYLING ===== */
+
+.pagination {
+    margin-top: 30px;
+}
+
+.pagination .page-link {
+    border-radius: 8px;
+    margin: 0 2px;
+    border: 1px solid #e2e8f0;
+    color: #4f46e5;
+    padding: 8px 12px;
+    transition: all 0.3s ease;
+}
+
+.pagination .page-link:hover {
+    background-color: #4f46e5;
+    color: white;
+    border-color: #4f46e5;
+    transform: translateY(-1px);
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    border-color: #4f46e5;
+    color: white;
+}
+
+.pagination .page-item.disabled .page-link {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ===== MODAL ENHANCEMENTS ===== */
+
+.modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 12px 12px 0 0;
+    padding: 20px 24px;
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.modal-footer {
+    border-top: 1px solid #dee2e6;
+    padding: 16px 24px;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+@media (max-width: 1680px) {
+    .container-fluid {
+        max-width: calc(100vw - 320px);
+        padding: 30px 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 80px;
+        width: calc(100vw - 80px);
+    }
+
+    .container-fluid {
+        padding: 20px 15px;
+        max-width: calc(100vw - 120px);
+    }
+
+    .admin-table th, .admin-table td {
+        padding: 12px 8px;
+        font-size: 13px;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Action buttons responsive */
+    .action-btns-top {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .action-btns .btn {
+        font-size: 11px;
+        padding: 5px 10px;
+        width: 100%;
+        min-width: auto;
+    }
+
+    .action-btns .btn i {
+        margin-right: 3px;
+        font-size: 10px;
+    }
+
+    /* Header responsive */
+    .d-flex.justify-content-between.align-items-center {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+        min-height: auto;
+        padding-bottom: 20px;
+    }
+
+    .d-flex.justify-content-between.align-items-center h2 {
+        position: static;
+        transform: none;
+        text-align: center;
+        height: auto;
+        font-size: 1.5rem;
+        top: auto;
+    }
+
+    .d-flex.justify-content-between.align-items-center p {
+        position: static;
+        transform: none;
+        top: auto;
+        margin-top: 5px;
+    }
+
+    .d-flex.justify-content-between.align-items-center > div:first-child {
+        flex: none;
+        text-align: center;
+    }
+
+    .d-flex.justify-content-between.align-items-center .d-flex.gap-2 {
+        margin-left: 0;
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .d-flex.gap-2 .btn {
+        width: 100%;
+        height: 45px;
+    }
+
+    /* Dropdown responsive */
+    .dropdown-menu {
+        min-width: 180px;
+    }
+
+    .dropdown-item {
+        font-size: 13px;
+        padding: 6px 12px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+}
+
+/* ===== TABLET BREAKPOINT ===== */
+
+@media (max-width: 992px) and (min-width: 769px) {
+    .d-flex.justify-content-between.align-items-center h2 {
+        font-size: 1.6rem;
+    }
+
+    .d-flex.gap-2 .btn {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+
+    .action-btns .btn {
+        font-size: 11px;
+        padding: 5px 8px;
+    }
+}
+
+/* ===== PRINT STYLES ===== */
+
+@media print {
+    .action-btns,
+    .dropdown,
+    .pagination,
+    .btn {
+        display: none !important;
+    }
+
+    .admin-table {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+
+    .d-flex.justify-content-between.align-items-center .d-flex.gap-2 {
+        display: none !important;
+    }
+
+    .detail-card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+        break-inside: avoid;
+    }
+}
