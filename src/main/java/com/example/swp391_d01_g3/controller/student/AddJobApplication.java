@@ -49,9 +49,9 @@ public class AddJobApplication {
 
     @PostMapping("/JobDescription/Apply")
     public String submitApplication(@ModelAttribute("jobApplicationDTO") JobApplicationDTO jobApplicationDTO,
-                                  @RequestParam("cv") MultipartFile cv,
-                                  Model model,
-                                  RedirectAttributes redirectAttributes) throws IOException {
+                                    @RequestParam("cv") MultipartFile cv,
+                                    Model model,
+                                    RedirectAttributes redirectAttributes) throws IOException {
         JobApplication jobApplication = new JobApplication();
 
         // Handle CV file upload
@@ -88,20 +88,20 @@ public class AddJobApplication {
 
         // Create notification for student
         notificationService.createNotification(
-            student.get().getAccount(),
-            "Job Application Submitted",
-            "Your application for " + jobPost.get().getJobTitle() + " has been submitted successfully.",
-            "JOB_APPLICATION",
-            jobApplication.getApplicationId().longValue()
+                student.get().getAccount(),
+                "Job Application Submitted",
+                "Your application for " + jobPost.get().getJobTitle() + " has been submitted successfully.",
+                "JOB_APPLICATION",
+                jobApplication.getApplicationId().longValue()
         );
 
         // Create notification for employer
         notificationService.createNotification(
-            jobPost.get().getEmployer().getAccount(),
-            "New Job Application",
-            "A new application has been received for " + jobPost.get().getJobTitle() + " from " + student.get().getAccount().getFullName(),
-            "NEW_APPLICATION",
-            jobApplication.getApplicationId().longValue()
+                jobPost.get().getEmployer().getAccount(),
+                "New Job Application",
+                "A new application has been received for " + jobPost.get().getJobTitle() + " from " + student.get().getAccount().getFullName(),
+                "NEW_APPLICATION",
+                jobApplication.getApplicationId().longValue()
         );
 
         redirectAttributes.addFlashAttribute("success", "Job Application has been saved successfully.");

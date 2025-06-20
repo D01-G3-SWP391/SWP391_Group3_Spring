@@ -53,5 +53,9 @@ public class JobApplicationService implements IJobApplicationService {
         return iJobApplicationRepository.findById(applicationId);
     }
 
+    @Override
+    public List<JobApplication> findByJobPostId(Integer jobPostId) {
+        return iJobApplicationRepository.findByJobPostId(jobPostId);
+    }
 
 }
