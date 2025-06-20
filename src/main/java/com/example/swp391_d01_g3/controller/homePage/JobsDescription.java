@@ -48,14 +48,17 @@ public class JobsDescription {
             model.addAttribute("userEmail", email); // Thêm userEmail cho navbar
             
             Account studentAccount = iAccountService.findByEmail(email);
+
             model.addAttribute("account", studentAccount);
 
             if (studentAccount != null) {
                 Student studentDetails = iStudentService.findByAccountUserId(studentAccount.getUserId());
-                model.addAttribute("studentDetails", studentDetails);
-                System.out.println("Student ID: " + studentDetails.getStudentId());
+                if (studentDetails != null){
+                    model.addAttribute("studentDetails", studentDetails);
+                    System.out.println("Student ID: " + studentDetails.getStudentId());
+                }
+                return "homePage/descriptionJob";
             }
-//            System.out.println(email);
         }
 
         return "homePage/descriptionJob";

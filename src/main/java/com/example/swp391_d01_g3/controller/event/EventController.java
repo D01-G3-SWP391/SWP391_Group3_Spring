@@ -6,6 +6,7 @@ import com.example.swp391_d01_g3.model.Event;
 import com.example.swp391_d01_g3.model.EventForm;
 import com.example.swp391_d01_g3.model.Student;
 import com.example.swp391_d01_g3.service.event.IEventService;
+import com.example.swp391_d01_g3.service.notification.INotificationService;
 import com.example.swp391_d01_g3.service.security.IAccountService;
 import com.example.swp391_d01_g3.service.student.IStudentService;
 import jakarta.validation.Valid;
@@ -21,6 +22,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,6 +38,8 @@ public class EventController {
 
     @Autowired
     private IAccountService accountService;
+    @Autowired
+    private INotificationService notificationService;
 
 
 
@@ -49,7 +53,10 @@ public class EventController {
             @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "status", required = false) String status,
             Model model,
-            Authentication authentication) {
+            Authentication authentication, Principal principal) {
+        if (principal != null) {
+            String email = principal.getName();
+            model.addAttribute("userEmail", email);}
         
         try {
             // Tạo Pageable object với sắp xếp theo ngày tạo
@@ -229,6 +236,15 @@ public class EventController {
                 
                 try {
                     eventService.registerEvent(eventForm);
+                    notificationService.createNotification(
+                            existingStudent.getAccount(),
+                            "Register Event Submitted",
+                            "Your register for " + event.getEventTitle() + " has been submitted successfully.",
+                            "JOB_APPLICATION",
+                            event.getEventId().longValue()
+
+                    );
+
                     System.out.println("Successfully registered event");
                     return "success:Đăng ký sự kiện thành công!";
                 } catch (Exception e) {

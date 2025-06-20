@@ -52,4 +52,6 @@ public class JobApplicationService implements IJobApplicationService {
     public Optional<JobApplication> findById(Integer applicationId) {
         return iJobApplicationRepository.findById(applicationId);
     }
+
+
 }

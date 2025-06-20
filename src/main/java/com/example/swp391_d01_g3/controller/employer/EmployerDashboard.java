@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -326,9 +327,11 @@ public class EmployerDashboard {
         } else {
             applications = iJobApplicationService.getApplicationsByEmployerId(employer.getEmployerId(), pageable);
         }
-
         model.addAttribute("applications", applications);
         model.addAttribute("statuses", JobApplication.ApplicationStatus.values());
+        
+        // Add authentication status for chat system
+        model.addAttribute("isAuthenticated", authentication != null && authentication.isAuthenticated());
 
         return "employee/viewListApplications";
     }

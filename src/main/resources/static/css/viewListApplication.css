@@ -344,6 +344,30 @@ table tbody td {
     cursor: not-allowed;
 }
 
+/* ===== CHAT BUTTON STYLES ===== */
+.btn-chat {
+    background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+}
+
+.btn-chat:hover {
+    background: linear-gradient(135deg, #128c7e 0%, #075e54 100%);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+}
+
+.btn-chat i {
+    margin-right: 4px;
+}
+
 /* ===== EMPTY STATE ===== */
 .empty-state {
     text-align: center;
@@ -739,4 +763,4 @@ table tbody td {
 
 .alert .btn-close:hover {
     opacity: 1;
-}
+} 

@@ -10,6 +10,7 @@ import com.example.swp391_d01_g3.service.jobpost.IJobpostService;
 import com.example.swp391_d01_g3.service.notification.INotificationService;
 import com.example.swp391_d01_g3.service.security.IAccountService;
 import com.example.swp391_d01_g3.service.student.IStudentService;
+import com.example.swp391_d01_g3.service.cloudinary.CloudinaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,6 +44,9 @@ public class AddJobApplication {
     @Autowired
     private INotificationService notificationService;
 
+    @Autowired
+    private CloudinaryService cloudinaryService;
+
     @PostMapping("/JobDescription/Apply")
     public String submitApplication(@ModelAttribute("jobApplicationDTO") JobApplicationDTO jobApplicationDTO,
                                   @RequestParam("cv") MultipartFile cv,
@@ -52,19 +56,8 @@ public class AddJobApplication {
 
         // Handle CV file upload
         if (!cv.isEmpty()) {
-            String originalFilename = cv.getOriginalFilename();
-            String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
-            String newFileName = UUID.randomUUID().toString() + fileExtension;
-            String uploadDir = "uploads/cv/";
-            Path uploadPath = Paths.get(uploadDir);
-
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-
-            Path filePath = uploadPath.resolve(newFileName);
-            Files.copy(cv.getInputStream(), filePath);
-            String cvUrl = uploadDir + newFileName;
+            // Upload file lên Cloudinary
+            String cvUrl = cloudinaryService.uploadFile(cv, "cv-uploads");
             jobApplication.setCvUrl(cvUrl);
         }
 
