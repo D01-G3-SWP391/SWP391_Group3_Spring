@@ -23,10 +23,18 @@ public interface IJobpostService  {
     Optional<JobPost> findByJobPostId(Integer id);
     List<JobPost> findAllWithEmployer(Integer id);
 
-    // Hàm search với đầy đủ các tiêu chí
-    List<JobPost> searchJobs(String keyword, String location, String jobType,
-                             Integer fieldId, String salary,
-                             String companyName);
+
+    List<JobPost> searchJobs(
+            String keyword,
+            String location,
+            String jobType,
+            Integer jobFieldId,
+            Double minSalary,
+            Double maxSalary,
+            String companyName
+    );
+
+
 
     List<JobPost> getTopJobs();
     List<JobPost> getTopJobsLimit(int limit);

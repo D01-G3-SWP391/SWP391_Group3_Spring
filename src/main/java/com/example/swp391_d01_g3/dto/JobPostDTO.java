@@ -15,7 +15,7 @@ public class JobPostDTO {
     private String jobLocation;
 
     @Size(max = 50, message = "Lương tối đa 50 ký tự.")
-    private String jobSalary;
+    private Double jobSalary;
 
     @Size(max = 1000000000, message = "Yêu cầu tối đa 1000000000 ký tự.")
     private String jobRequirements;
@@ -30,6 +30,7 @@ public class JobPostDTO {
     private String jobType;
 
     // Getters and setters
+
 
     public String getJobTitle() {
         return jobTitle;
@@ -47,11 +48,11 @@ public class JobPostDTO {
         this.jobLocation = jobLocation;
     }
 
-    public String getJobSalary() {
+    public Double getJobSalary() {
         return jobSalary;
     }
 
-    public void setJobSalary(String jobSalary) {
+    public void setJobSalary(Double jobSalary) {
         this.jobSalary = jobSalary;
     }
 

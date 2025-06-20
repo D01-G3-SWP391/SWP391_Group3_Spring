@@ -45,7 +45,7 @@
                         Không tìm thấy việc làm nào phù hợp với tiêu chí tìm kiếm
                     </span>
                 </p>
-                
+
                 <!-- Refined Search Form -->
                 <div class="refined-search-container">
                     <div class="search-tabs">
@@ -56,22 +56,22 @@
                             Tìm ứng viên
                         </button>
                     </div>
-                    
+
                     <div class="search-forms">
                         <!-- Job Search Form -->
                         <form th:action="@{/HomePage/search}" method="post" class="search-form active" id="jobForm">
                             <div class="search-fields">
                                 <div class="search-field">
                                     <i class="fas fa-search field-icon"></i>
-                                    <input 
-                                        type="text" 
-                                        name="keyword" 
+                                    <input
+                                        type="text"
+                                        name="keyword"
                                         th:value="${param.keyword}"
-                                        placeholder="eg. Graphic, Web Developer..." 
+                                        placeholder="eg. Graphic, Web Developer..."
                                         class="search-input"
                                     />
                                 </div>
-                                
+
                                 <div class="search-field">
                                     <i class="fas fa-list field-icon"></i>
                                     <select name="fieldId" class="search-select">
@@ -83,64 +83,63 @@
                                         </option>
                                     </select>
                                 </div>
-                                
+
                                 <div class="search-field">
                                     <i class="fas fa-map-marker-alt field-icon"></i>
-                                    <input 
-                                        type="text" 
-                                        name="location" 
+                                    <input
+                                        type="text"
+                                        name="location"
                                         th:value="${param.location}"
-                                        placeholder="Location" 
+                                        placeholder="Location"
                                         class="search-input"
                                     />
                                 </div>
-                                
+
                                 <button type="submit" class="search-button">
                                     Tìm lại
                                 </button>
                             </div>
                         </form>
-                        
+
+                        <!-- Candidate Search Form -->
                         <!-- Candidate Search Form -->
                         <form th:action="@{/HomePage/search}" method="post" class="search-form" id="candidateForm">
                             <div class="search-fields">
                                 <div class="search-field">
                                     <i class="fas fa-money-bill-wave field-icon"></i>
-                                    <select name="salary" class="search-select">
-                                        <option value="">Salary</option>
-                                        <option value="2-3 triệu">2 - 3 triệu</option>
-                                        <option value="3-5">3 - 5 triệu</option>
-                                        <option value="5-7 triệu">5 - 7 triệu</option>
-                                        <option value="7-10 triệu">7 - 10 triệu</option>
-                                        <option value="10-15 triệu">10 - 15 triệu</option>
-                                        <option value="15-20 triệu">15 - 20 triệu</option>
-                                        <option value="20-30 triệu">20 - 30 triệu</option>
-                                        <option value="30-40 triệu">30 - 40 triệu</option>
-                                        <option value=">50 triệu">Trên 50 triệu</option>
-                                        <option value="Thỏa thuận">Thỏa thuận</option>
+                                    <select name="salaryRange" class="search-select">
+                                        <option value="">Tất cả mức lương</option>
+                                        <option value="0-2000000" th:selected="${searchSalary == '0-2000000'}">Dưới 2,000,000</option>
+                                        <option value="2000000-3000000" th:selected="${searchSalary == '2000000-3000000'}">2,000,000 - 3,000,000</option>
+                                        <option value="3000000-5000000" th:selected="${searchSalary == '3000000-5000000'}">3,000,000 - 5,000,000</option>
+                                        <option value="5000000-7000000" th:selected="${searchSalary == '5000000-7000000'}">5,000,000 - 7,000,000</option>
+                                        <option value="7000000-10000000" th:selected="${searchSalary == '7000000-10000000'}">7,000,000 - 10,000,000</option>
+                                        <option value="10000000-15000000" th:selected="${searchSalary == '10000000-15000000'}">10,000,000 - 15,000,000</option>
+                                        <option value="15000000-20000000" th:selected="${searchSalary == '15000000-20000000'}">15,000,000 - 20,000,000</option>
+                                        <option value="20000000-30000000" th:selected="${searchSalary == '20000000-30000000'}">20,000,000 - 30,000,000</option>
+                                        <option value="30000000-40000000" th:selected="${searchSalary == '30000000-40000000'}">30,000,000 - 40,000,000</option>
+                                        <option value="40000000-50000000" th:selected="${searchSalary == '40000000-50000000'}">40,000,000 - 50,000,000</option>
+                                        <option value=">50000000" th:selected="${searchSalary == '>50000000'}">Trên 50,000,000</option>
                                     </select>
                                 </div>
-                                
                                 <div class="search-field">
                                     <i class="fas fa-briefcase field-icon"></i>
                                     <select name="jobType" class="search-select">
-                                        <option value="">Job Type</option>
-                                        <option value="FULL_TIME" th:selected="${param.jobType != null and param.jobType[0] == 'FULL_TIME'}">Full Time</option>
-                                        <option value="PART_TIME" th:selected="${param.jobType != null and param.jobType[0] == 'PART_TIME'}">Part Time</option>
+                                        <option value="">Tất cả loại việc</option>
+                                        <option value="FULL_TIME" th:selected="${searchJobType == 'FULL_TIME'}">Full Time</option>
+                                        <option value="PART_TIME" th:selected="${searchJobType == 'PART_TIME'}">Part Time</option>
                                     </select>
                                 </div>
-                                
                                 <div class="search-field">
                                     <i class="fas fa-building field-icon"></i>
-                                    <input 
-                                        type="text" 
-                                        name="companyName" 
-                                        th:value="${param.companyName}"
-                                        placeholder="Company Name..." 
-                                        class="search-input"
+                                    <input
+                                            type="text"
+                                            name="companyName"
+                                            placeholder="Tên công ty..."
+                                            class="search-input"
+                                            th:value="${searchCompanyName}"
                                     />
                                 </div>
-                                
                                 <button type="submit" class="search-button">
                                     Tìm lại
                                 </button>
@@ -222,11 +221,15 @@
                                     <div class="job-detail-item">
                                         <i class="fas fa-map-marker-alt"></i>
                                         <span th:text="${job.jobLocation}">Địa điểm</span>
-                                    </div>
-                                    <div class="job-detail-item">
-                                        <i class="fas fa-money-bill-wave"></i>
-                                        <span th:text="${job.jobSalary}">Mức lương</span>
-                                    </div>
+                                    </div>                        <div class="job-detail-item">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                    <span th:if="${job.jobSalary != null}">
+        <span th:text="${#numbers.formatInteger(job.jobSalary, 1, 'POINT') + ' VND'}"></span>
+    </span>
+                                    <span th:if="${job.jobSalary == null}">Không xác định</span>
+                                </div>
+
+
                                     <div class="job-detail-item">
                                         <i class="fas fa-clock"></i>
                                         <span

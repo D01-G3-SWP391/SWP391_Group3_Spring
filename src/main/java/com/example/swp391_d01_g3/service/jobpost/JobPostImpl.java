@@ -73,14 +73,28 @@ public class JobPostImpl implements IJobpostService {
 
 
     @Override
-    public List<JobPost> searchJobs(String keyword, String location, String jobType,
-                                    Integer fieldId, String salary, String companyName) {
+    public List<JobPost> searchJobs(String keyword, String location, String jobTypeStr,
+                                    Integer fieldId, Double minSalary, Double maxSalary,
+                                    String companyName) {
+
+        // Chuyển đổi jobType từ String sang Enum
+        JobPost.JobType jobType = null;
+        if (jobTypeStr != null && !jobTypeStr.isEmpty()) {
+            try {
+                jobType = JobPost.JobType.valueOf(jobTypeStr.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                // Xử lý nếu giá trị enum không hợp lệ
+                System.err.println("Invalid job type: " + jobTypeStr);
+            }
+        }
+
         return iJobPostRepository.searchJobs(
                 (keyword == null || keyword.isEmpty()) ? null : keyword,
                 (location == null || location.isEmpty()) ? null : location,
-                (salary == null || salary.isEmpty()) ? null : salary,
-                (jobType == null || jobType.isEmpty()) ? null : jobType,
-                (fieldId == null || fieldId == 0) ? null : fieldId,
+                jobType,  // Truyền Enum, không phải String
+                fieldId,
+                minSalary,
+                maxSalary,
                 (companyName == null || companyName.isEmpty()) ? null : companyName
         );
     }
