@@ -47,7 +47,7 @@ public class NotificationService implements INotificationService {
 
     @Override
     @Transactional
-    public void markAsRead(Integer notificationId) {
+    public void markAsRead(Long notificationId) {
         notificationRepository.findById(notificationId).ifPresent(notification -> {
             notification.setRead(true);
             notificationRepository.save(notification);
@@ -64,7 +64,7 @@ public class NotificationService implements INotificationService {
 
     @Override
     @Transactional
-    public void deleteNotification(Integer notificationId) {
+    public void deleteNotification(Long notificationId) {
         notificationRepository.findById(notificationId).ifPresent(notification -> {
             notificationRepository.delete(notification);
         });

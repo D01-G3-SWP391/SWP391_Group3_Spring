@@ -1,0 +1,157 @@
+/* Tối ưu container cho zoom 100% */
+.login-container {
+    max-width: 1000px !important;
+    width: 90% !important;
+    margin: 0 auto !important;
+    padding: 15px !important;
+}
+
+.login-form {
+    max-width: none !important;
+    width: 100% !important;
+    padding: 25px !important;
+}
+
+/* Chỉ chia cột cho form đăng ký employer - tối ưu cho zoom 100% */
+.form-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+.left-column,
+.right-column {
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Để tránh overflow */
+}
+
+/* Contact Information - Full Width */
+.contact-section-full {
+    margin-bottom: 20px;
+}
+
+.contact-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* Terms Section - Full Width */
+.terms-section-full {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #007bff;
+}
+
+/* Submit button ở giữa */
+.submit-container {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+/* Loading state and spinner styles */
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+form.loading {
+    pointer-events: none !important;
+    opacity: 0.6;
+}
+
+form.loading * {
+    pointer-events: none !important;
+}
+
+.btn:disabled {
+    pointer-events: none !important;
+    opacity: 0.6;
+    cursor: not-allowed !important;
+}
+
+/* Tối ưu cho màn hình laptop (1366px và nhỏ hơn) */
+@media (max-width: 1366px) {
+    .form-columns {
+        gap: 25px;
+    }
+    
+    .login-container {
+        max-width: 900px !important;
+    }
+}
+
+/* Responsive: tablet */
+@media (max-width: 992px) {
+    .form-columns {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .contact-fields {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .login-container {
+        width: 95% !important;
+        padding: 12px !important;
+    }
+    
+    .login-form {
+        padding: 20px !important;
+    }
+}
+
+/* Responsive: mobile */
+@media (max-width: 768px) {
+    .form-columns {
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .contact-fields {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .contact-section-full,
+    .terms-section-full {
+        margin-bottom: 15px;
+    }
+    
+    .terms-section-full {
+        padding: 12px;
+    }
+    
+    .submit-container {
+        margin-top: 15px;
+        padding-top: 12px;
+    }
+    
+    .login-container {
+        width: 100% !important;
+        padding: 8px !important;
+    }
+    
+    .login-form {
+        padding: 15px !important;
+    }
+} 

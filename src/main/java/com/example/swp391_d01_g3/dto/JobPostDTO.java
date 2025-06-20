@@ -1,9 +1,7 @@
 package com.example.swp391_d01_g3.dto;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
+
 
 public class JobPostDTO {
 
@@ -13,8 +11,9 @@ public class JobPostDTO {
     @NotEmpty(message = "Khu vực không được để trống.")
     private String jobLocation;
 
-    @Size(max = 50, message = "Lương tối đa 50 ký tự.")
-    private String jobSalary;
+    @DecimalMin(value = "0.0", inclusive = false, message = "Lương phải lớn hơn 0")
+    @DecimalMax(value = "999999999.0", message = "Lương không được quá 999,999,999")
+    private Double jobSalary;
 
     @NotEmpty(message = "Yêu cầu công việc không được để trống.")
     private String jobRequirements;
@@ -29,6 +28,7 @@ public class JobPostDTO {
     private String jobType;
 
     // Getters and setters
+
 
     public String getJobTitle() {
         return jobTitle;
@@ -46,11 +46,11 @@ public class JobPostDTO {
         this.jobLocation = jobLocation;
     }
 
-    public String getJobSalary() {
+    public Double getJobSalary() {
         return jobSalary;
     }
 
-    public void setJobSalary(String jobSalary) {
+    public void setJobSalary(Double jobSalary) {
         this.jobSalary = jobSalary;
     }
 

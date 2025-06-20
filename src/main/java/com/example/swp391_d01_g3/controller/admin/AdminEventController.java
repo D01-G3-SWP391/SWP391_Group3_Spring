@@ -1,17 +1,20 @@
 package com.example.swp391_d01_g3.controller.admin;
 
 import com.example.swp391_d01_g3.model.Event;
-import com.example.swp391_d01_g3.service.admin.IAdminEventService;
+import com.example.swp391_d01_g3.service.event.IEventService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 @Controller
@@ -19,7 +22,7 @@ import java.util.Collections;
 public class AdminEventController {
 
     @Autowired
-    private IAdminEventService adminEventService;
+    private IEventService eventService;
 
     private static final Logger logger = LoggerFactory.getLogger(AdminEventController.class);
 
@@ -35,11 +38,13 @@ public class AdminEventController {
             if (page < 0) page = 0;
             if (size <= 0 || size > 50) size = 10;
 
+            Pageable pageable = PageRequest.of(page, size);
+
             if (keyword != null && !keyword.trim().isEmpty()) {
-                eventPage = adminEventService.searchPendingEvents(keyword.trim(), page, size);
+                eventPage = eventService.searchEventsByKeywordAndStatus(keyword.trim(), Event.ApprovalStatus.PENDING, pageable);
                 model.addAttribute("keyword", keyword);
             } else {
-                eventPage = adminEventService.getPendingEvents(page, size);
+                eventPage = eventService.findByApprovalStatus(Event.ApprovalStatus.PENDING, pageable);
             }
 
             model.addAttribute("eventList", eventPage.getContent());
@@ -74,7 +79,7 @@ public class AdminEventController {
     @Transactional
     public String viewEventForConfirmation(@PathVariable("id") Integer eventId, Model model) {
         try {
-            Event event = adminEventService.getEventForConfirmation(eventId);
+            Event event = eventService.findById(eventId);
             if (event == null) {
                 return "redirect:/Admin/PendingEvents";
             }
@@ -100,7 +105,7 @@ public class AdminEventController {
     public String confirmEvent(@PathVariable("id") Integer eventId,
                                RedirectAttributes redirectAttributes) {
         try {
-            adminEventService.confirmEvent(eventId);
+            eventService.approveEvent(eventId, null);
             redirectAttributes.addFlashAttribute("success", "Event confirmed and approved successfully");
         } catch (Exception e) {
             logger.error("Error confirming event: ", e);
@@ -115,7 +120,7 @@ public class AdminEventController {
                               @RequestParam(required = false) String reason,
                               RedirectAttributes redirectAttributes) {
         try {
-            adminEventService.rejectEvent(eventId, reason);
+            eventService.rejectEvent(eventId, null);
             redirectAttributes.addFlashAttribute("success", "Event rejected successfully");
         } catch (Exception e) {
             logger.error("Error rejecting event: ", e);
@@ -138,6 +143,8 @@ public class AdminEventController {
             if (page < 0) page = 0;
             if (size <= 0 || size > 50) size = 10;
 
+            Pageable pageable = PageRequest.of(page, size);
+
             if (status != null && !status.isEmpty()) {
                 try {
                     approvalStatus = Event.ApprovalStatus.valueOf(status.toUpperCase());
@@ -146,7 +153,16 @@ public class AdminEventController {
                 }
             }
 
-            eventPage = adminEventService.searchAllEvents(keyword, approvalStatus, page, size);
+            // Search logic
+            if (keyword != null && !keyword.trim().isEmpty() && approvalStatus != null) {
+                eventPage = eventService.searchEventsByKeywordAndStatus(keyword, approvalStatus, pageable);
+            } else if (keyword != null && !keyword.trim().isEmpty()) {
+                eventPage = eventService.searchEvents(keyword, pageable);
+            } else if (approvalStatus != null) {
+                eventPage = eventService.findByApprovalStatus(approvalStatus, pageable);
+            } else {
+                eventPage = eventService.findAll(pageable);
+            }
 
             model.addAttribute("eventList", eventPage.getContent());
             model.addAttribute("currentPage", page);
@@ -180,11 +196,11 @@ public class AdminEventController {
     }
 
     // View event details
-    @GetMapping("/viewEventDetails/{id}")
+    @GetMapping("/Event/{id}")
     @Transactional
     public String viewEventDetails(@PathVariable("id") Integer eventId, Model model) {
         try {
-            Event event = adminEventService.getEventById(eventId);
+            Event event = eventService.findById(eventId);
             if (event == null) {
                 return "redirect:/Admin/Events";
             }
@@ -210,7 +226,7 @@ public class AdminEventController {
     @Transactional
     public String showEditForm(@PathVariable("id") Integer eventId, Model model) {
         try {
-            Event event = adminEventService.getEventById(eventId);
+            Event event = eventService.findById(eventId);
             if (event == null) {
                 return "redirect:/Admin/Events";
             }
@@ -234,7 +250,22 @@ public class AdminEventController {
                               @ModelAttribute Event eventDetails,
                               RedirectAttributes redirectAttributes) {
         try {
-            adminEventService.updateEvent(eventId, eventDetails);
+            Event existingEvent = eventService.findById(eventId);
+            if (existingEvent == null) {
+                redirectAttributes.addFlashAttribute("error", "Event not found");
+                return "redirect:/Admin/Events";
+            }
+
+            // Update fields
+            existingEvent.setEventTitle(eventDetails.getEventTitle());
+            existingEvent.setEventDescription(eventDetails.getEventDescription());
+            existingEvent.setEventDate(eventDetails.getEventDate());
+            existingEvent.setEventLocation(eventDetails.getEventLocation());
+            existingEvent.setRegistrationDeadline(eventDetails.getRegistrationDeadline());
+            existingEvent.setMaxParticipants(eventDetails.getMaxParticipants());
+            existingEvent.setContactEmail(eventDetails.getContactEmail());
+
+            eventService.save(existingEvent);
             redirectAttributes.addFlashAttribute("success", "Event updated successfully");
         } catch (Exception e) {
             logger.error("Error updating event: ", e);
@@ -243,18 +274,76 @@ public class AdminEventController {
         return "redirect:/Admin/Events";
     }
 
-    // 4. DELETE CAREER EVENT
-    @PostMapping("/DeleteEvent/{id}")
-    public String deleteEvent(@PathVariable("id") Integer eventId,
-                              RedirectAttributes redirectAttributes) {
+//    // 4. DELETE CAREER EVENT
+//    @PostMapping("/DeleteEvent/{id}")
+//    public String deleteEvent(@PathVariable("id") Integer eventId,
+//                              RedirectAttributes redirectAttributes) {
+//        try {
+//            eventService.deleteEventWithRegistrations(eventId);
+//            redirectAttributes.addFlashAttribute("success", "Event deleted successfully");
+//        } catch (Exception e) {
+//            logger.error("Error deleting event: ", e);
+//            redirectAttributes.addFlashAttribute("error", "Error deleting event: " + e.getMessage());
+//        }
+//        return "redirect:/Admin/Events";
+//    }
+
+    // 5. CHANGE EVENT STATUS
+//    @PostMapping("/ChangeEventStatus/{id}")
+//    public String changeEventStatus(@PathVariable("id") Integer eventId,
+//                                    @RequestParam("newStatus") String newStatus,
+//                                    RedirectAttributes redirectAttributes) {
+//        try {
+//            Event event = eventService.findById(eventId);
+//            if (event == null) {
+//                redirectAttributes.addFlashAttribute("error", "Event not found");
+//                return "redirect:/Admin/Events";
+//            }
+//
+//            Event.EventStatus eventStatus = Event.EventStatus.valueOf(newStatus.toUpperCase());
+//            Event.EventStatus oldStatus = event.getEventStatus();
+//            event.setEventStatus(eventStatus);
+//            eventService.save(event);
+//
+//            logger.info("Changed event status from {} to {} for event ID: {}", oldStatus, eventStatus, eventId);
+//            redirectAttributes.addFlashAttribute("success", "Event status changed successfully to " + eventStatus);
+//        } catch (IllegalArgumentException e) {
+//            logger.error("Invalid status parameter: {}", newStatus);
+//            redirectAttributes.addFlashAttribute("error", "Invalid status: " + newStatus);
+//        } catch (Exception e) {
+//            logger.error("Error changing event status: ", e);
+//            redirectAttributes.addFlashAttribute("error", "Error changing event status: " + e.getMessage());
+//        }
+//        return "redirect:/Admin/Events";
+//    }
+
+    // 6. TOGGLE APPROVAL STATUS
+    @PostMapping("/ToggleApprovalStatus/{id}")
+    public String toggleApprovalStatus(@PathVariable("id") Integer eventId,
+                                       @RequestParam("newApprovalStatus") String newApprovalStatus,
+                                       RedirectAttributes redirectAttributes) {
         try {
-            adminEventService.deleteEvent(eventId);
-            redirectAttributes.addFlashAttribute("success", "Event đã được xóa thành công!");
+            Event.ApprovalStatus approvalStatus = Event.ApprovalStatus.valueOf(newApprovalStatus.toUpperCase());
+
+            if (approvalStatus == Event.ApprovalStatus.APPROVED) {
+                eventService.approveEvent(eventId, null);
+                redirectAttributes.addFlashAttribute("success", "Event approved successfully");
+            } else if (approvalStatus == Event.ApprovalStatus.REJECTED) {
+                eventService.rejectEvent(eventId, null);
+                redirectAttributes.addFlashAttribute("success", "Event rejected successfully");
+            } else {
+                // For PENDING status
+                Event event = eventService.findById(eventId);
+                if (event != null) {
+                    event.setApprovalStatus(approvalStatus);
+                    eventService.save(event);
+                    redirectAttributes.addFlashAttribute("success", "Event set to pending status");
+                }
+            }
         } catch (Exception e) {
-            logger.error("Error deleting event: ", e);
-            redirectAttributes.addFlashAttribute("error", "Lỗi khi xóa event: " + e.getMessage());
+            logger.error("Error changing approval status: ", e);
+            redirectAttributes.addFlashAttribute("error", "Error changing approval status: " + e.getMessage());
         }
         return "redirect:/Admin/Events";
     }
-
 }

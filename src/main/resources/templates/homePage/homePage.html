@@ -14,6 +14,10 @@
     <link rel="stylesheet" th:href="@{/css/index.css}"/>
     <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
     <link rel="stylesheet" th:href="@{/css/footer.css}" />
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
 
 
     <link
@@ -21,10 +25,7 @@
             th:href="@{/css/owlcarousel/assets/owl.carousel.min.css}"
     />
     <link rel="stylesheet" th:href="@{/css/animate/animate.min.css}"/>
-    <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
+
 </head>
 <body>
 <!-- Navbar -->
@@ -95,25 +96,27 @@
 
 <!--Search Job-->
 <div class="main-content">
-          <!-- Hero Section -->
-      <section class="hero-section">
+    <!-- Hero Section -->
+    <section class="hero-section">
         <div class="hero-content">
-          <h1 th:text="#{home.search.title}">Tìm việc làm mơ ước của bạn</h1>
-          <p>
-            <span th:text="#{home.search.subtitle}">Kết nối với hàng nghìn cơ hội việc làm tuyệt vời từ các nhà tuyển dụng hàng đầu</span>
-          </p>
+            <h1 th:text="#{home.search.title}">Tìm việc làm mơ ước của bạn</h1>
+            <p>
+                <span th:text="#{home.search.subtitle}">Kết nối với hàng nghìn cơ hội việc làm tuyệt vời từ các nhà tuyển dụng hàng đầu</span>
+            </p>
 
-          <!-- Advanced Search Container -->
-          <div class="advanced-search-container">
-            <!-- Search Tabs -->
-            <div class="search-tabs">
-              <button type="button" class="search-tab active" onclick="switchTab('job')" id="jobTab" th:text="#{home.search.findJob}">
-                Find a Job
-              </button>
-              <button type="button" class="search-tab" onclick="switchTab('candidate')" id="candidateTab" th:text="#{home.search.findCandidate}">
-                Find a Candidate
-              </button>
-            </div>
+            <!-- Advanced Search Container -->
+            <div class="advanced-search-container">
+                <!-- Search Tabs -->
+                <div class="search-tabs">
+                    <button type="button" class="search-tab active" onclick="switchTab('job')" id="jobTab"
+                            th:text="#{home.search.findJob}">
+                        Find a Job
+                    </button>
+                    <button type="button" class="search-tab" onclick="switchTab('candidate')" id="candidateTab"
+                            th:text="#{home.search.findCandidate}">
+                        Find a Candidate
+                    </button>
+                </div>
 
             <!-- Search Forms -->
             <div class="search-forms">
@@ -121,7 +124,6 @@
               <form th:action="@{/HomePage/search}" method="post" class="search-form active" id="jobForm">
                 <div class="search-fields">
                   <div class="search-field">
-                    <i class="fas fa-search field-icon"></i>
                     <input
                       type="text"
                       name="keyword"
@@ -142,7 +144,6 @@
                   </div>
 
                   <div class="search-field">
-                    <i class="fas fa-map-marker-alt field-icon"></i>
                     <input
                       type="text"
                       name="location"
@@ -157,56 +158,60 @@
                 </div>
               </form>
 
-              <!-- Find a Candidate Form -->
-              <form th:action="@{/HomePage/search}" method="post" class="search-form" id="candidateForm">
-                <div class="search-fields">
-                  <div class="search-field">
-                    <i class="fas fa-dollar-sign field-icon"></i>
-                    <input
-                      type="number"
-                      name="salary"
-                      placeholder="Minimum Salary..."
-                      class="search-input"
-                    />
-                  </div>
-
-                  <div class="search-field">
-                    <i class="fas fa-briefcase field-icon"></i>
-                    <select name="jobType" class="search-select">
-                      <option value="">Job Type</option>
-                      <option value="FULL_TIME">Full Time</option>
-                      <option value="PART_TIME">Part Time</option>
-                    </select>
-                  </div>
-
-                  <div class="search-field">
-                    <i class="fas fa-building field-icon"></i>
-                    <input
-                      type="text"
-                      name="companyName"
-                      placeholder="Company Name..."
-                      class="search-input"
-                    />
-                  </div>
-
-                  <button type="submit" class="search-button">
-                    Search
-                  </button>
+                    <!-- Find a Candidate Form -->
+                    <!-- Find a Candidate Form -->
+                    <form th:action="@{/HomePage/search}" method="post" class="search-form" id="candidateForm">
+                        <div class="search-fields">
+                            <div class="search-field">
+                                <i class="fas fa-money-bill-wave field-icon"></i>
+                                <select name="salaryRange" class="search-select">
+                                    <option value="">Tất cả mức lương</option>
+                                    <option value="0-2000000" th:selected="${searchSalary == '0-2000000'}">Dưới 2,000,000</option>
+                                    <option value="2000000-3000000" th:selected="${searchSalary == '2000000-3000000'}">2,000,000 - 3,000,000</option>
+                                    <option value="3000000-5000000" th:selected="${searchSalary == '3000000-5000000'}">3,000,000 - 5,000,000</option>
+                                    <option value="5000000-7000000" th:selected="${searchSalary == '5000000-7000000'}">5,000,000 - 7,000,000</option>
+                                    <option value="7000000-10000000" th:selected="${searchSalary == '7000000-10000000'}">7,000,000 - 10,000,000</option>
+                                    <option value="10000000-15000000" th:selected="${searchSalary == '10000000-15000000'}">10,000,000 - 15,000,000</option>
+                                    <option value="15000000-20000000" th:selected="${searchSalary == '15000000-20000000'}">15,000,000 - 20,000,000</option>
+                                    <option value="20000000-30000000" th:selected="${searchSalary == '20000000-30000000'}">20,000,000 - 30,000,000</option>
+                                    <option value="30000000-40000000" th:selected="${searchSalary == '30000000-40000000'}">30,000,000 - 40,000,000</option>
+                                    <option value="40000000-50000000" th:selected="${searchSalary == '40000000-50000000'}">40,000,000 - 50,000,000</option>
+                                    <option value=">50000000" th:selected="${searchSalary == '>50000000'}">Trên 50,000,000</option>
+                                </select>
+                            </div>
+                            <div class="search-field">
+                                <i class="fas fa-briefcase field-icon"></i>
+                                <select name="jobType" class="search-select">
+                                    <option value="">Tất cả loại việc</option>
+                                    <option value="FULL_TIME" th:selected="${searchJobType == 'FULL_TIME'}">Full Time</option>
+                                    <option value="PART_TIME" th:selected="${searchJobType == 'PART_TIME'}">Part Time</option>
+                                </select>
+                            </div>
+                            <div class="search-field">
+                                <input
+                                        type="text"
+                                        name="companyName"
+                                        placeholder="Tên công ty..."
+                                        class="search-input"
+                                        th:value="${searchCompanyName}"
+                                />
+                            </div>
+                            <button type="submit" class="search-button">
+                                Search
+                            </button>
+                        </div>
+                    </form>
                 </div>
-              </form>
             </div>
-          </div>
         </div>
-      </section>
+    </section>
 
 
-
-
-          <!-- Featured Jobs Section -->
-      <section class="featured-jobs">
+    <!-- Featured Jobs Section -->
+    <section class="featured-jobs">
         <div class="section-header">
-          <h2 th:text="#{home.featuredJobs.title}">Việc làm nổi bật</h2>
-          <p th:text="#{home.featuredJobs.subtitle}">Những cơ hội việc làm tốt nhất dành cho bạn</p>
+            <h2 th:text="#{home.featuredJobs.title}">Việc làm nổi bật</h2>
+            <p th:text="#{home.featuredJobs.subtitle}">Những cơ hội việc làm tốt nhất dành cho bạn</p>
         </div>
 
         <!-- Job Listings -->
@@ -238,11 +243,11 @@
                 >
                   Full-time
                 </span>
-                <span
-                        class="job-type-badge part-time"
-                        th:unless="${job.jobType?.name() == 'FULL_TIME'}"
-                        th:text="#{home.jobType.partTime}"
-                >
+                        <span
+                                class="job-type-badge part-time"
+                                th:unless="${job.jobType?.name() == 'FULL_TIME'}"
+                                th:text="#{home.jobType.partTime}"
+                        >
                   Part-time
                 </span>
                     </div>
@@ -254,16 +259,21 @@
                             <i class="fas fa-map-marker-alt"></i>
                             <span th:text="${job.jobLocation}">Địa điểm</span>
                         </div>
+
                         <div class="job-detail-item">
                             <i class="fas fa-money-bill-wave"></i>
-                            <span th:text="${job.jobSalary}">Mức lương</span>
+                            <span th:if="${job.jobSalary != null}">
+        <span th:text="${#numbers.formatInteger(job.jobSalary, 1, 'POINT') + ' VND'}"></span>
+    </span>
+                            <span th:if="${job.jobSalary == null}">Không xác định</span>
                         </div>
+
+
+
+
                         <div class="job-detail-item">
                             <i class="fas fa-clock"></i>
-                            <span
-                                    th:text="${#temporals.format(job.createdAt, 'dd/MM/yyyy')}"
-                            >Ngày đăng</span
-                            >
+                            <span th:text="${#temporals.format(job.createdAt, 'dd/MM/yyyy')}">Ngày đăng</span>
                         </div>
                     </div>
                 </div>
@@ -286,50 +296,52 @@
 
         <!-- Pagination -->
         <div class="pagination-container" th:if="${totalPages > 1}">
-          <nav aria-label="Job pagination">
-            <ul class="pagination justify-content-center">
-              <!-- Previous Page -->
-              <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{/(page=${currentPage - 1}, size=${size})}"
-                   th:if="${currentPage > 0}">
-                  <i class="fas fa-chevron-left"></i> <span th:text="#{home.pagination.previous}">Trước</span>
-                </a>
-                <span class="page-link" th:unless="${currentPage > 0}">
+            <nav aria-label="Job pagination">
+                <ul class="pagination justify-content-center">
+                    <!-- Previous Page -->
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link" th:href="@{/(page=${currentPage - 1}, size=${size})}"
+                           th:if="${currentPage > 0}">
+                            <i class="fas fa-chevron-left"></i> <span th:text="#{home.pagination.previous}">Trước</span>
+                        </a>
+                        <span class="page-link" th:unless="${currentPage > 0}">
                   <i class="fas fa-chevron-left"></i> <span th:text="#{home.pagination.previous}">Trước</span>
                 </span>
-              </li>
+                    </li>
 
-              <!-- Page Numbers -->
-              <li class="page-item"
-                  th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
-                  th:if="${pageNum >= currentPage - 2 && pageNum <= currentPage + 2}"
-                  th:classappend="${pageNum == currentPage} ? 'active'">
-                <a class="page-link" th:href="@{/(page=${pageNum}, size=${size})}"
-                   th:text="${pageNum + 1}" th:if="${pageNum != currentPage}">1</a>
-                <span class="page-link" th:if="${pageNum == currentPage}" th:text="${pageNum + 1}">1</span>
-              </li>
+                    <!-- Page Numbers -->
+                    <li class="page-item"
+                        th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                        th:if="${pageNum >= currentPage - 2 && pageNum <= currentPage + 2}"
+                        th:classappend="${pageNum == currentPage} ? 'active'">
+                        <a class="page-link" th:href="@{/(page=${pageNum}, size=${size})}"
+                           th:text="${pageNum + 1}" th:if="${pageNum != currentPage}">1</a>
+                        <span class="page-link" th:if="${pageNum == currentPage}" th:text="${pageNum + 1}">1</span>
+                    </li>
 
-              <!-- Next Page -->
-              <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
-                <a class="page-link" th:href="@{/(page=${currentPage + 1}, size=${size})}"
-                   th:if="${currentPage < totalPages - 1}">
-                  <span th:text="#{home.pagination.next}">Sau</span> <i class="fas fa-chevron-right"></i>
-                </a>
-                <span class="page-link" th:unless="${currentPage < totalPages - 1}">
+                    <!-- Next Page -->
+                    <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
+                        <a class="page-link" th:href="@{/(page=${currentPage + 1}, size=${size})}"
+                           th:if="${currentPage < totalPages - 1}">
+                            <span th:text="#{home.pagination.next}">Sau</span> <i class="fas fa-chevron-right"></i>
+                        </a>
+                        <span class="page-link" th:unless="${currentPage < totalPages - 1}">
                   <span th:text="#{home.pagination.next}">Sau</span> <i class="fas fa-chevron-right"></i>
                 </span>
               </li>
             </ul>
           </nav>
 
-          <!-- Page Info -->
-          <div class="page-info text-center mt-3">
-            <p class="text-muted">
-              <span th:text="#{home.pagination.showing}">Hiển thị</span> <span th:text="${currentPage * size + 1}">1</span> -
-              <span th:text="${(currentPage * size + size) > totalElements ? totalElements : (currentPage * size + size)}">8</span>
-              <span th:text="#{home.pagination.of}">trong tổng số</span> <span th:text="${totalElements}">0</span> <span th:text="#{home.pagination.jobs}">việc làm</span>
-            </p>
-          </div>
+            <!-- Page Info -->
+            <div class="page-info text-center mt-3">
+                <p class="text-muted">
+                    <span th:text="#{home.pagination.showing}">Hiển thị</span> <span
+                        th:text="${currentPage * size + 1}">1</span> -
+                    <span th:text="${(currentPage * size + size) > totalElements ? totalElements : (currentPage * size + size)}">8</span>
+                    <span th:text="#{home.pagination.of}">trong tổng số</span> <span th:text="${totalElements}">0</span>
+                    <span th:text="#{home.pagination.jobs}">việc làm</span>
+                </p>
+            </div>
         </div>
     </section>
 
@@ -370,8 +382,6 @@
         </div>
     </section>
 </div>
-<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
-
 
 <!-- Footer -->
 <div th:replace="~{fragments/footer :: footer}"></div>
@@ -420,33 +430,35 @@
         }
       });
 
-      // Function to change jobs per page
-      function changeJobsPerPage(newSize) {
+    // Function to change jobs per page
+    function changeJobsPerPage(newSize) {
         const urlParams = new URLSearchParams(window.location.search);
         urlParams.set('size', newSize);
         urlParams.set('page', '0'); // Reset to first page when changing size
         window.location.search = urlParams.toString();
       }
 
-      // Function to switch between search tabs
-      function switchTab(tabType) {
+    // Function to switch between search tabs
+    function switchTab(tabType) {
         // Remove active class from all tabs and forms
         document.querySelectorAll('.search-tab').forEach(tab => {
-          tab.classList.remove('active');
+            tab.classList.remove('active');
         });
         document.querySelectorAll('.search-form').forEach(form => {
-          form.classList.remove('active');
+            form.classList.remove('active');
         });
 
         // Add active class to selected tab and form
         if (tabType === 'job') {
-          document.getElementById('jobTab').classList.add('active');
-          document.getElementById('jobForm').classList.add('active');
+            document.getElementById('jobTab').classList.add('active');
+            document.getElementById('jobForm').classList.add('active');
         } else if (tabType === 'candidate') {
-          document.getElementById('candidateTab').classList.add('active');
-          document.getElementById('candidateForm').classList.add('active');
+            document.getElementById('candidateTab').classList.add('active');
+            document.getElementById('candidateForm').classList.add('active');
         }
-      }
-    </script>
-  </body>
+    }
+</script>
+<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
+
+</body>
 </html>

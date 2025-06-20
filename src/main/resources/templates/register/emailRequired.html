@@ -40,7 +40,7 @@
                 Bạn cần xác thực email để có thể đăng nhập vào hệ thống.
             </p>
             
-            <form th:action="@{/EmailVerification/verify}" method="get" style="display: inline-block; margin-right: 10px;">
+            <form class="verify-email-form" th:action="@{/EmailVerification/verify}" method="get" style="display: inline-block; margin-right: 10px;">
                 <input type="hidden" name="email" th:value="${email}" />
                 <button type="submit" class="content-btn content-btn-primary">
                     <i class="bi bi-envelope-check"></i>
@@ -98,7 +98,54 @@
 .content-btn-primary:hover {
     background-color: #0056b3;
 }
+
+/* Loading state and spinner styles */
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+form.loading {
+    pointer-events: none !important;
+    opacity: 0.6;
+}
+
+form.loading * {
+    pointer-events: none !important;
+}
+
+.content-btn:disabled {
+    pointer-events: none !important;
+    opacity: 0.6;
+    cursor: not-allowed !important;
+}
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const verifyForm = document.querySelector('.verify-email-form');
+    
+    if (verifyForm) {
+        const submitBtn = verifyForm.querySelector('button[type="submit"]');
+        verifyForm.addEventListener('submit', function(e) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span>Đang chuyển hướng...';
+            this.classList.add('loading');
+        });
+    }
+});
+</script>
 <script th:src="@{/js/languageSwitch.js}"></script>
 
 </body>
