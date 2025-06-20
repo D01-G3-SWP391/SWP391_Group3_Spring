@@ -80,6 +80,12 @@ public class AddJobApplication {
             return "redirect:/Login";
         }
 
+        // Kiểm tra xem student đã apply vào job này chưa
+        if (jobApplicationService.hasStudentAppliedToJob(student.getStudentId(), jobPostId)) {
+            redirectAttributes.addFlashAttribute("error", "Bạn đã ứng tuyển vào công việc này rồi!");
+            return "redirect:/JobDescription/JobPost?id=" + jobPostId;
+        }
+
         Long studentId = student.getStudentId().longValue();
 
         // Kiểm tra validation errors (chỉ validate dữ liệu form, không validate ID)

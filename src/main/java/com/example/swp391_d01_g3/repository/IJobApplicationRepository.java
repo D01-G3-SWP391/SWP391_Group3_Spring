@@ -34,4 +34,11 @@ public interface IJobApplicationRepository extends JpaRepository<JobApplication,
                                                              @Param("searchName") String searchName,
                                                              Pageable pageable);
 
+    // 3. Kiểm tra xem student đã apply vào job này chưa
+    @Query("SELECT COUNT(ja) > 0 FROM JobApplication ja " +
+            "WHERE ja.student.studentId = :studentId " +
+            "AND ja.jobPost.jobPostId = :jobPostId")
+    boolean existsByStudentIdAndJobPostId(@Param("studentId") Integer studentId, 
+                                        @Param("jobPostId") Integer jobPostId);
+
 }

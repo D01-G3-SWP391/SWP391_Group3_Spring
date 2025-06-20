@@ -20,7 +20,7 @@ public class AuthenticationHelper {
             if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_admin"))) {
                 return "redirect:/Admin";
             } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_employer"))) {
-                return "redirect:/Employer";
+                return "redirect:/Employee";
             } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_student"))) {
                 return "redirect:/Student";
             } else {

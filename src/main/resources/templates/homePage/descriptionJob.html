@@ -120,14 +120,39 @@
                             </div>
                             <!-- Hiển thị nút ứng tuyển cho người dùng đã xác thực -->
                             <div sec:authorize="isAuthenticated() and hasRole('student')">
-                                <button class="btn-primary-large" onclick="showApplyForm()">
-                                    <i class="fas fa-paper-plane"></i>
-                                    <span>Ứng tuyển ngay</span>
-                                </button>
-                                <button class="btn-save-large" style="margin-top: 7px">
-                                    <i class="far fa-heart"></i>
-                                    <span>Lưu việc làm</span>
-                                </button>
+                                <!-- Kiểm tra nếu student chưa apply thì hiển thị nút apply -->
+                                <div th:if="${!hasApplied}">
+                                    <button class="btn-primary-large" onclick="showApplyForm()">
+                                        <i class="fas fa-paper-plane"></i>
+                                        <span>Ứng tuyển ngay</span>
+                                    </button>
+                                    <button class="btn-save-large" style="margin-top: 7px">
+                                        <i class="far fa-heart"></i>
+                                        <span>Lưu việc làm</span>
+                                    </button>
+                                </div>
+                                
+                                <!-- Hiển thị thông báo nếu đã apply -->
+                                <div th:if="${hasApplied}" class="already-applied-message">
+                                    <div class="alert alert-info" style="
+                                        background-color: #d1ecf1; 
+                                        color: #0c5460; 
+                                        border: 1px solid #bee5eb; 
+                                        border-radius: 8px; 
+                                        padding: 15px; 
+                                        margin: 10px 0;
+                                        display: flex;
+                                        align-items: center;
+                                        font-weight: 500;
+                                    ">
+                                        <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px; font-size: 18px;"></i>
+                                        <span th:text="#{apply.alreadyApplied}">Bạn đã ứng tuyển vào công việc này rồi!</span>
+                                    </div>
+                                    <button class="btn-save-large" style="margin-top: 7px">
+                                        <i class="far fa-heart"></i>
+                                        <span>Lưu việc làm</span>
+                                    </button>
+                                </div>
                             </div>
 
                         </div>

@@ -48,7 +48,12 @@
                     
                     <!-- Password -->
                     <div class="form-group">
-                        <input type="password" id="password" name="password" th:placeholder="#{register.employer.password.placeholder}" th:field="*{password}" required>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="password" name="password" th:placeholder="#{register.employer.password.placeholder}" th:field="*{password}" required>
+                            <button type="button" class="password-toggle-btn" onclick="togglePassword('password')">
+                                <i class="bi bi-eye" id="passwordToggleIcon"></i>
+                            </button>
+                        </div>
                         <span class="error-message server-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
                         <span class="error-message" id="passwordError"></span>
                         <div class="password-strength" id="passwordStrength"></div>
@@ -57,7 +62,12 @@
                     
                     <!-- Confirm Password -->
                     <div class="form-group">
-                        <input type="password" id="confirmPassword" name="confirmPassword" th:placeholder="#{register.employer.confirmPassword.placeholder}" th:field="*{confirmPassword}" required>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="confirmPassword" name="confirmPassword" th:placeholder="#{register.employer.confirmPassword.placeholder}" th:field="*{confirmPassword}" required>
+                            <button type="button" class="password-toggle-btn" onclick="togglePassword('confirmPassword')">
+                                <i class="bi bi-eye" id="confirmPasswordToggleIcon"></i>
+                            </button>
+                        </div>
                         <span class="error-message server-error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></span>
                         <span class="error-message" id="confirmPasswordError"></span>
                         <div class="form-tooltip" th:text="#{register.employer.tooltip.confirmPassword}">Nhập lại mật khẩu để xác nhận</div>
@@ -638,6 +648,22 @@ document.addEventListener('DOMContentLoaded', function() {
         this.style.transform = 'translateY(0)';
     });
 });
+
+// Toggle password visibility function
+function togglePassword(fieldId) {
+    const passwordField = document.getElementById(fieldId);
+    const toggleIcon = document.getElementById(fieldId + 'ToggleIcon');
+    
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        toggleIcon.classList.remove('bi-eye');
+        toggleIcon.classList.add('bi-eye-slash');
+    } else {
+        passwordField.type = 'password';
+        toggleIcon.classList.remove('bi-eye-slash');
+        toggleIcon.classList.add('bi-eye');
+    }
+}
 </script>
 <script th:src="@{/js/languageSwitch.js}"></script>
 
