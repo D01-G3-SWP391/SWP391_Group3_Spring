@@ -36,6 +36,31 @@
         body {
             padding-top: 80px !important;
         }
+
+        /* Loading Spinner Styles */
+        .submit-btn {
+            position: relative;
+        }
+
+        .btn-spinner {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-spinner i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -304,45 +329,74 @@
             <button class="close-btn" onclick="closeApplyForm()">&times;</button>
         </div>
 
-        <!-- Modal Form với th:value đúng -->
-        <form th:action="@{/Student/JobDescription/Apply}" method="post" th:object="${jobApplicationDTO}" enctype="multipart/form-data">
+        <!-- Error Messages -->
+        <div th:if="${error}" class="alert alert-danger" style="margin: 10px; padding: 10px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px;">
+            <span th:text="${error}"></span>
+        </div>
+
+        <!-- Modal Form với jobPostId từ URL parameter -->
+        <form th:action="@{/Student/JobDescription/Apply}"
+              method="post"
+              th:object="${jobApplicationDTO}"
+              enctype="multipart/form-data"
+              id="jobApplicationForm">
             <div th:each="job : ${jobPosts}">
-                <input type="hidden" th:value="${studentDetails?.studentId}" name="studentId">
-                <input type="hidden" th:value="${job.jobPostId}" name="jobPostId">
+                <!-- studentId lấy từ principal, jobPostId lấy từ RequestParam -->
+                <input type="hidden" name="jobPostId" th:value="${job.jobPostId}" />
             </div>
 
             <div class="form-group">
                 <label for="fullName" th:text="#{apply.form.fullName}">Họ và tên</label> *
-                <input type="text" id="fullName" name="fullName" th:field="*{fullname}" required/>
+                <input type="text" id="fullName" th:field="*{fullname}" required minlength="2" maxlength="100"
+                       pattern="^[\p{L}\s]+$" title="Họ và tên chỉ được chứa chữ cái và khoảng trắng" />
+                <div class="error-message" th:if="${#fields.hasErrors('fullname')}" th:errors="*{fullname}"></div>
+                <div class="error-message" id="fullNameError" style="display: none; color: red; font-size: 12px; margin-top: 5px;"></div>
             </div>
 
             <div class="form-group">
                 <label for="email" th:text="#{apply.form.email}">Email</label> *
-                <input type="email" id="email" name="email" th:field="*{email}" required/>
+                <input type="email" id="email" th:field="*{email}" required maxlength="255" />
+                <div class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                <div class="error-message" id="emailError" style="display: none; color: red; font-size: 12px; margin-top: 5px;"></div>
             </div>
 
             <div class="form-group">
                 <label for="phone" th:text="#{apply.form.phone}">SĐT</label> *
-                <input type="text" id="phone" name="phone" th:field="*{phoneNumber}" required/>
+                <input type="text" id="phone" th:field="*{phoneNumber}" required pattern="^(\+84|0)[3|5|7|8|9][0-9]{8}$"
+                       maxlength="15" title="Số điện thoại phải bắt đầu bằng +84 hoặc 0, tiếp theo là 3,5,7,8,9 và 8 chữ số" />
+                <div class="error-message" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
+                <div class="error-message" id="phoneError" style="display: none; color: red; font-size: 12px; margin-top: 5px;"></div>
             </div>
 
             <div class="form-group">
                 <label for="content" th:text="#{apply.form.content}">Nội dung</label> *
-                <textarea id="content" name="content" th:field="*{description}"
-                          th:placeholder="#{apply.form.content.placeholder}" required></textarea>
+                <textarea id="content" th:field="*{description}"
+                          th:placeholder="#{apply.form.content.placeholder}" required minlength="10" maxlength="1000"></textarea>
+                <div class="error-message" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+                <div class="error-message" id="descriptionError" style="display: none; color: red; font-size: 12px; margin-top: 5px;"></div>
+                <div class="char-count" style="text-align: right; font-size: 12px; color: #666; margin-top: 5px;">
+                    <span id="charCount">0</span>/1000
+                </div>
             </div>
 
             <div class="form-group">
                 <label for="cv" th:text="#{apply.form.cv}">Hồ sơ ứng viên (CV)</label>
-                <input type="file" id="cv" name="cv" 
+                <input type="file" id="cv" name="cvFile"
                        accept=".pdf,.png,.jpg,.jpeg,.gif" onchange="validateCVFile(this)"/>
                 <p class="file-info" th:text="#{apply.form.cv.info}">Hỗ trợ định dạng PDF và ảnh (png, jpg, jpeg, gif) nhỏ hơn 2048KB</p>
                 <p class="cv-tip" th:text="#{apply.form.cv.tip}">Gửi kèm hồ sơ (CV) giúp bạn tăng cơ hội được tuyển dụng</p>
-                <div id="cv-error-modal" class="file-error" style="display: none;"></div>
+                <div id="cv-error-modal" class="file-error" style="display: none; color: red; font-size: 12px; margin-top: 5px;"></div>
+                <div th:if="${cvError}" class="file-error" style="color: red; font-size: 12px; margin-top: 5px;" th:text="${cvError}"></div>
             </div>
 
             <div class="button-group">
-                <button type="submit" class="submit-btn" th:text="#{apply.form.submit}">Gửi</button>
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="btn-text" th:text="#{apply.form.submit}">Gửi</span>
+                    <span class="btn-spinner" style="display: none;">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span th:text="#{apply.form.submitting}">Đang gửi...</span>
+                    </span>
+                </button>
                 <button type="button" class="cancel-btn" onclick="closeApplyForm()" th:text="#{apply.form.close}">Đóng</button>
             </div>
         </form>
@@ -393,6 +447,133 @@
             errorDiv.style.display = 'block';
         }
 
+        // Real-time validation functions
+        function validateFullName() {
+            const fullName = document.getElementById('fullName');
+            const errorDiv = document.getElementById('fullNameError');
+            const value = fullName.value.trim();
+
+            if (value.length === 0) {
+                showFieldError(errorDiv, 'Họ và tên không được để trống');
+                return false;
+            }
+
+            if (value.length < 2) {
+                showFieldError(errorDiv, 'Họ và tên phải có ít nhất 2 ký tự');
+                return false;
+            }
+
+            if (value.length > 100) {
+                showFieldError(errorDiv, 'Họ và tên không được quá 100 ký tự');
+                return false;
+            }
+
+            const namePattern = /^[\p{L}\s]+$/u;
+            if (!namePattern.test(value)) {
+                showFieldError(errorDiv, 'Họ và tên chỉ được chứa chữ cái và khoảng trắng');
+                return false;
+            }
+
+            hideFieldError(errorDiv);
+            return true;
+        }
+
+        function validateEmail() {
+            const email = document.getElementById('email');
+            const errorDiv = document.getElementById('emailError');
+            const value = email.value.trim();
+
+            if (value.length === 0) {
+                showFieldError(errorDiv, 'Email không được để trống');
+                return false;
+            }
+
+            if (value.length > 255) {
+                showFieldError(errorDiv, 'Email không được quá 255 ký tự');
+                return false;
+            }
+
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(value)) {
+                showFieldError(errorDiv, 'Email không đúng định dạng');
+                return false;
+            }
+
+            hideFieldError(errorDiv);
+            return true;
+        }
+
+        function validatePhone() {
+            const phone = document.getElementById('phone');
+            const errorDiv = document.getElementById('phoneError');
+            const value = phone.value.trim();
+
+            if (value.length === 0) {
+                showFieldError(errorDiv, 'Số điện thoại không được để trống');
+                return false;
+            }
+
+            if (value.length > 15) {
+                showFieldError(errorDiv, 'Số điện thoại không được quá 15 ký tự');
+                return false;
+            }
+
+            const phonePattern = /^(\+84|0)[3|5|7|8|9][0-9]{8}$/;
+            if (!phonePattern.test(value)) {
+                showFieldError(errorDiv, 'Số điện thoại không đúng định dạng');
+                return false;
+            }
+
+            hideFieldError(errorDiv);
+            return true;
+        }
+
+        function validateDescription() {
+            const description = document.getElementById('content');
+            const errorDiv = document.getElementById('descriptionError');
+            const value = description.value.trim();
+
+            if (value.length === 0) {
+                showFieldError(errorDiv, 'Nội dung ứng tuyển không được để trống');
+                return false;
+            }
+
+            if (value.length < 10) {
+                showFieldError(errorDiv, 'Nội dung phải có ít nhất 10 ký tự');
+                return false;
+            }
+
+            if (value.length > 1000) {
+                showFieldError(errorDiv, 'Nội dung không được quá 1000 ký tự');
+                return false;
+            }
+
+            hideFieldError(errorDiv);
+            return true;
+        }
+
+        function showFieldError(errorDiv, message) {
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function hideFieldError(errorDiv) {
+            errorDiv.style.display = 'none';
+        }
+
+        function updateCharCount() {
+            const textarea = document.getElementById('content');
+            const charCount = document.getElementById('charCount');
+            const count = textarea.value.length;
+            charCount.textContent = count;
+
+            if (count > 1000) {
+                charCount.style.color = 'red';
+            } else {
+                charCount.style.color = '#666';
+            }
+        }
+
         // Modal Functions
         function showApplyForm() {
             const modal = document.getElementById('applyModal');
@@ -407,6 +588,8 @@
             if (modal) {
                 modal.classList.add('hidden');
                 document.body.style.overflow = 'auto';
+                // Reset form and loading state when closing
+                resetFormState();
             }
         }
 
@@ -429,18 +612,105 @@
 
         // Enhanced interaction effects
         document.addEventListener('DOMContentLoaded', function() {
+            // Add event listeners for real-time validation
+            const fullNameInput = document.getElementById('fullName');
+            const emailInput = document.getElementById('email');
+            const phoneInput = document.getElementById('phone');
+            const descriptionInput = document.getElementById('content');
+
+            if (fullNameInput) {
+                fullNameInput.addEventListener('blur', validateFullName);
+                fullNameInput.addEventListener('input', function() {
+                    if (this.value.trim().length > 0) {
+                        validateFullName();
+                    }
+                });
+            }
+
+            if (emailInput) {
+                emailInput.addEventListener('blur', validateEmail);
+                emailInput.addEventListener('input', function() {
+                    if (this.value.trim().length > 0) {
+                        validateEmail();
+                    }
+                });
+            }
+
+            if (phoneInput) {
+                phoneInput.addEventListener('blur', validatePhone);
+                phoneInput.addEventListener('input', function() {
+                    if (this.value.trim().length > 0) {
+                        validatePhone();
+                    }
+                });
+            }
+
+            if (descriptionInput) {
+                descriptionInput.addEventListener('blur', validateDescription);
+                descriptionInput.addEventListener('input', updateCharCount);
+            }
+
             // Form submission validation
-            const form = document.querySelector('form[th\\:action*="addJobApplication"]');
+            const form = document.getElementById('jobApplicationForm');
             if (form) {
                 form.addEventListener('submit', function(e) {
+                    let isValid = true;
+
+                    // Validate all fields
+                    if (!validateFullName()) isValid = false;
+                    if (!validateEmail()) isValid = false;
+                    if (!validatePhone()) isValid = false;
+                    if (!validateDescription()) isValid = false;
+
+                    // Validate CV file
                     const cvInput = document.getElementById('cv');
                     if (cvInput && cvInput.files.length > 0) {
                         if (!validateCVFile(cvInput)) {
-                            e.preventDefault();
-                            return false;
+                            isValid = false;
                         }
                     }
+
+                    if (!isValid) {
+                        e.preventDefault();
+                        return false;
+                    }
+
+                    // Show loading spinner
+                    showSubmitLoading();
                 });
+            }
+
+            // Function to show loading state
+            function showSubmitLoading() {
+                const submitBtn = document.getElementById('submitBtn');
+                const btnText = submitBtn.querySelector('.btn-text');
+                const btnSpinner = submitBtn.querySelector('.btn-spinner');
+                
+                btnText.style.display = 'none';
+                btnSpinner.style.display = 'inline-flex';
+                submitBtn.disabled = true;
+            }
+
+            // Function to hide loading state
+            function hideSubmitLoading() {
+                const submitBtn = document.getElementById('submitBtn');
+                const btnText = submitBtn.querySelector('.btn-text');
+                const btnSpinner = submitBtn.querySelector('.btn-spinner');
+                
+                btnText.style.display = 'inline';
+                btnSpinner.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+
+            // Reset loading state when modal is closed
+            function resetFormState() {
+                hideSubmitLoading();
+                document.getElementById('jobApplicationForm').reset();
+                // Clear all error messages
+                document.querySelectorAll('.error-message[id$="Error"]').forEach(el => {
+                    el.style.display = 'none';
+                });
+                document.getElementById('charCount').textContent = '0';
             }
 
             // Modal event listeners
@@ -453,9 +723,9 @@
                 });
             }
 
-            // Keyboard event for modal
+            // Close modal with ESC key
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+                if (e.key === 'Escape' && !document.getElementById('applyModal').classList.contains('hidden')) {
                     closeApplyForm();
                 }
             });
@@ -487,6 +757,7 @@
             });
         });
     </script>
+    <script th:src="@{/js/validation.js}"></script>
 
 <!-- Add notification bell -->
 <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>

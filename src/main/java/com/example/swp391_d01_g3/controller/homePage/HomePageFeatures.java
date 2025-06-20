@@ -20,7 +20,7 @@ public class HomePageFeatures {
     private IJobpostService jobpostService;
 
     @Autowired
-    private IJobfieldService iJobfieldService;
+    private IJobfieldService jobfieldService;
 
     @PostMapping("/search")
     public String searchJobs(
@@ -28,55 +28,66 @@ public class HomePageFeatures {
             @RequestParam(required = false) String location,
             @RequestParam(required = false) String jobType,
             @RequestParam(name = "fieldId", required = false) Integer fieldId,
-            @RequestParam(required = false) Integer salary,
+            @RequestParam(required = false) String salaryRange,
             @RequestParam(required = false) String companyName,
             Model model,
             Principal principal) {
 
+        Double minSalary = null;
+        Double maxSalary = null;
+
+        if (salaryRange != null && !salaryRange.isEmpty()) {
+            try {
+                if (salaryRange.startsWith(">")) {
+                    minSalary = Double.parseDouble(salaryRange.substring(1).trim());
+                } else if (salaryRange.contains("-")) {
+                    String[] parts = salaryRange.split("-");
+                    minSalary = Double.parseDouble(parts[0].trim());
+                    maxSalary = Double.parseDouble(parts[1].trim());
+                }
+            } catch (NumberFormatException e) {
+                model.addAttribute("error", "Định dạng khoảng lương không hợp lệ: " + e.getMessage());
+                model.addAttribute("jobField", jobfieldService.findAll());
+                if (principal != null) {
+                    model.addAttribute("userEmail", principal.getName());
+                }
+                return "homePage/showSearchJob";
+            }
+        }
+
         try {
-            // Search for jobs based on criteria
             List<JobPost> jobPosts = jobpostService.searchJobs(
                     keyword,
                     location,
                     jobType,
                     fieldId,
-                    salary,
+                    minSalary,
+                    maxSalary,
                     companyName
             );
 
-            // Add search results to model
             model.addAttribute("searchJob", jobPosts);
-            
-            // Add job fields for the search form dropdown
-            List<JobField> jobFields = iJobfieldService.findAll();
-            model.addAttribute("jobField", jobFields);
-            
-            // Add search parameters back to model for form persistence  
+            model.addAttribute("jobField", jobfieldService.findAll());
             model.addAttribute("searchKeyword", keyword);
             model.addAttribute("searchLocation", location);
             model.addAttribute("searchJobType", jobType);
             model.addAttribute("searchFieldId", fieldId);
-            model.addAttribute("searchSalary", salary);
+            model.addAttribute("searchSalary", salaryRange);
             model.addAttribute("searchCompanyName", companyName);
-            
+
             if (principal != null) {
                 model.addAttribute("userEmail", principal.getName());
             }
-            
-            // Add success/info message
+
             if (jobPosts != null && !jobPosts.isEmpty()) {
                 model.addAttribute("success", "Tìm thấy " + jobPosts.size() + " việc làm phù hợp");
             } else {
                 model.addAttribute("info", "Không tìm thấy việc làm phù hợp với tiêu chí tìm kiếm");
             }
-            
+
         } catch (Exception e) {
             model.addAttribute("error", "Có lỗi xảy ra khi tìm kiếm: " + e.getMessage());
-            
-            // Still provide job fields for the form
-            List<JobField> jobFields = iJobfieldService.findAll();
-            model.addAttribute("jobField", jobFields);
-            
+            model.addAttribute("jobField", jobfieldService.findAll());
             if (principal != null) {
                 model.addAttribute("userEmail", principal.getName());
             }
@@ -85,3 +96,4 @@ public class HomePageFeatures {
         return "homePage/showSearchJob";
     }
 }
+
