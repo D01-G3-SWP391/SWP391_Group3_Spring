@@ -8,12 +8,40 @@
   <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
 </head>
 <link rel="stylesheet" th:href="@{/css/navbarStudent_Employer.css}" />
+<link rel="stylesheet" th:href="@{/css/dashboardEmployer.css}" />
 <body>
 <div th:replace="~{navbar/navbarStudent :: navbarAdmin}"></div>
 <p th:text="#{student.dashboard.welcome}">Welcome to the THCLT JOBS Student Dashboard.</p>
 
 <script th:src="@{/js/navbarAdmin.js}"></script>
 <script th:src="@{/js/languageSwitch.js}"></script>
+<!-- ✅ THÊM CARD BÁO CÁO MỚI -->
+<div class="dashboard-card report-card">
+  <div class="report-header">
+    <i class="bi bi-flag-fill report-icon"></i>
+    <div>
+      <h3 class="report-title">Báo Cáo</h3>
+      <div class="report-desc">Báo cáo vấn đề và vi phạm</div>
+    </div>
+  </div>
+  <div class="report-stats">
+    <div class="stat-item">
+      <div class="stat-number">3</div>
+      <div class="stat-label">Đã gửi</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number">1</div>
+      <div class="stat-label">Chờ xử lý</div>
+    </div>
+  </div>
+  <div class="report-footer">
+    <a th:href="@{/Report/ShowReport}" class="btn-view-reports">
+      <i class="bi bi-list-ul"></i>
+      <span>Xem Báo Cáo Của Tôi</span>
+      <i class="bi bi-arrow-right"></i>
+    </a>
+  </div>
+</div>
 
 <!-- Add notification bell -->
 <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>

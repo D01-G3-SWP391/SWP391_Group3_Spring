@@ -58,9 +58,23 @@
                             <a th:href="@{'/Employer/Events/Edit/' + ${event.eventId}}" class="btn btn-primary">
                                 <i class="bi bi-pencil-square"></i> Sửa
                             </a>
-                            <form th:action="@{'/Employer/Events/Cancel/' + ${event.eventId}}" method="post" class="delete-form" onsubmit="return confirm('Bạn có chắc chắn muốn hủy sự kiện này?')">
-                                <button type="submit" class="btn btn-danger">
-                                    <i class="bi bi-x-circle"></i> Hủy
+                            <!-- Nút Ẩn/Hiện tùy theo status -->
+                            <form th:if="${event.eventStatus.name() == 'ACTIVE'}" 
+                                  th:action="@{'/Employer/Events/Hide/' + ${event.eventId}}" 
+                                  method="post" 
+                                  class="delete-form" 
+                                  onsubmit="return confirm('Bạn có chắc chắn muốn ẩn sự kiện này? Sự kiện sẽ không hiển thị ở trang chủ nữa.')">
+                                <button type="submit" class="btn btn-warning">
+                                    <i class="bi bi-eye-slash"></i> Ẩn
+                                </button>
+                            </form>
+                            <form th:if="${event.eventStatus.name() == 'INACTIVE'}" 
+                                  th:action="@{'/Employer/Events/Unhide/' + ${event.eventId}}" 
+                                  method="post" 
+                                  class="delete-form" 
+                                  onsubmit="return confirm('Bạn có chắc chắn muốn hiện sự kiện này? Sự kiện sẽ hiển thị lại ở trang chủ.')">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-eye"></i> Hiện
                                 </button>
                             </form>
                         </div>

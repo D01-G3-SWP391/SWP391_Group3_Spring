@@ -34,4 +34,7 @@ public interface IJobApplicationRepository extends JpaRepository<JobApplication,
                                                              @Param("searchName") String searchName,
                                                              Pageable pageable);
 
+    @Query("SELECT ja FROM JobApplication ja WHERE ja.jobPost.jobPostId = :jobPostId ORDER BY ja.appliedAt DESC")
+    List<JobApplication> findByJobPostId(@Param("jobPostId") Integer jobPostId);
+
 }

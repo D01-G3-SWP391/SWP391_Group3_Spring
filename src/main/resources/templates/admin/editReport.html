@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh sửa báo cáo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
+    <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
+    <style>
+        .main-content {
+            margin-top: 90px;
+            padding: 30px 20px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .info-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-badge.pending { background: #fff3cd; color: #856404; }
+        .status-badge.under_review { background: #d1ecf1; color: #0c5460; }
+        .status-badge.resolved { background: #d4edda; color: #155724; }
+        .status-badge.rejected { background: #f8d7da; color: #721c24; }
+        .status-badge.closed { background: #e2e3e5; color: #383d41; }
+    </style>
+</head>
+<body>
+<div th:replace="~{navbar/navbarAdmin :: navbarAdmin}"></div>
+<script th:src="@{/js/navbarAdmin.js}"></script>
+<script th:src="@{/js/languageSwitch.js}"></script>
+
+<div class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-pencil-square text-primary"></i> Chỉnh sửa báo cáo #<span th:text="${report.reportId}"></span></h2>
+        <div class="btn-group">
+            <a th:href="@{/Admin/List}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Quay lại
+            </a>
+            <!-- ✅ THÊM MỚI: Nút xóa báo cáo -->
+            <button th:if="${canDelete}"
+                    type="button"
+                    class="btn btn-outline-danger"
+                    th:onclick="'deleteReport(' + ${report.reportId} + ')'">
+                <i class="bi bi-trash"></i> Xóa báo cáo
+            </button>
+        </div>
+    </div>
+
+    <!-- ✅ THÊM MỚI: Thông báo có thể xóa -->
+    <div th:if="${canDelete}" class="alert alert-info">
+        <i class="bi bi-info-circle"></i> Báo cáo này có thể được xóa vì đã được giải quyết hoặc đóng.
+    </div>
+
+    <!-- Report Information -->
+    <div class="info-card">
+        <h5><i class="bi bi-info-circle"></i> Thông tin báo cáo</h5>
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <p><strong>Tiêu đề:</strong> <span th:text="${report.title}"></span></p>
+                <p><strong>Người báo cáo:</strong> <span th:text="${report.reporterEmail}"></span></p>
+                <p><strong>Loại người báo cáo:</strong>
+                    <span class="badge bg-info" th:text="${report.reporterType}"></span></p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Loại báo cáo:</strong>
+                    <span class="badge bg-secondary" th:text="${report.reportType}"></span></p>
+                <p><strong>Trạng thái hiện tại:</strong>
+                    <span class="status-badge"
+                          th:classappend="${report.status.toString().toLowerCase()}"
+                          th:text="${report.status}"></span></p>
+                <p><strong>Ngày tạo:</strong>
+                    <span th:text="${#temporals.format(report.createdAt, 'dd/MM/yyyy HH:mm')}"></span></p>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <h6>Mô tả vấn đề:</h6>
+            <div class="bg-light p-3 rounded" th:text="${report.description}"></div>
+        </div>
+
+        <div th:if="${report.adminResponse != null and !report.adminResponse.isEmpty()}" class="mt-3">
+            <h6>Phản hồi trước đó:</h6>
+            <div class="bg-success bg-opacity-10 p-3 rounded border-start border-success border-4"
+                 th:text="${report.adminResponse}"></div>
+        </div>
+    </div>
+
+    <!-- Update Form -->
+    <div class="info-card">
+        <h5><i class="bi bi-gear"></i> Cập nhật trạng thái</h5>
+
+        <form th:action="@{/Admin/Edit/{id}(id=${report.reportId})}" method="post" class="mt-3">
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="status" class="form-label">Trạng thái mới *</label>
+                    <select name="status" id="status" class="form-select" required>
+                        <option value="">-- Chọn trạng thái --</option>
+                        <option th:each="statusOption : ${statuses}"
+                                th:value="${statusOption}"
+                                th:text="${statusOption}"
+                                th:selected="${statusOption == report.status}"></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <label for="adminResponse" class="form-label">Phản hồi của Admin</label>
+                <textarea name="adminResponse" id="adminResponse" class="form-control" rows="4"
+                          placeholder="Nhập phản hồi cho người báo cáo (tùy chọn)..."
+                          th:text="${report.adminResponse}"></textarea>
+                <div class="form-text">Phản hồi này sẽ được hiển thị cho người báo cáo</div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary me-2">
+                    <i class="bi bi-check-circle"></i> Cập nhật trạng thái
+                </button>
+                <a th:href="@{/Admin/List}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Hủy
+                </a>
+            </div>
+        </form>
+    </div>
+
+
+    <!-- ✅ THÊM MỚI: Khu vực xóa báo cáo -->
+    <div th:if="${canDelete}" class="info-card border-danger">
+        <h6 class="text-danger"><i class="bi bi-exclamation-triangle"></i> Khu vực nguy hiểm</h6>
+        <p class="text-muted">Báo cáo này đã được giải quyết và có thể được xóa vĩnh viễn.</p>
+        <button type="button"
+                class="btn btn-danger"
+                th:onclick="'deleteReport(' + ${report.reportId} + ')'">
+            <i class="bi bi-trash"></i> Xóa báo cáo vĩnh viễn
+        </button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

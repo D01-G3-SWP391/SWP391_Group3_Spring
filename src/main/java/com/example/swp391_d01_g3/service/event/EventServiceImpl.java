@@ -23,7 +23,7 @@ public class EventServiceImpl implements IEventService {
 
     @Autowired
     private IEventRepository eventRepository;
-
+    
     @Autowired
     private IEventFormRepository eventFormRepository;
 
@@ -34,8 +34,8 @@ public class EventServiceImpl implements IEventService {
 
     @Override
     public Page<Event> searchEvents(String keyword, Pageable pageable) {
-        return eventRepository.findByApprovalStatusAndEventTitleContainingIgnoreCaseOrEventDescriptionContainingIgnoreCase(
-                Event.ApprovalStatus.APPROVED, keyword, keyword, pageable);
+        return eventRepository.findByApprovalStatusAndEventStatusAndEventTitleContainingIgnoreCaseOrEventDescriptionContainingIgnoreCase(
+                Event.ApprovalStatus.APPROVED, Event.EventStatus.ACTIVE, keyword, keyword, pageable);
     }
 
     @Override
@@ -52,8 +52,7 @@ public class EventServiceImpl implements IEventService {
     public List<Event> getUpcomingEvents(int limit) {
         LocalDateTime now = LocalDateTime.now();
         Pageable pageable = PageRequest.of(0, limit, Sort.by("eventDate").ascending());
-        return eventRepository.findByApprovalStatusAndEventDateAfterOrderByEventDateAsc(
-                Event.ApprovalStatus.APPROVED, now, pageable).getContent();
+        return eventRepository.findActiveApprovedEvents(now, pageable).getContent();
     }
 
     @Override
@@ -68,12 +67,13 @@ public class EventServiceImpl implements IEventService {
         if (currentEvent == null) {
             return List.of();
         }
-
+        
         Pageable pageable = PageRequest.of(0, limit);
-        return eventRepository.findRelatedEvents(
-                eventId,
+        return eventRepository.findRelatedActiveEvents(
+                eventId, 
                 currentEvent.getEmployer().getEmployerId(),
                 Event.ApprovalStatus.APPROVED,
+                Event.EventStatus.ACTIVE,
                 pageable);
     }
 
@@ -86,7 +86,7 @@ public class EventServiceImpl implements IEventService {
     public void registerEvent(EventForm eventForm) {
         // Lưu đăng ký
         eventFormRepository.save(eventForm);
-
+        
         // Tăng số lượng participants
         Event event = eventForm.getEvent();
         event.incrementParticipants();
@@ -96,14 +96,14 @@ public class EventServiceImpl implements IEventService {
     @Override
     public void unregisterEvent(Integer eventId, Integer studentId) {
         Optional<EventForm> eventFormOpt = eventFormRepository.findByEventEventIdAndStudentStudentId(eventId, studentId);
-
+        
         if (eventFormOpt.isPresent()) {
             EventForm eventForm = eventFormOpt.get();
             Event event = eventForm.getEvent();
-
+            
             // Xóa đăng ký
             eventFormRepository.delete(eventForm);
-
+            
             // Giảm số lượng participants
             event.decrementParticipants();
             eventRepository.save(event);
@@ -112,7 +112,7 @@ public class EventServiceImpl implements IEventService {
 
     @Override
     public long countApprovedEvents() {
-        return eventRepository.countByApprovalStatus(Event.ApprovalStatus.APPROVED);
+        return eventRepository.countByApprovalStatusAndEventStatus(Event.ApprovalStatus.APPROVED, Event.EventStatus.ACTIVE);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class EventServiceImpl implements IEventService {
 
     @Override
     public long countEventsByJobField(String jobFieldName) {
-        return eventRepository.countEventsByJobField(jobFieldName, Event.ApprovalStatus.APPROVED);
+        return eventRepository.countEventsByJobFieldAndEventStatus(jobFieldName, Event.ApprovalStatus.APPROVED, Event.EventStatus.ACTIVE);
     }
 
     @Override
@@ -187,6 +187,7 @@ public class EventServiceImpl implements IEventService {
         if (event != null) {
             event.setApprovalStatus(Event.ApprovalStatus.APPROVED);
             event.setApprovedAt(LocalDateTime.now());
+            // Set approved by - cần tạo Account entity tương ứng
             eventRepository.save(event);
         }
     }
@@ -200,6 +201,7 @@ public class EventServiceImpl implements IEventService {
             eventRepository.save(event);
         }
     }
+
 
     @Override
     public List<Integer> findRegisteredEventIdsByStudentId(Integer studentId) {
@@ -227,5 +229,10 @@ public class EventServiceImpl implements IEventService {
     @Override
     public Event getEventById(Long id) {
         return eventRepository.findById(Math.toIntExact(id)).orElse(null);
+    }
+
+    @Override
+    public Page<Event> findActiveApprovedEvents(LocalDateTime currentTime, Pageable pageable) {
+        return eventRepository.findActiveApprovedEvents(currentTime, pageable);
     }
 }

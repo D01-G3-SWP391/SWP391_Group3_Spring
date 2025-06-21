@@ -344,6 +344,7 @@ public class EmployerDashboard {
     public String updateApplicationStatus(
             @PathVariable Integer applicationId,
             @RequestParam String status,
+            @RequestParam(required = false) Integer jobPostId,
             RedirectAttributes redirectAttributes,
             Authentication authentication) {
 
@@ -417,6 +418,9 @@ public class EmployerDashboard {
             redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật trạng thái!");
         }
 
+        if (jobPostId != null) {
+            return "redirect:/Employer/JobPosts/" + jobPostId + "/applications";
+        }
         return "redirect:/Employer/Applications";
     }
 
@@ -427,6 +431,7 @@ public class EmployerDashboard {
             @RequestParam String interviewType,
             @RequestParam(required = false) String meetingLink,
             @RequestParam(required = false) String note,
+            @RequestParam(required = false) Integer jobPostId,
             RedirectAttributes redirectAttributes,
             Authentication authentication) {
         try {
@@ -476,6 +481,9 @@ public class EmployerDashboard {
             redirectAttributes.addFlashAttribute("successMessage", "Đã gửi lịch phỏng vấn cho ứng viên!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi gửi lịch phỏng vấn!");
+        }
+        if (jobPostId != null) {
+            return "redirect:/Employer/JobPosts/" + jobPostId + "/applications";
         }
         return "redirect:/Employer/Applications";
     }

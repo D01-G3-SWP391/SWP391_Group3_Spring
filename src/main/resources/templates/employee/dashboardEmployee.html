@@ -1,87 +1,106 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title th:text="#{employer.dashboard.title}">Employee</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
-    <link rel="stylesheet" th:href="@{/css/dashboardEmployer.css}" />
-  </head>
-  <link rel="stylesheet" th:href="@{/css/navbarStudent_Employer.css}" />
-  <body>
-    <div th:replace="~{navbar/navbarEmployee :: navbarAdmin}"></div>
-    <p th:text="#{employer.dashboard.welcome}">Welcome to the THCLT JOBS Employer Dashboard.</p>
-    <!-- Dashboard Cards Section -->
-    <div class="dashboard-cards">
-      <!-- Card hiện tại của bạn... -->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title th:text="#{employer.dashboard.title}">Employee</title>
+  <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+          rel="stylesheet"
+  />
+  <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+  <link rel="stylesheet" th:href="@{/css/dashboardEmployer.css}" />
+</head>
+<link rel="stylesheet" th:href="@{/css/navbarStudent_Employer.css}" />
+<body>
+<div th:replace="~{navbar/navbarEmployee :: navbarAdmin}"></div>
+<p th:text="#{employer.dashboard.welcome}">Welcome to the THCLT JOBS Employer Dashboard.</p>
 
-      <!-- **THÊM CARD MỚI CHO JOB APPLICATIONS** -->
-      <div class="dashboard-card applications-card">
-        <div class="card-header">
-          <div class="card-icon">
-            <i class="bi bi-people-fill"></i>
-          </div>
-          <div class="card-title">
-            <h3>Ứng Viên</h3>
-            <p>Quản lý ứng viên ứng tuyển</p>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-stats">
-            <div class="stat-item">
-              <span class="stat-number">25</span>
-              <span class="stat-label">Tổng ứng viên</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-number">8</span>
-              <span class="stat-label">Chờ xử lý</span>
-            </div>
-          </div>
-        </div>
-        <div class="card-footer">
-          <a th:href="@{/Employer/Applications}" class="btn-view-applications">
-            <i class="bi bi-eye"></i>
-            <span>Xem Danh Sách Ứng Viên</span>
-            <i class="bi bi-arrow-right"></i>
-          </a>
-        </div>
+<!-- Dashboard Cards Section -->
+<div class="dashboard-cards">
+
+  <!-- ✅ THÊM CARD BÁO CÁO MỚI -->
+  <div class="dashboard-card report-card">
+    <div class="report-header">
+      <i class="bi bi-flag-fill report-icon"></i>
+      <div>
+        <h3 class="report-title">Báo Cáo</h3>
+        <div class="report-desc">Báo cáo vấn đề và vi phạm</div>
       </div>
     </div>
-
-    <!-- **HOẶC THÊM NÚT NHANH VÀO QUICK ACTIONS** -->
-    <div class="quick-actions">
-      <h2>Thao Tác Nhanh</h2>
-      <div class="action-buttons">
-        <!-- Các nút hiện tại... -->
-
-        <!-- **NÚT XEM ỨNG VIÊN** -->
-        <a th:href="@{/Employer/Applications}" class="quick-action-btn applications-btn">
-          <div class="btn-icon">
-            <i class="bi bi-people-fill"></i>
-          </div>
-          <div class="btn-content">
-            <h4>Xem Ứng Viên</h4>
-            <p>Quản lý danh sách ứng viên</p>
-          </div>
-          <div class="btn-arrow">
-            <i class="bi bi-chevron-right"></i>
-          </div>
-        </a>
+    <div class="report-stats">
+      <div class="stat-item">
+        <div class="stat-number">3</div>
+        <div class="stat-label">Đã gửi</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">1</div>
+        <div class="stat-label">Chờ xử lý</div>
       </div>
     </div>
+    <div class="report-footer">
+      <a th:href="@{/Report/ShowReport}" class="btn-view-reports">
+        <i class="bi bi-list-ul"></i>
+        <span>Xem Báo Cáo Của Tôi</span>
+        <i class="bi bi-arrow-right"></i>
+      </a>
+    </div>
+  </div>
 
-    <script th:src="@{/js/navbarAdmin.js}"></script>
-    <script th:src="@{/js/languageSwitch.js}"></script>
+</div>
 
-    <!-- Add notification bell -->
-    <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
-    
-    <!-- 💬 Add Chat System -->
-    <div th:replace="~{fragments/chat :: chat}"></div>
-    
-  </body>
+<!-- **THÊM NÚT NHANH VÀO QUICK ACTIONS** -->
+<div class="quick-actions">
+  <h2>Thao Tác Nhanh</h2>
+  <div class="action-buttons">
+    <!-- **NÚT XEM ỨNG VIÊN** -->
+    <a th:href="@{/Employer/Applications}" class="quick-action-btn applications-btn">
+      <div class="btn-icon">
+        <i class="bi bi-people-fill"></i>
+      </div>
+      <div class="btn-content">
+        <h4>Xem Ứng Viên</h4>
+        <p>Quản lý danh sách ứng viên</p>
+      </div>
+      <div class="btn-arrow">
+        <i class="bi bi-chevron-right"></i>
+      </div>
+    </a>
+
+    <!-- ✅ THÊM NÚT TẠO BÁO CÁO -->
+    <a th:href="@{/Report/CreateReport}" class="quick-action-btn report-btn">
+      <div class="btn-icon">
+        <i class="bi bi-plus-circle-fill"></i>
+      </div>
+      <div class="btn-content">
+        <h4>Tạo Báo Cáo</h4>
+        <p>Báo cáo vấn đề hoặc vi phạm</p>
+      </div>
+      <div class="btn-arrow">
+        <i class="bi bi-chevron-right"></i>
+      </div>
+    </a>
+
+    <!-- ✅ THÊM NÚT XEM BÁO CÁO -->
+    <a th:href="@{/Report/ShowReport}" class="quick-action-btn my-reports-btn">
+      <div class="btn-icon">
+        <i class="bi bi-flag-fill"></i>
+      </div>
+      <div class="btn-content">
+        <h4>Báo Cáo Của Tôi</h4>
+        <p>Theo dõi trạng thái báo cáo</p>
+      </div>
+      <div class="btn-arrow">
+        <i class="bi bi-chevron-right"></i>
+      </div>
+    </a>
+  </div>
+</div>
+
+<script th:src="@{/js/navbarAdmin.js}"></script>
+<script th:src="@{/js/languageSwitch.js}"></script>
+
+<!-- Add notification bell -->
+<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
+</body>
 </html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<div th:fragment="report-button">
+    <link rel="stylesheet" th:href="@{/css/report-button.css}" />
+    <div class="report-button-container">
+        <a th:href="@{/Report/ShowReport}" class="report-button" title="Báo cáo">
+            <i class="fas fa-flag"></i>
+        </a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const reportButton = document.querySelector('.report-button');
+
+            if (reportButton) {
+                // Hiệu ứng rung nhẹ mỗi 5 giây
+                setInterval(function() {
+                    reportButton.animate([
+                        { transform: 'rotate(0deg) scale(1)' },
+                        { transform: 'rotate(5deg) scale(1.05)' },
+                        { transform: 'rotate(-5deg) scale(1.05)' },
+                        { transform: 'rotate(3deg) scale(1.02)' },
+                        { transform: 'rotate(-3deg) scale(1.02)' },
+                        { transform: 'rotate(0deg) scale(1)' }
+                    ], {
+                        duration: 800,
+                        easing: 'ease-in-out'
+                    });
+                }, 5000);
+
+                // Hiệu ứng click
+                reportButton.addEventListener('click', function(e) {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            }
+        });
+    </script>
+</div>
+</html>
