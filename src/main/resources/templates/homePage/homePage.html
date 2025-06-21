@@ -144,6 +144,7 @@
                   </div>
 
                   <div class="search-field">
+                    <i class="fas fa-map-marker-alt field-icon"></i>
                     <input
                       type="text"
                       name="location"
@@ -382,6 +383,9 @@
         </div>
     </section>
 </div>
+<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
+<div th:replace="~{fragments/report-button :: report-button}"></div>
+
 
 <!-- Footer -->
 <div th:replace="~{fragments/footer :: footer}"></div>

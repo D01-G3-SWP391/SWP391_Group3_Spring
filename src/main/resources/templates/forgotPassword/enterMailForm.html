@@ -12,38 +12,99 @@
     <!-- Other CSS -->
     <link rel="stylesheet" th:href="@{/css/login.css}" />
     <link rel="stylesheet" th:href="@{/css/registerEnhanced.css}" />
+    <link rel="stylesheet" th:href="@{/css/loginEnhanced.css}" />
     <link rel="stylesheet" th:href="@{/css/forgotPasswordEnhanced.css}" />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
+            rel="stylesheet"
+    />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-
 </head>
 <body>
-<div th:replace="~{navbar/navbarHome :: home}"></div>
-<div class="forgot-password-container page-container login-container">
-    <h2 th:text="#{forgotPassword.heading}">Quên mật khẩu?</h2>
-    <div class="subtitle" th:text="#{forgotPassword.email.subtitle}">Vui lòng nhập địa chỉ email của bạn để đặt lại mật khẩu</div>
-    <div th:if="${emailNotFound}" class="error-message" th:text="${emailNotFound}"></div>
-    <div th:if="${reEnterEmail}" class="error-message" th:text="${reEnterEmail}"></div>
-    <form class="login-form" method="get" th:action="@{/ForgotPassword/VerifyMail}">
-        <div class="form-group">
-            <input type="text" name="email" th:placeholder="#{forgotPassword.email.placeholder}" required>
+    <div th:replace="~{navbar/navbarHome :: home}"></div>
+    <div class="page-container">
+        <div class="login-container">
+            <!-- Left Panel - Illustration -->
+            <div class="illustration-panel">
+                <div class="welcome-text">
+                    <h1>Forgot Password?<br><span class="highlight">JOB4YOU</span></h1>
+                    <p>Don't worry, we'll help you reset it</p>
+                </div>
+                
+                <div class="illustration-graphics">
+                    <!-- Security Badge -->
+                    <div class="security-badge">
+                        <i class="bi bi-key"></i>
+                    </div>
+                    
+                    <!-- Phone Mockup -->
+                    <div class="phone-mockup">
+                        <div class="phone-screen">
+                            <div class="screen-element large"></div>
+                            <div class="screen-element"></div>
+                            <div class="screen-element"></div>
+                            <div class="screen-element large"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Character -->
+                    <div class="character">
+                        <div class="character-head"></div>
+                        <div class="character-body"></div>
+                        <div class="character-legs">
+                            <div class="leg"></div>
+                            <div class="leg"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Floating Shapes -->
+                    <div class="floating-shapes">
+                        <div class="shape"></div>
+                        <div class="shape"></div>
+                        <div class="shape"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Panel - Forgot Password Form -->
+            <div class="login-panel">
+                <h2 th:text="#{forgotPassword.heading}">FORGOT PASSWORD?</h2>
+                <p class="subtitle" th:text="#{forgotPassword.email.subtitle}">Please enter your email address to reset your password</p>
+
+                <!-- Hiển thị lỗi nếu có -->
+                <div th:if="${emailNotFound}" class="error-message" th:text="${emailNotFound}"></div>
+                <div th:if="${reEnterEmail}" class="error-message" th:text="${reEnterEmail}"></div>
+                
+                <form class="login-form" method="get" th:action="@{/ForgotPassword/VerifyMail}">
+                    <div class="form-group">
+                        <input type="text" name="email" th:placeholder="#{forgotPassword.email.placeholder}" required>
+                    </div>
+                    <button type="submit" class="login-page-btn">
+                        <span class="icon-lock"></span>
+                        <span th:text="#{forgotPassword.email.confirm}">CONFIRM</span>
+                    </button>
+                </form>
+                
+                <div class="back-to-login">
+                    <p>Remember your password? <a th:href="@{/Login}">Back to Login</a></p>
+                </div>
+            </div>
         </div>
-        <button type="submit" class="content-btn content-btn-primary login-page-btn"><span class="icon-lock"></span><span th:text="#{forgotPassword.email.confirm}">Xác nhận</span></button>
-    </form>
-</div>
+    </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('.login-form');
-    const submitBtn = form.querySelector('button[type="submit"]');
-    
-    form.addEventListener('submit', function(e) {
-        // Show loading state
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="spinner"></span>Đang xử lý...';
-        form.classList.add('loading');
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('.login-form');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        
+        form.addEventListener('submit', function(e) {
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span>Processing...';
+            form.classList.add('loading');
+        });
     });
-});
-</script>
-<script th:src="@{/js/languageSwitch.js}"></script>
-
+    </script>
+    <script th:src="@{/js/languageSwitch.js}"></script>
+</body>
 </html>

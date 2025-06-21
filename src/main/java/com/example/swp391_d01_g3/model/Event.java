@@ -64,7 +64,8 @@ public class Event {
     public enum EventStatus {
         ACTIVE,     // Đang mở đăng ký
         FULL,       // Đã đủ người
-        CANCELLED   // Đã hủy
+        CANCELLED,  // Đã hủy
+        INACTIVE    // Đã ẩn (soft delete)
     }
     
     public enum ApprovalStatus {

@@ -6,6 +6,7 @@ import com.example.swp391_d01_g3.repository.IEmployerRepository;
 import com.example.swp391_d01_g3.service.employer.IEmployerService;
 import com.example.swp391_d01_g3.service.jobfield.IJobfieldService;
 import com.example.swp391_d01_g3.service.jobpost.IJobpostService;
+import com.example.swp391_d01_g3.service.jobapplication.IJobApplicationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,7 +40,8 @@ public class JobPostController {
     @Autowired
     private IEmployerService iEmployerService;
 
-
+    @Autowired
+    private IJobApplicationService iJobApplicationService;
 
     @PostMapping("/CreateJobPost")
     public String createJobPost(
@@ -167,5 +169,20 @@ public class JobPostController {
         iJobpostService.deleteById(jobPostId);
         ra.addFlashAttribute("successMsg", "Xóa công việc thành công!");
         return "redirect:/Employer/JobPosts";  // Redirect đến endpoint mới
+    }
+
+    @GetMapping("/JobPosts/{jobPostId}/applications")
+    public String viewJobPostApplications(@PathVariable Integer jobPostId, Model model, Principal principal) {
+        Employer employer = iEmployerService.findByEmail(principal.getName());
+        JobPost jobPost = iJobpostService.findByJobPostId(jobPostId).orElse(null);
+        if (jobPost == null || !jobPost.getEmployer().getEmployerId().equals(employer.getEmployerId())) {
+            return "redirect:/Employer/JobPosts";
+        }
+        List<JobApplication> applications = iJobApplicationService.findByJobPostId(jobPostId);
+        model.addAttribute("jobPost", jobPost);
+        model.addAttribute("applications", applications);
+        model.addAttribute("totalApplications", applications.size());
+        model.addAttribute("statuses", com.example.swp391_d01_g3.model.JobApplication.ApplicationStatus.values());
+        return "employee/jobPostApplications";
     }
 }

@@ -151,6 +151,10 @@
                                     Xóa
                                 </button>
                             </form>
+
+                            <a th:href="@{/Employer/JobPosts/{jobPostId}/applications(jobPostId=${jobPost.jobPostId})}" class="btn btn-info">
+                                <i class="bi bi-people"></i> Xem chi tiết
+                            </a>
                         </div>
                     </td>
                 </tr>

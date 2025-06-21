@@ -17,4 +17,5 @@ public interface IJobApplicationService {
     Optional<JobApplication> findById(Integer applicationId);
     boolean hasStudentAppliedToJob(Integer studentId, Integer jobPostId);
 
+    List<JobApplication> findByJobPostId(Integer jobPostId);
 }

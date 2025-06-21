@@ -75,8 +75,8 @@ public class EventController {
                 eventsPage = eventService.findByApprovalStatus(approvalStatus, pageable);
                 model.addAttribute("selectedStatus", status);
             } else {
-                // Chỉ hiển thị events đã được approve
-                eventsPage = eventService.findByApprovalStatusAndEventDateAfterOrderByEventDateAsc(Event.ApprovalStatus.APPROVED, LocalDateTime.now(), pageable);
+                // Chỉ hiển thị events đã được approve và active
+                eventsPage = eventService.findActiveApprovedEvents(LocalDateTime.now(), pageable);
                 
             }
             
@@ -182,11 +182,11 @@ public class EventController {
                 return "error:Không tìm thấy sự kiện";
             }
             
-            System.out.println("Event found: " + event.getEventTitle());
-            System.out.println("Event status: " + event.getEventStatus());
-            System.out.println("Event approval status: " + event.getApprovalStatus());
-            System.out.println("Current participants: " + event.getCurrentParticipants());
-            System.out.println("Max participants: " + event.getMaxParticipants());
+//            System.out.println("Event found: " + event.getEventTitle());
+//            System.out.println("Event status: " + event.getEventStatus());
+//            System.out.println("Event approval status: " + event.getApprovalStatus());
+//            System.out.println("Current participants: " + event.getCurrentParticipants());
+//            System.out.println("Max participants: " + event.getMaxParticipants());
             
             if (!event.canRegister()) {
                 System.out.println("Event cannot be registered");

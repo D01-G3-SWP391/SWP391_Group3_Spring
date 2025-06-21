@@ -104,31 +104,289 @@
             border-left: 0.3em solid transparent;
         }
 
-        /* Nút View Details gradient tím */
-        .btn-view-details {
+        /* Nút CV nhỏ gọn */
+        .btn-cv {
             background: linear-gradient(90deg, #7c3aed 0%, #a78bfa 100%);
             color: #fff !important;
             border: 2px solid #7c3aed;
-            border-radius: 14px;
+            border-radius: 8px;
             font-weight: 600;
-            font-size: 1rem;
-            padding: 8px 24px;
+            font-size: 0.75rem;
+            padding: 4px 8px;
             box-shadow: 0 2px 8px rgba(80, 37, 196, 0.12);
             transition: background 0.2s, color 0.2s, box-shadow 0.2s;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 4px;
         }
-        .btn-view-details:hover, .btn-view-details:focus {
+        .btn-cv:hover, .btn-cv:focus {
             background: linear-gradient(90deg, #a78bfa 0%, #7c3aed 100%);
             color: #fff;
             box-shadow: 0 4px 16px rgba(80, 37, 196, 0.18);
             border-color: #a78bfa;
         }
-        .btn-view-details i {
-            font-size: 1.1em;
-            margin-right: 6px;
+        .btn-cv i {
+            font-size: 0.8em;
             color: #fff !important;
+        }
+
+        /* Nút Chat xanh lá */
+        .btn-chat {
+            background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+            color: white !important;
+            border: 2px solid #25d366;
+            border-radius: 8px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(37, 211, 102, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-chat:hover {
+            background: linear-gradient(135deg, #128c7e 0%, #075e54 100%);
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            border-color: #128c7e;
+        }
+        .btn-chat i {
+            font-size: 0.8em;
+            color: white !important;
+        }
+
+        /* Off-canvas Chat Styles */
+        .chat-offcanvas {
+            position: fixed;
+            top: 0;
+            right: -450px;
+            width: 450px;
+            height: 100vh;
+            background: #fff;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-offcanvas.show {
+            right: 0;
+        }
+
+        .chat-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .chat-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Chat Header */
+        .chat-header {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .chat-header .avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            color: #667eea;
+            font-size: 18px;
+        }
+
+        .chat-header .info h4 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .chat-header .info p {
+            margin: 0;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .chat-header .close-btn {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .chat-header .close-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Chat Messages */
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .message.sent {
+            justify-content: flex-end;
+        }
+
+        .message.received {
+            justify-content: flex-start;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            word-wrap: break-word;
+            position: relative;
+        }
+
+        .message.sent .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.received .message-bubble {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-time {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .message.received .message-time {
+            text-align: left;
+        }
+
+        /* Chat Input */
+        .chat-input {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .chat-input-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-input-form input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            outline: none;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .chat-input-form input:focus {
+            border-color: #667eea;
+        }
+
+        .chat-input-form button {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .chat-input-form button:hover {
+            transform: scale(1.05);
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: none;
+            padding: 10px 20px;
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+        }
+
+        .typing-dots {
+            display: inline-block;
+            margin-left: 5px;
+        }
+
+        .typing-dots span {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #667eea;
+            margin: 0 1px;
+            animation: typingDots 1.4s infinite ease-in-out;
+        }
+
+        .typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typingDots {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .chat-offcanvas {
+                width: 100%;
+                right: -100%;
+            }
         }
     </style>
 </head>
@@ -137,7 +395,12 @@
 <script src="/js/navbarAdmin.js"></script>
 
 <div class="main-content">
-    <h1>Danh Sách Ứng Viên</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Danh Sách Ứng Viên</h1>
+        <button class="btn btn-primary" onclick="showAllChatRooms()" title="Xem tất cả cuộc trò chuyện">
+            <i class="bi bi-chat-text"></i> Danh sách Chat
+        </button>
+    </div>
 
     <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
         <span th:text="${successMessage}"></span>
@@ -241,12 +504,18 @@
                                   th:text="${jobApplication.status}"></span>
                         </td>
                         <td>
-                            <div class="cell action-col" style="display: flex; align-items: center; gap: 8px;">
-                                <button class="btn-view-details" th:onclick="'toggleDetails(' + ${iterStat.index} + ')'" th:id="'btn-details-' + ${iterStat.index}">
+                            <div class="cell action-col" style="display: flex; align-items: center; gap: 4px;">
+                                <button class="btn-cv" th:onclick="'toggleDetails(' + ${iterStat.index} + ')'" th:id="'btn-details-' + ${iterStat.index}">
                                     <i class="bi bi-chevron-down"></i>
-                                    <span>View Details</span>
+                                    <span>CV</span>
                                 </button>
-                                <div class="dropdown" style="position: relative; margin-left: 8px;">
+                                <button class="btn-chat" title="Nhắn tin với ứng viên" 
+                                        th:attr="data-user-name=${jobApplication.fullName},data-user-email=${jobApplication.email}"
+                                        onclick="openChatFromButton(this)">
+                                    <i class="bi bi-chat-dots"></i>
+                                    <span>Chat</span>
+                                </button>
+                                <div class="dropdown" style="position: relative;">
                                     <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
                                             type="button" 
                                             th:id="'dropdownMenuButton' + ${jobApplication.applicationId}" 
@@ -366,6 +635,71 @@
   </div>
 </div>
 
+<!-- Chat Off-canvas -->
+<div class="chat-overlay" id="chatOverlay" onclick="closeChat()"></div>
+<div class="chat-offcanvas" id="chatOffcanvas">
+    <div class="chat-header">
+        <button class="back-btn" id="chatBackBtn" onclick="loadAllChatRooms()" style="display: none; background: none; border: none; color: #007bff; font-size: 18px; margin-right: 10px; cursor: pointer;">
+            <i class="bi bi-arrow-left"></i>
+        </button>
+        <div class="avatar" id="chatAvatar">VT</div>
+        <div class="info">
+            <h4 id="chatName">Việt Tài</h4>
+            <p id="chatStatus">Đang hoạt động</p>
+        </div>
+        <button class="close-btn" onclick="closeChat()">
+            <i class="bi bi-x"></i>
+        </button>
+    </div>
+    
+    <div class="chat-messages" id="chatMessages">
+        <!-- Sample messages -->
+        <div class="message received">
+            <div class="message-bubble">
+                Xin chào! Tôi đã nộp hồ sơ ứng tuyển vị trí IT tại công ty.
+                <div class="message-time">08:25</div>
+            </div>
+        </div>
+        <div class="message sent">
+            <div class="message-bubble">
+                Cảm ơn bạn đã ứng tuyển! Chúng tôi sẽ xem xét hồ sơ và phản hồi sớm nhất.
+                <div class="message-time">08:26</div>
+            </div>
+        </div>
+        <div class="message received">
+            <div class="message-bubble">
+                Vâng ạ, cảm ơn anh/chị. Em mong được làm việc cùng công ty.
+                <div class="message-time">08:27</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="typing-indicator" id="typingIndicator">
+        <span id="typingUser">Việt Tài</span> đang soạn tin nhắn
+        <div class="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+    
+    <div class="chat-input">
+        <form class="chat-input-form" onsubmit="sendMessage(event)">
+            <input type="text" id="messageInput" placeholder="Nhập tin nhắn..." autocomplete="off">
+            <button type="submit">
+                <i class="bi bi-send"></i>
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- WebSocket Dependencies -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+<!-- Chat System Scripts -->
+<script th:src="@{/js/chat-websocket.js}"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 // Initialize Bootstrap dropdowns
@@ -447,7 +781,7 @@ function toggleDetails(index) {
         detailsRow.classList.remove('show');
         detailsRow.style.display = 'none';
         icon.className = 'bi bi-chevron-down';
-        text.textContent = 'View Details';
+        text.textContent = 'CV';
         button.classList.remove('expanded');
     } else {
         detailsRow.style.display = 'table-row';
@@ -455,7 +789,7 @@ function toggleDetails(index) {
             detailsRow.classList.add('show');
         }, 10);
         icon.className = 'bi bi-chevron-up';
-        text.textContent = 'Hide Details';
+        text.textContent = 'CV';
         button.classList.add('expanded');
         
         // Scroll to the details row
@@ -464,6 +798,803 @@ function toggleDetails(index) {
         }, 200);
     }
 }
+
+// Chat WebSocket Client
+let chatWebSocketClient = null;
+let currentChatRoomId = null;
+let currentUserId = null;
+let currentUserName = null;
+
+// Initialize WebSocket when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Get current user info using correct endpoint
+    fetch('/api/chat/current-user')
+        .then(response => response.json())
+        .then(userInfo => {
+            currentUserId = userInfo.userId;
+            currentUserName = userInfo.fullName;
+            initializeWebSocket();
+            console.log('✅ User info loaded:', userInfo);
+        })
+        .catch(error => {
+            console.log('Could not load user info, using fallback');
+            // Fallback - you can set default values or get from session
+            currentUserId = 1; // Default employer ID
+            currentUserName = "Employer";
+            initializeWebSocket();
+        });
+});
+
+function initializeWebSocket() {
+    if (window.ChatWebSocketClient) {
+        chatWebSocketClient = new ChatWebSocketClient();
+        
+        // Set callbacks with debug
+        chatWebSocketClient.onMessageReceived = (message) => {
+            console.log('🔄 WebSocket callback triggered with message:', message);
+            handleNewMessage(message);
+        };
+        chatWebSocketClient.onConnected = () => console.log('✅ Chat WebSocket connected');
+        chatWebSocketClient.onError = (error) => console.error('❌ Chat error:', error);
+        
+        // Connect to WebSocket
+        chatWebSocketClient.connect(currentUserId, currentUserName);
+    }
+}
+
+/**
+ * 🎯 Chat trực tiếp với student cụ thể
+ * Được gọi khi bấm nút "Chat" bên cạnh tên ứng viên
+ */
+function openChatFromButton(button) {
+    const userName = button.getAttribute('data-user-name');
+    const userEmail = button.getAttribute('data-user-email');
+    
+    console.log('🎯 Opening direct chat with student:', userName, userEmail);
+    
+    if (!userName || !userEmail) {
+        console.error('❌ Missing user data on button');
+        alert('Không thể lấy thông tin ứng viên. Vui lòng thử lại.');
+        return;
+    }
+    
+    // Chat trực tiếp với student này
+    openDirectChatWithStudent(userName, userEmail);
+}
+
+function showChatRoomsPanel() {
+    // Show chat overlay
+    document.getElementById('chatOverlay').classList.add('show');
+    document.getElementById('chatOffcanvas').classList.add('show');
+    
+    // Show rooms list in the chat area
+    loadAllChatRooms();
+}
+
+/**
+ * 📋 Hiển thị danh sách tất cả chat rooms
+ * Được gọi khi bấm nút "Danh sách Chat" ở header
+ */
+function showAllChatRooms() {
+    console.log('📋 Opening chat rooms list panel');
+    
+    // Show chat panel with rooms list
+    showChatRoomsPanel();
+}
+
+function showChatRoomsPanel() {
+    // Show chat overlay
+    document.getElementById('chatOverlay').classList.add('show');
+    document.getElementById('chatOffcanvas').classList.add('show');
+
+    // Show rooms list in the chat area
+    loadAllChatRooms();
+}
+
+// Function to open direct chat with a specific student
+function openDirectChatWithStudent(userName, userEmail) {
+    console.log('🚀 Opening direct chat with:', userName, userEmail);
+    
+    // Update chat header info
+    document.getElementById('chatName').textContent = userName;
+    document.getElementById('chatAvatar').textContent = userName.charAt(0).toUpperCase();
+    document.getElementById('chatStatus').textContent = 'Đang hoạt động';
+
+    // Show chat off-canvas
+    document.getElementById('chatOverlay').classList.add('show');
+    document.getElementById('chatOffcanvas').classList.add('show');
+    
+    // Hide back button since we're going directly to chat
+    const backBtn = document.getElementById('chatBackBtn');
+    if (backBtn) {
+        backBtn.style.display = 'none';
+    }
+
+    // Try to find or create chat room with this student
+    tryCreateChatRoomWithStudent(userName, userEmail);
+}
+
+function openChat(userName, userEmail) {
+    // Update chat header info
+    document.getElementById('chatName').textContent = userName;
+    document.getElementById('chatAvatar').textContent = userName.charAt(0).toUpperCase();
+    
+    // Show chat off-canvas
+    document.getElementById('chatOverlay').classList.add('show');
+    document.getElementById('chatOffcanvas').classList.add('show');
+    
+    // Focus on input
+    setTimeout(() => {
+        document.getElementById('messageInput').focus();
+    }, 300);
+    
+    // Load/Create chat room with this user
+    loadChatRoom(userEmail);
+}
+
+async function loadAllChatRooms() {
+    try {
+        console.log('📋 Loading all chat rooms for employer...');
+        
+        const roomsResponse = await fetch('/api/chat/rooms');
+        if (!roomsResponse.ok) {
+            throw new Error('Failed to load rooms');
+        }
+        
+        const rooms = await roomsResponse.json();
+        console.log('📋 Found rooms:', rooms);
+        
+        // Show rooms list in chat area
+        showChatRoomsList(rooms);
+        
+    } catch (error) {
+        console.error('❌ Error loading chat rooms:', error);
+        showRoomsError();
+    }
+}
+
+function showChatRoomsList(rooms) {
+    const messagesContainer = document.getElementById('chatMessages');
+    
+    if (!rooms || rooms.length === 0) {
+        messagesContainer.innerHTML = `
+            <div style="text-align: center; padding: 40px 20px; color: #666;">
+                <div style="font-size: 48px; margin-bottom: 20px;">💬</div>
+                <h4 style="margin: 0 0 10px 0; color: #333;">Chưa có cuộc trò chuyện nào</h4>
+                <p style="margin: 0; font-size: 14px;">
+                    Các cuộc trò chuyện với ứng viên sẽ xuất hiện ở đây
+                </p>
+            </div>
+        `;
+        
+        // Update header for empty state
+        document.getElementById('chatName').textContent = 'Danh sách cuộc trò chuyện';
+        document.getElementById('chatAvatar').textContent = '💬';
+        document.getElementById('chatStatus').textContent = 'Chọn cuộc trò chuyện';
+        
+        // Hide back button for rooms list
+        const backBtn = document.getElementById('chatBackBtn');
+        if (backBtn) backBtn.style.display = 'none';
+        
+        // Disable input for rooms list
+        const messageInput = document.getElementById('messageInput');
+        if (messageInput) {
+            messageInput.disabled = true;
+            messageInput.placeholder = 'Chọn cuộc trò chuyện để gửi tin nhắn...';
+        }
+        
+        return;
+    }
+    
+    // Update header for rooms list
+    document.getElementById('chatName').textContent = `Cuộc trò chuyện (${rooms.length})`;
+    document.getElementById('chatAvatar').textContent = '💬';
+    document.getElementById('chatStatus').textContent = 'Chọn cuộc trò chuyện';
+    
+    // Hide back button for rooms list
+    const backBtn = document.getElementById('chatBackBtn');
+    if (backBtn) backBtn.style.display = 'none';
+    
+    // Disable input for rooms list
+    const messageInput = document.getElementById('messageInput');
+    if (messageInput) {
+        messageInput.disabled = true;
+        messageInput.placeholder = 'Chọn cuộc trò chuyện để gửi tin nhắn...';
+    }
+    
+    // Create rooms list HTML
+    const roomsHTML = rooms.map(room => {
+        const participantName = room.participantName || room.otherParticipantName || 'Người dùng';
+        const lastMessage = room.lastMessage || 'Chưa có tin nhắn';
+        const lastMessageTime = room.lastMessageAt ? new Date(room.lastMessageAt).toLocaleTimeString('vi-VN', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        }) : '';
+        const avatar = participantName.charAt(0).toUpperCase();
+        const unreadBadge = room.unreadCount > 0 ? `<span style="background: #ff4757; color: white; font-size: 11px; padding: 2px 6px; border-radius: 10px; margin-left: 5px;">${room.unreadCount}</span>` : '';
+        
+        return `
+            <div class="chat-room-item" onclick="openChatRoom(${room.chatRoomId}, '${participantName}')" 
+                 style="display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s; border-radius: 8px; margin-bottom: 5px;"
+                 onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='white'">
+                
+                <div style="width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                           color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px; font-size: 18px;">
+                    ${avatar}
+                </div>
+                
+                <div style="flex: 1; min-width: 0;">
+                    <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 5px;">
+                        <h6 style="margin: 0; font-weight: 600; color: #333; font-size: 15px;">${participantName}</h6>
+                        <div style="display: flex; align-items: center;">
+                            <small style="color: #666; font-size: 12px;">${lastMessageTime}</small>
+                            ${unreadBadge}
+                        </div>
+                    </div>
+                    <p style="margin: 0; color: #666; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        ${lastMessage}
+                    </p>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    messagesContainer.innerHTML = `
+        <div style="padding: 10px;">
+            <div style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #007bff;">
+                <small style="color: #666; font-size: 12px;">
+                    📱 Chọn cuộc trò chuyện để bắt đầu nhắn tin với ứng viên
+                </small>
+            </div>
+            ${roomsHTML}
+        </div>
+    `;
+}
+
+function openChatRoom(roomId, participantName) {
+    console.log('🔓 Opening chat room:', roomId, 'with participant:', participantName);
+    
+    // Update header for individual chat
+    document.getElementById('chatName').textContent = participantName;
+    document.getElementById('chatAvatar').textContent = participantName.charAt(0).toUpperCase();
+    document.getElementById('chatStatus').textContent = 'Đang hoạt động';
+    
+    // Show back button for individual chat
+    const backBtn = document.getElementById('chatBackBtn');
+    if (backBtn) backBtn.style.display = 'inline-block';
+    
+    // Set current room
+    currentChatRoomId = String(roomId);
+    
+    // Join WebSocket room  
+    if (chatWebSocketClient && chatWebSocketClient.isConnected) {
+        chatWebSocketClient.joinRoom(Number(roomId)); // Convert back to number for WebSocket
+        
+        // Mark messages as read
+        markMessagesAsRead(roomId);
+    }
+    
+    // Load chat history
+    loadChatHistory(roomId);
+    
+    // Enable input
+    const messageInput = document.getElementById('messageInput');
+    if (messageInput) {
+        messageInput.disabled = false;
+        messageInput.placeholder = `Nhập tin nhắn cho ${participantName}...`;
+        
+        // Focus on input
+        setTimeout(() => {
+            messageInput.focus();
+        }, 500);
+    }
+}
+
+function showRoomsError() {
+    const messagesContainer = document.getElementById('chatMessages');
+    messagesContainer.innerHTML = `
+        <div style="text-align: center; padding: 40px 20px; color: #dc3545;">
+            <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
+            <h4 style="margin: 0 0 10px 0;">Không thể tải cuộc trò chuyện</h4>
+            <p style="margin: 0 0 20px 0; font-size: 14px;">
+                Vui lòng thử lại sau
+            </p>
+            <button onclick="loadAllChatRooms()" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                Thử lại
+            </button>
+        </div>
+    `;
+    
+    // Update header for error state
+    document.getElementById('chatName').textContent = 'Lỗi tải cuộc trò chuyện';
+    document.getElementById('chatAvatar').textContent = '⚠️';
+    document.getElementById('chatStatus').textContent = 'Vui lòng thử lại';
+}
+
+// Handle new messages from WebSocket
+function handleNewMessage(message) {
+    console.log('📨 New message received in handleNewMessage:', message);
+    console.log('🔍 Current room ID:', currentChatRoomId, 'Message room ID:', message.chatRoomId);
+    
+    // If we're currently in a specific chat room, add message to UI
+    if (currentChatRoomId && message.chatRoomId == Number(currentChatRoomId)) {
+        console.log('✅ Adding message to current chat UI');
+        addMessageToUI(message);
+    } else {
+        console.log('⚠️ Message not for current room or no room selected');
+    }
+    
+    // If we're in rooms list view, refresh the list to show new message
+    const chatName = document.getElementById('chatName');
+    if (chatName && chatName.textContent.includes('Cuộc trò chuyện')) {
+        console.log('🔄 Refreshing rooms list due to new message');
+        loadAllChatRooms();
+    }
+}
+
+function addMessageToUI(message) {
+    const messagesContainer = document.getElementById('chatMessages');
+    if (!messagesContainer) return;
+    
+    const isSent = message.senderId == currentUserId;
+    const messageClass = isSent ? 'sent' : 'received';
+    
+    const messageHTML = `
+        <div class="message ${messageClass}">
+            <div class="message-bubble">
+                ${message.content}
+                <div class="message-time">${formatMessageTime(message.sentAt)}</div>
+            </div>
+        </div>
+    `;
+    
+    messagesContainer.insertAdjacentHTML('beforeend', messageHTML);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+function formatMessageTime(timeString) {
+    if (!timeString) return '';
+    
+    const date = new Date(timeString);
+    return date.toLocaleTimeString('vi-VN', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+    });
+}
+
+async function loadChatRoom(userEmail) {
+    try {
+        console.log('🔍 Loading chat room for email:', userEmail);
+        
+        // For now, we'll use a simplified approach
+        // We'll create a demo room and load existing rooms to find one
+        
+        // First, try to get existing chat rooms
+        const roomsResponse = await fetch('/api/chat/rooms');
+        if (roomsResponse.ok) {
+            const rooms = await roomsResponse.json();
+            console.log('📋 Existing rooms:', rooms);
+            
+            // Try to find a room for this email (basic matching)
+            const existingRoom = rooms.find(room => 
+                room.otherParticipantName && 
+                room.otherParticipantName.includes(userEmail.split('@')[0])
+            );
+            
+            if (existingRoom) {
+                console.log('✅ Found existing room:', existingRoom);
+                currentChatRoomId = String(existingRoom.chatRoomId);
+                
+                // Join WebSocket room
+                if (chatWebSocketClient && chatWebSocketClient.isConnected) {
+                    chatWebSocketClient.joinRoom(Number(currentChatRoomId));
+                }
+                
+                // Load chat history
+                loadChatHistory(currentChatRoomId);
+                return;
+            }
+        }
+        
+        // If no existing room found, show preparation message
+        console.log('📝 No existing room found, showing preparation message');
+        createChatRoomByEmail(userEmail);
+        
+    } catch (error) {
+        console.error('Error loading chat room:', error);
+        createChatRoomByEmail(userEmail);
+    }
+}
+
+// Function to try creating REAL chat room with specific student
+async function tryCreateChatRoomWithStudent(userName, userEmail) {
+    try {
+        console.log('🔍 Finding student by email:', userEmail);
+        
+        // First, try to find existing chat rooms
+        const roomsResponse = await fetch('/api/chat/rooms');
+        if (roomsResponse.ok) {
+            const rooms = await roomsResponse.json();
+            console.log('📋 Existing rooms:', rooms);
+            
+            // Try to find a room for this student
+            const existingRoom = rooms.find(room => 
+                room.otherParticipantName && 
+                (room.otherParticipantName.toLowerCase().includes(userName.toLowerCase()) ||
+                 room.otherParticipantName.includes(userEmail.split('@')[0]))
+            );
+            
+            if (existingRoom) {
+                console.log('✅ Found existing room:', existingRoom);
+                currentChatRoomId = String(existingRoom.chatRoomId);
+                
+                // Join WebSocket room
+                if (chatWebSocketClient && chatWebSocketClient.isConnected) {
+                    chatWebSocketClient.joinRoom(Number(currentChatRoomId));
+                }
+                
+                // Load chat history
+                loadChatHistory(currentChatRoomId);
+                return;
+            }
+        }
+        
+        // If no existing room found, try to CREATE REAL chat room
+        console.log('🏗️ No existing room found, creating REAL chat room for:', userName, userEmail);
+        await createRealChatRoomWithStudent(userName, userEmail);
+        
+    } catch (error) {
+        console.error('Error finding/creating chat room:', error);
+        // Fallback to demo mode if API fails
+        createNewChatSession(userName, userEmail);
+    }
+}
+
+// Fallback function if we can't find student by email
+// Function to CREATE REAL chat room via API
+async function createRealChatRoomWithStudent(userName, userEmail) {
+    try {
+        console.log('🏗️ Creating REAL chat room via API for:', userName, userEmail);
+        
+        // Try to find student ID by email first
+        const studentResponse = await fetch(`/api/students/findByEmail?email=${encodeURIComponent(userEmail)}`);
+        
+        let studentUserId = null;
+        if (studentResponse.ok) {
+            const studentData = await studentResponse.json();
+            studentUserId = studentData.userId; // Use Account.userId, not Student.studentId
+            console.log('👤 Found student data:', studentData);
+            console.log('👤 Using student userId:', studentUserId);
+        }
+        
+        // If we can't find student userId, use current user ID as fallback
+        if (!studentUserId) {
+            console.warn('⚠️ Could not find student userId, creating demo session');
+            createNewChatSession(userName, userEmail);
+            return;
+        }
+        
+        // Create real chat room via API
+        const createRoomResponse = await fetch('/api/chat/rooms', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                studentId: studentUserId,    // Student's Account.userId
+                employerId: currentUserId,   // Employer's Account.userId  
+                jobPostId: null             // General chat, not job-specific
+            })
+        });
+        
+        if (createRoomResponse.ok) {
+            const newRoom = await createRoomResponse.json();
+            console.log('✅ Successfully created real chat room:', newRoom);
+            
+            currentChatRoomId = String(newRoom.chatRoomId);
+            
+            // Join WebSocket room
+            if (chatWebSocketClient && chatWebSocketClient.isConnected) {
+                chatWebSocketClient.joinRoom(Number(currentChatRoomId));
+            }
+            
+            // Show ready chat interface
+            showReadyChatInterface(userName);
+            
+        } else {
+            console.error('❌ Failed to create chat room via API');
+            // Fallback to demo mode
+            createNewChatSession(userName, userEmail);
+        }
+        
+    } catch (error) {
+        console.error('Error creating real chat room:', error);
+        // Fallback to demo mode
+        createNewChatSession(userName, userEmail);
+    }
+}
+
+// Function to show ready chat interface after room creation
+function showReadyChatInterface(userName) {
+    // LOAD CHAT HISTORY FIRST before showing UI
+    console.log('📜 Loading chat history for room:', currentChatRoomId);
+    loadChatHistory(currentChatRoomId);
+    
+    // Enable input for sending messages
+    const messageInput = document.getElementById('messageInput');
+    if (messageInput) {
+        messageInput.placeholder = `Nhập tin nhắn cho ${userName}...`;
+        messageInput.disabled = false;
+        messageInput.focus();
+    }
+    
+    // Update chat title and status
+    document.getElementById('chatName').textContent = `💬 ${userName}`;
+    document.getElementById('chatStatus').textContent = 'Đang hoạt động';
+    document.getElementById('chatOverlay').classList.add('show');
+    document.getElementById('chatOffcanvas').classList.add('show');
+    
+    console.log('✅ Chat ready with history for:', userName);
+}
+
+// Function to create new chat session when no existing room found
+function createNewChatSession(userName, userEmail) {
+    console.log('📝 Creating new chat session for:', userName, userEmail);
+    
+    // Show chat interface ready for messaging
+    const messagesContainer = document.getElementById('chatMessages');
+    
+    messagesContainer.innerHTML = `
+        <div style="text-align: center; padding: 20px; color: #666;">
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
+                <h5 style="margin: 0 0 10px 0;">💬 Chat với ${userName}</h5>
+                <p style="margin: 0; font-size: 14px; opacity: 0.9;">
+                    Bạn có thể bắt đầu cuộc trò chuyện ngay bây giờ!
+                </p>
+            </div>
+            <div style="color: #999; font-size: 12px;">
+                💡 Tin nhắn sẽ được gửi real-time
+            </div>
+        </div>
+    `;
+    
+    // Enable input for sending messages
+    const messageInput = document.getElementById('messageInput');
+    if (messageInput) {
+        messageInput.placeholder = `Nhập tin nhắn cho ${userName}...`;
+        messageInput.disabled = false;
+        messageInput.focus(); // Auto focus vào input
+    }
+    
+    // Set a temporary room ID for this conversation
+    currentChatRoomId = 'new_' + userEmail.replace('@', '_').replace('.', '_');
+    console.log('📝 Created new chat session with ID:', currentChatRoomId);
+}
+
+function createChatRoomByEmail(userEmail) {
+    // Show a preparation message with ability to send messages
+    const messagesContainer = document.getElementById('chatMessages');
+    const userName = userEmail.split('@')[0]; // Get name part from email
+    
+    messagesContainer.innerHTML = `
+        <div style="text-align: center; padding: 20px; color: #666;">
+            <div style="background: #f0f0f0; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                <h5 style="margin: 0 0 10px 0; color: #333;">Chat với ${userName}</h5>
+                <p style="margin: 0; font-size: 14px;">
+                    Bạn có thể gửi tin nhắn cho ứng viên này. 
+                    Tin nhắn sẽ được gửi khi họ đăng nhập vào hệ thống.
+                </p>
+            </div>
+            <div style="color: #999; font-size: 12px;">
+                💡 Hệ thống chat real-time đã sẵn sàng
+            </div>
+        </div>
+    `;
+    
+    // Enable input for sending messages
+    const messageInput = document.getElementById('messageInput');
+    if (messageInput) {
+        messageInput.placeholder = `Nhập tin nhắn cho ${userName}...`;
+        messageInput.disabled = false;
+    }
+    
+    // Set a temporary room ID for this conversation
+    currentChatRoomId = 'temp_' + userEmail.replace('@', '_').replace('.', '_');
+    console.log('📝 Created temporary chat session:', currentChatRoomId);
+}
+
+function loadChatHistory(roomId) {
+    // Use correct endpoint format
+    fetch(`/api/chat/rooms/${roomId}/messages?page=0&size=50`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to load messages');
+            }
+            return response.json();
+        })
+        .then(messages => {
+            const messagesContainer = document.getElementById('chatMessages');
+            messagesContainer.innerHTML = ''; // Clear existing messages
+            
+            // Handle both array and paginated response
+            const messageList = Array.isArray(messages) ? messages : (messages.content || []);
+            
+            messageList.forEach(message => {
+                addMessageToUI(message);
+            });
+            
+            // Scroll to bottom
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        })
+        .catch(error => {
+            console.error('Error loading chat history:', error);
+            // Show default messages or empty state
+            const messagesContainer = document.getElementById('chatMessages');
+            messagesContainer.innerHTML = `
+                <div style="text-align: center; padding: 20px; color: #666;">
+                    <p>Không thể tải lịch sử chat</p>
+                    <p><small>Bắt đầu cuộc trò chuyện bằng cách gửi tin nhắn đầu tiên</small></p>
+                </div>
+            `;
+        });
+}
+
+function closeChat() {
+    // Leave WebSocket room
+    if (chatWebSocketClient && currentChatRoomId) {
+        chatWebSocketClient.leaveRoom();
+        currentChatRoomId = null;
+    }
+    
+    document.getElementById('chatOverlay').classList.remove('show');
+    document.getElementById('chatOffcanvas').classList.remove('show');
+}
+
+function showError(message) {
+    // Simple error display (you can make this more sophisticated)
+    console.error(message);
+    alert(message);
+}
+
+/**
+ * ✅ Mark messages as read
+ */
+function markMessagesAsRead(roomId) {
+    if (!chatWebSocketClient || !chatWebSocketClient.isConnected) {
+        console.warn('WebSocket not connected, cannot mark messages as read');
+        return;
+    }
+    
+    console.log('✅ Marking messages as read for room:', roomId);
+    
+    // Send mark as read via WebSocket
+    chatWebSocketClient.publish({
+        destination: '/app/chat.markRead',
+        body: JSON.stringify({ 
+            chatRoomId: Number(roomId),
+            userId: currentUserId 
+        })
+    });
+}
+
+function sendMessage(event) {
+    event.preventDefault();
+    
+    const messageInput = document.getElementById('messageInput');
+    const messageText = messageInput.value.trim();
+    
+    if (!messageText || !currentChatRoomId) return;
+    
+    // Handle demo chat sessions (fallback mode)
+    if (String(currentChatRoomId).startsWith('new_') || String(currentChatRoomId).startsWith('temp_')) {
+        console.log('📤 Sending message in demo mode (API failed)');
+        
+        // Add message to UI immediately for demo
+        addMessageToUI({
+            content: messageText,
+            senderId: currentUserId,
+            sentAt: new Date().toISOString(),
+            senderName: currentUserName
+        });
+        
+        messageInput.value = '';
+        
+        // Show demo response
+        setTimeout(() => {
+            addMessageToUI({
+                content: 'Tin nhắn demo - API tạo chat room thất bại.',
+                senderId: 0,
+                sentAt: new Date().toISOString(),
+                senderName: 'Demo'
+            });
+        }, 1500);
+        
+        return;
+    }
+    
+    // Send via WebSocket for real rooms
+    if (chatWebSocketClient && chatWebSocketClient.isConnected) {
+        console.log('📤 Sending message via WebSocket:', messageText);
+        const success = chatWebSocketClient.sendMessage(messageText);
+        if (success) {
+            console.log('✅ Message sent successfully');
+            
+            // Add message to UI immediately for better UX (optimistic update)
+            addMessageToUI({
+                content: messageText,
+                senderId: currentUserId,
+                sentAt: new Date().toISOString(),
+                senderName: currentUserName
+            });
+            
+            messageInput.value = '';
+        } else {
+            console.error('❌ Failed to send message');
+        }
+    } else {
+        console.error('❌ WebSocket not connected');
+        showError('Không thể gửi tin nhắn. Vui lòng thử lại.');
+    }
+}
+
+// Removed duplicate handleNewMessage function - using the one with debug logic above
+
+function addMessageToUI(message) {
+    const messagesContainer = document.getElementById('chatMessages');
+    const messageTime = new Date(message.sentAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    
+    // Determine if message is sent by current user
+    const isSentByMe = message.senderId == currentUserId;
+    const messageType = isSentByMe ? 'sent' : 'received';
+    
+    const messageElement = document.createElement('div');
+    messageElement.className = `message ${messageType}`;
+    messageElement.innerHTML = `
+        <div class="message-bubble">
+            ${message.content}
+            <div class="message-time">${messageTime}</div>
+        </div>
+    `;
+    
+    // Remove empty state if exists
+    const emptyState = messagesContainer.querySelector('div[style*="text-align: center"]');
+    if (emptyState && emptyState.innerHTML.includes('Không thể tải lịch sử chat')) {
+        emptyState.remove();
+    }
+    
+    messagesContainer.appendChild(messageElement);
+    
+    // Scroll to bottom
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+function addMessageToChat(text, type) {
+    // Legacy function for backward compatibility
+    addMessageToUI({
+        content: text,
+        senderId: type === 'sent' ? currentUserId : 0,
+        sentAt: new Date().toISOString()
+    });
+}
+
+function showTypingIndicator() {
+    document.getElementById('typingIndicator').style.display = 'block';
+    const messagesContainer = document.getElementById('chatMessages');
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+function hideTypingIndicator() {
+    document.getElementById('typingIndicator').style.display = 'none';
+}
+
+
+
+// Close chat when pressing Escape
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeChat();
+    }
+});
 </script>
 </body>
 </html>

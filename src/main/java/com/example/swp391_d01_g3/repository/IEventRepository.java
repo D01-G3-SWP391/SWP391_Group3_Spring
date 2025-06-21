@@ -22,6 +22,10 @@ public interface IEventRepository extends JpaRepository<Event, Integer> {
     Page<Event> findByApprovalStatusAndEventTitleContainingIgnoreCaseOrEventDescriptionContainingIgnoreCase(
             Event.ApprovalStatus status, String titleKeyword, String descKeyword, Pageable pageable);
     
+    // Tìm kiếm events theo title hoặc description với filter active
+    Page<Event> findByApprovalStatusAndEventStatusAndEventTitleContainingIgnoreCaseOrEventDescriptionContainingIgnoreCase(
+            Event.ApprovalStatus approvalStatus, Event.EventStatus eventStatus, String titleKeyword, String descKeyword, Pageable pageable);
+    
     // Lấy upcoming events
     Page<Event> findByApprovalStatusAndEventDateAfterOrderByEventDateAsc(
             Event.ApprovalStatus status, LocalDateTime currentTime, Pageable pageable);
@@ -36,8 +40,23 @@ public interface IEventRepository extends JpaRepository<Event, Integer> {
                                   @Param("status") Event.ApprovalStatus status,
                                   Pageable pageable);
     
+    // Tìm events liên quan (chỉ active)
+    @Query("SELECT e FROM Event e WHERE e.eventId != :eventId " +
+           "AND (e.employer.employerId = :employerId OR e.eventLocation LIKE %:location%) " +
+           "AND e.approvalStatus = :approvalStatus " +
+           "AND e.eventStatus = :eventStatus " +
+           "ORDER BY e.eventDate ASC")
+    List<Event> findRelatedActiveEvents(@Param("eventId") Integer eventId, 
+                                        @Param("employerId") Integer employerId,
+                                        @Param("approvalStatus") Event.ApprovalStatus approvalStatus,
+                                        @Param("eventStatus") Event.EventStatus eventStatus,
+                                        Pageable pageable);
+    
     // Đếm events theo approval status
     long countByApprovalStatus(Event.ApprovalStatus status);
+    
+    // Đếm events theo approval status và event status
+    long countByApprovalStatusAndEventStatus(Event.ApprovalStatus approvalStatus, Event.EventStatus eventStatus);
     
     // Đếm events theo job field (thông qua employer)
     @Query("SELECT COUNT(e) FROM Event e " +
@@ -47,6 +66,17 @@ public interface IEventRepository extends JpaRepository<Event, Integer> {
            "AND e.approvalStatus = :status")
     long countEventsByJobField(@Param("jobFieldName") String jobFieldName, 
                                @Param("status") Event.ApprovalStatus status);
+    
+    // Đếm events theo job field và event status
+    @Query("SELECT COUNT(e) FROM Event e " +
+           "JOIN e.employer emp " +
+           "JOIN emp.jobField jf " +
+           "WHERE jf.jobFieldName = :jobFieldName " +
+           "AND e.approvalStatus = :approvalStatus " +
+           "AND e.eventStatus = :eventStatus")
+    long countEventsByJobFieldAndEventStatus(@Param("jobFieldName") String jobFieldName, 
+                                             @Param("approvalStatus") Event.ApprovalStatus approvalStatus,
+                                             @Param("eventStatus") Event.EventStatus eventStatus);
     
     // Lấy all events với phân trang cho admin
     Page<Event> findAllByOrderByCreatedAtDesc(Pageable pageable);
@@ -90,5 +120,12 @@ public interface IEventRepository extends JpaRepository<Event, Integer> {
     Page<Event> findByEmployer(Employer employer, Pageable pageable);
 
     Page<Event> findByEventTitleContainingIgnoreCase(String keyword, Pageable pageable);
+
+    // Tìm events đã approve, active và chưa quá hạn
+    @Query("SELECT e FROM Event e WHERE e.approvalStatus = 'APPROVED' " +
+           "AND e.eventStatus = 'ACTIVE' " +
+           "AND e.eventDate > :currentTime " +
+           "ORDER BY e.eventDate ASC")
+    Page<Event> findActiveApprovedEvents(@Param("currentTime") LocalDateTime currentTime, Pageable pageable);
 
 } 

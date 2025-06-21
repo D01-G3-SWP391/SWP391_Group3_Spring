@@ -41,4 +41,7 @@ public interface IJobApplicationRepository extends JpaRepository<JobApplication,
     boolean existsByStudentIdAndJobPostId(@Param("studentId") Integer studentId, 
                                         @Param("jobPostId") Integer jobPostId);
 
+    @Query("SELECT ja FROM JobApplication ja WHERE ja.jobPost.jobPostId = :jobPostId ORDER BY ja.appliedAt DESC")
+    List<JobApplication> findByJobPostId(@Param("jobPostId") Integer jobPostId);
+
 }
