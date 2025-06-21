@@ -6,13 +6,13 @@ import com.example.swp391_d01_g3.model.JobApplication;
 import com.example.swp391_d01_g3.model.JobPost;
 import com.example.swp391_d01_g3.model.Student;
 import com.example.swp391_d01_g3.service.cloudinary.CloudinaryService;
+import com.example.swp391_d01_g3.service.email.EmailService;
 import com.example.swp391_d01_g3.service.jobapplication.IJobApplicationService;
 import com.example.swp391_d01_g3.service.jobfield.IJobfieldService;
 import com.example.swp391_d01_g3.service.jobpost.IJobpostService;
 import com.example.swp391_d01_g3.service.notification.INotificationService;
 import com.example.swp391_d01_g3.service.security.IAccountService;
 import com.example.swp391_d01_g3.service.student.IStudentService;
-import com.example.swp391_d01_g3.service.cloudinary.CloudinaryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -51,6 +51,9 @@ public class AddJobApplication {
 
     @Autowired
     private CloudinaryService cloudinaryService;
+
+    @Autowired
+    private EmailService emailService;
 
     @PostMapping("/JobDescription/Apply")
     public String submitApplication(@Valid @ModelAttribute("jobApplicationDTO") JobApplicationDTO jobApplicationDTO,
@@ -156,6 +159,27 @@ public class AddJobApplication {
             JobPost updatedJobPost = jobPost.get();
             updatedJobPost.setAppliedQuality(updatedJobPost.getAppliedQuality() + 1);
             iJobpostService.save(updatedJobPost);
+
+            // Gửi email thông báo thành công cho student (lấy từ database)
+            emailService.sendJobApplicationSuccessEmail(
+                jobApplication.getEmail(), // Lấy từ database
+                jobApplication.getFullName(), // Lấy từ database
+                jobPost.get().getJobTitle(),
+                jobPost.get().getEmployer().getCompanyName(),
+                jobApplication.getApplicationId().toString()
+            );
+
+            // Gửi email thông báo cho employer (lấy từ database)
+            emailService.sendNewApplicationNotificationEmailFromForm(
+                jobPost.get().getEmployer().getAccount().getEmail(),
+                jobPost.get().getEmployer().getAccount().getFullName(),
+                jobPost.get().getJobTitle(),
+                jobApplication.getFullName(), // Lấy từ database
+                jobApplication.getEmail(), // Lấy từ database
+                jobApplication.getPhone(), // Lấy từ database
+                jobApplication.getApplicationId().toString(),
+                jobApplication.getDescription() // Lấy từ database
+            );
 
             // Create notification for student
             notificationService.createNotification(

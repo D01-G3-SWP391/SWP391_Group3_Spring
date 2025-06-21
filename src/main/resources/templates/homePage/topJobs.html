@@ -3,122 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top Jobs - Most Popular</title>
-    
-    <!-- Bootstrap CSS -->
+    <title>Việc Làm Nổi Bật - Job4You</title>
+
+    <!-- Libs CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Navbar CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
     <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarHome.css}"/>
-    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
     <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}"/>
-    
-    <!-- Other CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/topJobs.css}">
     <link rel="stylesheet" th:href="@{/css/footer.css}" />
-
 </head>
 <body>
 <!-- Navigation -->
 <div th:replace="~{navbar/navbarHome}"></div>
 
-<div class="container mt-4">
-    <!-- Header Section -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="top-jobs-header text-center">
-                <h1 class="display-4 fw-bold text-white mb-3">
-                    <i class="fas fa-star me-3"></i>Top Jobs
-                </h1>
-                <p class="lead text-white-50">
-                    Những công việc được ứng tuyển nhiều nhất
-                </p>
-                <div class="stats-info mt-3">
-                        <span class="badge bg-light text-dark fs-6 px-3 py-2">
-                            <i class="fas fa-briefcase me-2"></i>
-                            <span th:text="${jobs != null ? jobs.size() : 0}">0</span> việc làm nổi bật
-                        </span>
+<div class="container my-5">
+    <!-- Header -->
+    <div class="text-center mb-5">
+        <h1 class="top-jobs-main-title">Việc Làm Nổi Bật</h1>
+        <p class="top-jobs-subtitle text-muted">Những cơ hội việc làm được ứng tuyển nhiều nhất từ các công ty hàng đầu</p>
+    </div>
+
+    <!-- Jobs Grid -->
+    <div class="row g-4">
+        <!-- Loop through jobs -->
+        <div th:each="job : ${topJobsPage.content}" class="col-lg-4 col-md-6">
+            <div class="job-card-redesigned">
+                <!-- Card Header -->
+                <div class="card-header-section">
+                    <div class="company-logo">
+                        <img th:src="${job.employer.logoUrl}"
+                             th:alt="${job.employer.companyName}"
+                             class="logo-img"
+                             onerror="this.style.display='none'; this.parentElement.querySelector('.logo-fallback').style.display='flex';">
+                        <div class="logo-fallback">
+                            <span th:text="${job.employer.companyName.substring(0,1).toUpperCase()}">C</span>
+                        </div>
+                    </div>
+                    <div class="job-title-section">
+                        <h2 class="job-title" th:text="${job.jobTitle}">Job Title</h2>
+                        <p class="company-name" th:text="${job.employer.companyName}">Company Name</p>
+                    </div>
+                </div>
+
+                <!-- Card Details -->
+                <div class="card-details-section">
+                    <div class="detail-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span th:text="${job.jobLocation}">Location</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span th:if="${job.jobSalary != null}" th:text="${#numbers.formatInteger(job.jobSalary, 1, 'COMMA') + ' VND'}">Salary</span>
+                        <span th:if="${job.jobSalary == null}">Thỏa thuận</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="job-type-badge" th:text="${job.jobType == 'FULL_TIME' ? 'Toàn thời gian' : 'Bán thời gian'}">Job Type</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span th:text="${#temporals.format(job.createdAt, 'dd/MM/yyyy')}">Date</span>
+                    </div>
+                </div>
+
+                <!-- Stats Section -->
+                <div class="card-stats-section">
+                    <div class="stats-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stats-text">
+                        <div class="stats-number" th:text="${job.appliedQuality}">0</div>
+                        <div class="stats-label">Lượt ứng tuyển</div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="card-action-section">
+                    <a th:href="@{/JobDescription/JobPost(id=${job.jobPostId})}" class="btn btn-primary btn-sm flex-grow-1">
+                        <i class="fas fa-eye me-1"></i> Xem chi tiết
+                    </a>
+                    <button class="btn btn-outline-secondary btn-sm" title="Lưu việc làm">
+                        <i class="far fa-heart"></i>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Jobs List -->
-    <div class="row">
-        <div th:each="job : ${jobs}" class="col-lg-4 col-md-6 mb-4">
-            <div class="job-card">
-                <div class="card-body">
-                    <!-- Company Logo Section -->
-                    <div class="company-section mb-3">
-                        <div class="d-flex align-items-center">
-                            <div class="company-logo me-3">
-                                <img th:src="${job.employer.logoUrl}"
-                                     th:alt="${job.employer.companyName}"
-                                     class="company-logo-img"
-                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <div class="logo-placeholder">
-                                    <span th:text="${job.employer.companyName.substring(0,1)}">C</span>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1">
-                                <h5 class="job-title mb-1" th:text="${job.jobTitle}">Job Title</h5>
-                                <p class="company-name mb-0" th:text="${job.employer.companyName}">Company Name</p>
-                            </div>
-                        </div>
-                    </div>
+    <!-- Pagination -->
+    <nav aria-label="Page navigation" class="mt-5" th:if="${!topJobsPage.empty}">
+        <ul class="pagination justify-content-center">
+            <!-- Previous Button -->
+            <li class="page-item" th:classappend="${topJobsPage.first} ? 'disabled'">
+                <a class="page-link" th:href="@{/top-jobs(page=${topJobsPage.number - 1})}">&lt; Previous</a>
+            </li>
 
-                    <!-- Job Details -->
-                    <div class="job-details mb-3">
-                        <div class="detail-item">
-                            <i class="fas fa-map-marker-alt text-muted"></i>
-                            <span th:text="${job.jobLocation}">Location</span>
-                        </div>
-                        <div class="detail-item">
-                            <i class="fas fa-money-bill-wave text-muted"></i>
-                            <span th:text="${job.jobSalary}">Salary</span>
-                        </div>
-                        <div class="detail-item">
-                            <i class="fas fa-briefcase text-muted"></i>
-                            <span class="badge bg-secondary" th:text="${job.jobType}">Job Type</span>
-                        </div>
-                    </div>
+            <!-- Page Numbers -->
+            <th:block th:each="i : ${#numbers.sequence(0, topJobsPage.totalPages - 1)}">
+                <li class="page-item" th:classappend="${i == topJobsPage.number} ? 'active'">
+                    <a class="page-link" th:href="@{/top-jobs(page=${i})}" th:text="${i + 1}">1</a>
+                </li>
+            </th:block>
 
-                    <!-- Application Stats -->
-                    <div class="application-stats mb-3">
-                        <div class="stats-simple">
-                            <div class="stat-item-center">
-                                <div class="stat-number" th:text="${job.appliedQuality}">0</div>
-                                <div class="stat-label">Lượt ứng tuyển</div>
-                            </div>
-                        </div>
-                    </div>
+            <!-- Next Button -->
+            <li class="page-item" th:classappend="${topJobsPage.last} ? 'disabled'">
+                <a class="page-link" th:href="@{/top-jobs(page=${topJobsPage.number + 1})}">Next &gt;</a>
+            </li>
+        </ul>
+    </nav>
 
-                    <!-- Action Buttons -->
-                    <div class="action-buttons">
-                        <a th:href="@{/JobDescription/JobPost(id=${job.jobPostId})}"
-                           class="btn btn-primary flex-grow-1">
-                            <i class="fas fa-eye me-1"></i>Xem chi tiết
-                        </a>
-                        <button class="btn btn-outline-secondary ms-2">
-                            <i class="far fa-heart"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Empty State -->
-    <div th:if="${jobs == null or jobs.isEmpty()}" class="row">
-        <div class="col-12 text-center py-5">
-            <div class="empty-state">
-                <i class="fas fa-briefcase fa-4x text-muted mb-3"></i>
-                <h4 class="text-muted">Chưa có việc làm nổi bật</h4>
-                <p class="text-muted">Hiện tại chưa có công việc nào được ứng tuyển.</p>
-                <a href="/jobs" class="btn btn-primary">Xem tất cả việc làm</a>
-            </div>
+    <div th:if="${topJobsPage == null or topJobsPage.empty}" class="text-center py-5">
+        <div class="empty-state">
+            <i class="fas fa-briefcase fa-4x text-muted mb-3"></i>
+            <h4 class="text-muted">Chưa có việc làm nổi bật</h4>
+            <p class="text-muted">Hiện tại chưa có công việc nào được ứng tuyển.</p>
+            <a href="/" class="btn btn-primary mt-3">
+                <i class="fas fa-home me-2"></i> Về trang chủ
+            </a>
         </div>
     </div>
 </div>
@@ -126,10 +132,11 @@
 <!-- Footer -->
 <div th:replace="~{fragments/footer :: footer}"></div>
 
-<!-- Add notification bell -->
+<!-- Notification Bell -->
 <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
+
+<!-- Libs JS -->
 <script th:src="@{/js/main.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

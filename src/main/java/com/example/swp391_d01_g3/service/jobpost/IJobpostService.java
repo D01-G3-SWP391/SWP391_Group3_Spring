@@ -37,7 +37,7 @@ public interface IJobpostService  {
 
 
     List<JobPost> getTopJobs();
-    List<JobPost> getTopJobsLimit(int limit);
+    Page<JobPost> getTopJobsPaginated(Pageable pageable);
 //    pendding
     long countJobPostsByEmployerEmail(String employerEmail);
     long countJobPostsByEmployerEmailAndStatus(String employerEmail, String status);

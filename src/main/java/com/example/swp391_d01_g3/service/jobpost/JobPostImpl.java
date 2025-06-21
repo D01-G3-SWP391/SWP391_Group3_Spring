@@ -105,11 +105,11 @@ public class JobPostImpl implements IJobpostService {
     }
 
     @Override
-    public List<JobPost> getTopJobsLimit(int limit) {
-        Pageable pageable = PageRequest.of(0, limit);
-        return iJobPostRepository.findTopJobsByAppliedQualityLimit(pageable);
+    public Page<JobPost> getTopJobsPaginated(Pageable pageable) {
+        return iJobPostRepository.findTopJobsByAppliedQuality(pageable);
     }
-//    pendding
+
+    //    pendding
     @Override
     public long countJobPostsByEmployerEmail(String employerEmail) {
         Employer employer = iEmployerService.findByEmail(employerEmail);
