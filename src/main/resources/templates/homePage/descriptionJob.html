@@ -186,7 +186,10 @@
                                 </div>
                                 <div class="detail-content">
                                     <span class="detail-label" th:text="#{job.description.salary}">Mức lương</span>
-                                    <span class="detail-value" th:text="${job.jobSalary}">Thỏa thuận</span>
+                                    <span class="detail-value" th:if="${job.jobSalary != null}">
+                                        <span th:text="${#numbers.formatInteger(job.jobSalary, 1, 'COMMA') + ' VND'}"></span>
+                                    </span>
+                                    <span class="detail-value" th:if="${job.jobSalary == null}">Thỏa thuận</span>
                                 </div>
                             </div>
                             <div class="detail-item">
