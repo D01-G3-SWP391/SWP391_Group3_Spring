@@ -10,7 +10,7 @@
     <link rel="stylesheet" th:href="@{/css/myReport.css}"/>
 </head>
 <body>
-<div th:replace="~{navbar/navbarEmployee :: navbarAdmin}" th:if="${userRole == 'EMPLOYER'}"></div>
+<div th:replace="~{navbar/navbarEmployee :: navbarEmployee}" th:if="${userRole == 'EMPLOYER'}"></div>
 
 
 <script src="/js/navbarAdmin.js"></script>

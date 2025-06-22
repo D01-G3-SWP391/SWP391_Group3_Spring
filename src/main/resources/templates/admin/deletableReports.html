@@ -10,6 +10,7 @@
     <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
     <!-- ✅ THÊM CSS RIÊNG -->
     <link rel="stylesheet" th:href="@{/css/deletableReports.css}">
+    <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
 </head>
 <body>
 <div th:replace="~{navbar/navbarAdmin :: navbarAdmin}"></div>
@@ -207,5 +208,7 @@
         });
     }, 5000);
 </script>
+<script th:src="@{/js/language-dropdown.js}"></script>
+
 </body>
 </html>

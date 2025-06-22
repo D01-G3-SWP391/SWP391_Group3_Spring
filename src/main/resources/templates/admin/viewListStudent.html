@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
     <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
+    <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
 </head>
 <body>
 <div th:replace="~{navbar/navbarAdmin :: navbarAdmin}"></div>
@@ -75,7 +76,7 @@
                 <tr th:each="student : ${studentList}">
                     <td>
                         <img class="avatar"
-                             th:src="${student.avatarUrl != null ? student.avatarUrl : '/images/default-avatar.png'}"
+                             th:src="${student.avatarUrl}"
                              th:alt="${student.fullName}" />
                     </td>
                     <td>
@@ -161,5 +162,7 @@
 
 <script th:src="@{/js/navbarAdmin.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/language-dropdown.js}"></script>
+
 </body>
 </html>
