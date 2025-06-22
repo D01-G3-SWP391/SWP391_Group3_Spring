@@ -244,4 +244,23 @@ public class BlogServiceImpl implements IBlogService {
         );
         return blogPostRepository.findByStatus(status, sortedPageable);
     }
+    @Override
+    public long getTotalBlogsCount() {
+        return blogPostRepository.count();
+    }
+
+    @Override
+    public long getDraftBlogsCount() {
+        return blogPostRepository.countByStatus(BlogPost.BlogStatus.DRAFT);
+    }
+
+    @Override
+    public long getPublishedBlogsCount() {
+        return blogPostRepository.countByStatus(BlogPost.BlogStatus.PUBLISHED);
+    }
+
+    @Override
+    public long getArchivedBlogsCount() {
+        return blogPostRepository.countByStatus(BlogPost.BlogStatus.ARCHIVED);
+    }
 }

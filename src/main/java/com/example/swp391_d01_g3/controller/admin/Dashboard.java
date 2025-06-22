@@ -67,13 +67,11 @@ public class Dashboard {
             Page<BlogPost> blogPage;
             BlogPost.BlogStatus blogStatus = null;
 
-            // Validate parameters
             if (page < 0) page = 0;
             if (size <= 0 || size > 50) size = 10;
 
             Pageable pageable = PageRequest.of(page, size);
 
-            // Parse status parameter
             if (status != null && !status.isEmpty()) {
                 try {
                     blogStatus = BlogPost.BlogStatus.valueOf(status.toUpperCase());
@@ -84,20 +82,21 @@ public class Dashboard {
 
             // Search logic với pagination
             if (keyword != null && !keyword.trim().isEmpty() && blogStatus != null) {
-                // Search by keyword AND status
-                blogPage = (Page<BlogPost>) blogService.searchBlogPosts(keyword);
+                blogPage = blogService.searchBlogsByTitleAndStatus(keyword.trim(), blogStatus, pageable);
             } else if (keyword != null && !keyword.trim().isEmpty()) {
-                // Search by keyword only
-                blogPage = blogService.searchBlogs(keyword, pageable);
+                blogPage = blogService.searchBlogsByTitle(keyword.trim(), pageable);
             } else if (blogStatus != null) {
-                // Filter by status only
                 blogPage = blogService.findByStatus(blogStatus, pageable);
             } else {
-                // Get all blogs with pagination
                 blogPage = blogService.getAllBlogPostsWithPagination(pageable);
             }
 
-            // Add pagination attributes to model
+            // THÊM: Lấy số lượng cho badges
+            long totalBlogs = blogService.getTotalBlogsCount();
+            long draftBlogs = blogService.getDraftBlogsCount();
+            long publishedBlogs = blogService.getPublishedBlogsCount();
+            long archivedBlogs = blogService.getArchivedBlogsCount();
+
             model.addAttribute("blogs", blogPage.getContent());
             model.addAttribute("currentPage", page);
             model.addAttribute("totalPages", blogPage.getTotalPages());
@@ -106,6 +105,12 @@ public class Dashboard {
             model.addAttribute("hasPrevious", blogPage.hasPrevious());
             model.addAttribute("selectedStatus", status);
             model.addAttribute("keyword", keyword);
+
+            // THÊM: Số lượng cho badges
+            model.addAttribute("totalBlogs", totalBlogs);
+            model.addAttribute("draftBlogs", draftBlogs);
+            model.addAttribute("publishedBlogs", publishedBlogs);
+            model.addAttribute("archivedBlogs", archivedBlogs);
 
             return "blog/managementBlog";
 
@@ -126,6 +131,7 @@ public class Dashboard {
             return "blog/managementBlog";
         }
     }
+
 
     // Trang chi tiết blog
     @GetMapping("/blogs/{id}")
