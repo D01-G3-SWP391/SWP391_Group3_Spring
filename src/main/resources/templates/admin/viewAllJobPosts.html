@@ -30,9 +30,55 @@
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 
+    <!-- Enhanced Status Filter Badges với số lượng -->
+    <div class="status-filter-container">
+      <h6>Filter by Status</h6>
+      <div class="status-filter-badges">
+        <a th:href="@{/Admin/AllJobPosts}"
+           th:class="${selectedStatus == null or selectedStatus == ''} ? 'status-filter-badge all active' : 'status-filter-badge all'">
+          <div class="badge-content">
+            <div class="badge-text">
+              <i class="bi bi-briefcase-fill"></i>All Job Posts
+            </div>
+            <span class="badge-count" th:text="'(' + ${totalJobPosts} + ')'"></span>
+          </div>
+        </a>
+
+        <a th:href="@{/Admin/AllJobPosts(status='pending', keyword=${keyword})}"
+           th:class="${selectedStatus == 'pending'} ? 'status-filter-badge warning active' : 'status-filter-badge warning'">
+          <div class="badge-content">
+            <div class="badge-text">
+              <i class="bi bi-clock-fill"></i>Pending
+            </div>
+            <span class="badge-count" th:text="'(' + ${pendingJobPosts} + ')'"></span>
+          </div>
+        </a>
+
+        <a th:href="@{/Admin/AllJobPosts(status='approved', keyword=${keyword})}"
+           th:class="${selectedStatus == 'approved'} ? 'status-filter-badge success active' : 'status-filter-badge success'">
+          <div class="badge-content">
+            <div class="badge-text">
+              <i class="bi bi-check-circle-fill"></i>Approved
+            </div>
+            <span class="badge-count" th:text="'(' + ${approvedJobPosts} + ')'"></span>
+          </div>
+        </a>
+
+        <a th:href="@{/Admin/AllJobPosts(status='rejected', keyword=${keyword})}"
+           th:class="${selectedStatus == 'rejected'} ? 'status-filter-badge danger active' : 'status-filter-badge danger'">
+          <div class="badge-content">
+            <div class="badge-text">
+              <i class="bi bi-x-circle-fill"></i>Rejected
+            </div>
+            <span class="badge-count" th:text="'(' + ${rejectedJobPosts} + ')'"></span>
+          </div>
+        </a>
+      </div>
+    </div>
+
     <!-- Search Form -->
     <form method="get" class="row g-3 mb-4 filter-form">
-      <div class="col-md-8">
+      <div class="col-md-6">
         <input class="form-control" name="keyword"
                th:value="${keyword}"
                placeholder="Search by job title, company or location..." />
@@ -53,6 +99,8 @@
         Showing <strong th:text="${currentPage * 10 + 1}"></strong> to
         <strong th:text="${currentPage * 10 + #lists.size(jobPostList)}"></strong>
         of <strong th:text="${totalItems}"></strong> job posts
+        <span th:if="${selectedStatus != null and selectedStatus != ''}"
+              th:text="'(' + ${selectedStatus} + ')'" class="text-primary"></span>
       </span>
       <span class="text-muted" th:if="${totalPages > 1}">
         Page <strong th:text="${currentPage + 1}"></strong> of <strong th:text="${totalPages}"></strong>
@@ -88,9 +136,11 @@
             <span class="badge bg-info" th:text="${jobPost.jobType}"></span>
           </td>
           <td>
-            <span th:class="${jobPost.approvalStatus.name() == 'APPROVED' ? 'status-active' :
-                            (jobPost.approvalStatus.name() == 'REJECTED' ? 'status-banned' : 'status-pending')}"
-                  th:text="${jobPost.approvalStatus.name()}"></span>
+            <!-- Clickable Status Badges -->
+            <a th:href="@{/Admin/AllJobPosts(status=${jobPost.approvalStatus.name().toLowerCase()}, keyword=${keyword})}"
+               th:class="${jobPost.approvalStatus.name() == 'APPROVED' ? 'clickable-status status-active' :
+                         (jobPost.approvalStatus.name() == 'REJECTED' ? 'clickable-status status-banned' : 'clickable-status status-pending')}"
+               th:text="${jobPost.approvalStatus.name()}"></a>
           </td>
           <td th:text="${#temporals.format(jobPost.createdAt, 'dd/MM/yyyy')}"></td>
           <td>
@@ -169,7 +219,7 @@
         <div class="pagination-wrapper">
           <!-- Previous button -->
           <a th:if="${hasPrevious}"
-             th:href="@{/Admin/AllJobPosts(page=${currentPage - 1}, keyword=${keyword})}"
+             th:href="@{/Admin/AllJobPosts(page=${currentPage - 1}, keyword=${keyword}, status=${selectedStatus})}"
              class="pagination-btn prev-btn">
             <i class="bi bi-chevron-left"></i>
             <span>Previous</span>
@@ -182,7 +232,7 @@
           <div class="page-numbers">
             <th:block th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}">
               <a th:if="${pageNum >= currentPage - 2 and pageNum <= currentPage + 2 and pageNum != currentPage}"
-                 th:href="@{/Admin/AllJobPosts(page=${pageNum}, keyword=${keyword})}"
+                 th:href="@{/Admin/AllJobPosts(page=${pageNum}, keyword=${keyword}, status=${selectedStatus})}"
                  class="page-number"
                  th:text="${pageNum + 1}">1</a>
               <span th:if="${pageNum >= currentPage - 2 and pageNum <= currentPage + 2 and pageNum == currentPage}"
@@ -192,7 +242,7 @@
           </div>
 
           <a th:if="${hasNext}"
-             th:href="@{/Admin/AllJobPosts(page=${currentPage + 1}, keyword=${keyword})}"
+             th:href="@{/Admin/AllJobPosts(page=${currentPage + 1}, keyword=${keyword}, status=${selectedStatus})}"
              class="pagination-btn next-btn">
             <span>Next</span>
             <i class="bi bi-chevron-right"></i>

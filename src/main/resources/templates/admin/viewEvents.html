@@ -9,7 +9,6 @@
   <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
   <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
   <link rel="stylesheet" th:href="@{/css/pagination.css}">
-
 </head>
 <body>
 <div th:replace="~{navbar/navbarAdmin :: navbarAdmin}"></div>
@@ -31,20 +30,58 @@
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 
+    <!-- THÊM: Enhanced Status Filter Badges với số lượng -->
+    <div class="status-filter-container">
+      <h6>Filter by Status</h6>
+      <div class="status-filter-badges">
+        <a th:href="@{/Admin/Events}"
+           th:class="${selectedStatus == null or selectedStatus == ''} ? 'status-filter-badge all active' : 'status-filter-badge all'">
+          <div class="badge-content">
+            <div class="badge-text">
+              <i class="bi bi-calendar-event-fill"></i>All Events
+            </div>
+            <span class="badge-count" th:text="'(' + ${totalEvents} + ')'"></span>
+          </div>
+        </a>
+
+        <a th:href="@{/Admin/Events(status='PENDING', keyword=${keyword})}"
+           th:class="${selectedStatus == 'PENDING'} ? 'status-filter-badge warning active' : 'status-filter-badge warning'">
+          <div class="badge-content">
+            <div class="badge-text">
+              <i class="bi bi-clock-fill"></i>Pending
+            </div>
+            <span class="badge-count" th:text="'(' + ${pendingEvents} + ')'"></span>
+          </div>
+        </a>
+
+        <a th:href="@{/Admin/Events(status='APPROVED', keyword=${keyword})}"
+           th:class="${selectedStatus == 'APPROVED'} ? 'status-filter-badge success active' : 'status-filter-badge success'">
+          <div class="badge-content">
+            <div class="badge-text">
+              <i class="bi bi-check-circle-fill"></i>Approved
+            </div>
+            <span class="badge-count" th:text="'(' + ${approvedEvents} + ')'"></span>
+          </div>
+        </a>
+
+        <a th:href="@{/Admin/Events(status='REJECTED', keyword=${keyword})}"
+           th:class="${selectedStatus == 'REJECTED'} ? 'status-filter-badge danger active' : 'status-filter-badge danger'">
+          <div class="badge-content">
+            <div class="badge-text">
+              <i class="bi bi-x-circle-fill"></i>Rejected
+            </div>
+            <span class="badge-count" th:text="'(' + ${rejectedEvents} + ')'"></span>
+          </div>
+        </a>
+      </div>
+    </div>
+
     <!-- Search Form -->
     <form method="get" class="row g-3 mb-4 filter-form">
       <div class="col-md-6">
         <input class="form-control" name="keyword"
                th:value="${keyword}"
                placeholder="Search events by title, description or location..." />
-      </div>
-      <div class="col-md-3">
-        <select class="form-control" name="status">
-          <option value="">All Status</option>
-          <option value="PENDING" th:selected="${selectedStatus == 'PENDING'}">Pending</option>
-          <option value="APPROVED" th:selected="${selectedStatus == 'APPROVED'}">Approved</option>
-          <option value="REJECTED" th:selected="${selectedStatus == 'REJECTED'}">Rejected</option>
-        </select>
       </div>
       <div class="col-auto d-flex gap-2">
         <button class="btn-equal" type="submit">
@@ -58,14 +95,16 @@
 
     <!-- Results Info -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-<span class="text-muted">
-Showing <strong th:text="${currentPage * 10 + 1}"></strong> to
-<strong th:text="${currentPage * 10 + #lists.size(eventList)}"></strong>
-of <strong th:text="${totalItems}"></strong> events
-</span>
+      <span class="text-muted">
+        Showing <strong th:text="${currentPage * 10 + 1}"></strong> to
+        <strong th:text="${currentPage * 10 + #lists.size(eventList)}"></strong>
+        of <strong th:text="${totalItems}"></strong> events
+        <span th:if="${selectedStatus != null and selectedStatus != ''}"
+              th:text="'(' + ${selectedStatus} + ')'" class="text-primary"></span>
+      </span>
       <span class="text-muted" th:if="${totalPages > 1}">
-Page <strong th:text="${currentPage + 1}"></strong> of <strong th:text="${totalPages}"></strong>
-</span>
+        Page <strong th:text="${currentPage + 1}"></strong> of <strong th:text="${totalPages}"></strong>
+      </span>
     </div>
 
     <!-- Events Table -->
@@ -92,15 +131,17 @@ Page <strong th:text="${currentPage + 1}"></strong> of <strong th:text="${totalP
           <td>
             <span th:text="${event.currentParticipants}"></span>
             <span th:if="${event.maxParticipants != null}">
-/ <span th:text="${event.maxParticipants}"></span>
-</span>
+              / <span th:text="${event.maxParticipants}"></span>
+            </span>
             <span th:if="${event.maxParticipants == null}"> (Unlimited)</span>
           </td>
           <td th:text="${event.employer != null ? event.employer.companyName : 'N/A'}"></td>
           <td>
-<span th:class="${event.approvalStatus.name() == 'APPROVED' ? 'status-active' :
-(event.approvalStatus.name() == 'REJECTED' ? 'status-banned' : 'status-pending')}"
-      th:text="${event.approvalStatus.name()}"></span>
+            <!-- THÊM: Clickable Status Badges -->
+            <a th:href="@{/Admin/Events(status=${event.approvalStatus.name()}, keyword=${keyword})}"
+               th:class="${event.approvalStatus.name() == 'APPROVED' ? 'clickable-status status-active' :
+                         (event.approvalStatus.name() == 'REJECTED' ? 'clickable-status status-banned' : 'clickable-status status-pending')}"
+               th:text="${event.approvalStatus.name()}"></a>
           </td>
           <td>
             <!-- Action buttons với Change Status -->
@@ -120,33 +161,6 @@ Page <strong th:text="${currentPage + 1}"></strong> of <strong th:text="${totalP
                     <i class="bi bi-arrow-repeat"></i> Status
                   </button>
                   <ul class="dropdown-menu">
-                    <!-- Event Status Options -->
-<!--                    <li><h6 class="dropdown-header">Event Status</h6></li>-->
-<!--                    <li>-->
-<!--                      <form th:action="@{/Admin/ChangeEventStatus/{id}(id=${event.eventId})}"-->
-<!--                            method="post" style="display: inline;">-->
-<!--                        <input type="hidden" name="newStatus" value="ACTIVE">-->
-<!--                        <button type="submit" class="dropdown-item text-success"-->
-<!--                                th:disabled="${event.eventStatus.name() == 'ACTIVE'}"-->
-<!--                                onclick="return confirm('Set event to ACTIVE?')">-->
-<!--                          <i class="bi bi-check-circle me-2"></i>Set Active-->
-<!--                        </button>-->
-<!--                      </form>-->
-<!--                    </li>-->
-<!--                    <li>-->
-<!--                      <form th:action="@{/Admin/ChangeEventStatus/{id}(id=${event.eventId})}"-->
-<!--                            method="post" style="display: inline;">-->
-<!--                        <input type="hidden" name="newStatus" value="CANCELLED">-->
-<!--                        <button type="submit" class="dropdown-item text-danger"-->
-<!--                                th:disabled="${event.eventStatus.name() == 'CANCELLED'}"-->
-<!--                                onclick="return confirm('Cancel this event?')">-->
-<!--                          <i class="bi bi-x-circle me-2"></i>Cancel Event-->
-<!--                        </button>-->
-<!--                      </form>-->
-<!--                    </li>-->
-
-<!--                    <li><hr class="dropdown-divider"></li>-->
-
                     <!-- Approval Status Options -->
                     <li><h6 class="dropdown-header">Approval Status</h6></li>
                     <li>
@@ -226,9 +240,9 @@ Page <strong th:text="${currentPage + 1}"></strong> of <strong th:text="${totalP
             <span>Previous</span>
           </a>
           <span th:unless="${hasPrevious}" class="pagination-btn prev-btn disabled">
-                <i class="bi bi-chevron-left"></i>
-                <span>Previous</span>
-            </span>
+            <i class="bi bi-chevron-left"></i>
+            <span>Previous</span>
+          </span>
 
           <div class="page-numbers">
             <th:block th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}">
@@ -249,9 +263,9 @@ Page <strong th:text="${currentPage + 1}"></strong> of <strong th:text="${totalP
             <i class="bi bi-chevron-right"></i>
           </a>
           <span th:unless="${hasNext}" class="pagination-btn next-btn disabled">
-                <span>Next</span>
-                <i class="bi bi-chevron-right"></i>
-            </span>
+            <span>Next</span>
+            <i class="bi bi-chevron-right"></i>
+          </span>
         </div>
       </div>
     </nav>
