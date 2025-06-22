@@ -180,16 +180,29 @@ public class Dashboard {
     public String showListEmployer(@RequestParam(defaultValue = "0") int page,
                                    @RequestParam(defaultValue = "6") int size,
                                    @RequestParam(required = false) String keyword,
+                                   @RequestParam(required = false) String status,
                                    Model model) {
         try {
             Page<Account> employerPage;
 
-            if (keyword != null && !keyword.trim().isEmpty()) {
+            if (page < 0) page = 0;
+            if (size <= 0 || size > 50) size = 6;
+
+            // Filter logic
+            if (keyword != null && !keyword.trim().isEmpty() && status != null && !status.isEmpty()) {
+                employerPage = adminEmployerService.searchByKeywordAndStatus(keyword.trim(), status, page, size);
+            } else if (keyword != null && !keyword.trim().isEmpty()) {
                 employerPage = adminEmployerService.searchEmployers(keyword.trim(), page, size);
-                model.addAttribute("keyword", keyword);
+            } else if (status != null && !status.isEmpty()) {
+                employerPage = adminEmployerService.findByStatus(status, page, size);
             } else {
                 employerPage = adminEmployerService.getEmployersWithPagination(page, size);
             }
+
+            // THÊM: Lấy số lượng cho badges
+            long totalEmployers = adminEmployerService.countAllEmployers();
+            long activeEmployers = adminEmployerService.countEmployersByStatus("active");
+            long bannedEmployers = adminEmployerService.countEmployersByStatus("inactive");
 
             model.addAttribute("employerList", employerPage.getContent());
             model.addAttribute("currentPage", page);
@@ -197,6 +210,13 @@ public class Dashboard {
             model.addAttribute("totalItems", employerPage.getTotalElements());
             model.addAttribute("hasNext", employerPage.hasNext());
             model.addAttribute("hasPrevious", employerPage.hasPrevious());
+            model.addAttribute("selectedStatus", status);
+            model.addAttribute("keyword", keyword);
+
+            // THÊM: Số lượng cho badges
+            model.addAttribute("totalEmployers", totalEmployers);
+            model.addAttribute("activeEmployers", activeEmployers);
+            model.addAttribute("bannedEmployers", bannedEmployers);
 
             return "admin/viewListEmployer";
         } catch (Exception e) {
@@ -205,6 +225,7 @@ public class Dashboard {
             return "admin/error";
         }
     }
+
 
     // Student Ban/Unban Methods
     @PostMapping("/banStudent/{id}")
