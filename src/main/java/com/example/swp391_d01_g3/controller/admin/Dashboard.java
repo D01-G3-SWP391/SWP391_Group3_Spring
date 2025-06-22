@@ -8,11 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -53,12 +56,75 @@ public class Dashboard {
     }
 
 
-    // Trang list blog
+    // Trang list blog với pagination
     @GetMapping("/blogs")
-    public String listBlogs(Model model) {
-        List<BlogPost> blogs = blogService.getAllBlogPosts();
-        model.addAttribute("blogs", blogs);
-        return "blog/managementBlog";
+    public String listBlogs(@RequestParam(defaultValue = "0") int page,
+                            @RequestParam(defaultValue = "10") int size,
+                            @RequestParam(required = false) String keyword,
+                            @RequestParam(required = false) String status,
+                            Model model) {
+        try {
+            Page<BlogPost> blogPage;
+            BlogPost.BlogStatus blogStatus = null;
+
+            // Validate parameters
+            if (page < 0) page = 0;
+            if (size <= 0 || size > 50) size = 10;
+
+            Pageable pageable = PageRequest.of(page, size);
+
+            // Parse status parameter
+            if (status != null && !status.isEmpty()) {
+                try {
+                    blogStatus = BlogPost.BlogStatus.valueOf(status.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    logger.warn("Invalid status parameter: {}", status);
+                }
+            }
+
+            // Search logic với pagination
+            if (keyword != null && !keyword.trim().isEmpty() && blogStatus != null) {
+                // Search by keyword AND status
+                blogPage = (Page<BlogPost>) blogService.searchBlogPosts(keyword);
+            } else if (keyword != null && !keyword.trim().isEmpty()) {
+                // Search by keyword only
+                blogPage = blogService.searchBlogs(keyword, pageable);
+            } else if (blogStatus != null) {
+                // Filter by status only
+                blogPage = blogService.findByStatus(blogStatus, pageable);
+            } else {
+                // Get all blogs with pagination
+                blogPage = blogService.getAllBlogPostsWithPagination(pageable);
+            }
+
+            // Add pagination attributes to model
+            model.addAttribute("blogs", blogPage.getContent());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", blogPage.getTotalPages());
+            model.addAttribute("totalItems", blogPage.getTotalElements());
+            model.addAttribute("hasNext", blogPage.hasNext());
+            model.addAttribute("hasPrevious", blogPage.hasPrevious());
+            model.addAttribute("selectedStatus", status);
+            model.addAttribute("keyword", keyword);
+
+            return "blog/managementBlog";
+
+        } catch (Exception e) {
+            logger.error("Error loading blogs: ", e);
+            model.addAttribute("error", "Error loading blogs: " + e.getMessage());
+
+            // Safe defaults for error case
+            model.addAttribute("blogs", Collections.emptyList());
+            model.addAttribute("currentPage", 0);
+            model.addAttribute("totalPages", 0);
+            model.addAttribute("totalItems", 0);
+            model.addAttribute("hasNext", false);
+            model.addAttribute("hasPrevious", false);
+            model.addAttribute("selectedStatus", "");
+            model.addAttribute("keyword", "");
+
+            return "blog/managementBlog";
+        }
     }
 
     // Trang chi tiết blog
