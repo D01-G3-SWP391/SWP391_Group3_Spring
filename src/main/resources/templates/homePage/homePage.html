@@ -264,9 +264,9 @@
                         <div class="job-detail-item">
                             <i class="fas fa-money-bill-wave"></i>
                             <span th:if="${job.jobSalary != null}">
-        <span th:text="${#numbers.formatInteger(job.jobSalary, 1, 'POINT') + ' VND'}"></span>
-    </span>
-                            <span th:if="${job.jobSalary == null}">Không xác định</span>
+                                <span th:text="${#numbers.formatInteger(job.jobSalary, 1, 'COMMA') + ' VND'}"></span>
+                            </span>
+                            <span th:if="${job.jobSalary == null}">Thỏa thuận</span>
                         </div>
 
 

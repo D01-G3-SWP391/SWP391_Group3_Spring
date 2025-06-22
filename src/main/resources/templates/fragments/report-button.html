@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
-<div th:fragment="report-button">
+<div th:fragment="report-button" sec:authorize="hasRole('student') or hasRole('employer')">
     <link rel="stylesheet" th:href="@{/css/report-button.css}" />
     <div class="report-button-container">
         <a th:href="@{/Report/ShowReport}" class="report-button" title="Báo cáo">

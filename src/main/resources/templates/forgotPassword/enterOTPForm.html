@@ -12,188 +12,247 @@
     <!-- Other CSS -->
     <link rel="stylesheet" th:href="@{/css/login.css}" />
     <link rel="stylesheet" th:href="@{/css/registerEnhanced.css}" />
+    <link rel="stylesheet" th:href="@{/css/loginEnhanced.css}" />
     <link rel="stylesheet" th:href="@{/css/forgotPasswordEnhanced.css}" />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
+            rel="stylesheet"
+    />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-
 </head>
 <body>
-<div th:replace="~{navbar/navbarHome :: home}"></div>
-<div class="page-container login-container">
-    <h2 th:text="#{forgotPassword.heading}">Quên mật khẩu?</h2>
-    <div class="subtitle" th:text="#{forgotPassword.otp.subtitle}">Vui lòng nhập OTP của bạn để đặt lại mật khẩu</div>
-
-    <div th:if="${otpSuccess}" class="success-message" th:text="${otpSuccess}"></div>
-    <div th:if="${otp_failed}" class="error-message" th:text="${otp_failed}"></div>
-    <div th:if="${message}" class="error-message" th:text="${message}"></div>
-
-    <form class="forgot-password-form" th:action="@{/ForgotPassword/VerifyOTP}" method="post">
-        <div class="form-group otp-input-group">
-            <input type="number" name="otp" th:placeholder="#{forgotPassword.otp.placeholder}" required>
-            <button type="button" class="resend-otp-btn" title="Gửi lại OTP">
-                <i class="bi bi-arrow-clockwise"></i>
-            </button>
-        </div>
-        <button type="submit" class="content-btn content-btn-primary login-page-btn"><span class="icon-lock"></span><span th:text="#{forgotPassword.otp.confirm}">Xác nhận</span></button>
-    </form>
-</div>
-
-<style>
-/* OTP input group styling */
-.otp-input-group {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.otp-input-group input {
-    flex: 1;
-    padding-right: 50px; /* Make space for the button */
-}
-
-.resend-otp-btn {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: #6c757d;
-    border: none;
-    border-radius: 4px;
-    width: 35px;
-    height: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: white;
-    transition: all 0.3s ease;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.resend-otp-btn:hover {
-    background: #5a6268;
-    transform: translateY(-50%) scale(1.05);
-}
-
-.resend-otp-btn:active {
-    transform: translateY(-50%) scale(0.95);
-}
-
-.resend-otp-btn:disabled {
-    background: #adb5bd;
-    cursor: not-allowed;
-    transform: translateY(-50%);
-}
-
-.resend-otp-btn .spinner-small {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    border-top-color: #fff;
-    animation: spin 1s ease-in-out infinite;
-}
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('.forgot-password-form');
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const resendBtn = document.querySelector('.resend-otp-btn');
-    
-    // Check if there's an active countdown in localStorage
-    const lastResendTime = localStorage.getItem('otpResendTime');
-    if (lastResendTime) {
-        const timePassed = Math.floor((Date.now() - parseInt(lastResendTime)) / 1000);
-        const remainingTime = 60 - timePassed;
-        
-        if (remainingTime > 0) {
-            startCountdownWithTime(resendBtn, remainingTime);
-        } else {
-            localStorage.removeItem('otpResendTime');
-        }
-    }
-    
-    // Handle form submission
-    form.addEventListener('submit', function(e) {
-        // Show loading state
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<span class="spinner"></span>Đang xử lý...';
-        form.classList.add('loading');
-    });
-    
-    // Handle resend OTP
-    resendBtn.addEventListener('click', function() {
-        // Show loading state on resend button
-        this.disabled = true;
-        this.innerHTML = '<span class="spinner-small"></span>';
-        
-        // Simulate resend action (replace with actual endpoint)
-        fetch('/ForgotPassword/ResendOTP', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'email=' + encodeURIComponent(getEmailFromSession()) // You need to implement this
-        })
-        .then(response => {
-            if (response.ok) {
-                // Show success feedback briefly
-                this.innerHTML = '<i class="bi bi-check"></i>';
-                this.style.background = '#28a745';
+    <div th:replace="~{navbar/navbarHome :: home}"></div>
+    <div class="page-container">
+        <div class="login-container">
+            <!-- Left Panel - Illustration -->
+            <div class="illustration-panel">
+                <div class="welcome-text">
+                    <h1>Verify OTP<br><span class="highlight">JOB4YOU</span></h1>
+                    <p>Check your email for verification code</p>
+                </div>
                 
-                setTimeout(() => {
-                    // Save timestamp and start countdown
-                    localStorage.setItem('otpResendTime', Date.now().toString());
-                    startCountdown(this);
-                }, 1000);
-            } else {
-                throw new Error('Failed to resend OTP');
-            }
-        })
-        .catch(error => {
-            // Show error feedback
-            this.innerHTML = '<i class="bi bi-x"></i>';
-            this.style.background = '#dc3545';
-            setTimeout(() => {
-                this.innerHTML = '<i class="bi bi-arrow-clockwise"></i>';
-                this.style.background = '#6c757d';
-                this.disabled = false;
-            }, 2000);
-        });
-    });
-    
-    function startCountdown(button) {
-        startCountdownWithTime(button, 60);
-    }
-    
-    function startCountdownWithTime(button, initialTime) {
-        let countdown = initialTime;
-        button.style.background = '#adb5bd';
-        button.disabled = true;
-        
-        const countdownInterval = setInterval(() => {
-            button.innerHTML = countdown;
-            countdown--;
+                <div class="illustration-graphics">
+                    <!-- Security Badge -->
+                    <div class="security-badge">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    
+                    <!-- Phone Mockup -->
+                    <div class="phone-mockup">
+                        <div class="phone-screen">
+                            <div class="screen-element large"></div>
+                            <div class="screen-element"></div>
+                            <div class="screen-element"></div>
+                            <div class="screen-element large"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Character -->
+                    <div class="character">
+                        <div class="character-head"></div>
+                        <div class="character-body"></div>
+                        <div class="character-legs">
+                            <div class="leg"></div>
+                            <div class="leg"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Floating Shapes -->
+                    <div class="floating-shapes">
+                        <div class="shape"></div>
+                        <div class="shape"></div>
+                        <div class="shape"></div>
+                    </div>
+                </div>
+            </div>
             
-            if (countdown < 0) {
-                clearInterval(countdownInterval);
-                button.innerHTML = '<i class="bi bi-arrow-clockwise"></i>';
-                button.style.background = '#6c757d';
-                button.disabled = false;
+            <!-- Right Panel - OTP Form -->
+            <div class="login-panel">
+                <h2 th:text="#{forgotPassword.heading}">VERIFY OTP</h2>
+                <p class="subtitle" th:text="#{forgotPassword.otp.subtitle}">Please enter the OTP sent to your email to reset your password</p>
+
+                <!-- Hiển thị thông báo -->
+                <div th:if="${otpSuccess}" class="success-message" th:text="${otpSuccess}"></div>
+                <div th:if="${otp_failed}" class="error-message" th:text="${otp_failed}"></div>
+                <div th:if="${message}" class="error-message" th:text="${message}"></div>
+                
+                <form class="login-form" th:action="@{/ForgotPassword/VerifyOTP}" method="post">
+                    <div class="form-group otp-input-group">
+                        <input type="number" name="otp" th:placeholder="#{forgotPassword.otp.placeholder}" required>
+                        <button type="button" class="resend-otp-btn" title="Resend OTP">
+                            <i class="bi bi-arrow-clockwise"></i>
+                        </button>
+                    </div>
+                    <button type="submit" class="login-page-btn">
+                        <span class="icon-lock"></span>
+                        <span th:text="#{forgotPassword.otp.confirm}">VERIFY</span>
+                    </button>
+                </form>
+                
+                <div class="back-to-login">
+                    <p>Remember your password? <a th:href="@{/Login}">Back to Login</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+    /* OTP input group styling */
+    .otp-input-group {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .otp-input-group input {
+        flex: 1;
+        padding-right: 60px !important; /* Make space for the button */
+    }
+
+    .resend-otp-btn {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: #6c5ce7;
+        border: none;
+        border-radius: 8px;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: white;
+        transition: all 0.3s ease;
+        font-size: 14px;
+        z-index: 10;
+    }
+
+    .resend-otp-btn:hover {
+        background: #5f4cd1;
+        transform: translateY(-50%) scale(1.05);
+    }
+
+    .resend-otp-btn:active {
+        transform: translateY(-50%) scale(0.95);
+    }
+
+    .resend-otp-btn:disabled {
+        background: #adb5bd;
+        cursor: not-allowed;
+        transform: translateY(-50%);
+    }
+
+    .resend-otp-btn .spinner-small {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 1s ease-in-out infinite;
+    }
+    </style>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('.login-form');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const resendBtn = document.querySelector('.resend-otp-btn');
+        
+        // Check if there's an active countdown in localStorage
+        const lastResendTime = localStorage.getItem('otpResendTime');
+        if (lastResendTime) {
+            const timePassed = Math.floor((Date.now() - parseInt(lastResendTime)) / 1000);
+            const remainingTime = 60 - timePassed;
+            
+            if (remainingTime > 0) {
+                startCountdownWithTime(resendBtn, remainingTime);
+            } else {
                 localStorage.removeItem('otpResendTime');
             }
-        }, 1000);
-    }
-    
-    function getEmailFromSession() {
-        // This should get email from session or hidden input
-        // For now, return empty string - you need to implement this based on your backend
-        return '';
-    }
-});
-</script>
-<script th:src="@{/js/languageSwitch.js}"></script>
-
+        }
+        
+        // Handle form submission
+        form.addEventListener('submit', function(e) {
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span>Processing...';
+            form.classList.add('loading');
+        });
+        
+        // Handle resend OTP
+        resendBtn.addEventListener('click', function() {
+            // Show loading state on resend button
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner-small"></span>';
+            
+            // Simulate resend action (replace with actual endpoint)
+            fetch('/ForgotPassword/ResendOTP', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'email=' + encodeURIComponent(getEmailFromSession()) // You need to implement this
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Show success feedback briefly
+                    this.innerHTML = '<i class="bi bi-check"></i>';
+                    this.style.background = '#28a745';
+                    
+                    setTimeout(() => {
+                        // Save timestamp and start countdown
+                        localStorage.setItem('otpResendTime', Date.now().toString());
+                        startCountdown(this);
+                    }, 1000);
+                } else {
+                    throw new Error('Failed to resend OTP');
+                }
+            })
+            .catch(error => {
+                // Show error feedback
+                this.innerHTML = '<i class="bi bi-x"></i>';
+                this.style.background = '#dc3545';
+                setTimeout(() => {
+                    this.innerHTML = '<i class="bi bi-arrow-clockwise"></i>';
+                    this.style.background = '#6c5ce7';
+                    this.disabled = false;
+                }, 2000);
+            });
+        });
+        
+        function startCountdown(button) {
+            startCountdownWithTime(button, 60);
+        }
+        
+        function startCountdownWithTime(button, initialTime) {
+            let countdown = initialTime;
+            button.style.background = '#adb5bd';
+            button.disabled = true;
+            
+            const countdownInterval = setInterval(() => {
+                button.innerHTML = countdown;
+                countdown--;
+                
+                if (countdown < 0) {
+                    clearInterval(countdownInterval);
+                    button.innerHTML = '<i class="bi bi-arrow-clockwise"></i>';
+                    button.style.background = '#6c5ce7';
+                    button.disabled = false;
+                    localStorage.removeItem('otpResendTime');
+                }
+            }, 1000);
+        }
+        
+        function getEmailFromSession() {
+            // This should get email from session or hidden input
+            // For now, return empty string - you need to implement this based on your backend
+            return '';
+        }
+    });
+    </script>
+    <script th:src="@{/js/languageSwitch.js}"></script>
+</body>
 </html>

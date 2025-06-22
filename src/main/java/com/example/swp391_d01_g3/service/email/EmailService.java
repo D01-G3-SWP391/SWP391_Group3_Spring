@@ -30,7 +30,7 @@ public class EmailService {
         simpleMailMessage.setText(body);
         simpleMailMessage.setFrom("viettaifptudn@gmail.com");
         mailSender.send(simpleMailMessage);
-//        System.out.println("Email sent" + to);
+        System.out.println("Email sent" + to);
     }
     public void sendForgotPassEmail(String to){
         SimpleMailMessage  simpleMailMessage = new SimpleMailMessage();
@@ -245,7 +245,7 @@ public class EmailService {
     public void sendApplicationAcceptedEmail(String to, String candidateName, String jobTitle, String companyName) {
         String subject = "🎉 Chúc mừng! Bạn đã phỏng vấn PASS vị trí " + jobTitle + " tại " + companyName;
         StringBuilder body = new StringBuilder();
-        
+
         body.append("Xin chào ").append(candidateName).append(",\n\n");
         body.append("🎉 CHÚC MỪNG BẠN ĐÃ PHỎNG VẤN PASS! 🎉\n\n");
         body.append("Chúng tôi rất vui mừng thông báo rằng bạn đã vượt qua thành công buổi phỏng vấn và ");
@@ -277,7 +277,7 @@ public class EmailService {
         body.append("🏷️ ").append(companyName).append("\n");
         body.append("📧 Thông qua hệ thống tuyển dụng JOB4YOU\n");
         body.append("🌐 Website: http://localhost:8080");
-        
+
         sendEmail(to, subject, body.toString());
     }
 
@@ -287,7 +287,7 @@ public class EmailService {
     public void sendApplicationRejectedEmail(String to, String candidateName, String jobTitle, String companyName) {
         String subject = "Thông báo kết quả ứng tuyển - " + jobTitle;
         StringBuilder body = new StringBuilder();
-        
+
         body.append("Xin chào ").append(candidateName).append(",\n\n");
         body.append("Cảm ơn bạn đã quan tâm và dành thời gian ứng tuyển vào vị trí:\n\n");
         body.append("📋 Vị trí: ").append(jobTitle).append("\n");
@@ -305,7 +305,132 @@ public class EmailService {
         body.append("Trân trọng,\n");
         body.append("🏢 ").append(companyName).append("\n");
         body.append("📧 Thông qua hệ thống JOB4YOU");
-        
+
         sendEmail(to, subject, body.toString());
+    }
+
+    /**
+     * Gửi email thông báo job application thành công cho student
+     */
+    public void sendJobApplicationSuccessEmail(String studentEmail, String studentName, String jobTitle, String companyName, String applicationId) {
+        try {
+            String subject = "✅ Đơn ứng tuyển đã được gửi thành công - " + jobTitle;
+
+            StringBuilder body = new StringBuilder();
+            body.append("Xin chào ").append(studentName).append(",\n\n");
+            body.append("🎉 Chúc mừng! Đơn ứng tuyển của bạn đã được gửi thành công.\n\n");
+            body.append("📋 Thông tin đơn ứng tuyển:\n");
+            body.append("   • Vị trí: ").append(jobTitle).append("\n");
+            body.append("   • Công ty: ").append(companyName).append("\n");
+            body.append("   • Thời gian gửi: ").append(java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))).append("\n\n");
+
+            body.append("📝 Những bước tiếp theo:\n");
+            body.append("   1. Nhà tuyển dụng sẽ xem xét hồ sơ của bạn\n");
+            body.append("   2. Bạn sẽ nhận được thông báo khi có cập nhật\n");
+            body.append("   3. Nếu được chọn, bạn sẽ được mời phỏng vấn\n\n");
+
+            body.append("💡 Lời khuyên:\n");
+            body.append("   • Kiểm tra email thường xuyên để không bỏ lỡ thông báo\n");
+            body.append("   • Cập nhật hồ sơ cá nhân để tăng cơ hội\n");
+            body.append("   • Tham gia các sự kiện tuyển dụng của chúng tôi\n\n");
+
+            body.append("🔍 Theo dõi đơn ứng tuyển:\n");
+            body.append("   Truy cập: http://localhost:8080/Student/applications\n\n");
+
+            body.append("Nếu có thắc mắc, vui lòng liên hệ với chúng tôi.\n\n");
+            body.append("Chúc bạn thành công!\n\n");
+            body.append("Trân trọng,\n");
+            body.append("🏢 Đội ngũ JOB4YOU\n");
+            body.append("📞 Hotline: 1900-xxxx\n");
+            body.append("🌐 Website: http://localhost:8080");
+
+            sendEmail(studentEmail, subject, body.toString());
+            System.out.println("Job application success email sent to: " + studentEmail);
+
+        } catch (Exception e) {
+            System.err.println("Failed to send job application success email to: " + studentEmail + " - Error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Gửi email thông báo có đơn ứng tuyển mới cho employer
+     */
+    public void sendNewApplicationNotificationEmail(String employerEmail, String employerName, String jobTitle, String candidateName, String applicationId) {
+        try {
+            String subject = "📬 Đơn ứng tuyển mới - " + jobTitle;
+
+            StringBuilder body = new StringBuilder();
+            body.append("Xin chào ").append(employerName).append(",\n\n");
+            body.append("🎯 Bạn có một đơn ứng tuyển mới cho vị trí: ").append(jobTitle).append("\n\n");
+            body.append("👤 Thông tin ứng viên:\n");
+            body.append("   • Tên: ").append(candidateName).append("\n");
+            body.append("   • Thời gian nộp: ").append(java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))).append("\n\n");
+
+            body.append("📋 Để xem chi tiết và phản hồi:\n");
+            body.append("   Truy cập: http://localhost:8080/Employer/Applications\n\n");
+
+            body.append("⏰ Lời khuyên:\n");
+            body.append("   • Phản hồi sớm để tăng trải nghiệm ứng viên\n");
+            body.append("   • Đánh giá hồ sơ một cách khách quan\n");
+            body.append("   • Liên hệ ứng viên trong vòng 48 giờ\n\n");
+
+            body.append("Nếu có thắc mắc, vui lòng liên hệ với chúng tôi.\n\n");
+            body.append("Trân trọng,\n");
+            body.append("🏢 Đội ngũ JOB4YOU\n");
+            body.append("📞 Hotline: 1900-xxxx\n");
+            body.append("🌐 Website: http://localhost:8080");
+
+            sendEmail(employerEmail, subject, body.toString());
+            System.out.println("New application notification email sent to employer: " + employerEmail);
+
+        } catch (Exception e) {
+            System.err.println("Failed to send new application notification email to employer: " + employerEmail + " - Error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Gửi email thông báo có đơn ứng tuyển mới cho employer (từ form apply)
+     * Sử dụng thông tin từ form thay vì thông tin student đã đăng nhập
+     */
+    public void sendNewApplicationNotificationEmailFromForm(String employerEmail, String employerName, String jobTitle,
+                                                          String candidateName, String candidateEmail, String candidatePhone,
+                                                          String applicationId, String description) {
+        try {
+            String subject = "📬 Đơn ứng tuyển mới - " + jobTitle;
+
+            StringBuilder body = new StringBuilder();
+            body.append("Xin chào ").append(employerName).append(",\n\n");
+            body.append("🎯 Bạn có một đơn ứng tuyển mới cho vị trí: ").append(jobTitle).append("\n\n");
+            body.append("👤 Thông tin ứng viên:\n");
+            body.append("   • Tên: ").append(candidateName).append("\n");
+            body.append("   • Email: ").append(candidateEmail).append("\n");
+            body.append("   • Số điện thoại: ").append(candidatePhone).append("\n");
+            body.append("   • Thời gian nộp: ").append(java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))).append("\n\n");
+
+            if (description != null && !description.trim().isEmpty()) {
+                body.append("📝 Nội dung ứng tuyển:\n");
+                body.append("   ").append(description).append("\n\n");
+            }
+
+            body.append("📋 Để xem chi tiết và phản hồi:\n");
+            body.append("   Truy cập: http://localhost:8080/Employer/Applications\n\n");
+
+            body.append("⏰ Lời khuyên:\n");
+            body.append("   • Phản hồi sớm để tăng trải nghiệm ứng viên\n");
+            body.append("   • Đánh giá hồ sơ một cách khách quan\n");
+            body.append("   • Liên hệ ứng viên trong vòng 48 giờ\n\n");
+
+            body.append("Nếu có thắc mắc, vui lòng liên hệ với chúng tôi.\n\n");
+            body.append("Trân trọng,\n");
+            body.append("🏢 Đội ngũ JOB4YOU\n");
+            body.append("📞 Hotline: 1900-xxxx\n");
+            body.append("🌐 Website: http://localhost:8080");
+
+            sendEmail(employerEmail, subject, body.toString());
+            System.out.println("New application notification email sent to employer: " + employerEmail + " (from form data)");
+
+        } catch (Exception e) {
+            System.err.println("Failed to send new application notification email to employer: " + employerEmail + " - Error: " + e.getMessage());
+        }
     }
 }
