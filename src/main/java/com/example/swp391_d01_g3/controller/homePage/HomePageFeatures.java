@@ -1,9 +1,11 @@
 package com.example.swp391_d01_g3.controller.homePage;
 
+import com.example.swp391_d01_g3.model.Account;
 import com.example.swp391_d01_g3.model.JobField;
 import com.example.swp391_d01_g3.model.JobPost;
 import com.example.swp391_d01_g3.service.jobfield.IJobfieldService;
 import com.example.swp391_d01_g3.service.jobpost.IJobpostService;
+import com.example.swp391_d01_g3.service.security.IAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,6 +23,9 @@ public class HomePageFeatures {
 
     @Autowired
     private IJobfieldService jobfieldService;
+    
+    @Autowired
+    private IAccountService accountService;
 
     @PostMapping("/search")
     public String searchJobs(
@@ -50,6 +55,8 @@ public class HomePageFeatures {
                 model.addAttribute("jobField", jobfieldService.findAll());
                 if (principal != null) {
                     model.addAttribute("userEmail", principal.getName());
+                    Account account = accountService.findByEmail(principal.getName());
+                    model.addAttribute("account", account);
                 }
                 return "homePage/showSearchJob";
             }
@@ -77,6 +84,8 @@ public class HomePageFeatures {
 
             if (principal != null) {
                 model.addAttribute("userEmail", principal.getName());
+                Account account = accountService.findByEmail(principal.getName());
+                model.addAttribute("account", account);
             }
 
             if (jobPosts != null && !jobPosts.isEmpty()) {
@@ -90,6 +99,8 @@ public class HomePageFeatures {
             model.addAttribute("jobField", jobfieldService.findAll());
             if (principal != null) {
                 model.addAttribute("userEmail", principal.getName());
+                Account account = accountService.findByEmail(principal.getName());
+                model.addAttribute("account", account);
             }
         }
 

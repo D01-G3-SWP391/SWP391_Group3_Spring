@@ -56,7 +56,10 @@ public class EventController {
             Authentication authentication, Principal principal) {
         if (principal != null) {
             String email = principal.getName();
-            model.addAttribute("userEmail", email);}
+            model.addAttribute("userEmail", email);
+            Account account = accountService.findByEmail(email);
+            model.addAttribute("account", account);
+        }
         
         try {
             // Tạo Pageable object với sắp xếp theo ngày tạo

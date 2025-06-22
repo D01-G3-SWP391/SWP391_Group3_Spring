@@ -22,8 +22,16 @@
     <!-- Header with student profile -->
     <div class="sidebar-header">
         <div class="user-profile">
-            <div class="user-avatar" sec:authentication="name" th:text="${#strings.substring(#authentication.name, 0, 1)}">
-                S
+            <div class="user-avatar">
+                <img th:if="${account != null and account.avatarUrl != null and account.avatarUrl != ''}" 
+                     th:src="${account.avatarUrl}" 
+                     alt="Avatar" class="avatar-img"/>
+                <div th:unless="${account != null and account.avatarUrl != null and account.avatarUrl != ''}" 
+                     class="avatar-text" 
+                     sec:authentication="name" 
+                     th:text="${#strings.substring(#authentication.name, 0, 1)}">
+                    S
+                </div>
             </div>
             <div class="user-info">
                 <h4 sec:authentication="name" th:text="${#authentication.name}">Student</h4>

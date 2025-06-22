@@ -32,7 +32,7 @@
         <div class="profile-card">
           <div class="profile-header">
             <div>
-              <img style="background-color: #e9ecef; display: flex; align-items: center; justify-content: center;" th:src="${employer.logoUrl != null and employer.logoUrl != '' ? employer.logoUrl : '/images/employee.jpeg'}" alt="Company Logo" class="company-logo" />
+                                          <img style="background-color: #e9ecef; display: flex; align-items: center; justify-content: center;" th:src="${account.avatarUrl != null and account.avatarUrl != '' ? account.avatarUrl : '/images/employee.jpeg'}" alt="Company Logo" class="company-logo" />
             </div>
             <div class="profile-info">
               <h1 class="profile-title" th:text="${employer.companyName}">Company name</h1>
@@ -76,17 +76,6 @@
               <div class="info-content">
                 <div class="info-label" th:text="#{employer.jobField}">Field</div>
                 <div class="info-value" th:text="${employer.jobField != null ? employer.jobField.jobFieldName : #messages.msg('employer.notUpdated')}">Lĩnh vực</div>
-              </div>
-            </div>
-
-            <div class="info-item">
-              <i class="bi bi-shield-check info-icon"></i>
-              <div class="info-content">
-                <div class="info-label" th:text="#{employer.accountStatus}">Account status</div>
-                <div class="info-value">
-                  <span th:if="${currentAccount.status.name() == 'active'}" class="badge bg-success" th:text="#{employer.active}">Active</span>
-                  <span th:if="${currentAccount.status.name() == 'inactive'}" class="badge bg-warning" th:text="#{employer.inactive}">Inactive</span>
-                </div>
               </div>
             </div>
           </div>

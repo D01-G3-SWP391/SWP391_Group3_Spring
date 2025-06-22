@@ -408,18 +408,8 @@ public class ChatController {
             userInfo.put("email", account.getEmail());
             userInfo.put("role", account.getRole().name());
             
-            // Lấy avatar dựa trên role
-            if ("STUDENT".equals(account.getRole().name())) {
-                Student student = studentService.findByAccountUserId(account.getUserId());
-                if (student != null) {
-                    userInfo.put("avatarUrl", student.getAvatarUrl());
-                }
-            } else if ("EMPLOYER".equals(account.getRole().name())) {
-                Employer employer = employerService.findByUserId(account.getUserId());
-                if (employer != null) {
-                    userInfo.put("avatarUrl", employer.getLogoUrl());
-                }
-            }
+            // Lấy avatar từ Account table
+            userInfo.put("avatarUrl", account.getAvatarUrl());
             
             return ResponseEntity.ok(userInfo);
             

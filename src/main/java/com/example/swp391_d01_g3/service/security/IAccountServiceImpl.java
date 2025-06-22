@@ -32,4 +32,9 @@ public class IAccountServiceImpl implements IAccountService {
     public Account save(Account account) {
         return accountRepository.save(account);
     }
+    
+    @Override
+    public Account updateAccount(Account account) {
+        return accountRepository.save(account);
+    }
 }

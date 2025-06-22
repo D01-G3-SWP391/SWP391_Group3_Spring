@@ -67,7 +67,16 @@ public class EmployerDashboard {
     private INotificationService notificationService;
 
     @GetMapping("")
-    public String showEmployeeDashboard() {
+    public String showEmployeeDashboard(Model model, Principal principal) {
+        if (principal != null) {
+            String currentUserEmail = principal.getName();
+            Account currentAccount = accountService.findByEmail(currentUserEmail);
+            if (currentAccount != null) {
+                Employer employer = employerService.findByUserId(currentAccount.getUserId());
+                model.addAttribute("account", currentAccount);
+                model.addAttribute("employer", employer);
+            }
+        }
         return "employee/dashboardEmployee";
     }
     
@@ -97,6 +106,7 @@ public class EmployerDashboard {
 //                }
                 
                 model.addAttribute("currentAccount", currentAccount);
+                model.addAttribute("account", currentAccount);  // Thêm account để template có thể truy cập avatarUrl
                 model.addAttribute("employer", employer);
             }
         }
@@ -113,6 +123,7 @@ public class EmployerDashboard {
             if (currentAccount != null) {
                 Employer employer = employerService.findByUserId(currentAccount.getUserId());
                 model.addAttribute("currentAccount", currentAccount);
+                model.addAttribute("account", currentAccount);  // Thêm account cho navbar
                 model.addAttribute("employer", employer);
             }
         }
@@ -144,6 +155,7 @@ public class EmployerDashboard {
         if (!changePassword.isCurrentPasswordValid(currentPassword, account.getPassword())) {
             model.addAttribute("error", "Mật khẩu hiện tại không đúng.");
             model.addAttribute("currentAccount", account);
+            model.addAttribute("account", account);  // Thêm account cho navbar
             Employer employer = employerService.findByUserId(account.getUserId());
             model.addAttribute("employer", employer);
             return "employee/changePassword";
@@ -153,6 +165,7 @@ public class EmployerDashboard {
         if (!changePassword.isNewPasswordConfirmed(newPassword, confirmPassword)) {
             model.addAttribute("error", "Mật khẩu mới và xác nhận mật khẩu không khớp.");
             model.addAttribute("currentAccount", account);
+            model.addAttribute("account", account);  // Thêm account cho navbar
             Employer employer = employerService.findByUserId(account.getUserId());
             model.addAttribute("employer", employer);
             return "employee/changePassword";
@@ -162,6 +175,7 @@ public class EmployerDashboard {
         if (!changePassword.isNewPasswordValidLength(newPassword, 6)) {
             model.addAttribute("error", "Mật khẩu mới phải có ít nhất 6 ký tự.");
             model.addAttribute("currentAccount", account);
+            model.addAttribute("account", account);  // Thêm account cho navbar
             Employer employer = employerService.findByUserId(account.getUserId());
             model.addAttribute("employer", employer);
             return "employee/changePassword";
@@ -171,6 +185,7 @@ public class EmployerDashboard {
         if (!changePassword.isNewPasswordDifferent(newPassword, account.getPassword())) {
             model.addAttribute("error", "Mật khẩu mới phải khác mật khẩu hiện tại.");
             model.addAttribute("currentAccount", account);
+            model.addAttribute("account", account);  // Thêm account cho navbar
             Employer employer = employerService.findByUserId(account.getUserId());
             model.addAttribute("employer", employer);
             return "employee/changePassword";
@@ -198,6 +213,7 @@ public class EmployerDashboard {
             EmployerEditDTO employerProfileDTO = new EmployerEditDTO(employerAccount, employerDetails);
             
             model.addAttribute("employerProfileDTO", employerProfileDTO);
+            model.addAttribute("account", employerAccount);  // Thêm account để hiển thị avatar
             model.addAttribute("jobFields", jobfieldService.findAll());
             return "employee/editEmployerProfile";
         }
@@ -228,6 +244,7 @@ public class EmployerDashboard {
         }
 
         if (bindingResult.hasErrors()) {
+            model.addAttribute("account", currentAccount);  // Thêm account cho trường hợp error
             model.addAttribute("jobFields", jobfieldService.findAll());
             return "employee/editEmployerProfile";
         }
@@ -247,13 +264,14 @@ public class EmployerDashboard {
             String description = employerEditDTO.getCompanyDescription();
             employer.setCompanyDescription(description);
             
-            // Xử lý upload logo nếu có file mới
+            // Xử lý upload logo nếu có file mới - LưU VÀO ACCOUNT.AVATARURL
             System.out.println("🔍 Checking logo file...");
+            Account employerAccount = employer.getAccount();
             if (logoFile != null && !logoFile.isEmpty()) {
 //                System.out.println("Logo file detected: " + logoFile.getOriginalFilename());
                 try {
-                    // Xóa logo cũ từ Cloudinary nếu tồn tại
-                    String oldLogoUrl = employer.getLogoUrl();
+                    // Xóa logo cũ từ Cloudinary nếu tồn tại (từ Account)
+                    String oldLogoUrl = employerAccount.getAvatarUrl();
                     if (oldLogoUrl != null && oldLogoUrl.contains("cloudinary.com")) {
                         String oldPublicId = cloudinaryService.extractPublicId(oldLogoUrl);
                         if (oldPublicId != null) {
@@ -269,8 +287,9 @@ public class EmployerDashboard {
                     // Upload logo mới lên Cloudinary
 //                    System.out.println("🚀 Starting Cloudinary upload...");
                     String logoUrl = cloudinaryService.uploadImage(logoFile, "employer-logos");
-                    employer.setLogoUrl(logoUrl);
-//                    System.out.println("✅ Logo uploaded successfully to Cloudinary: " + logoUrl);
+                    employerAccount.setAvatarUrl(logoUrl);  // Lưu vào Account thay vì Employer
+                    accountService.save(employerAccount);  // Cập nhật Account
+//                    System.out.println("✅ Logo uploaded successfully to Account.avatarUrl: " + logoUrl);
                 } catch (Exception e) {
 //                    System.out.println("❌ Upload error in controller: " + e.getMessage());
                     e.printStackTrace();
@@ -278,10 +297,6 @@ public class EmployerDashboard {
                     model.addAttribute("jobFields", jobfieldService.findAll());
                     return "employee/editEmployerProfile";
                 }
-            } else {
-//                System.out.println("📝 No new logo file, keeping existing: " + employerEditDTO.getLogoUrl());
-                // Giữ nguyên logo cũ nếu không upload file mới
-                employer.setLogoUrl(employerEditDTO.getLogoUrl());
             }
             
             // Cập nhật JobField

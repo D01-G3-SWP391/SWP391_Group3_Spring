@@ -7,6 +7,7 @@ import com.example.swp391_d01_g3.service.employer.IEmployerService;
 import com.example.swp391_d01_g3.service.jobfield.IJobfieldService;
 import com.example.swp391_d01_g3.service.jobpost.IJobpostService;
 import com.example.swp391_d01_g3.service.jobapplication.IJobApplicationService;
+import com.example.swp391_d01_g3.service.security.IAccountService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -43,6 +44,9 @@ public class JobPostController {
     @Autowired
     private IJobApplicationService iJobApplicationService;
 
+    @Autowired
+    private IAccountService accountService;
+
     @PostMapping("/CreateJobPost")
     public String createJobPost(
             @ModelAttribute("jobPostDTO") @Valid JobPostDTO dto,
@@ -52,6 +56,8 @@ public class JobPostController {
             RedirectAttributes ra
     ) {
         if (result.hasErrors()) {
+            // Thêm account cho navbar trong trường hợp lỗi
+            model.addAttribute("account", accountService.findByEmail(principal.getName()));
             model.addAttribute("jobFields", iJobfieldService.findAll());
             model.addAttribute("jobTypes", JobPost.JobType.values());
             return "employee/createJobPost";
@@ -79,7 +85,10 @@ public class JobPostController {
         return "redirect:/Employer/JobPosts";
     }
     @GetMapping("/CreateJobPost")
-    public String showCreateForm(Model model) {
+    public String showCreateForm(Principal principal, Model model) {
+        if (principal != null) {
+            model.addAttribute("account", accountService.findByEmail(principal.getName()));
+        }
         model.addAttribute("jobPostDTO", new JobPostDTO());
         model.addAttribute("jobFields", iJobfieldService.findAll());
         model.addAttribute("jobTypes", JobPost.JobType.values());
@@ -104,6 +113,8 @@ public class JobPostController {
             long pendingJobs = iJobpostService.countJobPostsByEmployerEmailAndStatus(employerEmail, "PENDING");
 
 
+            // Thêm account cho navbar
+            model.addAttribute("account", accountService.findByEmail(employerEmail));
             model.addAttribute("jobPostPage", jobPostPage);
             model.addAttribute("employerEmail", employerEmail);
             model.addAttribute("totalJobs", totalJobs);
@@ -116,7 +127,10 @@ public class JobPostController {
 
 
     @GetMapping("/EditJobPost/{jobPostId}")
-    public String showEditForm(@PathVariable("jobPostId") Integer jobPostId, Model model) {
+    public String showEditForm(@PathVariable("jobPostId") Integer jobPostId, Principal principal, Model model) {
+        if (principal != null) {
+            model.addAttribute("account", accountService.findByEmail(principal.getName()));
+        }
         JobPost jobPost = iJobpostService.findById(jobPostId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid JobPost Id: " + jobPostId));
 
@@ -179,6 +193,8 @@ public class JobPostController {
             return "redirect:/Employer/JobPosts";
         }
         List<JobApplication> applications = iJobApplicationService.findByJobPostId(jobPostId);
+        // Thêm account cho navbar
+        model.addAttribute("account", accountService.findByEmail(principal.getName()));
         model.addAttribute("jobPost", jobPost);
         model.addAttribute("applications", applications);
         model.addAttribute("totalApplications", applications.size());
