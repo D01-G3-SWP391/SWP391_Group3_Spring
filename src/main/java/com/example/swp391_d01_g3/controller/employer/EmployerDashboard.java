@@ -339,8 +339,9 @@ public class EmployerDashboard {
 
 
 
-    // Cập nhật trạng thái ứng viên
-    @PostMapping("/Applications/{applicationId}/updateStatus")
+    // DEPRECATED: Cập nhật trạng thái ứng viên - Đã chuyển sang JobPostController 
+    // @PostMapping("/Applications/{applicationId}/updateStatus")
+    /*
     public String updateApplicationStatus(
             @PathVariable Integer applicationId,
             @RequestParam String status,
@@ -423,8 +424,11 @@ public class EmployerDashboard {
         }
         return "redirect:/Employer/Applications";
     }
+    */
 
-    @PostMapping("/Applications/{applicationId}/sendInterviewMail")
+    // DEPRECATED: Gửi lịch phỏng vấn - Đã chuyển sang JobPostController
+    // @PostMapping("/Applications/{applicationId}/sendInterviewMail") 
+    /*
     public String sendInterviewMail(
             @PathVariable Integer applicationId,
             @RequestParam String interviewTime,
@@ -487,5 +491,6 @@ public class EmployerDashboard {
         }
         return "redirect:/Employer/Applications";
     }
+    */
 }
 
