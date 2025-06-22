@@ -150,16 +150,29 @@ public class Dashboard {
     public String showListStudent(@RequestParam(defaultValue = "0") int page,
                                   @RequestParam(defaultValue = "6") int size,
                                   @RequestParam(required = false) String keyword,
+                                  @RequestParam(required = false) String status,
                                   Model model) {
         try {
             Page<Account> studentPage;
 
-            if (keyword != null && !keyword.trim().isEmpty()) {
+            if (page < 0) page = 0;
+            if (size <= 0 || size > 50) size = 6;
+
+            // Filter logic
+            if (keyword != null && !keyword.trim().isEmpty() && status != null && !status.isEmpty()) {
+                studentPage = adminStudentService.searchByKeywordAndStatus(keyword.trim(), status, page, size);
+            } else if (keyword != null && !keyword.trim().isEmpty()) {
                 studentPage = adminStudentService.searchStudents(keyword.trim(), page, size);
-                model.addAttribute("keyword", keyword);
+            } else if (status != null && !status.isEmpty()) {
+                studentPage = adminStudentService.findByStatus(status, page, size);
             } else {
                 studentPage = adminStudentService.getStudentsWithPagination(page, size);
             }
+
+            // THÊM: Lấy số lượng cho badges
+            long totalStudents = adminStudentService.countAllStudents();
+            long activeStudents = adminStudentService.countStudentsByStatus("active");
+            long bannedStudents = adminStudentService.countStudentsByStatus("inactive");
 
             model.addAttribute("studentList", studentPage.getContent());
             model.addAttribute("currentPage", page);
@@ -167,6 +180,13 @@ public class Dashboard {
             model.addAttribute("totalItems", studentPage.getTotalElements());
             model.addAttribute("hasNext", studentPage.hasNext());
             model.addAttribute("hasPrevious", studentPage.hasPrevious());
+            model.addAttribute("selectedStatus", status);
+            model.addAttribute("keyword", keyword);
+
+            // THÊM: Số lượng cho badges
+            model.addAttribute("totalStudents", totalStudents);
+            model.addAttribute("activeStudents", activeStudents);
+            model.addAttribute("bannedStudents", bannedStudents);
 
             return "admin/viewListStudent";
         } catch (Exception e) {
@@ -175,6 +195,7 @@ public class Dashboard {
             return "admin/error";
         }
     }
+
 
     @GetMapping("/ListEmployer")
     public String showListEmployer(@RequestParam(defaultValue = "0") int page,
