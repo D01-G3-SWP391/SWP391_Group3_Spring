@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Posts Management - Admin</title>
+    <title>Confirm Job Posts - Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
     <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
     <link rel="stylesheet" th:href="@{/css/pagination.css}">
-
 </head>
 <body>
 <div th:replace="~{navbar/navbarAdmin :: navbarAdmin}"></div>
 
 <div class="main-content">
     <div class="container-fluid">
-        <h2>Job Posts Management</h2>
+        <h2>Confirm Job Posts</h2>
 
         <!-- Success/Error Messages -->
         <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -31,20 +30,29 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
+        <!-- THÊM: Enhanced Status Filter Badges với số lượng -->
+        <div class="status-filter-container">
+            <h6>Job Post Status Overview</h6>
+            <div class="status-filter-badges">
+
+                <a th:href="@{/Admin/JobPosts}"
+                   class="status-filter-badge warning active">
+                    <div class="badge-content">
+                        <div class="badge-text">
+                            <i class="bi bi-clock-fill"></i>Pending Review
+                        </div>
+                        <span class="badge-count" th:text="'(' + ${pendingJobPosts} + ')'"></span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
         <!-- Filter Form -->
         <form method="get" class="row g-3 mb-4 filter-form">
             <div class="col-md-6">
                 <input class="form-control" name="keyword"
                        th:value="${keyword}"
                        placeholder="Search by job title, company or location..." />
-            </div>
-            <div class="col-md-3">
-                <select class="form-control" name="status">
-                    <option value="">All Status</option>
-                    <option value="PENDING" th:selected="${selectedStatus == 'PENDING'}">Pending</option>
-                    <option value="APPROVED" th:selected="${selectedStatus == 'APPROVED'}">Approved</option>
-                    <option value="REJECTED" th:selected="${selectedStatus == 'REJECTED'}">Rejected</option>
-                </select>
             </div>
             <div class="col-auto d-flex gap-2">
                 <button class="btn-equal" type="submit">
@@ -61,7 +69,7 @@
             <span class="text-muted">
                 Showing <strong th:text="${currentPage * 6 + 1}"></strong> to
                 <strong th:text="${currentPage * 6 + #lists.size(jobPostList)}"></strong>
-                of <strong th:text="${totalItems}"></strong> job posts
+                of <strong th:text="${totalItems}"></strong> job posts awaiting confirmation
             </span>
             <span class="text-muted" th:if="${totalPages > 1}">
                 Page <strong th:text="${currentPage + 1}"></strong> of <strong th:text="${totalPages}"></strong>
@@ -95,9 +103,11 @@
                         <span class="badge bg-info" th:text="${jobPost.jobType}"></span>
                     </td>
                     <td>
-                        <span th:class="${jobPost.approvalStatus.name() == 'APPROVED' ? 'status-active' :
-                                        (jobPost.approvalStatus.name() == 'REJECTED' ? 'status-banned' : 'status-pending')}"
-                              th:text="${jobPost.approvalStatus.name()}"></span>
+                        <!-- THÊM: Clickable Status -->
+                        <a th:href="@{/Admin/JobPosts(status=${jobPost.approvalStatus.name()}, keyword=${keyword})}"
+                           th:class="${jobPost.approvalStatus.name() == 'APPROVED' ? 'clickable-status status-active' :
+                                     (jobPost.approvalStatus.name() == 'REJECTED' ? 'clickable-status status-banned' : 'clickable-status status-pending')}"
+                           th:text="${jobPost.approvalStatus.name()}"></a>
                     </td>
                     <td th:text="${#temporals.format(jobPost.createdAt, 'dd/MM/yyyy')}"></td>
                     <td>
@@ -109,7 +119,8 @@
 
                             <form th:if="${jobPost.approvalStatus.name() == 'PENDING'}"
                                   th:action="@{/Admin/ApproveJobPost/{id}(id=${jobPost.jobPostId})}"
-                                  method="post" style="display: inline;">
+                                  method="post" style="display: inline;"
+                                  onsubmit="return confirm('Are you sure you want to approve this job post?')">
                                 <button type="submit" class="btn btn-sm btn-success">
                                     <i class="bi bi-check-circle"></i> Approve
                                 </button>
@@ -117,7 +128,8 @@
 
                             <form th:if="${jobPost.approvalStatus.name() == 'PENDING'}"
                                   th:action="@{/Admin/RejectJobPost/{id}(id=${jobPost.jobPostId})}"
-                                  method="post" style="display: inline;">
+                                  method="post" style="display: inline;"
+                                  onsubmit="return confirm('Are you sure you want to reject this job post?')">
                                 <button type="submit" class="btn btn-sm btn-danger">
                                     <i class="bi bi-x-circle"></i> Reject
                                 </button>
@@ -131,9 +143,9 @@
 
         <!-- No Results Message -->
         <div th:if="${#lists.isEmpty(jobPostList)}" class="text-center py-5">
-            <i class="bi bi-briefcase display-1 text-muted"></i>
-            <h4 class="text-muted mt-3">No job posts found</h4>
-            <p class="text-muted">Try adjusting your search criteria</p>
+            <i class="bi bi-briefcase-check display-1 text-muted"></i>
+            <h4 class="text-muted mt-3">No pending job posts</h4>
+            <p class="text-muted">All job posts have been reviewed</p>
         </div>
 
         <!-- Pagination -->
