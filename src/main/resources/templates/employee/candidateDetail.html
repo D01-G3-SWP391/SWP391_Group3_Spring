@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết ứng viên</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/candidateDetail.css}" />
+</head>
+<body>
+<div class="container">
+    <!-- Back Button -->
+    <a th:href="@{/Employer/SearchCandidate}" class="back-btn">
+        <i class="bi bi-arrow-left"></i>
+        Back to List
+    </a>
+
+    <!-- Page Title -->
+    <h1 class="page-title">STUDENT DETAILS</h1>
+
+    <!-- Profile Card -->
+    <div class="card">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <div class="profile-card text-center">
+                    <div class="avatar-circle">
+                        <span th:if="${student.account.avatarUrl == null}" th:text="${student.account.fullName.substring(0,1)}">N</span>
+                        <img th:if="${student.account.avatarUrl != null}" th:src="${student.account.avatarUrl}" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>
+                    </div>
+                    <div class="profile-name" th:text="${student.account.fullName}">Nguyen Van An</div>
+                    <div class="text-center">
+                        <span class="status-badge status-active" th:if="${student.account.status.name() == 'active'}">ACTIVE</span>
+                        <span class="status-badge status-inactive" th:if="${student.account.status.name() != 'active'}">INACTIVE</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="section-header">
+                    <i class="bi bi-person-lines-fill"></i>
+                    Personal Information
+                </div>
+                <div class="section-content">
+                    <div class="info-row">
+                        <i class="bi bi-person info-icon"></i>
+                        <span class="info-label">Full Name</span>
+                        <span class="info-value" th:text="${student.account.fullName}"></span>
+                    </div>
+                    <div class="info-row">
+                        <i class="bi bi-envelope info-icon"></i>
+                        <span class="info-label">Email</span>
+                        <span class="info-value" th:text="${student.account.email}"></span>
+                    </div>
+                    <div class="info-row">
+                        <i class="bi bi-telephone info-icon"></i>
+                        <span class="info-label">Phone</span>
+                        <span class="info-value" th:text="${student.account.phone}"></span>
+                    </div>
+                    <div class="info-row">
+                        <i class="bi bi-geo-alt info-icon"></i>
+                        <span class="info-label">Address</span>
+                        <span class="info-value" th:text="${student.address}"></span>
+                    </div>
+                    <div class="info-row">
+                        <i class="bi bi-shield-check info-icon"></i>
+                        <span class="info-label">Role</span>
+                        <span class="badge-custom badge-student" th:text="${student.account.role.name().toUpperCase()}">STUDENT</span>
+                    </div>
+                    <div class="info-row">
+                        <i class="bi bi-check-circle info-icon"></i>
+                        <span class="info-label">Status</span>
+                        <span class="badge-custom" th:text="${student.account.status.name().toUpperCase()}">ACTIVE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Academic Information & Profile Description -->
+    <div class="two-column">
+        <div class="card">
+            <div class="section-header">
+                <i class="bi bi-mortarboard"></i>
+                Academic Information
+            </div>
+            <div class="section-content">
+                <div class="info-row">
+                    <i class="bi bi-building info-icon"></i>
+                    <span class="info-label">University</span>
+                    <span class="info-value" th:text="${student.university}"></span>
+                </div>
+                <div class="info-row">
+                    <i class="bi bi-briefcase info-icon"></i>
+                    <span class="info-label">Job Field Interest</span>
+                    <span class="info-value" th:text="${student.jobField != null ? student.jobField.jobFieldName : ''}"></span>
+                </div>
+                <div class="info-row">
+                    <i class="bi bi-pin-map info-icon"></i>
+                    <span class="info-label">Preferred Job Location</span>
+                    <span class="info-value" th:text="${student.preferredJobAddress}"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="section-header">
+                <i class="bi bi-file-person"></i>
+                Profile Description
+            </div>
+            <div class="section-content">
+                <div class="description-text" th:text="${student.profileDescription}">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Experience -->
+    <div class="card">
+        <div class="section-header">
+            <i class="bi bi-clock-history"></i>
+            Experience
+        </div>
+        <div class="section-content">
+            <div class="description-text" th:text="${student.experience}">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

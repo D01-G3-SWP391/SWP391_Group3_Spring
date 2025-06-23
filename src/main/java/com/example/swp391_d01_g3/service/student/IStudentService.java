@@ -11,4 +11,5 @@ public interface IStudentService {
     Student findByAccountUserId(Integer userId);
     Student findByEmail(String email);
     Optional<Student> findById(Long id);
+    List<Student> searchStudents(String address, String university, String experience, String jobFieldName);
 }

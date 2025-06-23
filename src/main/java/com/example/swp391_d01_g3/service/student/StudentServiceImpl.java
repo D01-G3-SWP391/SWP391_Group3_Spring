@@ -37,4 +37,9 @@ public class StudentServiceImpl implements IStudentService {
     public Optional<Student> findById(Long id) {
         return iStudentRepository.findById(id);
     }
+
+    @Override
+    public List<Student> searchStudents(String address, String university, String experience, String jobFieldName) {
+        return iStudentRepository.searchStudents(address, university, experience, jobFieldName);
+    }
 }

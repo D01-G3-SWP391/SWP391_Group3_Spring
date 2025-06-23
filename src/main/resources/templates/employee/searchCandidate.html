@@ -13,59 +13,54 @@
 <body>
 <div th:replace="~{navbar/navbarEmployee :: navbarEmployee}"></div>
 <div class="container mt-4">
-    <h2 class="mb-4"><i class="bi bi-search"></i> Tìm kiếm ứng viên đã nộp đơn</h2>
+    <h2 class="mb-4"><i class="bi bi-search"></i> Danh sách ứng viên</h2>
     <form class="row g-3 mb-4" method="get" th:action="@{/Employer/SearchCandidate}">
-        <div class="col-md-6">
-            <input type="text" class="form-control" name="keyword" th:value="${keyword}" placeholder="Nhập tên, email hoặc kinh nghiệm...">
+        <div class="col-md-3">
+            <input type="text" class="form-control" name="address" th:value="${address}" placeholder="Tỉnh/Thành phố mong muốn">
+        </div>
+        <div class="col-md-3">
+            <input type="text" class="form-control" name="university" th:value="${university}" placeholder="Trường học">
+        </div>
+        <div class="col-md-3">
+            <input type="text" class="form-control" name="experience" th:value="${experience}" placeholder="Kinh nghiệm">
+        </div>
+        <div class="col-md-3">
+            <input type="text" class="form-control" name="jobFieldName" th:value="${jobFieldName}" placeholder="Ngành nghề quan tâm">
         </div>
         <div class="col-md-2">
             <button type="submit" class="btn btn-primary w-100"><i class="bi bi-search"></i> Tìm kiếm</button>
         </div>
     </form>
-    <div th:if="${applications != null && applications.content.size() > 0}">
+    <div th:if="${listStudents != null && #lists.size(listStudents) > 0}">
         <div class="table-responsive">
             <table class="table table-hover align-middle">
                 <thead class="table-light">
                 <tr>
                     <th>STT</th>
                     <th>Họ tên</th>
-                    <th>Email</th>
-                    <th>Kinh nghiệm/Mô tả</th>
-                    <th>Trạng thái</th>
+                    <th>Email / SĐT</th>
+                    <th>Địa chỉ mong muốn</th>
+                    <th>Xem</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="app, iterStat : ${applications.content}">
+                <tr th:each="student, iterStat : ${listStudents}">
                     <td th:text="${iterStat.index + 1}"></td>
-                    <td th:text="${app.fullName}"></td>
-                    <td th:text="${app.email}"></td>
-                    <td th:text="${app.description}"></td>
-                    <td th:text="${app.status}"></td>
+                    <td th:text="${student.account.fullName}"></td>
+                    <td>
+                        <span th:text="${student.account.email}"></span><br/>
+                        <span th:text="${student.account.phone}"></span>
+                    </td>
+                    <td th:text="${student.preferredJobAddress}"></td>
+                    <td>
+                        <a th:href="@{'/Employer/CandidateDetail/' + ${student.studentId}}" class="btn btn-info btn-sm">Xem</a>
+                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
-        <!-- Pagination -->
-        <nav th:if="${applications.totalPages > 1}" aria-label="Page navigation">
-            <ul class="pagination justify-content-center">
-                <li class="page-item" th:classappend="${applications.first} ? 'disabled'">
-                    <a class="page-link" th:href="@{/Employer/SearchCandidate(keyword=${keyword},page=${applications.number-1},size=${applications.size})}" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, applications.totalPages-1)}"
-                    th:classappend="${pageNum == applications.number} ? 'active'">
-                    <a class="page-link" th:href="@{/Employer/SearchCandidate(keyword=${keyword},page=${pageNum},size=${applications.size})}" th:text="${pageNum+1}"></a>
-                </li>
-                <li class="page-item" th:classappend="${applications.last} ? 'disabled'">
-                    <a class="page-link" th:href="@{/Employer/SearchCandidate(keyword=${keyword},page=${applications.number+1},size=${applications.size})}" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
     </div>
-    <div th:if="${applications != null && applications.content.size() == 0}">
+    <div th:if="${listStudents == null || #lists.size(listStudents) == 0}">
         <div class="alert alert-info mt-4">Không tìm thấy ứng viên nào phù hợp.</div>
     </div>
 </div>

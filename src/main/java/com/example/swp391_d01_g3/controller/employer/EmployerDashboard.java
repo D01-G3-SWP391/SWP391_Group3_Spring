@@ -12,6 +12,7 @@ import com.example.swp391_d01_g3.service.security.IAccountService;
 import com.example.swp391_d01_g3.service.security.IAccountServiceImpl;
 import com.example.swp391_d01_g3.service.email.EmailService;
 import com.example.swp391_d01_g3.service.notification.INotificationService;
+import com.example.swp391_d01_g3.service.student.IStudentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -65,6 +66,9 @@ public class EmployerDashboard {
     
     @Autowired
     private INotificationService notificationService;
+
+    @Autowired
+    private IStudentService iStudentService;
 
     @GetMapping("")
     public String showEmployeeDashboard(Model model, Principal principal) {
@@ -353,28 +357,17 @@ public class EmployerDashboard {
 
     @GetMapping("/SearchCandidate")
     public String searchCandidate(
-            @RequestParam(value = "keyword", required = false) String keyword,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            Model model,
-            Authentication authentication) {
-        String employerEmail = authentication.getName();
-        Employer employer = employerService.findByEmail(employerEmail);
-        if (employer == null) {
-            return "redirect:/login";
-        }
-        Pageable pageable = PageRequest.of(page, size, Sort.by("appliedAt").descending());
-        Page<JobApplication> applications;
-        if (keyword != null && !keyword.trim().isEmpty()) {
-            applications = iJobApplicationService.searchApplicationsByEmployerIdAndKeyword(
-                employer.getEmployerId(), keyword.trim(), pageable);
-            model.addAttribute("keyword", keyword);
-        } else {
-            applications = iJobApplicationService.getApplicationsByEmployerId(employer.getEmployerId(), pageable);
-        }
-        model.addAttribute("applications", applications);
-        model.addAttribute("statuses", JobApplication.ApplicationStatus.values());
-        model.addAttribute("isAuthenticated", authentication != null && authentication.isAuthenticated());
+            @RequestParam(value = "address", required = false) String address,
+            @RequestParam(value = "university", required = false) String university,
+            @RequestParam(value = "experience", required = false) String experience,
+            @RequestParam(value = "jobFieldName", required = false) String jobFieldName,
+            Model model) {
+        List<Student> students = iStudentService.searchStudents(address, university, experience, jobFieldName);
+        model.addAttribute("listStudents", students);
+        model.addAttribute("address", address);
+        model.addAttribute("university", university);
+        model.addAttribute("experience", experience);
+        model.addAttribute("jobFieldName", jobFieldName);
         return "employee/searchCandidate";
     }
 
@@ -531,5 +524,15 @@ public class EmployerDashboard {
         return "redirect:/Employer/Applications";
     }
     */
+
+    @GetMapping("/CandidateDetail/{id}")
+    public String candidateDetail(@PathVariable("id") Long studentId, Model model) {
+        Student student = iStudentService.findById(studentId).orElse(null);
+        if (student == null) {
+            return "redirect:/Employer/SearchCandidate";
+        }
+        model.addAttribute("student", student);
+        return "employee/candidateDetail";
+    }
 }
 
