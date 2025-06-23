@@ -8,6 +8,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
   <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
+  <link rel="stylesheet" th:href="@{/css/pagination.css}">
   <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
 </head>
 <body>
@@ -28,6 +29,52 @@
       <i class="bi bi-exclamation-triangle me-2"></i>
       <span th:text="${error}"></span>
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Enhanced Status Filter Badges với số lượng -->
+    <div class="status-filter-container">
+      <h6>Filter by Status</h6>
+      <div class="status-filter-badges">
+        <a th:href="@{/Admin/AllJobPosts}"
+           th:class="${selectedStatus == null or selectedStatus == ''} ? 'status-filter-badge all active' : 'status-filter-badge all'">
+          <div class="badge-content">
+            <div class="badge-text">
+              <i class="bi bi-briefcase-fill"></i>All Job Posts
+            </div>
+            <span class="badge-count" th:text="'(' + ${totalJobPosts} + ')'"></span>
+          </div>
+        </a>
+
+        <a th:href="@{/Admin/AllJobPosts(status='pending', keyword=${keyword})}"
+           th:class="${selectedStatus == 'pending'} ? 'status-filter-badge warning active' : 'status-filter-badge warning'">
+          <div class="badge-content">
+            <div class="badge-text">
+              <i class="bi bi-clock-fill"></i>Pending
+            </div>
+            <span class="badge-count" th:text="'(' + ${pendingJobPosts} + ')'"></span>
+          </div>
+        </a>
+
+        <a th:href="@{/Admin/AllJobPosts(status='approved', keyword=${keyword})}"
+           th:class="${selectedStatus == 'approved'} ? 'status-filter-badge success active' : 'status-filter-badge success'">
+          <div class="badge-content">
+            <div class="badge-text">
+              <i class="bi bi-check-circle-fill"></i>Approved
+            </div>
+            <span class="badge-count" th:text="'(' + ${approvedJobPosts} + ')'"></span>
+          </div>
+        </a>
+
+        <a th:href="@{/Admin/AllJobPosts(status='rejected', keyword=${keyword})}"
+           th:class="${selectedStatus == 'rejected'} ? 'status-filter-badge danger active' : 'status-filter-badge danger'">
+          <div class="badge-content">
+            <div class="badge-text">
+              <i class="bi bi-x-circle-fill"></i>Rejected
+            </div>
+            <span class="badge-count" th:text="'(' + ${rejectedJobPosts} + ')'"></span>
+          </div>
+        </a>
+      </div>
     </div>
 
     <!-- Search Form -->
@@ -53,6 +100,8 @@
         Showing <strong th:text="${currentPage * 10 + 1}"></strong> to
         <strong th:text="${currentPage * 10 + #lists.size(jobPostList)}"></strong>
         of <strong th:text="${totalItems}"></strong> job posts
+        <span th:if="${selectedStatus != null and selectedStatus != ''}"
+              th:text="'(' + ${selectedStatus} + ')'" class="text-primary"></span>
       </span>
       <span class="text-muted" th:if="${totalPages > 1}">
         Page <strong th:text="${currentPage + 1}"></strong> of <strong th:text="${totalPages}"></strong>
@@ -93,99 +142,62 @@
             <span class="badge bg-info" th:text="${jobPost.jobType}"></span>
           </td>
           <td>
-            <span th:class="${jobPost.approvalStatus.name() == 'APPROVED' ? 'status-active' :
-                            (jobPost.approvalStatus.name() == 'REJECTED' ? 'status-banned' : 'status-pending')}"
-                  th:text="${jobPost.approvalStatus.name()}"></span>
+            <!-- Clickable Status Badges -->
+            <a th:href="@{/Admin/AllJobPosts(status=${jobPost.approvalStatus.name().toLowerCase()}, keyword=${keyword})}"
+               th:class="${jobPost.approvalStatus.name() == 'APPROVED' ? 'clickable-status status-active' :
+                         (jobPost.approvalStatus.name() == 'REJECTED' ? 'clickable-status status-banned' : 'clickable-status status-pending')}"
+               th:text="${jobPost.approvalStatus.name()}"></a>
           </td>
           <td th:text="${#temporals.format(jobPost.createdAt, 'dd/MM/yyyy')}"></td>
           <td>
             <div class="action-btns">
-              <a th:href="@{/Admin/JobPost/{id}(id=${jobPost.jobPostId})}"
-                 class="btn btn-sm btn-primary">
-                <i class="bi bi-eye"></i> View
-              </a>
+              <div class="action-btns-top">
+                <a th:href="@{/Admin/JobPost/{id}(id=${jobPost.jobPostId})}"
+                   class="btn btn-sm btn-primary">
+                  <i class="bi bi-eye"></i> View
+                </a>
 
-              <!-- THÊM: Status Change Dropdown -->
-              <div class="dropdown" style="display: inline;">
-                <button class="btn btn-sm btn-warning dropdown-toggle" type="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="bi bi-arrow-repeat"></i> Change Status
-                </button>
-                <ul class="dropdown-menu">
-                  <li th:if="${jobPost.approvalStatus.name() != 'APPROVED'}">
-                    <form th:action="@{/Admin/ChangeJobPostStatus/{id}(id=${jobPost.jobPostId})}"
-                          method="post" style="margin: 0;">
-                      <input type="hidden" name="status" value="APPROVED">
-                      <button type="submit" class="dropdown-item text-success"
-                              onclick="return confirm('Are you sure you want to approve this job post?')">
-                        <i class="bi bi-check-circle me-2"></i>Approve
-                      </button>
-                    </form>
-                  </li>
-                  <li th:if="${jobPost.approvalStatus.name() != 'REJECTED'}">
-                    <form th:action="@{/Admin/ChangeJobPostStatus/{id}(id=${jobPost.jobPostId})}"
-                          method="post" style="margin: 0;">
-                      <input type="hidden" name="status" value="REJECTED">
-                      <button type="submit" class="dropdown-item text-danger"
-                              onclick="return confirm('Are you sure you want to reject this job post?')">
-                        <i class="bi bi-x-circle me-2"></i>Reject
-                      </button>
-                    </form>
-                  </li>
-                  <li th:if="${jobPost.approvalStatus.name() != 'PENDING'}">
-                    <form th:action="@{/Admin/ChangeJobPostStatus/{id}(id=${jobPost.jobPostId})}"
-                          method="post" style="margin: 0;">
-                      <input type="hidden" name="status" value="PENDING">
-                      <button type="submit" class="dropdown-item text-warning"
-                              onclick="return confirm('Are you sure you want to set this job post to pending?')">
-                        <i class="bi bi-clock me-2"></i>Set Pending
-                      </button>
-                    </form>
-                  </li>
-                </ul>
+                <!-- Status Change Dropdown -->
+                <div class="dropdown" style="display: inline;">
+                  <button class="btn btn-sm btn-warning dropdown-toggle" type="button"
+                          data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-arrow-repeat"></i> Status
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li><h6 class="dropdown-header">Approval Status</h6></li>
+                    <li th:if="${jobPost.approvalStatus.name() != 'APPROVED'}">
+                      <form th:action="@{/Admin/ChangeJobPostStatus/{id}(id=${jobPost.jobPostId})}"
+                            method="post" style="margin: 0;">
+                        <input type="hidden" name="status" value="APPROVED">
+                        <button type="submit" class="dropdown-item text-success"
+                                onclick="return confirm('Are you sure you want to approve this job post?')">
+                          <i class="bi bi-check-circle me-2"></i>Approve
+                        </button>
+                      </form>
+                    </li>
+                    <li th:if="${jobPost.approvalStatus.name() != 'REJECTED'}">
+                      <form th:action="@{/Admin/ChangeJobPostStatus/{id}(id=${jobPost.jobPostId})}"
+                            method="post" style="margin: 0;">
+                        <input type="hidden" name="status" value="REJECTED">
+                        <button type="submit" class="dropdown-item text-danger"
+                                onclick="return confirm('Are you sure you want to reject this job post?')">
+                          <i class="bi bi-x-circle me-2"></i>Reject
+                        </button>
+                      </form>
+                    </li>
+                    <li th:if="${jobPost.approvalStatus.name() != 'PENDING'}">
+                      <form th:action="@{/Admin/ChangeJobPostStatus/{id}(id=${jobPost.jobPostId})}"
+                            method="post" style="margin: 0;">
+                        <input type="hidden" name="status" value="PENDING">
+                        <button type="submit" class="dropdown-item text-warning"
+                                onclick="return confirm('Are you sure you want to set this job post to pending?')">
+                          <i class="bi bi-clock me-2"></i>Set Pending
+                        </button>
+                      </form>
+                    </li>
+                  </ul>
+                </div>
               </div>
-
-<!--              &lt;!&ndash; Delete button with confirmation &ndash;&gt;-->
-<!--              <button type="button" class="btn btn-sm btn-danger"-->
-<!--                      data-bs-toggle="modal"-->
-<!--                      th:data-bs-target="'#deleteModal' + ${jobPost.jobPostId}">-->
-<!--                <i class="bi bi-trash"></i> Delete-->
-<!--              </button>-->
-
-<!--              &lt;!&ndash; Delete Confirmation Modal &ndash;&gt;-->
-<!--              <div class="modal fade" th:id="'deleteModal' + ${jobPost.jobPostId}" tabindex="-1">-->
-<!--                <div class="modal-dialog">-->
-<!--                  <div class="modal-content">-->
-<!--                    <div class="modal-header">-->
-<!--                      <h5 class="modal-title">Confirm Delete</h5>-->
-<!--                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>-->
-<!--                    </div>-->
-<!--                    <div class="modal-body">-->
-<!--                      <p>Are you sure you want to delete this job post?</p>-->
-<!--                      <p><strong>Job Title:</strong> <span th:text="${jobPost.jobTitle}"></span></p>-->
-<!--                      <p><strong>Company:</strong> <span th:text="${jobPost.employer.companyName}"></span></p>-->
-<!--                      <div class="mb-3">-->
-<!--                        <label class="form-label">Reason for deletion (optional):</label>-->
-<!--                        <textarea class="form-control"-->
-<!--                                  th:id="'reason' + ${jobPost.jobPostId}"-->
-<!--                                  rows="3"-->
-<!--                                  placeholder="Enter reason for deletion..."></textarea>-->
-<!--                      </div>-->
-<!--                    </div>-->
-<!--                    <div class="modal-footer">-->
-<!--                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>-->
-<!--                      <form th:action="@{/Admin/DeleteJobPost/{id}(id=${jobPost.jobPostId})}"-->
-<!--                            method="post" style="display: inline;">-->
-<!--                        <input type="hidden" name="reason" th:id="'hiddenReason' + ${jobPost.jobPostId}">-->
-<!--                        <button type="submit" class="btn btn-danger"-->
-<!--                                th:onclick="'document.getElementById(\'hiddenReason' + ${jobPost.jobPostId} + '\').value = document.getElementById(\'reason' + ${jobPost.jobPostId} + '\').value'">-->
-<!--                          Delete Job Post-->
-<!--                        </button>-->
-<!--                      </form>-->
-<!--                    </div>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </div>-->
             </div>
           </td>
         </tr>
@@ -200,34 +212,53 @@
       <p class="text-muted">Try adjusting your search criteria</p>
     </div>
 
+    <!-- Pagination Info -->
+    <div th:if="${totalItems > 0}" class="pagination-info">
+      Showing <strong th:text="${currentPage * 10 + 1}"></strong> to
+      <strong th:text="${currentPage * 10 + #lists.size(jobPostList)}"></strong>
+      of <strong th:text="${totalItems}"></strong> job posts
+    </div>
+
     <!-- Pagination -->
-    <nav aria-label="Page navigation" th:if="${totalPages > 1}">
-      <ul class="pagination justify-content-center">
-        <!-- Previous Page -->
-        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-          <a class="page-link"
-             th:href="@{/Admin/AllJobPosts(page=${currentPage - 1}, keyword=${keyword})}">
-            <i class="bi bi-chevron-left"></i> Previous
+    <nav aria-label="Page navigation" th:if="${totalPages != null and totalPages > 1}">
+      <div class="bottom-pagination">
+        <div class="pagination-wrapper">
+          <!-- Previous button -->
+          <a th:if="${hasPrevious}"
+             th:href="@{/Admin/AllJobPosts(page=${currentPage - 1}, keyword=${keyword}, status=${selectedStatus})}"
+             class="pagination-btn prev-btn">
+            <i class="bi bi-chevron-left"></i>
+            <span>Previous</span>
           </a>
-        </li>
+          <span th:unless="${hasPrevious}" class="pagination-btn prev-btn disabled">
+            <i class="bi bi-chevron-left"></i>
+            <span>Previous</span>
+          </span>
 
-        <!-- Page Numbers -->
-        <li class="page-item"
-            th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
-            th:classappend="${pageNum == currentPage} ? 'active'">
-          <a class="page-link"
-             th:href="@{/Admin/AllJobPosts(page=${pageNum}, keyword=${keyword})}"
-             th:text="${pageNum + 1}"></a>
-        </li>
+          <div class="page-numbers">
+            <th:block th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}">
+              <a th:if="${pageNum >= currentPage - 2 and pageNum <= currentPage + 2 and pageNum != currentPage}"
+                 th:href="@{/Admin/AllJobPosts(page=${pageNum}, keyword=${keyword}, status=${selectedStatus})}"
+                 class="page-number"
+                 th:text="${pageNum + 1}">1</a>
+              <span th:if="${pageNum >= currentPage - 2 and pageNum <= currentPage + 2 and pageNum == currentPage}"
+                    class="page-number active"
+                    th:text="${pageNum + 1}">1</span>
+            </th:block>
+          </div>
 
-        <!-- Next Page -->
-        <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
-          <a class="page-link"
-             th:href="@{/Admin/AllJobPosts(page=${currentPage + 1}, keyword=${keyword})}">
-            Next <i class="bi bi-chevron-right"></i>
+          <a th:if="${hasNext}"
+             th:href="@{/Admin/AllJobPosts(page=${currentPage + 1}, keyword=${keyword}, status=${selectedStatus})}"
+             class="pagination-btn next-btn">
+            <span>Next</span>
+            <i class="bi bi-chevron-right"></i>
           </a>
-        </li>
-      </ul>
+          <span th:unless="${hasNext}" class="pagination-btn next-btn disabled">
+            <span>Next</span>
+            <i class="bi bi-chevron-right"></i>
+          </span>
+        </div>
+      </div>
     </nav>
   </div>
 </div>

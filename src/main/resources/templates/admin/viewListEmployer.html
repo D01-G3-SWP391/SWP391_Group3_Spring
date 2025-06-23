@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
     <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
+    <link rel="stylesheet" th:href="@{/css/pagination.css}">
     <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
 </head>
 <body>
@@ -30,7 +31,43 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
-        <!-- Search Form - SỬA: Sử dụng .btn-equal cho cả 2 nút -->
+        <!-- THÊM: Enhanced Status Filter Badges với số lượng -->
+        <div class="status-filter-container">
+            <h6>Filter by Status</h6>
+            <div class="status-filter-badges">
+                <a th:href="@{/Admin/ListEmployer}"
+                   th:class="${selectedStatus == null or selectedStatus == ''} ? 'status-filter-badge all active' : 'status-filter-badge all'">
+                    <div class="badge-content">
+                        <div class="badge-text">
+                            <i class="bi bi-people-fill"></i>All Employers
+                        </div>
+                        <span class="badge-count" th:text="'(' + ${totalEmployers} + ')'"></span>
+                    </div>
+                </a>
+
+                <a th:href="@{/Admin/ListEmployer(status='active', keyword=${keyword})}"
+                   th:class="${selectedStatus == 'active'} ? 'status-filter-badge success active' : 'status-filter-badge success'">
+                    <div class="badge-content">
+                        <div class="badge-text">
+                            <i class="bi bi-check-circle-fill"></i>Active
+                        </div>
+                        <span class="badge-count" th:text="'(' + ${activeEmployers} + ')'"></span>
+                    </div>
+                </a>
+
+                <a th:href="@{/Admin/ListEmployer(status='inactive', keyword=${keyword})}"
+                   th:class="${selectedStatus == 'inactive'} ? 'status-filter-badge danger active' : 'status-filter-badge danger'">
+                    <div class="badge-content">
+                        <div class="badge-text">
+                            <i class="bi bi-x-circle-fill"></i>Banned
+                        </div>
+                        <span class="badge-count" th:text="'(' + ${bannedEmployers} + ')'"></span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Search Form -->
         <form method="get" class="row g-3 mb-4 filter-form">
             <div class="col-md-8">
                 <input class="form-control" name="keyword"
@@ -53,6 +90,8 @@
                 Showing <strong th:text="${currentPage * 6 + 1}"></strong> to
                 <strong th:text="${currentPage * 6 + #lists.size(employerList)}"></strong>
                 of <strong th:text="${totalItems}"></strong> employers
+                <span th:if="${selectedStatus != null and selectedStatus != ''}"
+                      th:text="'(' + ${selectedStatus} + ')'" class="text-primary"></span>
             </span>
             <span class="text-muted" th:if="${totalPages > 1}">
                 Page <strong th:text="${currentPage + 1}"></strong> of <strong th:text="${totalPages}"></strong>
@@ -85,35 +124,37 @@
                     <td th:text="${employer.email}"></td>
                     <td th:text="${employer.phone}"></td>
                     <td>
-                        <!-- SỬA: Cải thiện logic hiển thị status -->
-                        <span th:class="${employer.status.name() == 'active' ? 'status-active' : 'status-banned'}"
-                              th:text="${employer.status.name() == 'active' ? 'Active' : 'Banned'}"></span>
+                        <!-- SỬA: Clickable Status Badges -->
+                        <a th:href="@{/Admin/ListEmployer(status=${employer.status.name()}, keyword=${keyword})}"
+                           th:class="${employer.status.name() == 'active' ? 'clickable-status status-active' : 'clickable-status status-banned'}"
+                           th:text="${employer.status.name() == 'active' ? 'Active' : 'Banned'}"></a>
                     </td>
                     <td>
                         <div class="action-btns">
-                            <a th:href="@{/Admin/employer/{id}(id=${employer.userId})}"
-                               class="btn btn-sm btn-primary">
-                                <i class="bi bi-eye"></i> View
-                            </a>
+                            <div class="action-btns-top">
+                                <a th:href="@{/Admin/employer/{id}(id=${employer.userId})}"
+                                   class="btn btn-sm btn-primary">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
 
-                            <!-- SỬA: Cải thiện logic hiển thị nút Ban/Unban -->
-                            <form th:if="${employer.status.name() == 'active'}"
-                                  th:action="@{/Admin/banEmployer/{id}(id=${employer.userId})}"
-                                  method="post" style="display: inline;"
-                                  onsubmit="return confirm('Are you sure you want to ban this employer?')">
-                                <button type="submit" class="btn btn-sm btn-danger">
-                                    <i class="bi bi-person-x"></i> Ban
-                                </button>
-                            </form>
+                                <form th:if="${employer.status.name() == 'active'}"
+                                      th:action="@{/Admin/banEmployer/{id}(id=${employer.userId})}"
+                                      method="post" style="display: inline;"
+                                      onsubmit="return confirm('Are you sure you want to ban this employer?')">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-person-x"></i> Ban
+                                    </button>
+                                </form>
 
-                            <form th:if="${employer.status.name() == 'inactive'}"
-                                  th:action="@{/Admin/unbanEmployer/{id}(id=${employer.userId})}"
-                                  method="post" style="display: inline;"
-                                  onsubmit="return confirm('Are you sure you want to unban this employer?')">
-                                <button type="submit" class="btn btn-sm btn-success">
-                                    <i class="bi bi-person-check"></i> Unban
-                                </button>
-                            </form>
+                                <form th:if="${employer.status.name() == 'inactive'}"
+                                      th:action="@{/Admin/unbanEmployer/{id}(id=${employer.userId})}"
+                                      method="post" style="display: inline;"
+                                      onsubmit="return confirm('Are you sure you want to unban this employer?')">
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        <i class="bi bi-person-check"></i> Unban
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -128,34 +169,53 @@
             <p class="text-muted">Try adjusting your search criteria</p>
         </div>
 
+        <!-- Pagination Info -->
+        <div th:if="${totalItems > 0}" class="pagination-info">
+            Showing <strong th:text="${currentPage * 6 + 1}"></strong> to
+            <strong th:text="${currentPage * 6 + #lists.size(employerList)}"></strong>
+            of <strong th:text="${totalItems}"></strong> employers
+        </div>
+
         <!-- Pagination -->
-        <nav aria-label="Page navigation" th:if="${totalPages > 1}">
-            <ul class="pagination justify-content-center">
-                <!-- Previous Page -->
-                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                    <a class="page-link"
-                       th:href="@{/Admin/ListEmployer(page=${currentPage - 1}, keyword=${keyword})}">
-                        <i class="bi bi-chevron-left"></i> Previous
+        <nav aria-label="Page navigation" th:if="${totalPages != null and totalPages > 1}">
+            <div class="bottom-pagination">
+                <div class="pagination-wrapper">
+                    <!-- Previous button -->
+                    <a th:if="${hasPrevious}"
+                       th:href="@{/Admin/ListEmployer(page=${currentPage - 1}, keyword=${keyword}, status=${selectedStatus})}"
+                       class="pagination-btn prev-btn">
+                        <i class="bi bi-chevron-left"></i>
+                        <span>Previous</span>
                     </a>
-                </li>
+                    <span th:unless="${hasPrevious}" class="pagination-btn prev-btn disabled">
+                        <i class="bi bi-chevron-left"></i>
+                        <span>Previous</span>
+                    </span>
 
-                <!-- Page Numbers -->
-                <li class="page-item"
-                    th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
-                    th:classappend="${pageNum == currentPage} ? 'active'">
-                    <a class="page-link"
-                       th:href="@{/Admin/ListEmployer(page=${pageNum}, keyword=${keyword})}"
-                       th:text="${pageNum + 1}"></a>
-                </li>
+                    <div class="page-numbers">
+                        <th:block th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}">
+                            <a th:if="${pageNum >= currentPage - 2 and pageNum <= currentPage + 2 and pageNum != currentPage}"
+                               th:href="@{/Admin/ListEmployer(page=${pageNum}, keyword=${keyword}, status=${selectedStatus})}"
+                               class="page-number"
+                               th:text="${pageNum + 1}">1</a>
+                            <span th:if="${pageNum >= currentPage - 2 and pageNum <= currentPage + 2 and pageNum == currentPage}"
+                                  class="page-number active"
+                                  th:text="${pageNum + 1}">1</span>
+                        </th:block>
+                    </div>
 
-                <!-- Next Page -->
-                <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
-                    <a class="page-link"
-                       th:href="@{/Admin/ListEmployer(page=${currentPage + 1}, keyword=${keyword})}">
-                        Next <i class="bi bi-chevron-right"></i>
+                    <a th:if="${hasNext}"
+                       th:href="@{/Admin/ListEmployer(page=${currentPage + 1}, keyword=${keyword}, status=${selectedStatus})}"
+                       class="pagination-btn next-btn">
+                        <span>Next</span>
+                        <i class="bi bi-chevron-right"></i>
                     </a>
-                </li>
-            </ul>
+                    <span th:unless="${hasNext}" class="pagination-btn next-btn disabled">
+                        <span>Next</span>
+                        <i class="bi bi-chevron-right"></i>
+                    </span>
+                </div>
+            </div>
         </nav>
     </div>
 </div>

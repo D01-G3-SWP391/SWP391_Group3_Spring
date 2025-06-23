@@ -8,11 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -53,13 +56,82 @@ public class Dashboard {
     }
 
 
-    // Trang list blog
+    // Trang list blog với pagination
     @GetMapping("/blogs")
-    public String listBlogs(Model model) {
-        List<BlogPost> blogs = blogService.getAllBlogPosts();
-        model.addAttribute("blogs", blogs);
-        return "blog/managementBlog";
+    public String listBlogs(@RequestParam(defaultValue = "0") int page,
+                            @RequestParam(defaultValue = "10") int size,
+                            @RequestParam(required = false) String keyword,
+                            @RequestParam(required = false) String status,
+                            Model model) {
+        try {
+            Page<BlogPost> blogPage;
+            BlogPost.BlogStatus blogStatus = null;
+
+            if (page < 0) page = 0;
+            if (size <= 0 || size > 50) size = 10;
+
+            Pageable pageable = PageRequest.of(page, size);
+
+            if (status != null && !status.isEmpty()) {
+                try {
+                    blogStatus = BlogPost.BlogStatus.valueOf(status.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    logger.warn("Invalid status parameter: {}", status);
+                }
+            }
+
+            // Search logic với pagination
+            if (keyword != null && !keyword.trim().isEmpty() && blogStatus != null) {
+                blogPage = blogService.searchBlogsByTitleAndStatus(keyword.trim(), blogStatus, pageable);
+            } else if (keyword != null && !keyword.trim().isEmpty()) {
+                blogPage = blogService.searchBlogsByTitle(keyword.trim(), pageable);
+            } else if (blogStatus != null) {
+                blogPage = blogService.findByStatus(blogStatus, pageable);
+            } else {
+                blogPage = blogService.getAllBlogPostsWithPagination(pageable);
+            }
+
+            // THÊM: Lấy số lượng cho badges
+            long totalBlogs = blogService.getTotalBlogsCount();
+            long draftBlogs = blogService.getDraftBlogsCount();
+            long publishedBlogs = blogService.getPublishedBlogsCount();
+            long archivedBlogs = blogService.getArchivedBlogsCount();
+
+            model.addAttribute("blogs", blogPage.getContent());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", blogPage.getTotalPages());
+            model.addAttribute("totalItems", blogPage.getTotalElements());
+            model.addAttribute("hasNext", blogPage.hasNext());
+            model.addAttribute("hasPrevious", blogPage.hasPrevious());
+            model.addAttribute("selectedStatus", status);
+            model.addAttribute("keyword", keyword);
+
+            // THÊM: Số lượng cho badges
+            model.addAttribute("totalBlogs", totalBlogs);
+            model.addAttribute("draftBlogs", draftBlogs);
+            model.addAttribute("publishedBlogs", publishedBlogs);
+            model.addAttribute("archivedBlogs", archivedBlogs);
+
+            return "blog/managementBlog";
+
+        } catch (Exception e) {
+            logger.error("Error loading blogs: ", e);
+            model.addAttribute("error", "Error loading blogs: " + e.getMessage());
+
+            // Safe defaults for error case
+            model.addAttribute("blogs", Collections.emptyList());
+            model.addAttribute("currentPage", 0);
+            model.addAttribute("totalPages", 0);
+            model.addAttribute("totalItems", 0);
+            model.addAttribute("hasNext", false);
+            model.addAttribute("hasPrevious", false);
+            model.addAttribute("selectedStatus", "");
+            model.addAttribute("keyword", "");
+
+            return "blog/managementBlog";
+        }
     }
+
 
     // Trang chi tiết blog
     @GetMapping("/blogs/{id}")
@@ -84,16 +156,29 @@ public class Dashboard {
     public String showListStudent(@RequestParam(defaultValue = "0") int page,
                                   @RequestParam(defaultValue = "6") int size,
                                   @RequestParam(required = false) String keyword,
+                                  @RequestParam(required = false) String status,
                                   Model model) {
         try {
             Page<Account> studentPage;
 
-            if (keyword != null && !keyword.trim().isEmpty()) {
+            if (page < 0) page = 0;
+            if (size <= 0 || size > 50) size = 6;
+
+            // Filter logic
+            if (keyword != null && !keyword.trim().isEmpty() && status != null && !status.isEmpty()) {
+                studentPage = adminStudentService.searchByKeywordAndStatus(keyword.trim(), status, page, size);
+            } else if (keyword != null && !keyword.trim().isEmpty()) {
                 studentPage = adminStudentService.searchStudents(keyword.trim(), page, size);
-                model.addAttribute("keyword", keyword);
+            } else if (status != null && !status.isEmpty()) {
+                studentPage = adminStudentService.findByStatus(status, page, size);
             } else {
                 studentPage = adminStudentService.getStudentsWithPagination(page, size);
             }
+
+            // THÊM: Lấy số lượng cho badges
+            long totalStudents = adminStudentService.countAllStudents();
+            long activeStudents = adminStudentService.countStudentsByStatus("active");
+            long bannedStudents = adminStudentService.countStudentsByStatus("inactive");
 
             model.addAttribute("studentList", studentPage.getContent());
             model.addAttribute("currentPage", page);
@@ -101,6 +186,13 @@ public class Dashboard {
             model.addAttribute("totalItems", studentPage.getTotalElements());
             model.addAttribute("hasNext", studentPage.hasNext());
             model.addAttribute("hasPrevious", studentPage.hasPrevious());
+            model.addAttribute("selectedStatus", status);
+            model.addAttribute("keyword", keyword);
+
+            // THÊM: Số lượng cho badges
+            model.addAttribute("totalStudents", totalStudents);
+            model.addAttribute("activeStudents", activeStudents);
+            model.addAttribute("bannedStudents", bannedStudents);
 
             return "admin/viewListStudent";
         } catch (Exception e) {
@@ -110,20 +202,34 @@ public class Dashboard {
         }
     }
 
+
     @GetMapping("/ListEmployer")
     public String showListEmployer(@RequestParam(defaultValue = "0") int page,
                                    @RequestParam(defaultValue = "6") int size,
                                    @RequestParam(required = false) String keyword,
+                                   @RequestParam(required = false) String status,
                                    Model model) {
         try {
             Page<Account> employerPage;
 
-            if (keyword != null && !keyword.trim().isEmpty()) {
+            if (page < 0) page = 0;
+            if (size <= 0 || size > 50) size = 6;
+
+            // Filter logic
+            if (keyword != null && !keyword.trim().isEmpty() && status != null && !status.isEmpty()) {
+                employerPage = adminEmployerService.searchByKeywordAndStatus(keyword.trim(), status, page, size);
+            } else if (keyword != null && !keyword.trim().isEmpty()) {
                 employerPage = adminEmployerService.searchEmployers(keyword.trim(), page, size);
-                model.addAttribute("keyword", keyword);
+            } else if (status != null && !status.isEmpty()) {
+                employerPage = adminEmployerService.findByStatus(status, page, size);
             } else {
                 employerPage = adminEmployerService.getEmployersWithPagination(page, size);
             }
+
+            // THÊM: Lấy số lượng cho badges
+            long totalEmployers = adminEmployerService.countAllEmployers();
+            long activeEmployers = adminEmployerService.countEmployersByStatus("active");
+            long bannedEmployers = adminEmployerService.countEmployersByStatus("inactive");
 
             model.addAttribute("employerList", employerPage.getContent());
             model.addAttribute("currentPage", page);
@@ -131,6 +237,13 @@ public class Dashboard {
             model.addAttribute("totalItems", employerPage.getTotalElements());
             model.addAttribute("hasNext", employerPage.hasNext());
             model.addAttribute("hasPrevious", employerPage.hasPrevious());
+            model.addAttribute("selectedStatus", status);
+            model.addAttribute("keyword", keyword);
+
+            // THÊM: Số lượng cho badges
+            model.addAttribute("totalEmployers", totalEmployers);
+            model.addAttribute("activeEmployers", activeEmployers);
+            model.addAttribute("bannedEmployers", bannedEmployers);
 
             return "admin/viewListEmployer";
         } catch (Exception e) {
@@ -139,6 +252,7 @@ public class Dashboard {
             return "admin/error";
         }
     }
+
 
     // Student Ban/Unban Methods
     @PostMapping("/banStudent/{id}")

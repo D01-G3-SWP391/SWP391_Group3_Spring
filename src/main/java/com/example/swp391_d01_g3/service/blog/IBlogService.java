@@ -74,4 +74,14 @@ public interface IBlogService {
 
     void save(BlogPost blogPost);
     List<Resource> getAllResources();
+    Page<BlogPost> getAllBlogPostsWithPagination(Pageable pageable);
+    Page<BlogPost> searchBlogsByTitle(String title, Pageable pageable);
+    Page<BlogPost> searchBlogsByTitleAndStatus(String title, BlogPost.BlogStatus status, Pageable pageable);
+    Page<BlogPost> findByStatus(BlogPost.BlogStatus status, Pageable pageable);
+
+    // THÊM: Count methods cho filter badges
+    long getTotalBlogsCount();
+    long getDraftBlogsCount();
+    long getPublishedBlogsCount();
+    long getArchivedBlogsCount();
 } 

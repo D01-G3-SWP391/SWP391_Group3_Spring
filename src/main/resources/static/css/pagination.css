@@ -1,0 +1,325 @@
+/* ===== PAGINATION STYLES - Đồng bộ cho toàn bộ hệ thống ===== */
+
+/* Pagination Container */
+.bottom-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 40px 0 20px 0;
+    padding: 20px;
+}
+
+.pagination-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 8px 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e5e7eb;
+}
+
+/* Pagination Buttons */
+.pagination-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    user-select: none;
+}
+
+.pagination-btn:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    color: #111827;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+}
+
+.pagination-btn.disabled {
+    color: #9ca3af;
+    background: #f9fafb;
+    border-color: #e5e7eb;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.pagination-btn.disabled:hover {
+    transform: none;
+    box-shadow: none;
+    background: #f9fafb;
+    border-color: #e5e7eb;
+}
+
+/* Page Numbers Container */
+.page-numbers {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 8px;
+}
+
+/* Individual Page Numbers */
+.page-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.page-number:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    color: #111827;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+}
+
+.page-number.active {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: #ffffff;
+    border-color: #4f46e5;
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+    font-weight: 600;
+}
+
+.page-number.active:hover {
+    background: linear-gradient(135deg, #3730a3 0%, #5b21b6 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+    color: #ffffff;
+    text-decoration: none;
+}
+
+/* Icons */
+.pagination-btn i {
+    font-size: 16px;
+}
+
+/* ===== BOOTSTRAP PAGINATION OVERRIDE ===== */
+
+/* Override Bootstrap pagination để đồng bộ */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 40px 0 20px 0;
+    padding: 20px;
+    list-style: none;
+}
+
+.pagination .page-item {
+    margin: 0 2px;
+}
+
+.pagination .page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    padding: 0;
+}
+
+.pagination .page-link:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    color: #111827;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    color: #ffffff;
+    border-color: #4f46e5;
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+    font-weight: 600;
+}
+
+.pagination .page-item.active .page-link:hover {
+    background: linear-gradient(135deg, #3730a3 0%, #5b21b6 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+    color: #ffffff;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #9ca3af;
+    background: #f9fafb;
+    border-color: #e5e7eb;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.pagination .page-item.disabled .page-link:hover {
+    transform: none;
+    box-shadow: none;
+    background: #f9fafb;
+    border-color: #e5e7eb;
+    color: #9ca3af;
+}
+
+/* Previous/Next buttons for Bootstrap pagination */
+.pagination .page-item:first-child .page-link,
+.pagination .page-item:last-child .page-link {
+    width: auto;
+    padding: 10px 16px;
+    gap: 6px;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+@media (max-width: 768px) {
+    .bottom-pagination {
+        margin: 30px 0 15px 0;
+        padding: 15px;
+    }
+
+    .pagination-wrapper {
+        padding: 6px 8px;
+        gap: 4px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .pagination-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .pagination-btn span {
+        display: none; /* Ẩn text trên mobile, chỉ hiện icon */
+    }
+
+    .page-number,
+    .pagination .page-link {
+        width: 36px;
+        height: 36px;
+        font-size: 13px;
+    }
+
+    .page-numbers {
+        order: -1;
+        margin: 0 0 8px 0;
+    }
+
+    /* Bootstrap pagination responsive */
+    .pagination {
+        margin: 30px 0 15px 0;
+        padding: 15px;
+        flex-wrap: wrap;
+    }
+
+    .pagination .page-item:first-child .page-link,
+    .pagination .page-item:last-child .page-link {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .pagination-wrapper {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .pagination-btn {
+        padding: 6px 10px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .page-numbers {
+        order: 0;
+        margin: 0;
+    }
+
+    .page-number,
+    .pagination .page-link {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+
+    /* Bootstrap pagination mobile */
+    .pagination {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .pagination .page-item {
+        margin: 0;
+    }
+
+    .pagination .page-item:first-child .page-link,
+    .pagination .page-item:last-child .page-link {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ===== PAGINATION INFO TEXT ===== */
+
+.pagination-info {
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.pagination-info strong {
+    color: #374151;
+    font-weight: 600;
+}
+
+/* ===== ANIMATION ===== */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.bottom-pagination,
+.pagination {
+    animation: fadeInUp 0.5s ease-out;
+}
