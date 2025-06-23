@@ -31,58 +31,19 @@
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 
-    <!-- THÊM: Enhanced Status Filter Badges với số lượng -->
-    <div class="status-filter-container">
-      <h6>Filter by Status</h6>
-      <div class="status-filter-badges">
-        <a th:href="@{/Admin/Events}"
-           th:class="${selectedStatus == null or selectedStatus == ''} ? 'status-filter-badge all active' : 'status-filter-badge all'">
-          <div class="badge-content">
-            <div class="badge-text">
-              <i class="bi bi-calendar-event-fill"></i>All Events
-            </div>
-            <span class="badge-count" th:text="'(' + ${totalEvents} + ')'"></span>
-          </div>
-        </a>
-
-        <a th:href="@{/Admin/Events(status='PENDING', keyword=${keyword})}"
-           th:class="${selectedStatus == 'PENDING'} ? 'status-filter-badge warning active' : 'status-filter-badge warning'">
-          <div class="badge-content">
-            <div class="badge-text">
-              <i class="bi bi-clock-fill"></i>Pending
-            </div>
-            <span class="badge-count" th:text="'(' + ${pendingEvents} + ')'"></span>
-          </div>
-        </a>
-
-        <a th:href="@{/Admin/Events(status='APPROVED', keyword=${keyword})}"
-           th:class="${selectedStatus == 'APPROVED'} ? 'status-filter-badge success active' : 'status-filter-badge success'">
-          <div class="badge-content">
-            <div class="badge-text">
-              <i class="bi bi-check-circle-fill"></i>Approved
-            </div>
-            <span class="badge-count" th:text="'(' + ${approvedEvents} + ')'"></span>
-          </div>
-        </a>
-
-        <a th:href="@{/Admin/Events(status='REJECTED', keyword=${keyword})}"
-           th:class="${selectedStatus == 'REJECTED'} ? 'status-filter-badge danger active' : 'status-filter-badge danger'">
-          <div class="badge-content">
-            <div class="badge-text">
-              <i class="bi bi-x-circle-fill"></i>Rejected
-            </div>
-            <span class="badge-count" th:text="'(' + ${rejectedEvents} + ')'"></span>
-          </div>
-        </a>
-      </div>
-    </div>
-
-    <!-- Search Form -->
     <form method="get" class="row g-3 mb-4 filter-form">
       <div class="col-md-6">
         <input class="form-control" name="keyword"
                th:value="${keyword}"
                placeholder="Search events by title, description or location..." />
+      </div>
+      <div class="col-md-3">
+        <select class="form-control" name="status">
+          <option value="">All Status</option>
+          <option value="PENDING" th:selected="${selectedStatus == 'PENDING'}">Pending</option>
+          <option value="APPROVED" th:selected="${selectedStatus == 'APPROVED'}">Approved</option>
+          <option value="REJECTED" th:selected="${selectedStatus == 'REJECTED'}">Rejected</option>
+        </select>
       </div>
       <div class="col-auto d-flex gap-2">
         <button class="btn-equal" type="submit">
@@ -201,7 +162,6 @@
                 </div>
               </div>
 
-              <!-- Edit ở dưới căn giữa -->
             </div>
           </td>
         </tr>

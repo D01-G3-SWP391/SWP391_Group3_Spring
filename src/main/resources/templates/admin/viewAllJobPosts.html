@@ -31,58 +31,19 @@
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 
-    <!-- Enhanced Status Filter Badges với số lượng -->
-    <div class="status-filter-container">
-      <h6>Filter by Status</h6>
-      <div class="status-filter-badges">
-        <a th:href="@{/Admin/AllJobPosts}"
-           th:class="${selectedStatus == null or selectedStatus == ''} ? 'status-filter-badge all active' : 'status-filter-badge all'">
-          <div class="badge-content">
-            <div class="badge-text">
-              <i class="bi bi-briefcase-fill"></i>All Job Posts
-            </div>
-            <span class="badge-count" th:text="'(' + ${totalJobPosts} + ')'"></span>
-          </div>
-        </a>
-
-        <a th:href="@{/Admin/AllJobPosts(status='pending', keyword=${keyword})}"
-           th:class="${selectedStatus == 'pending'} ? 'status-filter-badge warning active' : 'status-filter-badge warning'">
-          <div class="badge-content">
-            <div class="badge-text">
-              <i class="bi bi-clock-fill"></i>Pending
-            </div>
-            <span class="badge-count" th:text="'(' + ${pendingJobPosts} + ')'"></span>
-          </div>
-        </a>
-
-        <a th:href="@{/Admin/AllJobPosts(status='approved', keyword=${keyword})}"
-           th:class="${selectedStatus == 'approved'} ? 'status-filter-badge success active' : 'status-filter-badge success'">
-          <div class="badge-content">
-            <div class="badge-text">
-              <i class="bi bi-check-circle-fill"></i>Approved
-            </div>
-            <span class="badge-count" th:text="'(' + ${approvedJobPosts} + ')'"></span>
-          </div>
-        </a>
-
-        <a th:href="@{/Admin/AllJobPosts(status='rejected', keyword=${keyword})}"
-           th:class="${selectedStatus == 'rejected'} ? 'status-filter-badge danger active' : 'status-filter-badge danger'">
-          <div class="badge-content">
-            <div class="badge-text">
-              <i class="bi bi-x-circle-fill"></i>Rejected
-            </div>
-            <span class="badge-count" th:text="'(' + ${rejectedJobPosts} + ')'"></span>
-          </div>
-        </a>
-      </div>
-    </div>
-
-    <!-- Search Form -->
     <form method="get" class="row g-3 mb-4 filter-form">
       <div class="col-md-8">
         <input class="form-control" name="keyword"
                th:value="${keyword}"
                placeholder="Search by job title, company or location..." />
+      </div>
+      <div class="col-md-3">
+        <select class="form-control" name="status">
+          <option value="">All Status</option>
+          <option value="pending" th:selected="${selectedStatus == 'pending'}">Pending</option>
+          <option value="approved" th:selected="${selectedStatus == 'approved'}">Approved</option>
+          <option value="rejected" th:selected="${selectedStatus == 'rejected'}">Rejected</option>
+        </select>
       </div>
       <div class="col-auto d-flex gap-2">
         <button class="btn-equal" type="submit">
@@ -93,6 +54,7 @@
         </a>
       </div>
     </form>
+
 
     <!-- Results Info -->
     <div class="d-flex justify-content-between align-items-center mb-3">

@@ -31,22 +31,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
-        <!-- THÊM: Enhanced Status Filter Badges với số lượng -->
-        <div class="status-filter-container">
-            <h6>Job Post Status Overview</h6>
-            <div class="status-filter-badges">
 
-                <a th:href="@{/Admin/JobPosts}"
-                   class="status-filter-badge warning active">
-                    <div class="badge-content">
-                        <div class="badge-text">
-                            <i class="bi bi-clock-fill"></i>Pending Review
-                        </div>
-                        <span class="badge-count" th:text="'(' + ${pendingJobPosts} + ')'"></span>
-                    </div>
-                </a>
-            </div>
-        </div>
 
         <!-- Filter Form -->
         <form method="get" class="row g-3 mb-4 filter-form">
