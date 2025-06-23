@@ -19,12 +19,8 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
         <h2 class="mb-1">Event Details</h2>
-        <p class="text-muted mb-0">Complete information about this career event</p>
       </div>
       <div class="d-flex gap-2">
-        <a th:href="@{/Admin/EditEvent/{id}(id=${event.eventId})}" class="btn btn-info">
-          <i class="bi bi-pencil me-2"></i>Edit Event
-        </a>
         <a th:href="@{/Admin/Events}" class="btn btn-secondary">
           <i class="bi bi-arrow-left me-2"></i>Back to Events
         </a>
@@ -212,39 +208,49 @@
               <i class="bi bi-lightning me-2"></i>Quick Actions
             </h5>
           </div>
-          <div class="card-body">
-            <div class="d-grid gap-2">
-              <a th:href="@{/Admin/EditEvent/{id}(id=${event.eventId})}" class="btn btn-info">
-                <i class="bi bi-pencil me-2"></i>Edit Event
-              </a>
-
-              <div th:if="${event.approvalStatus.name() == 'PENDING'}" class="btn-group-vertical w-100">
-                <form th:action="@{/Admin/ConfirmEvent/{id}(id=${event.eventId})}" method="post">
-                  <button type="submit" class="btn btn-success w-100"
-                          onclick="return confirm('Are you sure you want to approve this event?')">
-                    <i class="bi bi-check-circle me-2"></i>Approve Event
-                  </button>
-                </form>
-                <button type="button" class="btn btn-danger w-100 mt-2"
-                        data-bs-toggle="modal" data-bs-target="#rejectModal">
-                  <i class="bi bi-x-circle me-2"></i>Reject Event
-                </button>
-              </div>
-
-              <form th:action="@{/Admin/DeleteEvent/{id}(id=${event.eventId})}"
-                    method="post"
-                    onsubmit="return confirm('Are you sure you want to delete this event? This action cannot be undone!')">
-                <button type="submit" class="btn btn-outline-danger w-100">
-                  <i class="bi bi-trash me-2"></i>Delete Event
-                </button>
-              </form>
-            </div>
+          <div class="card-body d-flex flex-column gap-2">
+            <!-- Nút Change Status -->
+            <button type="button" class="btn btn-warning w-100" data-bs-toggle="modal" data-bs-target="#changeStatusModal">
+              <i class="bi bi-arrow-repeat me-2"></i>Change Status
+            </button>
+            <!-- Các action khác nếu có -->
           </div>
         </div>
+
+
       </div>
     </div>
   </div>
 </div>
+<!-- Change Status Modal -->
+<div class="modal fade" id="changeStatusModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form th:action="@{/Admin/ChangeEventStatus/{id}(id=${event.eventId})}" method="post" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Change Event Status</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label mb-2">Select new status:</label>
+        <select class="form-select mb-3" name="status" required>
+          <option value="PENDING" th:selected="${event.approvalStatus.name() == 'PENDING'}">Pending</option>
+          <option value="APPROVED" th:selected="${event.approvalStatus.name() == 'APPROVED'}">Approved</option>
+          <option value="REJECTED" th:selected="${event.approvalStatus.name() == 'REJECTED'}">Rejected</option>
+        </select>
+        <label class="form-label mb-2">Reason (optional):</label>
+        <textarea class="form-control" name="reason" rows="3" placeholder="Enter reason if needed..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-warning">
+          <i class="bi bi-arrow-repeat me-2"></i>Update Status
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
 
 <!-- Reject Modal -->
 <div class="modal fade" id="rejectModal" tabindex="-1">

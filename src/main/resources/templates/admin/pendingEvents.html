@@ -16,7 +16,6 @@
 <div class="main-content">
     <div class="container-fluid">
         <h2>Confirm Career Events</h2>
-        <p class="text-muted mb-4">Review and confirm career events submitted by employers</p>
 
         <!-- Success/Error Messages -->
         <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -31,22 +30,6 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
-        <!-- THÊM: Enhanced Status Filter Badges với số lượng -->
-        <div class="status-filter-container">
-            <h6>Event Status Overview</h6>
-            <div class="status-filter-badges">
-
-                <a th:href="@{/Admin/PendingEvents}"
-                   class="status-filter-badge warning active">
-                    <div class="badge-content">
-                        <div class="badge-text">
-                            <i class="bi bi-clock-fill"></i>Pending Review
-                        </div>
-                        <span class="badge-count" th:text="'(' + ${pendingEvents} + ')'"></span>
-                    </div>
-                </a>
-            </div>
-        </div>
 
         <!-- Search Form -->
         <form method="get" class="row g-3 mb-4 filter-form">

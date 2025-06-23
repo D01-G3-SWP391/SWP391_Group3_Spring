@@ -45,60 +45,20 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
-        <!-- THÊM: Enhanced Status Filter Badges với số lượng -->
-        <div class="status-filter-container">
-            <h6>Filter by Status</h6>
-            <div class="status-filter-badges">
-                <a th:href="@{/Admin/blogs}"
-                   th:class="${selectedStatus == null or selectedStatus == ''} ? 'status-filter-badge all active' : 'status-filter-badge all'">
-                    <div class="badge-content">
-                        <div class="badge-text">
-                            <i class="bi bi-journal-text"></i>All Blogs
-                        </div>
-                        <span class="badge-count" th:text="'(' + ${totalBlogs} + ')'"></span>
-                    </div>
-                </a>
-
-                <a th:href="@{/Admin/blogs(status='DRAFT', keyword=${keyword})}"
-                   th:class="${selectedStatus == 'DRAFT'} ? 'status-filter-badge warning active' : 'status-filter-badge warning'">
-                    <div class="badge-content">
-                        <div class="badge-text">
-                            <i class="bi bi-file-earmark"></i>Draft
-                        </div>
-                        <span class="badge-count" th:text="'(' + ${draftBlogs} + ')'"></span>
-                    </div>
-                </a>
-
-                <a th:href="@{/Admin/blogs(status='PUBLISHED', keyword=${keyword})}"
-                   th:class="${selectedStatus == 'PUBLISHED'} ? 'status-filter-badge success active' : 'status-filter-badge success'">
-                    <div class="badge-content">
-                        <div class="badge-text">
-                            <i class="bi bi-check-circle-fill"></i>Published
-                        </div>
-                        <span class="badge-count" th:text="'(' + ${publishedBlogs} + ')'"></span>
-                    </div>
-                </a>
-
-                <a th:href="@{/Admin/blogs(status='ARCHIVED', keyword=${keyword})}"
-                   th:class="${selectedStatus == 'ARCHIVED'} ? 'status-filter-badge danger active' : 'status-filter-badge danger'">
-                    <div class="badge-content">
-                        <div class="badge-text">
-                            <i class="bi bi-archive-fill"></i>Archived
-                        </div>
-                        <span class="badge-count" th:text="'(' + ${archivedBlogs} + ')'"></span>
-                    </div>
-                </a>
-            </div>
-        </div>
-
-        <!-- Search Form -->
         <form method="get" class="row g-3 mb-4 filter-form">
             <div class="col-md-6">
                 <input class="form-control" name="keyword"
                        th:value="${keyword}"
                        placeholder="Search by blog title..." />
             </div>
-
+            <div class="col-md-3">
+                <select class="form-control" name="status">
+                    <option value="">All Status</option>
+                    <option value="DRAFT" th:selected="${selectedStatus == 'DRAFT'}">Draft</option>
+                    <option value="PUBLISHED" th:selected="${selectedStatus == 'PUBLISHED'}">Published</option>
+                    <option value="ARCHIVED" th:selected="${selectedStatus == 'ARCHIVED'}">Archived</option>
+                </select>
+            </div>
             <div class="col-auto d-flex gap-2">
                 <button class="btn-equal" type="submit">
                     <i class="bi bi-search me-2"></i>Search
@@ -108,6 +68,7 @@
                 </a>
             </div>
         </form>
+
 
         <!-- Results Info -->
         <div class="d-flex justify-content-between align-items-center mb-3">
