@@ -47,6 +47,28 @@
         .dropdown {
             position: relative !important;
             overflow: visible !important;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        /* Prevent click outside issues */
+        .prevent-click-outside {
+            pointer-events: none;
+        }
+
+        .prevent-click-outside * {
+            pointer-events: auto;
+        }
+
+        .dropdown-toggle {
+            pointer-events: auto;
+            position: relative;
+            z-index: 1;
+            padding: 4px 8px !important;
+            min-width: 32px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
         }
 
         /* Ensure dropdown shows on top - open UPWARD */
@@ -157,13 +179,6 @@
         .dropdown-item:disabled {
             color: #6c757d !important;
             background-color: transparent !important;
-        }
-
-        /* Force visibility of dropdown toggle */
-        .dropdown-toggle {
-            background: transparent !important;
-            border: 1px solid #dee2e6 !important;
-            color: #6c757d !important;
         }
 
         /* Active state when dropdown is open */
@@ -615,7 +630,7 @@
                                     <span>Chat</span>
                                 </button>
                                 <div class="dropdown dropup" style="position: relative;">
-                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle prevent-click-outside"
                                             type="button"
                                             th:id="'dropdownMenuButton' + ${jobApplication.applicationId}"
                                             data-bs-toggle="dropdown"
@@ -625,10 +640,9 @@
                                             aria-expanded="false">
                                         <i class="bi bi-gear"></i>
                                     </button>
-                                    <ul class="dropdown-menu" th:aria-labelledby="'dropdownMenuButton' + ${jobApplication.applicationId}">
+                                    <ul class="dropdown-menu prevent-click-outside" th:aria-labelledby="'dropdownMenuButton' + ${jobApplication.applicationId}">
                                         <li th:each="statusOption : ${statuses}">
-                                            <form th:action="@{/Employer/Applications/{id}/updateStatus(id=${jobApplication.applicationId})}" method="post" class="d-inline status-form w-100">
-                                                <input type="hidden" name="jobPostId" th:value="${jobPost.jobPostId}" />
+                                            <form th:action="@{/Employer/JobPosts/{jobPostId}/applications/{applicationId}/updateStatus(jobPostId=${jobPost.jobPostId},applicationId=${jobApplication.applicationId})}" method="post" class="d-inline status-form w-100">
                                                 <input type="hidden" name="status" th:value="${statusOption.name()}" />
                                                 <button type="submit" class="dropdown-item w-100"
                                                         th:text="${statusOption.name()}"
@@ -775,67 +789,40 @@ function toggleDetails(index) {
     }
 }
 function handleStatusClick(event, btn) {
+    // Stop event bubbling
+    event.stopPropagation();
+    
     var status = btn.getAttribute('data-status');
     var applicationId = btn.getAttribute('data-application-id');
 
-    console.log('🎯 Status click:', status, 'for application:', applicationId);
+    if (!status || !applicationId) {
+        return false;
+    }
 
     if (status === 'INTERVIEW') {
         event.preventDefault();
-        // Get jobPostId from current URL path
         var pathParts = window.location.pathname.split('/');
-        var jobPostId = pathParts[3]; // /Employer/JobPosts/{jobPostId}/applications
+        var jobPostId = pathParts[3];
 
-        // Set action cho form modal
         var form = document.getElementById('interviewForm');
         form.action = '/Employer/JobPosts/' + jobPostId + '/applications/' + applicationId + '/sendInterviewMail';
 
-        // Set jobPostId cho modal nếu có hidden input
         var modalJobPostIdInput = document.getElementById('modalJobPostId');
         if (modalJobPostIdInput) {
             modalJobPostIdInput.value = jobPostId;
         }
 
-        // Reset form modal nếu cần
         form.reset();
-        // Hiện modal
         var modal = new bootstrap.Modal(document.getElementById('interviewModal'));
         modal.show();
         return false;
     } else {
-        // Show confirmation for other status changes
         const confirmMessage = `Bạn có chắc chắn muốn đổi trạng thái thành "${status}"?`;
-
-        // Get the dropdown menu to keep it open if cancelled
-        const dropdownMenu = btn.closest('.dropdown-menu');
-        const dropdownToggle = btn.closest('.dropdown').querySelector('[data-bs-toggle="dropdown"]');
-
-        if (confirm(confirmMessage)) {
-            console.log('✅ Status change confirmed:', status, 'for application:', applicationId);
-            return true; // Allow form submission
-        } else {
+        if (!confirm(confirmMessage)) {
             event.preventDefault();
-            event.stopPropagation(); // Prevent event bubbling
-            console.log('❌ Status change cancelled');
-
-            // Keep dropdown open and maintain dropup state
-            setTimeout(() => {
-                if (dropdownMenu && dropdownToggle) {
-                    dropdownMenu.classList.add('show');
-                    dropdownToggle.setAttribute('aria-expanded', 'true');
-
-                    // Ensure dropup positioning is maintained
-                    const dropdown = dropdownToggle.closest('.dropdown');
-                    if (dropdown.classList.contains('dropup')) {
-                        dropdownMenu.style.bottom = '100%';
-                        dropdownMenu.style.top = 'auto';
-                        dropdownMenu.style.marginBottom = '5px';
-                    }
-                }
-            }, 50);
-
-            return false; // Prevent form submission
+            return false;
         }
+        return true;
     }
 }
 
@@ -1376,70 +1363,29 @@ document.addEventListener('DOMContentLoaded', function() {
     var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
         return new bootstrap.Dropdown(dropdownToggleEl, {
             boundary: 'viewport',
-            placement: 'top'
+            reference: 'toggle',
+            autoClose: true
         });
     });
 
     console.log('✅ Initialized', dropdownList.length, 'dropdowns');
 
-    // Debug: Check if dropdowns are working
-    dropdownElementList.forEach((toggle, index) => {
-        console.log(`🔧 Dropdown ${index}:`, toggle.id, toggle.getAttribute('data-bs-toggle'));
-
-        toggle.addEventListener('click', function(e) {
-            console.log('🔘 Dropdown clicked:', this.id);
-            const menu = this.nextElementSibling;
-            console.log('📋 Dropdown menu:', menu);
-            console.log('🎭 Menu classes:', menu?.className);
-            console.log('👁️ Menu display:', menu?.style.display);
-
-            // Force show dropdown if Bootstrap fails
-            setTimeout(() => {
-                if (menu && !menu.classList.contains('show')) {
-                    console.log('🔧 Forcing dropdown to show...');
-                    menu.classList.add('show');
-                    menu.style.display = 'block';
-                    menu.style.position = 'absolute';
-                    menu.style.zIndex = '99999';
-                    menu.style.bottom = '100%';
-                    menu.style.left = '0';
-                    menu.style.marginBottom = '5px';
-                }
-            }, 100);
-        });
-    });
-
-    // Alternative: Manual dropdown toggle as backup
+    // Handle click events
     document.addEventListener('click', function(e) {
-        // Check if click is on dropdown item (not trigger button)
-        if (e.target.closest('.dropdown-item')) {
-            console.log('🎯 Dropdown item clicked:', e.target);
-            return; // Let the item handle its own click
+        // Only handle clicks on dropdown toggle or items
+        if (!e.target.closest('.dropdown-toggle') && !e.target.closest('.dropdown-item')) {
+            return;
         }
 
-        if (e.target.closest('[data-bs-toggle="dropdown"]')) {
-            const trigger = e.target.closest('[data-bs-toggle="dropdown"]');
-            const menu = trigger.nextElementSibling;
-
-            console.log('🎯 Manual backup dropdown toggle for:', trigger.id);
-
-            if (menu && menu.classList.contains('dropdown-menu')) {
-                // Close all other dropdowns first
-                document.querySelectorAll('.dropdown-menu.show').forEach(otherMenu => {
-                    if (otherMenu !== menu) {
-                        otherMenu.classList.remove('show');
-                    }
-                });
-
-                // Toggle current dropdown
-                menu.classList.toggle('show');
-                console.log('📋 Manual toggle - menu now has show:', menu.classList.contains('show'));
+        // If clicking dropdown item
+        if (e.target.closest('.dropdown-item')) {
+            const btn = e.target.closest('.dropdown-item');
+            const status = btn.getAttribute('data-status');
+            const applicationId = btn.getAttribute('data-application-id');
+            
+            if (status) {
+                handleStatusClick(e, btn);
             }
-        } else {
-            // Click outside - close all dropdowns
-            document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
-                menu.classList.remove('show');
-            });
         }
     });
 });
