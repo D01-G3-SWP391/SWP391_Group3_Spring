@@ -1,9 +1,11 @@
 package com.example.swp391_d01_g3.controller.admin;
 
+import com.example.swp391_d01_g3.dto.BlogCreateDTO;
 import com.example.swp391_d01_g3.model.*;
 import com.example.swp391_d01_g3.service.admin.IAdminEmployerService;
 import com.example.swp391_d01_g3.service.admin.IAdminStudentService;
 import com.example.swp391_d01_g3.service.blog.IBlogService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +14,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 import java.util.Collections;
 import java.util.List;
@@ -55,6 +59,59 @@ public class Dashboard {
         return "redirect:/Admin/blogs";
     }
 
+    // CREATE NEW BLOG - GET Form
+    @GetMapping("/blogs/create")
+    public String createBlogForm(Model model) {
+        model.addAttribute("blogCreateDTO", new BlogCreateDTO());
+        model.addAttribute("resourceTypes", Resource.ResourceType.values());
+        model.addAttribute("statuses", BlogPost.BlogStatus.values());
+        model.addAttribute("allResources", blogService.getAllResources());
+        return "blog/createBlog";
+    }
+
+    // CREATE NEW BLOG - POST Submit with Server-side Validation
+    @PostMapping("/blogs/create")
+    public String createBlog(@Valid @ModelAttribute("blogCreateDTO") BlogCreateDTO blogCreateDTO,
+                            BindingResult bindingResult,
+                            Model model,
+                            RedirectAttributes redirectAttributes) {
+        
+        // Server-side validation
+        if (bindingResult.hasErrors()) {
+            // Return form with validation errors
+            model.addAttribute("resourceTypes", Resource.ResourceType.values());
+            model.addAttribute("statuses", BlogPost.BlogStatus.values());
+            model.addAttribute("allResources", blogService.getAllResources());
+            return "blog/createBlog";
+        }
+        
+        try {
+            // Convert DTO to entity
+            BlogPost newBlog = blogCreateDTO.toBlogPost();
+            
+            // Set resource if provided
+            if (blogCreateDTO.getResourceId() != null && blogCreateDTO.getResourceId() > 0) {
+                Resource resource = blogService.getAllResources().stream()
+                    .filter(r -> r.getResourceId().equals(blogCreateDTO.getResourceId()))
+                    .findFirst()
+                    .orElse(null);
+                newBlog.setResource(resource);
+            }
+            
+            // Create blog
+            blogService.createBlog(newBlog);
+            redirectAttributes.addFlashAttribute("success", "Tạo blog mới thành công!");
+            return "redirect:/Admin/blogs";
+            
+        } catch (Exception e) {
+            logger.error("Error creating blog: ", e);
+            model.addAttribute("error", "Có lỗi xảy ra khi tạo blog: " + e.getMessage());
+            model.addAttribute("resourceTypes", Resource.ResourceType.values());
+            model.addAttribute("statuses", BlogPost.BlogStatus.values());
+            model.addAttribute("allResources", blogService.getAllResources());
+            return "blog/createBlog";
+        }
+    }
 
     // Trang list blog với pagination
     @GetMapping("/blogs")
@@ -138,9 +195,9 @@ public class Dashboard {
     public String blogDetail(@PathVariable Long id, Model model) {
         BlogPost blog = blogService.getBlogPostById(id).orElse(null);
         if (blog == null) return "redirect:/admin/blogs";
-        List<BlogImage> images = blogService.getImagesForBlog(id);
+//        List<BlogImage> images = blogService.getImagesForBlog(id);
         model.addAttribute("blog", blog);
-        model.addAttribute("images", images);
+//        model.addAttribute("images", images);
         return "blog/detailBlog";
     }
 

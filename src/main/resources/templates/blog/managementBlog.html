@@ -151,10 +151,12 @@
                     <td>
                         <span th:if="${blog.resource != null}" class="resource-badge">
                             <i class="bi bi-link-45deg"></i>
-                            <span th:text="${blog.resource.resourceType}"></span>
+                            <span th:text="${blog.resource.resourceType.name() == 'interview_guide'} ? 'Hướng dẫn phỏng vấn' : 
+                                           (${blog.resource.resourceType.name() == 'application_tips'} ? 'Mẹo ứng tuyển' : 
+                                           (${blog.resource.resourceType.name() == 'quotes'} ? 'Câu nói hay' : ${blog.resource.resourceType.name()}))"></span>
                         </span>
                         <span th:if="${blog.resource == null}" class="text-muted">
-                            <i class="bi bi-x-circle"></i> No resource
+                            <i class="bi bi-x-circle"></i> Không có tài nguyên
                         </span>
                     </td>
                     <td>
