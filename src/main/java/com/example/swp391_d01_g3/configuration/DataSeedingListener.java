@@ -26,7 +26,7 @@ public class DataSeedingListener implements ApplicationListener<ContextRefreshed
                         Account.Role.admin,
                         Account.Status.active
                 );
-                Account savedAdmin = iAccountService.save(admin);
+                iAccountService.save(admin);
             } else {
             }
         } catch (Exception e) {

@@ -114,7 +114,7 @@
         <div class="col-md-6">
           <div class="info-row">
                         <span class="info-label">
-                            <i class="bi bi-geo-alt me-2"></i>Preferred Job Location
+                            <i class="bi bi-geo-alt me-2"></i>Preferred Job Location :
                         </span>
             <span class="info-value" th:text="${student.preferredJobAddress ?: 'Not specified'}"></span>
           </div>
@@ -128,7 +128,7 @@
         <i class="bi bi-file-text me-2"></i>Profile Description
       </h5>
       <div class="profile-description">
-        <p th:text="${student.profileDescription}"></p>
+        <p th:utext="${student.profileDescription}"></p>
       </div>
     </div>
 
@@ -138,7 +138,7 @@
         <i class="bi bi-briefcase me-2"></i>Experience
       </h5>
       <div class="experience-section">
-        <p th:text="${student.experience}"></p>
+        <p th:utext="${student.experience}"></p>
       </div>
     </div>
 
