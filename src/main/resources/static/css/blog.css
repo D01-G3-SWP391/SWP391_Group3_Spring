@@ -254,8 +254,6 @@ body {
     box-shadow: 0 6px 15px rgba(0,176,116,0.2);
 }
 
-
-
 /* Blog Grid Section */
 .blog-section {
     max-width: 1200px;
@@ -509,47 +507,51 @@ body {
     margin-bottom: 25px;
 }
 
-/* Pagination */
+/* Pagination Styles */
 .pagination {
-    margin-top: 60px;
-    display: flex;
+    margin-top: 40px;
     justify-content: center;
 }
 
-.pagination-container {
-    display: flex;
-    gap: 10px;
-}
-
-.pagination a {
+.pagination .page-link {
+    border: none;
+    color: var(--text-color);
+    padding: 8px 16px;
+    margin: 0 4px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 45px;
-    height: 45px;
-    border-radius: 12px;
-    background: white;
-    color: var(--text-color);
-    text-decoration: none;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    min-width: 40px;
+    height: 40px;
 }
 
-.pagination a:hover:not(.disabled) {
-    background: var(--primary);
-    color: white;
-    transform: translateY(-2px);
-}
-
-.pagination a.active {
+.pagination .page-item.active .page-link {
     background: var(--primary);
     color: white;
 }
 
-.pagination a.disabled {
+.pagination .page-link:hover {
+    background: var(--light);
+    color: var(--primary);
+}
+
+.pagination .page-item.disabled .page-link {
     opacity: 0.5;
     cursor: not-allowed;
+    pointer-events: none;
 }
+
+/* Remove old pagination styles */
+.pagination-wrapper,
+.simple-pagination,
+.bottom-pagination,
+.pagination-btn,
+.page-numbers {
+    display: none;
+}
+
 /* Sidebar Styling */
  .sidebar {
      background: #fff;
@@ -726,10 +728,6 @@ body {
     align-items: center;
     gap: 0.25rem;
 }
-
-
-
-
 
 /* Responsive Design Updates */
 @media (max-width: 991.98px) {

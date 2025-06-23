@@ -237,6 +237,12 @@ public class ChatController {
     @ResponseBody
     public ResponseEntity<List<ChatRoomDTO>> getUserChatRooms(Principal principal) {
         try {
+            // Check if user is authenticated
+            if (principal == null) {
+                log.warn("Unauthenticated request to /api/chat/rooms");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            
             // Get userId from email
             String email = principal.getName();
             Account account = accountService.findByEmail(email);
@@ -253,7 +259,7 @@ public class ChatController {
             
         } catch (Exception e) {
             log.error("Error getting user chat rooms: {}", e.getMessage());
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -266,6 +272,12 @@ public class ChatController {
     @ResponseBody
     public ResponseEntity<ChatRoomDTO> getOrCreateChatRoom(@RequestBody CreateChatRoomDTO createDTO, Principal principal) {
         try {
+            // Check if user is authenticated
+            if (principal == null) {
+                log.warn("Unauthenticated request to /api/chat/rooms");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+            
             // Get userId from email
             String email = principal.getName();
             Account account = accountService.findByEmail(email);
@@ -369,6 +381,37 @@ public class ChatController {
     }
 
     /**
+     * ✅ Mark all chat messages as read
+     */
+    @PostMapping("/api/chat/mark-all-read")
+    @ResponseBody
+    public ResponseEntity<Map<String, String>> markAllChatAsRead(Principal principal) {
+        Map<String, String> response = new HashMap<>();
+        
+        try {
+            Long userId = getUserIdFromPrincipal(principal);
+            String userType = determineUserType(userId);
+            
+            // Get all chat rooms for this user
+            List<ChatRoomDTO> chatRooms = chatService.getUserChatRooms(userId, userType);
+            
+            // Mark messages as read for each chat room
+            for (ChatRoomDTO chatRoom : chatRooms) {
+                chatService.markMessagesAsRead(chatRoom.getChatRoomId(), userId);
+            }
+            
+            log.info("Marked all chat messages as read for user: {}", userId);
+            response.put("status", "success");
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            log.error("Error marking all chat as read: {}", e.getMessage());
+            response.put("error", "Failed to mark all chat as read");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    /**
      * 📄 Lấy thông tin chat room cụ thể
      */
     @GetMapping("/api/chat/rooms/{roomId}")
@@ -452,6 +495,10 @@ public class ChatController {
      * Helper method để lấy userId từ Principal (email)
      */
     private Long getUserIdFromPrincipal(Principal principal) {
+        if (principal == null) {
+            throw new RuntimeException("User not authenticated - Principal is null");
+        }
+        
         String email = principal.getName();
         Account account = accountService.findByEmail(email);
         if (account == null) {

@@ -12,10 +12,10 @@ public class Resource {
     private Long resourceId;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "created_by", nullable = false)
+//    @JoinColumn(name = "created_by", nullable = true)
 //    private Account createdBy;
-//
-//
+
+    
     @Enumerated(EnumType.STRING)
     @Column(name = "resource_type")
     private ResourceType resourceType;
