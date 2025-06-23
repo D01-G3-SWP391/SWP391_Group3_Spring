@@ -351,8 +351,32 @@ public class EmployerDashboard {
         return "employee/viewListApplications";
     }
 
-
-
+    @GetMapping("/SearchCandidate")
+    public String searchCandidate(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Model model,
+            Authentication authentication) {
+        String employerEmail = authentication.getName();
+        Employer employer = employerService.findByEmail(employerEmail);
+        if (employer == null) {
+            return "redirect:/login";
+        }
+        Pageable pageable = PageRequest.of(page, size, Sort.by("appliedAt").descending());
+        Page<JobApplication> applications;
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            applications = iJobApplicationService.searchApplicationsByEmployerIdAndKeyword(
+                employer.getEmployerId(), keyword.trim(), pageable);
+            model.addAttribute("keyword", keyword);
+        } else {
+            applications = iJobApplicationService.getApplicationsByEmployerId(employer.getEmployerId(), pageable);
+        }
+        model.addAttribute("applications", applications);
+        model.addAttribute("statuses", JobApplication.ApplicationStatus.values());
+        model.addAttribute("isAuthenticated", authentication != null && authentication.isAuthenticated());
+        return "employee/searchCandidate";
+    }
 
     // DEPRECATED: Cập nhật trạng thái ứng viên - Đã chuyển sang JobPostController 
     // @PostMapping("/Applications/{applicationId}/updateStatus")

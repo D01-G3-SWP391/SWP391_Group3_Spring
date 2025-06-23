@@ -55,4 +55,17 @@ public interface IJobApplicationRepository extends JpaRepository<JobApplication,
         @Param("searchExperience") String searchExperience
     );
 
+    // Tìm kiếm ứng viên theo từ khóa (tên, email, kinh nghiệm) cho employer
+    @Query("SELECT ja FROM JobApplication ja " +
+           "JOIN FETCH ja.student s " +
+           "JOIN FETCH ja.jobPost jp " +
+           "WHERE jp.employer.employerId = :employerId " +
+           "AND (LOWER(ja.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+           "     OR LOWER(ja.email) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+           "     OR LOWER(ja.description) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+           "ORDER BY ja.appliedAt DESC")
+    Page<JobApplication> searchApplicationsByEmployerIdAndKeyword(@Param("employerId") Integer employerId,
+                                                                 @Param("keyword") String keyword,
+                                                                 Pageable pageable);
+
 }
