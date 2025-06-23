@@ -7,7 +7,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f8f9fd;
+    background: transparent;
     min-height: 100vh;
     color: #2c3e50;
 }
@@ -124,12 +124,12 @@ body {
 
 /* ===== TABLE CONTAINER ===== */
 .table-container {
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    padding: 24px;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
     margin-bottom: 40px;
-    border: 1px solid rgba(108, 58, 230, 0.1);
+    border: none;
     width: 100%;
     margin-left: auto;
     margin-right: auto;
@@ -158,13 +158,13 @@ table {
     border-collapse: separate;
     border-spacing: 0;
     margin: 20px auto;
-    background: white;
-    border-radius: 15px;
+    background: transparent;
+    border-radius: 0;
     overflow: hidden;
 }
 
 table thead {
-    background: #6c3ae6;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
     color: white;
 }
 

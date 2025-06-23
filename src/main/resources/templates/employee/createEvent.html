@@ -17,7 +17,7 @@
 <div th:replace="~{navbar/navbarEmployee :: navbarEmployee}"></div>
 
 <div class="main-content">
-    <div class="container">
+    <div class="page-container">
         <div class="form-card">
             <!-- Thông báo thành công -->
             <div th:if="${successMsg}" class="alert alert-success" role="alert" style="font-size:1.1rem;">
@@ -64,6 +64,7 @@
                         <div class="col-md-6">
                             <label for="registrationDeadline" class="form-label">Hạn đăng ký</label>
                             <input type="datetime-local" th:field="*{registrationDeadline}" class="form-control" id="registrationDeadline" />
+                            <div th:if="${#fields.hasErrors('registrationDeadline')}" th:errors="*{registrationDeadline}" class="text-danger"></div>
                         </div>
                     </div>
                     <div class="mb-3 mt-3">

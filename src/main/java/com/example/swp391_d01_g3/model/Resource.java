@@ -11,9 +11,15 @@ public class Resource {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long resourceId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", nullable = false)
+    private Account createdBy;
+
+    
     @Enumerated(EnumType.STRING)
     @Column(name = "resource_type")
     private ResourceType resourceType;
+
 
     public enum ResourceType {
         interview_guide, application_tips, quotes
@@ -38,6 +44,14 @@ public class Resource {
         this.resourceId = resourceId;
     }
 
+    public Account getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(Account createdBy) {
+        this.createdBy = createdBy;
+    }
+
     public ResourceType getResourceType() {
         return resourceType;
     }
@@ -45,4 +59,5 @@ public class Resource {
     public void setResourceType(ResourceType resourceType) {
         this.resourceType = resourceType;
     }
+
 }

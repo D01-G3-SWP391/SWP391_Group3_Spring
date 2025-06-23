@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 @RequestMapping("/Employer/Events")
@@ -44,7 +45,23 @@ public class EmployerEventController {
         model.addAttribute("account", accountService.findByEmail(email));
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Event> eventsPage = eventService.findByEmployer(employer, pageable);
+        
+        // Calculate statistics from ALL events of this employer (not just current page)
+        List<Event> allEmployerEvents = eventService.findAllEventsByEmployer(employer);
+        
+        long totalEvents = allEmployerEvents.size();
+        long activeEvents = allEmployerEvents.stream()
+                .filter(event -> event.getEventStatus() == Event.EventStatus.ACTIVE)
+                .count();
+        long pendingEvents = allEmployerEvents.stream()
+                .filter(event -> event.getApprovalStatus() == Event.ApprovalStatus.PENDING)
+                .count();
+        
         model.addAttribute("eventsPage", eventsPage);
+        model.addAttribute("totalEvents", totalEvents);
+        model.addAttribute("activeEvents", activeEvents);
+        model.addAttribute("pendingEvents", pendingEvents);
+        
         return "employee/eventList";
     }
 
@@ -65,6 +82,16 @@ public class EmployerEventController {
                               Principal principal,
                               Model model,
                               RedirectAttributes ra) {
+        
+        // Custom validation: Hạn đăng ký phải nhỏ hơn ngày tổ chức
+        if (eventDto.getRegistrationDeadline() != null && eventDto.getEventDate() != null) {
+            if (eventDto.getRegistrationDeadline().isAfter(eventDto.getEventDate()) || 
+                eventDto.getRegistrationDeadline().isEqual(eventDto.getEventDate())) {
+                result.rejectValue("registrationDeadline", "error.registrationDeadline", 
+                    "Hạn đăng ký phải nhỏ hơn ngày tổ chức sự kiện");
+            }
+        }
+        
         if (result.hasErrors()) {
             // Thêm account cho navbar trong trường hợp lỗi
             model.addAttribute("account", accountService.findByEmail(principal.getName()));
@@ -131,6 +158,16 @@ public class EmployerEventController {
             ra.addFlashAttribute("errorMsg", "Không tìm thấy sự kiện hoặc bạn không có quyền chỉnh sửa!");
             return "redirect:/Employer/Events";
         }
+        
+        // Custom validation: Hạn đăng ký phải nhỏ hơn ngày tổ chức
+        if (eventDto.getRegistrationDeadline() != null && eventDto.getEventDate() != null) {
+            if (eventDto.getRegistrationDeadline().isAfter(eventDto.getEventDate()) || 
+                eventDto.getRegistrationDeadline().isEqual(eventDto.getEventDate())) {
+                result.rejectValue("registrationDeadline", "error.registrationDeadline", 
+                    "Hạn đăng ký phải nhỏ hơn ngày tổ chức sự kiện");
+            }
+        }
+        
         if (result.hasErrors()) {
             model.addAttribute("eventId", eventId);
             // Thêm account cho navbar trong trường hợp lỗi
@@ -206,5 +243,22 @@ public class EmployerEventController {
         ra.addFlashAttribute("successMsg", "Đã hiện sự kiện thành công!");
         
         return "redirect:/Employer/Events";
+    }
+
+    // View event details
+    @GetMapping("/Details/{eventId}")
+    public String viewEventDetails(@PathVariable Integer eventId, Principal principal, Model model, RedirectAttributes ra) {
+        String email = principal.getName();
+        Employer employer = employerService.findByEmail(email);
+        Event event = eventService.findById(eventId);
+        
+        // Kiểm tra event tồn tại và thuộc về employer
+        if (event == null || !event.getEmployer().getEmployerId().equals(employer.getEmployerId())) {
+            ra.addFlashAttribute("errorMsg", "Không tìm thấy sự kiện hoặc bạn không có quyền xem!");
+            return "redirect:/Employer/Events";
+        }
+        
+        model.addAttribute("event", event);
+        return "employee/eventDetails";
     }
 } 

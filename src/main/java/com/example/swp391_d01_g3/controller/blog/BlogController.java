@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,13 +32,14 @@ public class BlogController {
      */
     @GetMapping
     public String blogList(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "6") int size,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "3") int size,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String search,
             Model model, Principal principal) {
         
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        // Convert 1-based page to 0-based for Spring Data
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("createdAt").descending());
         Page<BlogPost> blogPosts;
         
         // Lọc theo category và search
@@ -86,7 +86,7 @@ public class BlogController {
             Account account = accountService.findByEmail(principal.getName());
             model.addAttribute("account", account);
         }
-        return "blog/blog-list";
+        return "blog/blogPost";
     }
 
     /**
@@ -131,11 +131,12 @@ public class BlogController {
     @GetMapping("/api/load-more")
     @ResponseBody
     public Page<BlogPost> loadMorePosts(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "6") int size,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "3") int size,
             @RequestParam(required = false) String category) {
         
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        // Convert 1-based page to 0-based for Spring Data
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("createdAt").descending());
         
         if (category != null && !category.isEmpty()) {
             return blogService.findByCategory(category, pageable);
