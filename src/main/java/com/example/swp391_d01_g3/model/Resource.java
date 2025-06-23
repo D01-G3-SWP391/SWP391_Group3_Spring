@@ -11,11 +11,11 @@ public class Resource {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long resourceId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by", nullable = false)
-    private Account createdBy;
-
-    
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "created_by", nullable = false)
+//    private Account createdBy;
+//
+//
     @Enumerated(EnumType.STRING)
     @Column(name = "resource_type")
     private ResourceType resourceType;
@@ -44,13 +44,13 @@ public class Resource {
         this.resourceId = resourceId;
     }
 
-    public Account getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(Account createdBy) {
-        this.createdBy = createdBy;
-    }
+//    public Account getCreatedBy() {
+//        return createdBy;
+//    }
+//
+//    public void setCreatedBy(Account createdBy) {
+//        this.createdBy = createdBy;
+//    }
 
     public ResourceType getResourceType() {
         return resourceType;
