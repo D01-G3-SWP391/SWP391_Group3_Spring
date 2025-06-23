@@ -1,8 +1,10 @@
 package com.example.swp391_d01_g3.controller.blog;
 
+import com.example.swp391_d01_g3.model.Account;
 import com.example.swp391_d01_g3.service.blog.IBlogService;
 import com.example.swp391_d01_g3.model.BlogPost;
 import com.example.swp391_d01_g3.model.Resource;
+import com.example.swp391_d01_g3.service.security.IAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +23,9 @@ public class BlogController {
 
     @Autowired
     private IBlogService blogService;
+    
+    @Autowired
+    private IAccountService accountService;
 
     /**
      * Hiển thị danh sách blog posts với phân trang và lọc
@@ -78,6 +83,8 @@ public class BlogController {
         model.addAttribute("totalElements", blogPosts.getTotalElements());
         if (principal != null) {
             model.addAttribute("userEmail", principal.getName());
+            Account account = accountService.findByEmail(principal.getName());
+            model.addAttribute("account", account);
         }
         return "blog/blogPost";
     }
@@ -111,6 +118,8 @@ public class BlogController {
         model.addAttribute("previousPost", previousPost.orElse(null));
         if (principal != null) {
             model.addAttribute("userEmail", principal.getName());
+            Account account = accountService.findByEmail(principal.getName());
+            model.addAttribute("account", account);
         }
         
         return "blog/blog-detail";

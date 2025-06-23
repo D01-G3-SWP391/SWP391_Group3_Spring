@@ -35,7 +35,7 @@
                 <!-- Card Header -->
                 <div class="card-header-section">
                     <div class="company-logo">
-                        <img th:src="${job.employer.logoUrl}"
+                                                        <img th:src="${job.employer.account.avatarUrl}"
                              th:alt="${job.employer.companyName}"
                              class="logo-img"
                              onerror="this.style.display='none'; this.parentElement.querySelector('.logo-fallback').style.display='flex';">
@@ -128,6 +128,8 @@
         </div>
     </div>
 </div>
+<div th:replace="fragments/why-choose-us :: why-choose-us-section"></div>
+
 
 <!-- Footer -->
 <div th:replace="~{fragments/footer :: footer}"></div>

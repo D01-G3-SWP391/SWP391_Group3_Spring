@@ -9,6 +9,7 @@
     <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
     <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
     <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
+    <link rel="stylesheet" th:href="@{/css/pagination.css}">
 </head>
 <body>
 <div th:replace="~{navbar/navbarAdmin :: navbarAdmin}"></div>
@@ -30,9 +31,45 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
-        <!-- Search Form - SỬA: Cấu trúc HTML và sử dụng .btn-equal -->
+        <!-- Enhanced Status Filter Badges với số lượng -->
+        <div class="status-filter-container">
+            <h6>Filter by Status</h6>
+            <div class="status-filter-badges">
+                <a th:href="@{/Admin/ListStudent}"
+                   th:class="${selectedStatus == null or selectedStatus == ''} ? 'status-filter-badge all active' : 'status-filter-badge all'">
+                    <div class="badge-content">
+                        <div class="badge-text">
+                            <i class="bi bi-people-fill"></i>All Students
+                        </div>
+                        <span class="badge-count" th:text="'(' + ${totalStudents} + ')'"></span>
+                    </div>
+                </a>
+
+                <a th:href="@{/Admin/ListStudent(status='active', keyword=${keyword})}"
+                   th:class="${selectedStatus == 'active'} ? 'status-filter-badge success active' : 'status-filter-badge success'">
+                    <div class="badge-content">
+                        <div class="badge-text">
+                            <i class="bi bi-check-circle-fill"></i>Active
+                        </div>
+                        <span class="badge-count" th:text="'(' + ${activeStudents} + ')'"></span>
+                    </div>
+                </a>
+
+                <a th:href="@{/Admin/ListStudent(status='inactive', keyword=${keyword})}"
+                   th:class="${selectedStatus == 'inactive'} ? 'status-filter-badge danger active' : 'status-filter-badge danger'">
+                    <div class="badge-content">
+                        <div class="badge-text">
+                            <i class="bi bi-x-circle-fill"></i>Banned
+                        </div>
+                        <span class="badge-count" th:text="'(' + ${bannedStudents} + ')'"></span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Search Form -->
         <form method="get" class="row g-3 mb-4 filter-form">
-            <div class="col-md-8">
+            <div class="col-md-6">
                 <input class="form-control" name="keyword"
                        th:value="${keyword}"
                        placeholder="Search by name, email or phone..." />
@@ -53,6 +90,8 @@
                 Showing <strong th:text="${currentPage * 6 + 1}"></strong> to
                 <strong th:text="${currentPage * 6 + #lists.size(studentList)}"></strong>
                 of <strong th:text="${totalItems}"></strong> students
+                <span th:if="${selectedStatus != null and selectedStatus != ''}"
+                      th:text="'(' + ${selectedStatus} + ')'" class="text-primary"></span>
             </span>
             <span class="text-muted" th:if="${totalPages > 1}">
                 Page <strong th:text="${currentPage + 1}"></strong> of <strong th:text="${totalPages}"></strong>
@@ -85,35 +124,37 @@
                     <td th:text="${student.email}"></td>
                     <td th:text="${student.phone}"></td>
                     <td>
-                        <!-- SỬA: Cải thiện logic hiển thị status -->
-                        <span th:class="${student.status.name() == 'active' ? 'status-active' : 'status-banned'}"
-                              th:text="${student.status.name() == 'active' ? 'Active' : 'Banned'}"></span>
+                        <!-- Clickable Status Badges -->
+                        <a th:href="@{/Admin/ListStudent(status=${student.status.name()}, keyword=${keyword})}"
+                           th:class="${student.status.name() == 'active' ? 'clickable-status status-active' : 'clickable-status status-banned'}"
+                           th:text="${student.status.name() == 'active' ? 'Active' : 'Banned'}"></a>
                     </td>
                     <td>
                         <div class="action-btns">
-                            <a th:href="@{/Admin/student/{id}(id=${student.userId})}"
-                               class="btn btn-sm btn-primary">
-                                <i class="bi bi-eye"></i> View
-                            </a>
+                            <div class="action-btns-top">
+                                <a th:href="@{/Admin/student/{id}(id=${student.userId})}"
+                                   class="btn btn-sm btn-primary">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
 
-                            <!-- SỬA: Thêm confirmation cho Ban/Unban actions -->
-                            <form th:if="${student.status.name() == 'active'}"
-                                  th:action="@{/Admin/banStudent/{id}(id=${student.userId})}"
-                                  method="post" style="display: inline;"
-                                  onsubmit="return confirm('Are you sure you want to ban this student?')">
-                                <button type="submit" class="btn btn-sm btn-danger">
-                                    <i class="bi bi-person-x"></i> Ban
-                                </button>
-                            </form>
+                                <form th:if="${student.status.name() == 'active'}"
+                                      th:action="@{/Admin/banStudent/{id}(id=${student.userId})}"
+                                      method="post" style="display: inline;"
+                                      onsubmit="return confirm('Are you sure you want to ban this student?')">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-person-x"></i> Ban
+                                    </button>
+                                </form>
 
-                            <form th:if="${student.status.name() == 'inactive'}"
-                                  th:action="@{/Admin/unbanStudent/{id}(id=${student.userId})}"
-                                  method="post" style="display: inline;"
-                                  onsubmit="return confirm('Are you sure you want to unban this student?')">
-                                <button type="submit" class="btn btn-sm btn-success">
-                                    <i class="bi bi-person-check"></i> Unban
-                                </button>
-                            </form>
+                                <form th:if="${student.status.name() == 'inactive'}"
+                                      th:action="@{/Admin/unbanStudent/{id}(id=${student.userId})}"
+                                      method="post" style="display: inline;"
+                                      onsubmit="return confirm('Are you sure you want to unban this student?')">
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        <i class="bi bi-person-check"></i> Unban
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </td>
                 </tr>
@@ -128,34 +169,53 @@
             <p class="text-muted">Try adjusting your search criteria</p>
         </div>
 
+        <!-- Pagination Info -->
+        <div th:if="${totalItems > 0}" class="pagination-info">
+            Showing <strong th:text="${currentPage * 6 + 1}"></strong> to
+            <strong th:text="${currentPage * 6 + #lists.size(studentList)}"></strong>
+            of <strong th:text="${totalItems}"></strong> students
+        </div>
+
         <!-- Pagination -->
-        <nav aria-label="Page navigation" th:if="${totalPages > 1}">
-            <ul class="pagination justify-content-center">
-                <!-- Previous Page -->
-                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                    <a class="page-link"
-                       th:href="@{/Admin/ListStudent(page=${currentPage - 1}, keyword=${keyword})}">
-                        <i class="bi bi-chevron-left"></i> Previous
+        <nav aria-label="Page navigation" th:if="${totalPages != null and totalPages > 1}">
+            <div class="bottom-pagination">
+                <div class="pagination-wrapper">
+                    <!-- Previous button -->
+                    <a th:if="${hasPrevious}"
+                       th:href="@{/Admin/ListStudent(page=${currentPage - 1}, keyword=${keyword}, status=${selectedStatus})}"
+                       class="pagination-btn prev-btn">
+                        <i class="bi bi-chevron-left"></i>
+                        <span>Previous</span>
                     </a>
-                </li>
+                    <span th:unless="${hasPrevious}" class="pagination-btn prev-btn disabled">
+                        <i class="bi bi-chevron-left"></i>
+                        <span>Previous</span>
+                    </span>
 
-                <!-- Page Numbers -->
-                <li class="page-item"
-                    th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
-                    th:classappend="${pageNum == currentPage} ? 'active'">
-                    <a class="page-link"
-                       th:href="@{/Admin/ListStudent(page=${pageNum}, keyword=${keyword})}"
-                       th:text="${pageNum + 1}"></a>
-                </li>
+                    <div class="page-numbers">
+                        <th:block th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}">
+                            <a th:if="${pageNum >= currentPage - 2 and pageNum <= currentPage + 2 and pageNum != currentPage}"
+                               th:href="@{/Admin/ListStudent(page=${pageNum}, keyword=${keyword}, status=${selectedStatus})}"
+                               class="page-number"
+                               th:text="${pageNum + 1}">1</a>
+                            <span th:if="${pageNum >= currentPage - 2 and pageNum <= currentPage + 2 and pageNum == currentPage}"
+                                  class="page-number active"
+                                  th:text="${pageNum + 1}">1</span>
+                        </th:block>
+                    </div>
 
-                <!-- Next Page -->
-                <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
-                    <a class="page-link"
-                       th:href="@{/Admin/ListStudent(page=${currentPage + 1}, keyword=${keyword})}">
-                        Next <i class="bi bi-chevron-right"></i>
+                    <a th:if="${hasNext}"
+                       th:href="@{/Admin/ListStudent(page=${currentPage + 1}, keyword=${keyword}, status=${selectedStatus})}"
+                       class="pagination-btn next-btn">
+                        <span>Next</span>
+                        <i class="bi bi-chevron-right"></i>
                     </a>
-                </li>
-            </ul>
+                    <span th:unless="${hasNext}" class="pagination-btn next-btn disabled">
+                        <span>Next</span>
+                        <i class="bi bi-chevron-right"></i>
+                    </span>
+                </div>
+            </div>
         </nav>
     </div>
 </div>

@@ -8,10 +8,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
     <link rel="stylesheet" th:href="@{/css/navbarStudent_Employer.css}"/>
     <link rel="stylesheet" th:href="@{/css/reportDetail.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbarStudent.css}" />
+    <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
 </head>
 <body>
 <div th:replace="~{navbar/navbarEmployee :: navbarEmployee}" th:if="${userRole == 'EMPLOYER'}"></div>
-<div th:replace="~{navbar/navbarStudent :: navbarAdmin}" th:if="${userRole == 'STUDENT'}"></div>
+<div th:replace="~{navbar/navbarStudent :: navbarStudent}" th:if="${userRole == 'STUDENT'}"></div>
 <script src="/js/navbarAdmin.js"></script>
 
 <div class="main-content">
@@ -199,5 +201,7 @@
         }
     }
 </script>
+<script th:src="@{/js/language-dropdown.js}"></script>
+
 </body>
 </html>

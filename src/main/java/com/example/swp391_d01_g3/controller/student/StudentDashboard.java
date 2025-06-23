@@ -57,7 +57,12 @@ public class StudentDashboard {
     private CloudinaryService cloudinaryService;
 
     @GetMapping("")
-    public String showStudentDashboard() {
+    public String showStudentDashboard(Model model, Principal principal) {
+        if (principal != null) {
+            String email = principal.getName();
+            Account account = IAccountService.findByEmail(email);
+            model.addAttribute("account", account);
+        }
         return "student/dashboardStudent";
     }
 
@@ -119,6 +124,7 @@ public class StudentDashboard {
             }
             model.addAttribute("studentProfileDTO", studentProfileDTO);
             model.addAttribute("email",studentAccount.getEmail());
+            model.addAttribute("account", studentAccount);
         }
         return "student/editStudentProfile";
     }
@@ -201,6 +207,7 @@ public class StudentDashboard {
             if (currentAccount != null) {
                 Student student = studentService.findByAccountUserId(currentAccount.getUserId());
                 model.addAttribute("currentAccount", currentAccount);
+                model.addAttribute("account", currentAccount);
                 model.addAttribute("student",student);
             }
         }

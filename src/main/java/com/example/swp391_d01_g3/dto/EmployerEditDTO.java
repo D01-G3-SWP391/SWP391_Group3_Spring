@@ -55,12 +55,12 @@ public class EmployerEditDTO {
             this.fullName = account.getFullName();
             this.email = account.getEmail();
             this.phone = account.getPhone();
+            this.logoUrl = account.getAvatarUrl(); // Lấy logo từ account.avatarUrl
         }
         if (employer != null) {
             this.companyName = employer.getCompanyName();
             this.companyAddress = employer.getCompanyAddress();
             this.companyDescription = employer.getCompanyDescription();
-            this.logoUrl = employer.getLogoUrl();
             if (employer.getJobField() != null) {
                 this.jobsFieldId = employer.getJobField().getJobFieldId();
             }

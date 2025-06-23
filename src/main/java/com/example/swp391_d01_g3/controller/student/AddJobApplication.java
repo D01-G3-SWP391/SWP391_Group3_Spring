@@ -204,8 +204,6 @@ public class AddJobApplication {
                 "NEW_APPLICATION",
                 jobApplication.getApplicationId().longValue()
             );
-
-            redirectAttributes.addFlashAttribute("success", "Đơn ứng tuyển đã được gửi thành công!");
             return "redirect:/";
 
         } catch (Exception e) {

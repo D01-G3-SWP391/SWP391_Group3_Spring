@@ -82,7 +82,7 @@
                     <div class="job-hero-left">
                         <div class="company-logo-large">
                             <img
-                                th:src="${job.employer.logoUrl}"
+                                th:src="${job.employer.account.avatarUrl}"
                                 th:alt="${job.employer.companyName}"
                                 onerror="this.style.display='none'; this.parentElement.classList.add('default-logo'); this.parentElement.innerHTML='<span>' + this.alt.charAt(0).toUpperCase() + '</span>';"
                             />
@@ -259,7 +259,7 @@
                                     <div class="company-basic-info">
                                         <div class="company-logo-info">
                                             <img
-                                                th:src="${job.employer.logoUrl}"
+                                                th:src="${job.employer.account.avatarUrl}"
                                                 th:alt="${job.employer.companyName}"
                                                 onerror="this.style.display='none'; this.parentElement.classList.add('default-logo'); this.parentElement.innerHTML='<span>' + this.alt.charAt(0).toUpperCase() + '</span>';"
                                             />
@@ -285,7 +285,7 @@
                         <div class="company-sidebar-details">
                             <div class="company-sidebar-logo">
                                 <img
-                                    th:src="${job.employer.logoUrl}"
+                                    th:src="${job.employer.account.avatarUrl}"
                                     th:alt="${job.employer.companyName}"
                                     onerror="this.style.display='none'; this.parentElement.classList.add('default-logo'); this.parentElement.innerHTML='<span>' + this.alt.charAt(0).toUpperCase() + '</span>';"
                                 />
@@ -309,43 +309,10 @@
     </section>
 
     <!-- Related Jobs Section (similar to other pages) -->
-    <section class="why-choose-us">
-        <div class="section-header">
-            <h2 th:text="#{job.description.whyChoose}">Tại sao chọn Job4You?</h2>
-        </div>
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-briefcase"></i>
-                </div>
-                <h3 th:text="#{job.description.feature1.title}">Hàng nghìn việc làm</h3>
-                <p th:text="#{job.description.feature1.desc}">Cơ hội việc làm đa dạng từ các công ty hàng đầu</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-users"></i>
-                </div>
-                <h3 th:text="#{job.description.feature2.title}">Nhà tuyển dụng uy tín</h3>
-                <p th:text="#{job.description.feature2.desc}">Kết nối với các công ty được xác minh và đáng tin cậy</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <h3 th:text="#{job.description.feature3.title}">Phát triển sự nghiệp</h3>
-                <p th:text="#{job.description.feature3.desc}">Công cụ và tài nguyên hỗ trợ phát triển nghề nghiệp</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-                <h3 th:text="#{job.description.feature4.title}">An toàn & bảo mật</h3>
-                <p th:text="#{job.description.feature4.desc}">Thông tin cá nhân được bảo vệ tuyệt đối</p>
-            </div>
-        </div>
-    </section>
+<div th:replace="fragments/why-choose-us :: why-choose-us-section"></div>
 
-    <!-- Footer (reuse from other templates) -->
+
+<!-- Footer (reuse from other templates) -->
 <div th:replace="~{fragments/footer :: footer}"></div>
 
 

@@ -10,6 +10,7 @@ import com.example.swp391_d01_g3.service.jobapplication.IJobApplicationService;
 import com.example.swp391_d01_g3.service.email.EmailService;
 import com.example.swp391_d01_g3.service.interview.IInterViewService;
 import com.example.swp391_d01_g3.service.notification.INotificationService;
+import com.example.swp391_d01_g3.service.security.IAccountService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,7 +24,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 
 import java.security.Principal;
 import java.time.LocalDate;
@@ -56,6 +56,9 @@ public class JobPostController {
     @Autowired
     private INotificationService notificationService;
 
+    @Autowired
+    private IAccountService accountService;
+
     @PostMapping("/CreateJobPost")
     public String createJobPost(
             @ModelAttribute("jobPostDTO") @Valid JobPostDTO dto,
@@ -65,6 +68,8 @@ public class JobPostController {
             RedirectAttributes ra
     ) {
         if (result.hasErrors()) {
+            // Thêm account cho navbar trong trường hợp lỗi
+            model.addAttribute("account", accountService.findByEmail(principal.getName()));
             model.addAttribute("jobFields", iJobfieldService.findAll());
             model.addAttribute("jobTypes", JobPost.JobType.values());
             return "employee/createJobPost";
@@ -92,7 +97,10 @@ public class JobPostController {
         return "redirect:/Employer/JobPosts";
     }
     @GetMapping("/CreateJobPost")
-    public String showCreateForm(Model model) {
+    public String showCreateForm(Principal principal, Model model) {
+        if (principal != null) {
+            model.addAttribute("account", accountService.findByEmail(principal.getName()));
+        }
         model.addAttribute("jobPostDTO", new JobPostDTO());
         model.addAttribute("jobFields", iJobfieldService.findAll());
         model.addAttribute("jobTypes", JobPost.JobType.values());
@@ -129,7 +137,10 @@ public class JobPostController {
 
 
     @GetMapping("/EditJobPost/{jobPostId}")
-    public String showEditForm(@PathVariable("jobPostId") Integer jobPostId, Model model) {
+    public String showEditForm(@PathVariable("jobPostId") Integer jobPostId, Principal principal, Model model) {
+        if (principal != null) {
+            model.addAttribute("account", accountService.findByEmail(principal.getName()));
+        }
         JobPost jobPost = iJobpostService.findById(jobPostId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid JobPost Id: " + jobPostId));
 
@@ -192,6 +203,8 @@ public class JobPostController {
             return "redirect:/Employer/JobPosts";
         }
         List<JobApplication> applications = iJobApplicationService.findByJobPostId(jobPostId);
+        // Thêm account cho navbar
+        model.addAttribute("account", accountService.findByEmail(principal.getName()));
         model.addAttribute("jobPost", jobPost);
         model.addAttribute("applications", applications);
         model.addAttribute("totalApplications", applications.size());
@@ -225,46 +238,46 @@ public class JobPostController {
 
             JobApplication.ApplicationStatus newStatus = JobApplication.ApplicationStatus.valueOf(status);
             iJobApplicationService.updateApplicationStatus(applicationId, newStatus);
-            
+
             // Gửi email cho ACCEPTED và REJECTED
             if (newStatus == JobApplication.ApplicationStatus.ACCEPTED || newStatus == JobApplication.ApplicationStatus.REJECTED) {
                 String candidateEmail = application.getEmail();
                 String candidateName = application.getFullName();
                 String jobTitle = application.getJobPost().getJobTitle();
                 String companyName = employer.getCompanyName();
-                
+
                 if (newStatus == JobApplication.ApplicationStatus.ACCEPTED) {
                     emailService.sendApplicationAcceptedEmail(candidateEmail, candidateName, jobTitle, companyName);
                 } else if (newStatus == JobApplication.ApplicationStatus.REJECTED) {
                     emailService.sendApplicationRejectedEmail(candidateEmail, candidateName, jobTitle, companyName);
                 }
             }
-            
+
             // Tạo thông báo cho ứng viên
             String notificationTitle = "Cập nhật trạng thái ứng tuyển";
             String notificationMessage = "";
             String notificationType = "APPLICATION_STATUS_UPDATE";
-            
+
             switch (newStatus) {
                 case SUBMITTED:
-                    notificationMessage = "Đơn ứng tuyển của bạn cho vị trí " + application.getJobPost().getJobTitle() + 
+                    notificationMessage = "Đơn ứng tuyển của bạn cho vị trí " + application.getJobPost().getJobTitle() +
                                         " đã được gửi thành công và đang chờ xét duyệt.";
                     break;
                 case INTERVIEW:
-                    notificationMessage = "Đơn ứng tuyển của bạn cho vị trí " + application.getJobPost().getJobTitle() + 
+                    notificationMessage = "Đơn ứng tuyển của bạn cho vị trí " + application.getJobPost().getJobTitle() +
                                         " đã chuyển sang giai đoạn phỏng vấn.";
                     notificationType = "INTERVIEW_SCHEDULE";
                     break;
                 case ACCEPTED:
-                    notificationMessage = "Chúc mừng! Bạn đã vượt qua phỏng vấn cho vị trí " + application.getJobPost().getJobTitle() + 
+                    notificationMessage = "Chúc mừng! Bạn đã vượt qua phỏng vấn cho vị trí " + application.getJobPost().getJobTitle() +
                                         " tại " + employer.getCompanyName() + ".";
                     break;
                 case REJECTED:
-                    notificationMessage = "Rất tiếc, đơn ứng tuyển của bạn cho vị trí " + application.getJobPost().getJobTitle() + 
+                    notificationMessage = "Rất tiếc, đơn ứng tuyển của bạn cho vị trí " + application.getJobPost().getJobTitle() +
                                         " tại " + employer.getCompanyName() + " chưa phù hợp lần này.";
                     break;
             }
-            
+
             // Gửi thông báo cho student
             notificationService.createNotification(
                 application.getStudent().getAccount(),
@@ -273,7 +286,7 @@ public class JobPostController {
                 notificationType,
                 application.getApplicationId().longValue()
             );
-            
+
             redirectAttributes.addFlashAttribute("successMessage", "Cập nhật trạng thái thành công!");
 
         } catch (Exception e) {
@@ -299,13 +312,13 @@ public class JobPostController {
             Employer employer = iEmployerService.findByEmail(employerEmail);
             JobApplication application = iJobApplicationService.findById(applicationId)
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn ứng tuyển"));
-            
+
             // Kiểm tra quyền
             if (!application.getJobPost().getEmployer().getEmployerId().equals(employer.getEmployerId())) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Bạn không có quyền thực hiện hành động này!");
                 return "redirect:/Employer/JobPosts/" + jobPostId + "/applications";
             }
-            
+
             // Lưu lịch phỏng vấn
             Interview interview = new Interview();
             interview.setJobApplication(application);
@@ -316,17 +329,17 @@ public class JobPostController {
             LocalDateTime interviewDate = LocalDateTime.parse(interviewTime);
             interview.setInterviewDate(interviewDate);
             iInterViewService.save(interview);
-            
+
             // Gửi email
             String candidateEmail = application.getEmail();
             String candidateName = application.getFullName();
             String jobTitle = application.getJobPost().getJobTitle();
-            
+
             emailService.sendInterviewScheduleEmail(candidateEmail, candidateName, jobTitle, interviewTime, interviewType, meetingLink, note);
-            
+
             // Cập nhật trạng thái
             iJobApplicationService.updateApplicationStatus(applicationId, JobApplication.ApplicationStatus.INTERVIEW);
-            
+
             // Tạo thông báo
             notificationService.createNotification(
                     application.getStudent().getAccount(),
@@ -339,12 +352,12 @@ public class JobPostController {
                     "NEW_APPLICATION",
                     application.getApplicationId().longValue()
             );
-            
+
             redirectAttributes.addFlashAttribute("successMessage", "Đã gửi lịch phỏng vấn cho ứng viên!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi gửi lịch phỏng vấn!");
         }
-        
+
         return "redirect:/Employer/JobPosts/" + jobPostId + "/applications";
     }
 }

@@ -111,7 +111,9 @@ public class EmailVerificationController {
                     employer.setCompanyName(pendingRegistration.getCompanyName());
                     employer.setCompanyAddress(pendingRegistration.getCompanyAddress());
                     employer.setCompanyDescription(pendingRegistration.getCompanyDescription());
-                    employer.setLogoUrl(pendingRegistration.getLogoUrl());
+                    // Lưu logo vào account.avatarUrl thay vì employer.logoUrl
+                    savedAccount.setAvatarUrl(pendingRegistration.getLogoUrl());
+                    accountService.save(savedAccount);
                     employer.setAccount(savedAccount);
                     
                     // Set JobField

@@ -61,13 +61,8 @@ public class JobsDescription {
                     // Kiểm tra xem student đã apply vào job này chưa
                     boolean hasApplied = jobApplicationService.hasStudentAppliedToJob(studentDetails.getStudentId(), id);
                     model.addAttribute("hasApplied", hasApplied);
-                    
-                    System.out.println("Student ID: " + studentDetails.getStudentId());
-                    System.out.println("Has Applied: " + hasApplied);
                 }
-                // Không redirect nếu không phải student - cho phép tất cả role xem
             } else {
-                // Nếu không tìm thấy account, redirect về trang login
                 return "redirect:/Login";
             }
         }
