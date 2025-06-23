@@ -1,166 +1,145 @@
-/* Create Blog Form Styles */
-.create-blog-bg {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
+/* General Body Style */
+body {
+    background-color: #f8f9fa; /* Light gray background, common for admin panels */
 }
 
+/* Main Content Wrapper */
 .main-content {
-    padding-top: 100px;
-    padding-bottom: 50px;
+    padding-top: 80px; /* Adjust if navbar height changes */
+    padding-bottom: 40px;
 }
 
+/* Header Section */
 .create-blog-header {
     margin-bottom: 2rem;
+    text-align: center;
 }
 
 .create-blog-header h2 {
-    color: white;
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    color: #343a40; /* Darker text color */
+    font-size: 2.2rem;
+    font-weight: 600;
 }
 
 .create-blog-header p {
-    color: rgba(255, 255, 255, 0.8);
+    color: #6c757d; /* Muted text color */
     font-size: 1.1rem;
 }
 
+/* Main Form Container */
 .create-blog-container {
-    max-width: 1200px;
+    max-width: 1140px;
     margin: 0 auto;
     padding: 0 15px;
 }
 
+/* Form Card Styling */
 .form-card {
     background: white;
-    border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border-radius: 8px; /* Softer border-radius */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Subtle shadow */
     padding: 2.5rem;
-    margin-bottom: 2rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid #dee2e6;
 }
 
-.form-group {
-    position: relative;
-}
-
+/* Form Elements */
 .form-label {
     font-weight: 600;
-    color: #2c3e50;
+    color: #495057;
     margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
 }
 
 .form-label.required::after {
     content: '*';
-    color: #e74c3c;
+    color: #dc3545;
     margin-left: 0.25rem;
 }
 
 .form-control, .form-select {
-    border: 2px solid #e9ecef;
-    border-radius: 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
     padding: 0.75rem 1rem;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    background: #fafbfc;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
 .form-control:focus, .form-select:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-    background: white;
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
-.form-text {
-    color: #6c757d;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-}
-
-/* Settings Card */
+/* Settings and Info Cards */
 .settings-card {
-    background: linear-gradient(145deg, #f8f9fa, #e9ecef);
-    border-radius: 16px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
     padding: 1.5rem;
-    margin-bottom: 1rem;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
 }
 
 .settings-card .card-title {
-    color: #495057;
     font-weight: 600;
+    color: #343a40;
     margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
 }
 
-/* Info Card */
 .info-card {
-    background: white;
+    background: #e9ecef;
     border: 1px solid #dee2e6;
-    border-radius: 12px;
+    border-radius: 8px;
     padding: 1rem;
-    margin-top: 0.5rem;
-}
-
-.info-card small {
-    line-height: 1.8;
+    margin-top: 1rem;
 }
 
 /* Action Buttons */
 .action-buttons .btn {
-    border-radius: 12px;
+    border-radius: 6px;
     font-weight: 600;
     padding: 0.75rem 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    transition: all 0.3s ease;
 }
 
 .action-buttons .btn-primary {
-    background: linear-gradient(45deg, #667eea, #764ba2);
-    border: none;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    background-color: #007bff;
+    border-color: #007bff;
+    box-shadow: none;
 }
 
 .action-buttons .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    background-color: #0056b3;
+    border-color: #0056b3;
 }
 
 .action-buttons .btn-secondary {
-    background: #6c757d;
-    border: none;
-    color: white;
+    background-color: #6c757d;
+    border-color: #6c757d;
 }
 
 .action-buttons .btn-secondary:hover {
-    background: #5a6268;
-    transform: translateY(-1px);
+    background-color: #5a6268;
+    border-color: #545b62;
 }
 
 /* CKEditor Customization */
 .ck-editor__editable {
-    min-height: 300px;
-    border-radius: 0 0 12px 12px;
+    min-height: 250px; /* Reduced height */
+    border-radius: 0 0 6px 6px;
 }
 
 .ck.ck-editor {
-    border-radius: 12px;
-    overflow: hidden;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
 }
 
 .ck.ck-toolbar {
-    border-radius: 12px 12px 0 0;
-    border-bottom: 2px solid #e9ecef;
+    background: #f8f9fa;
+    border-radius: 6px 6px 0 0;
+    border-bottom: 1px solid #ced4da;
+}
+
+/* Image Preview */
+#imagePreview img {
+    border: 1px solid #dee2e6;
+    padding: 4px;
+    border-radius: 6px;
+    background-color: #fff;
 }
 
 /* Alert Styling */

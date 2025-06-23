@@ -25,15 +25,18 @@ public class BlogCreateDTO {
     
     private Long resourceId;
     
+    private String featuredImageUrl;
+    
     // Constructors
     public BlogCreateDTO() {}
     
-    public BlogCreateDTO(String title, String summary, String content, BlogPost.BlogStatus status, Long resourceId) {
+    public BlogCreateDTO(String title, String summary, String content, BlogPost.BlogStatus status, Long resourceId, String featuredImageUrl) {
         this.title = title;
         this.summary = summary;
         this.content = content;
         this.status = status;
         this.resourceId = resourceId;
+        this.featuredImageUrl = featuredImageUrl;
     }
     
     // Getters and Setters
@@ -77,6 +80,14 @@ public class BlogCreateDTO {
         this.resourceId = resourceId;
     }
     
+    public String getFeaturedImageUrl() {
+        return featuredImageUrl;
+    }
+    
+    public void setFeaturedImageUrl(String featuredImageUrl) {
+        this.featuredImageUrl = featuredImageUrl;
+    }
+    
     // Convert to BlogPost entity
     public BlogPost toBlogPost() {
         BlogPost blogPost = new BlogPost();
@@ -84,6 +95,7 @@ public class BlogCreateDTO {
         blogPost.setSummary(this.summary);
         blogPost.setContent(this.content);
         blogPost.setStatus(this.status != null ? this.status : BlogPost.BlogStatus.DRAFT);
+        blogPost.setFeaturedImageUrl(this.featuredImageUrl);
         return blogPost;
     }
 } 

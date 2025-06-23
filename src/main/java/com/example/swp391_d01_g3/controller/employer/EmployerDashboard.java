@@ -12,6 +12,7 @@ import com.example.swp391_d01_g3.service.security.IAccountService;
 import com.example.swp391_d01_g3.service.security.IAccountServiceImpl;
 import com.example.swp391_d01_g3.service.email.EmailService;
 import com.example.swp391_d01_g3.service.notification.INotificationService;
+import com.example.swp391_d01_g3.service.student.IStudentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -65,6 +66,9 @@ public class EmployerDashboard {
     
     @Autowired
     private INotificationService notificationService;
+
+    @Autowired
+    private IStudentService iStudentService;
 
     @GetMapping("")
     public String showEmployeeDashboard(Model model, Principal principal) {
@@ -351,8 +355,56 @@ public class EmployerDashboard {
         return "employee/viewListApplications";
     }
 
-
-
+    @GetMapping("/SearchCandidate")
+    public String searchCandidate(
+            @RequestParam(value = "address", required = false) String address,
+            @RequestParam(value = "university", required = false) String university,
+            @RequestParam(value = "experience", required = false) String experience,
+            @RequestParam(value = "jobFieldName", required = false) String jobFieldName,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "5") int size,
+            Model model,
+            Principal principal) {
+        
+        // Thêm account cho navbar
+        if (principal != null) {
+            model.addAttribute("account", accountService.findByEmail(principal.getName()));
+        }
+        
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Student> studentsPage;
+        
+        // Nếu có filter thì search, không thì hiển thị tất cả
+        if ((address != null && !address.trim().isEmpty()) ||
+            (university != null && !university.trim().isEmpty()) ||
+            (experience != null && !experience.trim().isEmpty()) ||
+            (jobFieldName != null && !jobFieldName.trim().isEmpty())) {
+            
+            // Tạo page từ search results
+            List<Student> searchResults = iStudentService.searchStudents(address, university, experience, jobFieldName);
+            int start = Math.min((int) pageable.getOffset(), searchResults.size());
+            int end = Math.min(start + pageable.getPageSize(), searchResults.size());
+            List<Student> pageContent = searchResults.subList(start, end);
+            studentsPage = new org.springframework.data.domain.PageImpl<>(pageContent, pageable, searchResults.size());
+        } else {
+            // Hiển thị tất cả students
+            studentsPage = iStudentService.getStudent(pageable);
+        }
+        
+        // Tính toán statistics
+        long totalStudents = studentsPage.getTotalElements();
+        long activeStudents = totalStudents; // Có thể thêm logic filter active students
+        
+        model.addAttribute("studentsPage", studentsPage);
+        model.addAttribute("totalStudents", totalStudents);
+        model.addAttribute("activeStudents", activeStudents);
+        model.addAttribute("address", address);
+        model.addAttribute("university", university);
+        model.addAttribute("experience", experience);
+        model.addAttribute("jobFieldName", jobFieldName);
+        
+        return "employee/potentialCandidates";
+    }
 
     // DEPRECATED: Cập nhật trạng thái ứng viên - Đã chuyển sang JobPostController 
     // @PostMapping("/Applications/{applicationId}/updateStatus")
@@ -507,5 +559,18 @@ public class EmployerDashboard {
         return "redirect:/Employer/Applications";
     }
     */
+
+    @GetMapping("/CandidateDetail/{id}")
+    public String candidateDetail(@PathVariable("id") Long studentId, Model model,Principal principal) {
+        Student student = iStudentService.findById(studentId).orElse(null);
+        if (principal != null) {
+            model.addAttribute("account", accountService.findByEmail(principal.getName()));
+        }
+        if (student == null) {
+            return "redirect:/Employer/SearchCandidate";
+        }
+        model.addAttribute("student", student);
+        return "employee/candidateDetail";
+    }
 }
 

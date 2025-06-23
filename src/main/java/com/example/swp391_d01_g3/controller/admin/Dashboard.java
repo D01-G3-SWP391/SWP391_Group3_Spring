@@ -5,6 +5,7 @@ import com.example.swp391_d01_g3.model.*;
 import com.example.swp391_d01_g3.service.admin.IAdminEmployerService;
 import com.example.swp391_d01_g3.service.admin.IAdminStudentService;
 import com.example.swp391_d01_g3.service.blog.IBlogService;
+import com.example.swp391_d01_g3.service.cloudinary.CloudinaryService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
@@ -34,6 +36,9 @@ public class Dashboard {
 
     @Autowired
     private IBlogService blogService;
+
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     @GetMapping("")
     public String showDashboard() {
@@ -72,9 +77,10 @@ public class Dashboard {
     // CREATE NEW BLOG - POST Submit with Server-side Validation
     @PostMapping("/blogs/create")
     public String createBlog(@Valid @ModelAttribute("blogCreateDTO") BlogCreateDTO blogCreateDTO,
-                            BindingResult bindingResult,
-                            Model model,
-                            RedirectAttributes redirectAttributes) {
+                           BindingResult bindingResult,
+                           @RequestParam(value = "featureImage", required = false) MultipartFile featureImage,
+                           Model model,
+                           RedirectAttributes redirectAttributes) {
         
         // Server-side validation
         if (bindingResult.hasErrors()) {
@@ -86,6 +92,12 @@ public class Dashboard {
         }
         
         try {
+            // Handle feature image upload if provided
+            if (featureImage != null && !featureImage.isEmpty()) {
+                String imageUrl = cloudinaryService.uploadImage(featureImage, "blog-images");
+                blogCreateDTO.setFeaturedImageUrl(imageUrl);
+            }
+            
             // Convert DTO to entity
             BlogPost newBlog = blogCreateDTO.toBlogPost();
             

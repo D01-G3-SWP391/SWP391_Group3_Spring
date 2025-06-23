@@ -148,8 +148,6 @@ public class BlogServiceImpl implements IBlogService {
         return blogPostRepository.findAll();
     }
 
-
-
     @Override
     public void updateBlogStatus(Long blogPostId, BlogPost.BlogStatus newStatus) {
         BlogPost blog = blogPostRepository.findById(blogPostId).orElse(null);
@@ -231,6 +229,7 @@ public class BlogServiceImpl implements IBlogService {
         );
         return blogPostRepository.findByStatus(status, sortedPageable);
     }
+
     @Override
     public long getTotalBlogsCount() {
         return blogPostRepository.count();
@@ -253,16 +252,13 @@ public class BlogServiceImpl implements IBlogService {
 
     @Override
     public BlogPost createBlog(BlogPost newBlog) {
-        // Set creation timestamp
         newBlog.setCreatedAt(LocalDateTime.now());
         newBlog.setUpdatedAt(LocalDateTime.now());
-        
-        // Set default values if not provided
-        if (newBlog.getStatus() == null) {
-            newBlog.setStatus(BlogPost.BlogStatus.DRAFT);
-        }
-        
-        // Save and return the created blog post
         return blogPostRepository.save(newBlog);
+    }
+
+    @Override
+    public Resource createResource(Resource resource) {
+        return resourceRepository.save(resource);
     }
 }

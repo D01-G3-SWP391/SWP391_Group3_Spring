@@ -67,6 +67,12 @@
                     <span th:text="#{nav.job.list}">Job List</span>
                 </a>
             </div>
+            <div class="nav-item">
+                <a th:href="@{/Employer/SearchCandidate}" class="nav-link" data-path="/Employer/SearchCandidate">
+                    <i class="bi bi-briefcase nav-icon"></i>
+                    <span th:text="#{nav.job.searchCandidate}"></span>
+                </a>
+            </div>
         </div>
 
         <!-- Events & Activities -->
@@ -85,7 +91,7 @@
             <div class="nav-section-title" th:text="#{nav.settings}">Settings</div>
 
             <div class="nav-item">
-                <a th:href="@{/Admin/Reports}" class="nav-link" data-path="/Admin/Reports">
+                <a th:href="@{/Report/CreateReport}" class="nav-link" data-path="/Admin/Reports">
                     <i class="bi bi-graph-up nav-icon"></i>
                     <span>Reports</span>
                 </a>

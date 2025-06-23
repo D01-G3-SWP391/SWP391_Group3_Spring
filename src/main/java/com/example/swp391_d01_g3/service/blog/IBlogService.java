@@ -84,4 +84,6 @@ public interface IBlogService {
     
     // THÊM: Create new blog method
     BlogPost createBlog(BlogPost newBlog);
+
+    Resource createResource(Resource resource);
 } 

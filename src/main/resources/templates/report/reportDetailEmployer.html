@@ -13,7 +13,6 @@
 </head>
 <body>
 <div th:replace="~{navbar/navbarEmployee :: navbarEmployee}" th:if="${userRole == 'EMPLOYER'}"></div>
-<div th:replace="~{navbar/navbarStudent :: navbarStudent}" th:if="${userRole == 'STUDENT'}"></div>
 <script src="/js/navbarAdmin.js"></script>
 
 <div class="main-content">
@@ -21,7 +20,6 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2><i class="bi bi-flag-fill text-danger"></i> Chi tiết báo cáo</h2>
-            <p class="text-muted mb-0">ID: #<span th:text="${report.reportId}"></span></p>
         </div>
         <div class="btn-group">
             <a th:href="@{/Report/ShowReport}" class="btn btn-outline-secondary">

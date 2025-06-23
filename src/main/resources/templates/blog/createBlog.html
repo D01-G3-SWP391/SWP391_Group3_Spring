@@ -16,7 +16,7 @@
     <link rel="stylesheet" th:href="@{/css/createBlog.css}">
     <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
 </head>
-<body class="create-blog-bg">
+<body>
     <!-- Navbar -->
     <div th:replace="~{navbar/navbarAdmin :: navbarAdmin}"></div>
     
@@ -39,7 +39,7 @@
             <!-- Create Blog Form -->
             <div class="create-blog-container">
                 <div class="form-card">
-                    <form th:action="@{/Admin/blogs/create}" th:object="${blogCreateDTO}" method="post" id="createBlogForm">
+                    <form th:action="@{/Admin/blogs/create}" th:object="${blogCreateDTO}" method="post" id="createBlogForm" enctype="multipart/form-data">
                         <div class="row">
                             <!-- Left Column -->
                             <div class="col-lg-8">
@@ -125,6 +125,25 @@
                                         <div class="form-text">Phân loại blog theo chủ đề</div>
                                     </div>
 
+                                    <!-- Feature Image Upload -->
+                                    <div class="form-group mb-3">
+                                        <label class="form-label">
+                                            <i class="bi bi-image"></i> Ảnh đại diện
+                                        </label>
+                                        <div class="image-upload-container">
+                                            <input type="file" 
+                                                   class="form-control" 
+                                                   id="featureImage" 
+                                                   name="featureImage"
+                                                   accept="image/*">
+                                            <input type="hidden" th:field="*{featuredImageUrl}" id="featuredImageUrl">
+                                            <div id="imagePreview" class="mt-2 text-center d-none">
+                                                <img src="" alt="Preview" class="img-fluid rounded" style="max-height: 200px;">
+                                            </div>
+                                            <div class="form-text">Chọn ảnh đại diện cho blog (khuyến nghị tỷ lệ 16:9)</div>
+                                        </div>
+                                    </div>
+
                                     <!-- Blog Info -->
                                     <div class="form-group mb-3">
                                         <h6><i class="bi bi-info-circle"></i> Thông tin</h6>
@@ -159,7 +178,25 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/navbarAdmin.js}"></script>
     
-    <!-- CKEditor Initialization - Only for Rich Text Editor -->
+    <!-- Image Preview Script -->
+    <script>
+        document.getElementById('featureImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                const preview = document.getElementById('imagePreview');
+                const previewImg = preview.querySelector('img');
+                
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    preview.classList.remove('d-none');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+    
+    <!-- CKEditor Initialization -->
     <script>
         ClassicEditor
             .create(document.querySelector('#editor'), {

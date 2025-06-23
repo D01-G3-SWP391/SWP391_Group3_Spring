@@ -85,13 +85,13 @@ public class ReportServiceImpl implements IReportService{
     @Transactional
     public boolean deleteReportById(Integer reportId, String adminEmail) {
         try {
-            // Kiểm tra báo cáo có tồn tại và có thể xóa không
+            // Chỉ cho phép xóa nếu report ở trạng thái PENDING
             if (!canDeleteReport(reportId)) {
                 System.out.println("Admin {} attempted to delete non-deletable report {}"+ adminEmail+ reportId);
                 return false;
             }
 
-            int deletedCount = reportRepository.deleteResolvedReportById(reportId);
+            int deletedCount = reportRepository.deletePendingReportById(reportId);
 
             if (deletedCount > 0) {
                 System.out.println("Admin {} successfully deleted report {}"+ adminEmail+ reportId);
@@ -165,8 +165,7 @@ public class ReportServiceImpl implements IReportService{
     @Override
     public boolean canDeleteReport(Integer reportId) {
         return reportRepository.findById(reportId)
-                .map(report -> report.getStatus() == Report.ReportStatus.RESOLVED ||
-                        report.getStatus() == Report.ReportStatus.CLOSED)
+                .map(report -> report.getStatus() == Report.ReportStatus.PENDING)
                 .orElse(false);
     }
 
