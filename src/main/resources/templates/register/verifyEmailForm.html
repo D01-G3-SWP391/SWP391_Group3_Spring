@@ -54,7 +54,7 @@
     <!-- Nút gửi lại OTP -->
     <div style="text-align: center; margin-top: 20px;">
         <p th:text="#{verify.resendOtp}">Không nhận được mã OTP?</p>
-        <form th:action="@{/Register/EmailVerification/resendOTP}" method="post" style="display: inline;">
+        <form class="resend-form" th:action="@{/Register/EmailVerification/resendOTP}" method="post" style="display: inline;">
             <input type="hidden" name="email" th:value="${email}" />
             <button type="submit" class="content-btn" style="background-color: #6c757d; border: none;">
                 <i class="bi bi-arrow-clockwise"></i>
@@ -130,7 +130,143 @@
 .subtitle strong {
     color: #007bff;
 }
+
+/* Loading state and spinner styles */
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+form.loading {
+    pointer-events: none !important;
+    opacity: 0.6;
+}
+
+form.loading * {
+    pointer-events: none !important;
+}
+
+.content-btn:disabled {
+    pointer-events: none !important;
+    opacity: 0.6;
+    cursor: not-allowed !important;
+}
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const verifyForm = document.querySelector('.forgot-password-form');
+    const resendForm = document.querySelector('.resend-form');
+    
+    // Check if there's an active countdown in localStorage for register OTP
+    const lastResendTime = localStorage.getItem('registerOtpResendTime');
+    if (lastResendTime && resendForm) {
+        const timePassed = Math.floor((Date.now() - parseInt(lastResendTime)) / 1000);
+        const remainingTime = 60 - timePassed;
+        
+        if (remainingTime > 0) {
+            const resendBtn = resendForm.querySelector('button[type="submit"]');
+            startCountdownWithTime(resendBtn, remainingTime);
+        } else {
+            localStorage.removeItem('registerOtpResendTime');
+        }
+    }
+    
+    // Handle verify form submission
+    if (verifyForm) {
+        const submitBtn = verifyForm.querySelector('button[type="submit"]');
+        verifyForm.addEventListener('submit', function(e) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span>Đang xác thực...';
+            this.classList.add('loading');
+        });
+    }
+    
+    // Handle resend OTP form submission with countdown
+    if (resendForm) {
+        const resendBtn = resendForm.querySelector('button[type="submit"]');
+        resendForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+            
+            // Show loading state
+            resendBtn.disabled = true;
+            resendBtn.innerHTML = '<span class="spinner"></span>Đang gửi lại...';
+            
+            // Get email from hidden input
+            const emailInput = this.querySelector('input[name="email"]');
+            const email = emailInput ? emailInput.value : '';
+            
+            // Submit via fetch to handle response
+            fetch(this.action, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'email=' + encodeURIComponent(email)
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Show success feedback briefly
+                    resendBtn.innerHTML = '<i class="bi bi-check"></i><span style="margin-left: 5px;">Đã gửi lại</span>';
+                    resendBtn.style.background = '#28a745';
+                    
+                    setTimeout(() => {
+                        // Save timestamp and start countdown
+                        localStorage.setItem('registerOtpResendTime', Date.now().toString());
+                        startCountdown(resendBtn);
+                    }, 1500);
+                } else {
+                    throw new Error('Failed to resend OTP');
+                }
+            })
+            .catch(error => {
+                // Show error feedback
+                resendBtn.innerHTML = '<i class="bi bi-x"></i><span style="margin-left: 5px;">Lỗi</span>';
+                resendBtn.style.background = '#dc3545';
+                setTimeout(() => {
+                    resendBtn.innerHTML = '<i class="bi bi-arrow-clockwise"></i><span th:text="#{verify.resendButton}">Gửi lại mã OTP</span>';
+                    resendBtn.style.background = '#6c757d';
+                    resendBtn.disabled = false;
+                }, 2000);
+            });
+        });
+    }
+    
+    function startCountdown(button) {
+        startCountdownWithTime(button, 60);
+    }
+    
+    function startCountdownWithTime(button, initialTime) {
+        let countdown = initialTime;
+        button.style.background = '#adb5bd';
+        button.disabled = true;
+        
+        const countdownInterval = setInterval(() => {
+            button.innerHTML = '<i class="bi bi-clock"></i><span style="margin-left: 5px;">' + countdown + 's</span>';
+            countdown--;
+            
+            if (countdown < 0) {
+                clearInterval(countdownInterval);
+                button.innerHTML = '<i class="bi bi-arrow-clockwise"></i><span style="margin-left: 5px;">Gửi lại mã OTP</span>';
+                button.style.background = '#6c757d';
+                button.disabled = false;
+                localStorage.removeItem('registerOtpResendTime');
+            }
+        }, 1000);
+    }
+});
+</script>
 <script th:src="@{/js/languageSwitch.js}"></script>
 
 </body>

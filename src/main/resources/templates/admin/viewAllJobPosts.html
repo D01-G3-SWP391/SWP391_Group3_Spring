@@ -139,47 +139,47 @@
                 </ul>
               </div>
 
-              <!-- Delete button with confirmation -->
-              <button type="button" class="btn btn-sm btn-danger"
-                      data-bs-toggle="modal"
-                      th:data-bs-target="'#deleteModal' + ${jobPost.jobPostId}">
-                <i class="bi bi-trash"></i> Delete
-              </button>
+<!--              &lt;!&ndash; Delete button with confirmation &ndash;&gt;-->
+<!--              <button type="button" class="btn btn-sm btn-danger"-->
+<!--                      data-bs-toggle="modal"-->
+<!--                      th:data-bs-target="'#deleteModal' + ${jobPost.jobPostId}">-->
+<!--                <i class="bi bi-trash"></i> Delete-->
+<!--              </button>-->
 
-              <!-- Delete Confirmation Modal -->
-              <div class="modal fade" th:id="'deleteModal' + ${jobPost.jobPostId}" tabindex="-1">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title">Confirm Delete</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                      <p>Are you sure you want to delete this job post?</p>
-                      <p><strong>Job Title:</strong> <span th:text="${jobPost.jobTitle}"></span></p>
-                      <p><strong>Company:</strong> <span th:text="${jobPost.employer.companyName}"></span></p>
-                      <div class="mb-3">
-                        <label class="form-label">Reason for deletion (optional):</label>
-                        <textarea class="form-control"
-                                  th:id="'reason' + ${jobPost.jobPostId}"
-                                  rows="3"
-                                  placeholder="Enter reason for deletion..."></textarea>
-                      </div>
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                      <form th:action="@{/Admin/DeleteJobPost/{id}(id=${jobPost.jobPostId})}"
-                            method="post" style="display: inline;">
-                        <input type="hidden" name="reason" th:id="'hiddenReason' + ${jobPost.jobPostId}">
-                        <button type="submit" class="btn btn-danger"
-                                th:onclick="'document.getElementById(\'hiddenReason' + ${jobPost.jobPostId} + '\').value = document.getElementById(\'reason' + ${jobPost.jobPostId} + '\').value'">
-                          Delete Job Post
-                        </button>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-              </div>
+<!--              &lt;!&ndash; Delete Confirmation Modal &ndash;&gt;-->
+<!--              <div class="modal fade" th:id="'deleteModal' + ${jobPost.jobPostId}" tabindex="-1">-->
+<!--                <div class="modal-dialog">-->
+<!--                  <div class="modal-content">-->
+<!--                    <div class="modal-header">-->
+<!--                      <h5 class="modal-title">Confirm Delete</h5>-->
+<!--                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>-->
+<!--                    </div>-->
+<!--                    <div class="modal-body">-->
+<!--                      <p>Are you sure you want to delete this job post?</p>-->
+<!--                      <p><strong>Job Title:</strong> <span th:text="${jobPost.jobTitle}"></span></p>-->
+<!--                      <p><strong>Company:</strong> <span th:text="${jobPost.employer.companyName}"></span></p>-->
+<!--                      <div class="mb-3">-->
+<!--                        <label class="form-label">Reason for deletion (optional):</label>-->
+<!--                        <textarea class="form-control"-->
+<!--                                  th:id="'reason' + ${jobPost.jobPostId}"-->
+<!--                                  rows="3"-->
+<!--                                  placeholder="Enter reason for deletion..."></textarea>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                    <div class="modal-footer">-->
+<!--                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>-->
+<!--                      <form th:action="@{/Admin/DeleteJobPost/{id}(id=${jobPost.jobPostId})}"-->
+<!--                            method="post" style="display: inline;">-->
+<!--                        <input type="hidden" name="reason" th:id="'hiddenReason' + ${jobPost.jobPostId}">-->
+<!--                        <button type="submit" class="btn btn-danger"-->
+<!--                                th:onclick="'document.getElementById(\'hiddenReason' + ${jobPost.jobPostId} + '\').value = document.getElementById(\'reason' + ${jobPost.jobPostId} + '\').value'">-->
+<!--                          Delete Job Post-->
+<!--                        </button>-->
+<!--                      </form>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </div>-->
             </div>
           </td>
         </tr>

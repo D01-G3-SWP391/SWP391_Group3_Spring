@@ -72,6 +72,8 @@
 
           <!-- 2. ACCOUNT + LOGOUT – bất kỳ người dùng đã đăng nhập -->
           <div sec:authorize="isAuthenticated()" class="authenticated-section">
+            <!-- Notification Bell for authenticated users -->
+
             <div class="dropdown" th:if="${userEmail}">
               <input type="checkbox" id="account-toggle" class="dropdown-toggle"/>
               <label for="account-toggle" class="nav-link user-greeting">

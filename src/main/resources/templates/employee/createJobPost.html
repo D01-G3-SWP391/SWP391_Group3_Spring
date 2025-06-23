@@ -18,7 +18,7 @@
 <div th:replace="~{navbar/navbarEmployee :: navbarAdmin}"></div>
 <script src="/js/navbarAdmin.js"></script>
 <div class="main-content">
-    <div class="container">
+    <div class="page-container">
         <div class="form-card">
             <!-- Thông báo thành công -->
             <div th:if="${successMsg}" class="alert alert-success" role="alert" style="font-size:1.1rem;">
@@ -196,6 +196,9 @@
         }
     });
 </script>
+
+<!-- Add notification bell -->
+<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
 
 </body>
 </html>

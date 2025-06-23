@@ -11,6 +11,7 @@ import com.example.swp391_d01_g3.service.jobfield.IJobfieldService;
 import com.example.swp391_d01_g3.service.security.IAccountService;
 import com.example.swp391_d01_g3.service.security.IAccountServiceImpl;
 import com.example.swp391_d01_g3.service.email.EmailService;
+import com.example.swp391_d01_g3.service.notification.INotificationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -61,6 +62,9 @@ public class EmployerDashboard {
     private EmailService emailService;
     @Autowired
     private IInterViewService iInterViewService;
+    
+    @Autowired
+    private INotificationService notificationService;
 
     @GetMapping("")
     public String showEmployeeDashboard() {
@@ -325,6 +329,9 @@ public class EmployerDashboard {
         }
         model.addAttribute("applications", applications);
         model.addAttribute("statuses", JobApplication.ApplicationStatus.values());
+        
+        // Add authentication status for chat system
+        model.addAttribute("isAuthenticated", authentication != null && authentication.isAuthenticated());
 
         return "employee/viewListApplications";
     }
@@ -332,8 +339,9 @@ public class EmployerDashboard {
 
 
 
-    // Cập nhật trạng thái ứng viên
-    @PostMapping("/Applications/{applicationId}/updateStatus")
+    // DEPRECATED: Cập nhật trạng thái ứng viên - Đã chuyển sang JobPostController 
+    // @PostMapping("/Applications/{applicationId}/updateStatus")
+    /*
     public String updateApplicationStatus(
             @PathVariable Integer applicationId,
             @RequestParam String status,
@@ -356,6 +364,55 @@ public class EmployerDashboard {
 
             JobApplication.ApplicationStatus newStatus = JobApplication.ApplicationStatus.valueOf(status);
             iJobApplicationService.updateApplicationStatus(applicationId, newStatus);
+            
+            // Gửi email cho ACCEPTED và REJECTED (không gửi cho INTERVIEW qua dropdown)
+            if (newStatus == JobApplication.ApplicationStatus.ACCEPTED || newStatus == JobApplication.ApplicationStatus.REJECTED) {
+                String candidateEmail = application.getEmail();
+                String candidateName = application.getFullName();
+                String jobTitle = application.getJobPost().getJobTitle();
+                String companyName = employer.getCompanyName();
+                
+                if (newStatus == JobApplication.ApplicationStatus.ACCEPTED) {
+                    emailService.sendApplicationAcceptedEmail(candidateEmail, candidateName, jobTitle, companyName);
+                } else if (newStatus == JobApplication.ApplicationStatus.REJECTED) {
+                    emailService.sendApplicationRejectedEmail(candidateEmail, candidateName, jobTitle, companyName);
+                }
+            }
+            
+            // Tạo thông báo cho ứng viên về việc thay đổi trạng thái
+            String notificationTitle = "Cập nhật trạng thái ứng tuyển";
+            String notificationMessage = "";
+            String notificationType = "APPLICATION_STATUS_UPDATE";
+            
+            switch (newStatus) {
+                case SUBMITTED:
+                    notificationMessage = "Đơn ứng tuyển của bạn cho vị trí " + application.getJobPost().getJobTitle() + 
+                                        " đã được gửi thành công và đang chờ xét duyệt.";
+                    break;
+                case INTERVIEW:
+                    notificationMessage = "Đơn ứng tuyển của bạn cho vị trí " + application.getJobPost().getJobTitle() + 
+                                        " đã chuyển sang giai đoạn phỏng vấn.";
+                    notificationType = "INTERVIEW_SCHEDULE";
+                    break;
+                case ACCEPTED:
+                    notificationMessage = "Chúc mừng! Bạn đã vượt qua phỏng vấn cho vị trí " + application.getJobPost().getJobTitle() + 
+                                        " tại " + employer.getCompanyName() + ".";
+                    break;
+                case REJECTED:
+                    notificationMessage = "Rất tiếc, đơn ứng tuyển của bạn cho vị trí " + application.getJobPost().getJobTitle() + 
+                                        " tại " + employer.getCompanyName() + " chưa phù hợp lần này.";
+                    break;
+            }
+            
+            // Gửi thông báo cho student
+            notificationService.createNotification(
+                application.getStudent().getAccount(),
+                notificationTitle,
+                notificationMessage,
+                notificationType,
+                application.getApplicationId().longValue()
+            );
+            
             redirectAttributes.addFlashAttribute("successMessage", "Cập nhật trạng thái thành công!");
 
         } catch (Exception e) {
@@ -367,8 +424,11 @@ public class EmployerDashboard {
         }
         return "redirect:/Employer/Applications";
     }
+    */
 
-    @PostMapping("/Applications/{applicationId}/sendInterviewMail")
+    // DEPRECATED: Gửi lịch phỏng vấn - Đã chuyển sang JobPostController
+    // @PostMapping("/Applications/{applicationId}/sendInterviewMail") 
+    /*
     public String sendInterviewMail(
             @PathVariable Integer applicationId,
             @RequestParam String interviewTime,
@@ -407,6 +467,21 @@ public class EmployerDashboard {
             emailService.sendInterviewScheduleEmail(candidateEmail, candidateName, jobTitle, interviewTime, interviewType, meetingLink, note);
             // Cập nhật trạng thái ứng viên sang INTERVIEW
             iJobApplicationService.updateApplicationStatus(applicationId, JobApplication.ApplicationStatus.INTERVIEW);
+            
+            // Tạo thông báo cho ứng viên về lịch phỏng vấn
+            notificationService.createNotification(
+                    application.getStudent().getAccount(),
+                    "Lịch phỏng vấn mới",
+                    "Bạn có lịch phỏng vấn cho vị trí " + jobTitle +
+                            " vào " + interviewTime +
+                            " theo hình thức " + interviewType + "." +
+                    " Link meeting: " + meetingLink +
+                    " Ghi chú: " + note,
+                    "NEW_APPLICATION",
+                    application.getApplicationId().longValue()
+            );
+
+            
             redirectAttributes.addFlashAttribute("successMessage", "Đã gửi lịch phỏng vấn cho ứng viên!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi gửi lịch phỏng vấn!");
@@ -416,6 +491,6 @@ public class EmployerDashboard {
         }
         return "redirect:/Employer/Applications";
     }
-
+    */
 }
 

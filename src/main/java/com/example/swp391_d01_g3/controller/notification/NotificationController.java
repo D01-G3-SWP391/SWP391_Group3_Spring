@@ -88,7 +88,7 @@ public class NotificationController {
     @PostMapping("/{id}/mark-read")
     @ResponseBody
     public Map<String, String> markAsRead(
-            @PathVariable("id") Integer notificationId,
+            @PathVariable("id") Long notificationId,
             Authentication authentication
     ) {
         Map<String, String> response = new HashMap<>();
@@ -131,7 +131,7 @@ public class NotificationController {
     @DeleteMapping("/{id}")
     @ResponseBody
     public Map<String, String> deleteNotification(
-            @PathVariable("id") Integer notificationId,
+            @PathVariable("id") Long notificationId,
             Authentication authentication
     ) {
         Map<String, String> response = new HashMap<>();

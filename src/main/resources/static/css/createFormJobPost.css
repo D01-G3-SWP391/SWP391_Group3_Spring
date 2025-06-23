@@ -31,10 +31,11 @@
 }
 
 body {
-    background: #f8fafc;
-    min-height: 100vh;
+    font-family: "Inter", "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(135deg, #f0f4ff 0%, #e6e9ff 100%);
     margin: 0;
     padding: 0;
+    transition: margin-left 0.3s ease;
     color: var(--text-primary);
 }
 
@@ -45,16 +46,19 @@ body::before {
 
 /* Main Content Layout */
 .main-content {
-    padding: 2rem 0;
-    min-height: calc(100vh - 80px);
-    position: relative;
-    z-index: 1;
+    padding: 30px;
+    min-height: 100vh;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
 
 .page-container {
-    max-width: 900px;
+    max-width: 800px;
+    width: 100%;
     margin: 0 auto;
-    padding: 0 1rem;
+    padding: 0;
 }
 
 /* Page Header */
@@ -124,15 +128,13 @@ body::before {
 /* Form Container */
 .form-container,
 .form-card {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
-    border-radius: var(--border-radius);
-    box-shadow: var(--card-shadow);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 3rem;
-    transition: var(--transition);
-    position: relative;
-    overflow: hidden;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin-bottom: 20px;
+    width: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .form-container::before,
@@ -148,9 +150,8 @@ body::before {
 
 .form-container:hover,
 .form-card:hover {
-    box-shadow: var(--card-shadow-hover);
-    transform: translateY(-4px);
-    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* Form Sections */
@@ -474,6 +475,16 @@ textarea.form-control {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 15px;
+        width: 100vw;
+    }
+    
+    body {
+        margin-left: 0;
+    }
+    
     .page-title,
     .header {
         font-size: 2.2rem;
@@ -481,8 +492,8 @@ textarea.form-control {
 
     .form-container,
     .form-card {
-        padding: 2rem 1.5rem;
-        margin: 0 1rem;
+        padding: 20px;
+        margin: 0;
     }
 
     .buttons,
@@ -497,7 +508,8 @@ textarea.form-control {
     }
 
     .page-container {
-        padding: 0 0.5rem;
+        max-width: 100%;
+        padding: 0;
     }
 }
 

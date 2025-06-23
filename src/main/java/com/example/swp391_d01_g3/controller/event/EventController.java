@@ -182,11 +182,11 @@ public class EventController {
                 return "error:Không tìm thấy sự kiện";
             }
             
-            System.out.println("Event found: " + event.getEventTitle());
-            System.out.println("Event status: " + event.getEventStatus());
-            System.out.println("Event approval status: " + event.getApprovalStatus());
-            System.out.println("Current participants: " + event.getCurrentParticipants());
-            System.out.println("Max participants: " + event.getMaxParticipants());
+//            System.out.println("Event found: " + event.getEventTitle());
+//            System.out.println("Event status: " + event.getEventStatus());
+//            System.out.println("Event approval status: " + event.getApprovalStatus());
+//            System.out.println("Current participants: " + event.getCurrentParticipants());
+//            System.out.println("Max participants: " + event.getMaxParticipants());
             
             if (!event.canRegister()) {
                 System.out.println("Event cannot be registered");

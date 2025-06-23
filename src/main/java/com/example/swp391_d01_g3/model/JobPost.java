@@ -27,8 +27,8 @@ public class JobPost {
     @Column(name = "job_description", columnDefinition = "LONGTEXT", nullable = false)
     private String jobDescription;
 
-    @Column(name = "job_salary", length = 50)
-    private String jobSalary;
+    @Column(name = "job_salary")
+    private Double jobSalary;
 
     @Column(name = "job_requirements", columnDefinition = "TEXT")
     private String jobRequirements;
@@ -70,7 +70,7 @@ public class JobPost {
         INACTIVE
     }
 
-    public JobPost(Integer jobPostId, JobField jobField, Employer employer, String jobTitle, String jobDescription, String jobSalary, String jobRequirements, String jobLocation, Integer appliedQuality, JobType jobType, ApprovalStatus approvalStatus, DisplayStatus displayStatus, LocalDateTime createdAt) {
+    public JobPost(Integer jobPostId, JobField jobField, Employer employer, String jobTitle, String jobDescription, Double jobSalary, String jobRequirements, String jobLocation, Integer appliedQuality, JobType jobType, ApprovalStatus approvalStatus, DisplayStatus displayStatus, LocalDateTime createdAt) {
         this.jobPostId = jobPostId;
         this.jobField = jobField;
         this.employer = employer;
@@ -90,6 +90,8 @@ public class JobPost {
     }
 
     // Getter and Setter methods
+
+
     public Integer getJobPostId() {
         return jobPostId;
     }
@@ -130,11 +132,11 @@ public class JobPost {
         this.jobDescription = jobDescription;
     }
 
-    public String getJobSalary() {
+    public Double getJobSalary() {
         return jobSalary;
     }
 
-    public void setJobSalary(String jobSalary) {
+    public void setJobSalary(Double jobSalary) {
         this.jobSalary = jobSalary;
     }
 

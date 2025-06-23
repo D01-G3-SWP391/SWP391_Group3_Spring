@@ -6,6 +6,7 @@ import com.example.swp391_d01_g3.model.JobApplication;
 import com.example.swp391_d01_g3.model.Student;
 import com.example.swp391_d01_g3.service.changePassword.ChangePassword;
 import com.example.swp391_d01_g3.service.jobapplication.IJobApplicationService;
+import com.example.swp391_d01_g3.service.notification.INotificationService;
 import com.example.swp391_d01_g3.service.security.IAccountService;
 import com.example.swp391_d01_g3.service.security.IAccountServiceImpl;
 import com.example.swp391_d01_g3.service.student.IStudentService;
@@ -48,6 +49,9 @@ public class StudentDashboard {
 
     @Autowired
     private IJobApplicationService iJobApplicationService;
+
+    @Autowired
+    private INotificationService notificationService;
 
     @Autowired
     private CloudinaryService cloudinaryService;
@@ -263,6 +267,14 @@ public class StudentDashboard {
         // Cập nhật mật khẩu
         account.setPassword(passwordEncoder.encode(newPassword));
         iAccountServiceImpl.save(account);
+        notificationService.createNotification(
+                account,
+                "Change password successful",
+                "Ban da doi mk thanh cong",
+                "CHANGE_PASSWORD",
+                account.getUserId().longValue()
+
+        );
 
         redirectAttributes.addFlashAttribute("success", "Đổi mật khẩu thành công!");
         return "redirect:/Student/Profile";

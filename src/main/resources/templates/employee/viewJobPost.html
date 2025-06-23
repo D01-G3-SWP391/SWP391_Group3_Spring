@@ -139,7 +139,7 @@
                             <a th:href="@{/Employer/EditJobPost/{jobPostId}(jobPostId=${jobPost.jobPostId})}"
                                class="btn btn-primary">
                                 <i class="bi bi-pencil-square"></i>
-                                Chỉnh sửa
+                                Sửa
                             </a>
 
                             <form th:action="@{/Employer/DeleteJobPost/{jobPostId}(jobPostId=${jobPost.jobPostId})}"
@@ -215,5 +215,8 @@
         if(msg) msg.style.display = 'none';
     }, 3000);
 </script>
+
+<!-- Add notification bell -->
+<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
 </body>
 </html>

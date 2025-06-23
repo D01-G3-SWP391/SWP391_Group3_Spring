@@ -39,6 +39,16 @@ public class EventServiceImpl implements IEventService {
     }
 
     @Override
+    public Page<Event> searchEventsByKeywordAndStatus(String keyword, Event.ApprovalStatus status, Pageable pageable) {
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            return eventRepository.findByApprovalStatusAndEventTitleContainingIgnoreCaseOrEventDescriptionContainingIgnoreCase(
+                    status, keyword, keyword, pageable);
+        } else {
+            return eventRepository.findByApprovalStatusOrderByEventDateAsc(status, pageable);
+        }
+    }
+
+    @Override
     public List<Event> getUpcomingEvents(int limit) {
         LocalDateTime now = LocalDateTime.now();
         Pageable pageable = PageRequest.of(0, limit, Sort.by("eventDate").ascending());
@@ -106,6 +116,11 @@ public class EventServiceImpl implements IEventService {
     }
 
     @Override
+    public long countEventsByStatus(Event.ApprovalStatus status) {
+        return eventRepository.countByApprovalStatus(status);
+    }
+
+    @Override
     public long countEventsByJobField(String jobFieldName) {
         return eventRepository.countEventsByJobFieldAndEventStatus(jobFieldName, Event.ApprovalStatus.APPROVED, Event.EventStatus.ACTIVE);
     }
@@ -115,10 +130,51 @@ public class EventServiceImpl implements IEventService {
         return eventRepository.save(event);
     }
 
+    // SỬA: Delete method với cascade delete EventForm
+    // SỬA: Delete method với cascade delete EventForm
     @Override
     public void delete(Integer eventId) {
-        eventRepository.deleteById(eventId);
+        try {
+            // Lấy số lượng registrations trước khi xóa
+            long registrationCount = eventFormRepository.countByEventEventId(eventId);
+
+            // XÓA TẤT CẢ EVENT_FORM TRƯỚC
+            if (registrationCount > 0) {
+                List<EventForm> eventForms = eventFormRepository.findByEventEventId(eventId);
+                eventFormRepository.deleteAll(eventForms);
+            }
+
+            // SAU ĐÓ XÓA EVENT
+            eventRepository.deleteById(eventId);
+        } catch (Exception e) {
+            throw new RuntimeException("Error deleting event: " + e.getMessage());
+        }
     }
+
+    @Override
+    public void deleteEventWithRegistrations(Integer eventId) {
+        try {
+            Event event = findById(eventId);
+            if (event == null) {
+                throw new RuntimeException("Event not found with ID: " + eventId);
+            }
+
+            // Đếm số registrations trước khi xóa
+            long registrationCount = eventFormRepository.countByEventEventId(eventId);
+
+            // Xóa tất cả registrations
+            if (registrationCount > 0) {
+                List<EventForm> eventForms = eventFormRepository.findByEventEventId(eventId);
+                eventFormRepository.deleteAll(eventForms);
+            }
+
+            // Xóa event
+            eventRepository.deleteById(eventId);
+        } catch (Exception e) {
+            throw new RuntimeException("Error deleting event: " + e.getMessage());
+        }
+    }
+
 
     @Override
     public Page<Event> findAll(Pageable pageable) {
@@ -179,4 +235,4 @@ public class EventServiceImpl implements IEventService {
     public Page<Event> findActiveApprovedEvents(LocalDateTime currentTime, Pageable pageable) {
         return eventRepository.findActiveApprovedEvents(currentTime, pageable);
     }
-} 
+}

@@ -25,7 +25,7 @@ public class EmployerDTO implements Validator {
     
     @NotBlank(message = "Mật khẩu không được để trống")
     @Size(min = 8, max = 50, message = "Mật khẩu phải từ 8 đến 50 ký tự")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d@$!%*?&]+$", message = "Mật khẩu phải chứa ít nhất 1 chữ thường, 1 chữ hoa và 1 số")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$", message = "Mật khẩu phải chứa ít nhất 1 chữ thường, 1 chữ hoa và 1 số")
     private String password;
     
     @NotBlank(message = "Vui lòng xác nhận mật khẩu")

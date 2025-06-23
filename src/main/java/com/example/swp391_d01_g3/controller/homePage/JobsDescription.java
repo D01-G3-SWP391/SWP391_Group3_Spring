@@ -38,29 +38,33 @@ public class JobsDescription {
         List<JobPost> jobPosts = iJobpostService.findAllWithEmployer(id);
         model.addAttribute("jobPosts", jobPosts);
 
-        // Tạo DTO cho modal form
+        // Tạo DTO cho modal form (chỉ bind dữ liệu form)
         JobApplicationDTO jobApplicationDTO = new JobApplicationDTO();
-        model.addAttribute("jobApplicationDTO", jobApplicationDTO);
-
-        // Lấy thông tin student nếu đã đăng nhập
+        
+        // Lấy thông tin user nếu đã đăng nhập
         if (principal != null) {
             String email = principal.getName();
             model.addAttribute("userEmail", email); // Thêm userEmail cho navbar
             
-            Account studentAccount = iAccountService.findByEmail(email);
+            Account userAccount = iAccountService.findByEmail(email);
+            model.addAttribute("account", userAccount);
 
-            model.addAttribute("account", studentAccount);
-
-            if (studentAccount != null) {
-                Student studentDetails = iStudentService.findByAccountUserId(studentAccount.getUserId());
+            if (userAccount != null) {
+                // Chỉ lấy thông tin student nếu user có role student
+                Student studentDetails = iStudentService.findByAccountUserId(userAccount.getUserId());
                 if (studentDetails != null){
                     model.addAttribute("studentDetails", studentDetails);
                     System.out.println("Student ID: " + studentDetails.getStudentId());
                 }
-                return "homePage/descriptionJob";
+                // Không redirect nếu không phải student - cho phép tất cả role xem
+            } else {
+                // Nếu không tìm thấy account, redirect về trang login
+                return "redirect:/Login";
             }
         }
-
+        // Cho phép user chưa đăng nhập cũng xem được (theo permitAll)
+        
+        model.addAttribute("jobApplicationDTO", jobApplicationDTO);
         return "homePage/descriptionJob";
     }
 }

@@ -15,6 +15,7 @@
     <link rel="stylesheet" th:href="@{/css/registerEnhanced.css}" />
     <link rel="stylesheet" th:href="@{/css/newRegister.css}" />
     <link rel="stylesheet" th:href="@{/css/validation-enhanced.css}" />
+    <link rel="stylesheet" th:href="@{/css/registerEmployerEnhanced.css}" />
     <link
             href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
             rel="stylesheet"
@@ -34,117 +35,144 @@
     <form class="login-form" method="post" th:action="@{/Register/registerStudent}" th:object="${accountDTO}" id="registerForm" novalidate>
         <p class="subtitle" th:utext="#{register.subtitle}">Hoặc <a th:href="@{/Login}">đăng nhập NGAY</a> nếu bạn đã có tài khoản.</p>
         
-        <!-- Họ và tên -->
-        <div class="form-group">
-            <input type="text" 
-                   id="fullName" 
-                   name="fullName" 
-                   th:placeholder="#{register.fullName.placeholder}" 
-                   th:field="*{fullName}" 
-                   required
-                   autocomplete="name"
-                   aria-describedby="fullNameError">
-            <!-- Server-side errors (hidden by default, only show if has actual validation errors AND field has value) -->
-            <span class="error-message server-error" 
-                  th:if="${#fields.hasErrors('fullName') and accountDTO.fullName != null and !#strings.isEmpty(accountDTO.fullName)}" 
-                  th:errors="*{fullName}"></span>
-            <!-- Client-side error container -->
-            <span class="error-message" id="fullNameError"></span>
-            <div class="form-tooltip" th:text="#{register.validation.fullName}">Họ và tên phải từ 6-100 ký tự, chỉ chứa chữ cái</div>
-        </div>
-        
-        <!-- Email -->
-        <div class="form-group">
-            <input type="email" 
-                   id="email" 
-                   name="email" 
-                   th:placeholder="#{register.email.placeholder}" 
-                   th:field="*{email}"
-                   required
-                   autocomplete="email"
-                   aria-describedby="emailError">
-            <!-- Server-side errors (hidden by default, only show if has actual validation errors AND field has value) -->
-            <span class="error-message server-error" 
-                  th:if="${#fields.hasErrors('email') and accountDTO.email != null and !#strings.isEmpty(accountDTO.email)}" 
-                  th:errors="*{email}"></span>
-            <!-- Client-side error container -->
-            <span class="error-message" id="emailError"></span>
-            <div class="form-tooltip" th:text="#{register.validation.email}">Email hợp lệ để nhận thông báo việc làm</div>
-        </div>
-        
-        <!-- Số điện thoại -->
-        <div class="form-group">
-            <input type="tel" 
-                   id="phone" 
-                   name="phone" 
-                   th:placeholder="#{register.phone.placeholder}" 
-                   th:field="*{phone}"
-                   required
-                   autocomplete="tel"
-                   aria-describedby="phoneError">
-            <!-- Server-side errors (hidden by default, only show if has actual validation errors AND field has value) -->
-            <span class="error-message server-error" 
-                  th:if="${#fields.hasErrors('phone') and accountDTO.phone != null and !#strings.isEmpty(accountDTO.phone)}" 
-                  th:errors="*{phone}"></span>
-            <!-- Client-side error container -->
-            <span class="error-message" id="phoneError"></span>
-            <div class="form-tooltip" th:text="#{register.validation.phone}">Số điện thoại Việt Nam (10-11 số)</div>
-        </div>
-        
-        <!-- Mật khẩu -->
-        <div class="form-group">
-            <input type="password" 
-                   id="password" 
-                   name="password" 
-                   th:placeholder="#{register.password.placeholder}" 
-                   th:field="*{password}"
-                   required
-                   autocomplete="new-password"
-                   aria-describedby="passwordError passwordStrength">
-            <!-- Server-side errors (hidden by default, only show if has actual validation errors AND field has value) -->
-            <span class="error-message server-error" 
-                  th:if="${#fields.hasErrors('password') and accountDTO.password != null and !#strings.isEmpty(accountDTO.password)}" 
-                  th:errors="*{password}"></span>
-            <!-- Client-side error container -->
-            <span class="error-message" id="passwordError"></span>
-            <div class="password-strength" id="passwordStrength"></div>
-            <div class="form-tooltip" th:text="#{register.validation.password}">Tối thiểu 8 ký tự, có chữ hoa, chữ thường và số</div>
-        </div>
-        
-        <!-- Xác nhận mật khẩu -->
-        <div class="form-group">
-            <input type="password" 
-                   id="confirmPassword" 
-                   name="confirmPassword" 
-                   th:placeholder="#{register.confirmPassword.placeholder}" 
-                   required
-                   autocomplete="new-password"
-                   aria-describedby="confirmPasswordError">
-            <!-- Client-side error container -->
-            <span class="error-message" id="confirmPasswordError"></span>
-            <div class="form-tooltip" th:text="#{register.validation.confirmPassword}">Nhập lại mật khẩu để xác nhận</div>
-        </div>
-        
-        <!-- Terms and Conditions -->
-        <div class="form-group terms-checkbox-container" id="termsContainer">
-            <label class="terms-checkbox-label" for="agreeTerms">
-                <div class="custom-checkbox">
-                    <input type="checkbox" id="agreeTerms" required>
-                    <span class="checkmark"></span>
+        <div class="form-columns">
+            <!-- Left Column: Login Information -->
+            <div class="left-column">
+                <!-- Login Information Section -->
+                <div>
+                    <h3 style="margin-top: 30px; margin-bottom: 20px; color: #333; font-weight: 600; border-bottom: 2px solid #007bff; padding-bottom: 10px;">
+                        <i class="bi bi-shield-lock" style="color: #007bff; margin-right: 8px;"></i><span th:text="#{register.student.loginInfo}">Thông tin đăng nhập</span>
+                    </h3>
+                    
+                    <!-- Email -->
+                    <div class="form-group">
+                        <input type="email" 
+                               id="email" 
+                               name="email" 
+                               th:placeholder="#{register.email.placeholder}" 
+                               th:field="*{email}"
+                               required
+                               autocomplete="email"
+                               aria-describedby="emailError">
+                        <!-- Server-side errors (hidden by default, only show if has actual validation errors AND field has value) -->
+                        <span class="error-message server-error" 
+                              th:if="${#fields.hasErrors('email') and accountDTO.email != null and !#strings.isEmpty(accountDTO.email)}" 
+                              th:errors="*{email}"></span>
+                        <!-- Client-side error container -->
+                        <span class="error-message" id="emailError"></span>
+                        <div class="form-tooltip" th:text="#{register.validation.email}">Email hợp lệ để nhận thông báo việc làm</div>
+                    </div>
+                    
+                    <!-- Mật khẩu -->
+                    <div class="form-group">
+                        <input type="password" 
+                               id="password" 
+                               name="password" 
+                               th:placeholder="#{register.password.placeholder}" 
+                               th:field="*{password}"
+                               required
+                               autocomplete="new-password"
+                               aria-describedby="passwordError passwordStrength">
+                        <!-- Server-side errors (hidden by default, only show if has actual validation errors AND field has value) -->
+                        <span class="error-message server-error" 
+                              th:if="${#fields.hasErrors('password') and accountDTO.password != null and !#strings.isEmpty(accountDTO.password)}" 
+                              th:errors="*{password}"></span>
+                        <!-- Client-side error container -->
+                        <span class="error-message" id="passwordError"></span>
+                        <div class="password-strength" id="passwordStrength"></div>
+                        <div class="form-tooltip" th:text="#{register.validation.password}">Tối thiểu 8 ký tự, có chữ hoa, chữ thường và số</div>
+                    </div>
+                    
+                    <!-- Xác nhận mật khẩu -->
+                    <div class="form-group">
+                        <input type="password" 
+                               id="confirmPassword" 
+                               name="confirmPassword" 
+                               th:placeholder="#{register.confirmPassword.placeholder}" 
+                               required
+                               autocomplete="new-password"
+                               aria-describedby="confirmPasswordError">
+                        <!-- Client-side error container -->
+                        <span class="error-message" id="confirmPasswordError"></span>
+                        <div class="form-tooltip" th:text="#{register.validation.confirmPassword}">Nhập lại mật khẩu để xác nhận</div>
+                    </div>
                 </div>
-                <div class="terms-text">
-                    <span th:utext="#{register.agreeTerms}">Tôi đồng ý với <a href="#" onclick="event.preventDefault();">Điều khoản sử dụng</a> và <a href="#" onclick="event.preventDefault();">Chính sách bảo mật</a></span>
+            </div>
+            
+            <!-- Right Column: Contact Information -->
+            <div class="right-column">
+                <!-- Contact Information Section -->
+                <div>
+                    <h3 style="margin-top: 30px; margin-bottom: 20px; color: #333; font-weight: 600; border-bottom: 2px solid #28a745; padding-bottom: 10px;">
+                        <i class="bi bi-person-lines-fill" style="color: #28a745; margin-right: 8px;"></i><span th:text="#{register.student.contactInfo}">Thông tin liên hệ</span>
+                    </h3>
+                    
+                    <!-- Họ và tên -->
+                    <div class="form-group">
+                        <input type="text" 
+                               id="fullName" 
+                               name="fullName" 
+                               th:placeholder="#{register.fullName.placeholder}" 
+                               th:field="*{fullName}" 
+                               required
+                               autocomplete="name"
+                               aria-describedby="fullNameError">
+                        <!-- Server-side errors (hidden by default, only show if has actual validation errors AND field has value) -->
+                        <span class="error-message server-error" 
+                              th:if="${#fields.hasErrors('fullName') and accountDTO.fullName != null and !#strings.isEmpty(accountDTO.fullName)}" 
+                              th:errors="*{fullName}"></span>
+                        <!-- Client-side error container -->
+                        <span class="error-message" id="fullNameError"></span>
+                        <div class="form-tooltip" th:text="#{register.validation.fullName}">Họ và tên phải từ 6-100 ký tự, chỉ chứa chữ cái</div>
+                    </div>
+                    
+                    <!-- Số điện thoại -->
+                    <div class="form-group">
+                        <input type="tel" 
+                               id="phone" 
+                               name="phone" 
+                               th:placeholder="#{register.phone.placeholder}" 
+                               th:field="*{phone}"
+                               required
+                               autocomplete="tel"
+                               aria-describedby="phoneError">
+                        <!-- Server-side errors (hidden by default, only show if has actual validation errors AND field has value) -->
+                        <span class="error-message server-error" 
+                              th:if="${#fields.hasErrors('phone') and accountDTO.phone != null and !#strings.isEmpty(accountDTO.phone)}" 
+                              th:errors="*{phone}"></span>
+                        <!-- Client-side error container -->
+                        <span class="error-message" id="phoneError"></span>
+                        <div class="form-tooltip" th:text="#{register.validation.phone}">Số điện thoại Việt Nam (10-11 số)</div>
+                    </div>
                 </div>
-            </label>
-            <span class="error-message" id="agreeTermsError"></span>
+            </div>
         </div>
         
-        <button type="submit" class="content-btn content-btn-primary login-page-btn btn-submit" id="submitBtn">
-            <i class="bi bi-person-plus"></i> <span th:text="#{register.submitButton}">Đăng ký tài khoản</span>
-        </button>
+        <!-- Terms and Conditions - Full Width -->
+        <div class="terms-section-full">
+            <div class="form-group terms-checkbox-container" id="termsContainer">
+                <label class="terms-checkbox-label" for="agreeTerms">
+                    <div class="custom-checkbox">
+                        <input type="checkbox" id="agreeTerms" required>
+                        <span class="checkmark"></span>
+                    </div>
+                    <div class="terms-text">
+                        <span th:utext="#{register.agreeTerms}">Tôi đồng ý với <a href="#" onclick="event.preventDefault();">Điều khoản sử dụng</a> và <a href="#" onclick="event.preventDefault();">Chính sách bảo mật</a></span>
+                    </div>
+                </label>
+                <span class="error-message" id="agreeTermsError"></span>
+            </div>
+        </div>
         
-        <div style="text-align: center; margin-top: 20px; color: #666; font-size: 14px;">
-            <p th:text="#{register.otpNotice}">Bằng cách đăng ký, bạn sẽ nhận được mã OTP qua email để xác thực tài khoản.</p>
+        <!-- Submit Button - Centered -->
+        <div class="submit-container">
+            <button type="submit" class="content-btn content-btn-primary login-page-btn btn-submit" id="submitBtn">
+                <i class="bi bi-person-plus"></i> <span th:text="#{register.submitButton}">Đăng ký tài khoản</span>
+            </button>
+            
+            <div style="text-align: center; margin-top: 20px; color: #666; font-size: 14px;">
+                <p th:text="#{register.otpNotice}">Bằng cách đăng ký, bạn sẽ nhận được mã OTP qua email để xác thực tài khoản.</p>
+            </div>
         </div>
     </form>
 </div>

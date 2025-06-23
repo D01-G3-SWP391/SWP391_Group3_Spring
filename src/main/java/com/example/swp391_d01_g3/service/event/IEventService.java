@@ -22,6 +22,11 @@ public interface IEventService {
     Page<Event> searchEvents(String keyword, Pageable pageable);
 
     /**
+     * Tìm kiếm events theo keyword và status
+     */
+    Page<Event> searchEventsByKeywordAndStatus(String keyword, Event.ApprovalStatus status, Pageable pageable);
+
+    /**
      * Lấy danh sách events sắp tới
      */
     List<Event> getUpcomingEvents(int limit);
@@ -57,6 +62,11 @@ public interface IEventService {
     long countApprovedEvents();
 
     /**
+     * Đếm events theo status
+     */
+    long countEventsByStatus(Event.ApprovalStatus status);
+
+    /**
      * Đếm events theo job field
      */
     long countEventsByJobField(String jobFieldName);
@@ -70,6 +80,11 @@ public interface IEventService {
      * Xóa event
      */
     void delete(Integer eventId);
+
+    /**
+     * Xóa event với cascade delete EventForm
+     */
+    void deleteEventWithRegistrations(Integer eventId);
 
     /**
      * Lấy tất cả events cho admin
@@ -106,4 +121,4 @@ public interface IEventService {
      * Tìm events đã approve, active và chưa quá hạn
      */
     Page<Event> findActiveApprovedEvents(LocalDateTime currentTime, Pageable pageable);
-} 
+}

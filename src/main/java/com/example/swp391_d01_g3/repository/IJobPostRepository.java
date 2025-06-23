@@ -38,19 +38,24 @@ public interface IJobPostRepository extends JpaRepository<JobPost, Integer> {
     @Query("SELECT jp FROM JobPost jp " +
             "JOIN jp.employer e " +
             "JOIN e.jobField jf " +
-            "WHERE (:keyword IS NULL OR jp.jobTitle LIKE %:keyword%) " +
-            "AND (:location IS NULL OR jp.jobLocation = :location) " +
-            "AND (:salary IS NULL OR jp.jobSalary >= :salary) " +
+            "WHERE (:keyword IS NULL OR jp.jobTitle LIKE CONCAT('%', :keyword, '%')) " +
+            "AND (:location IS NULL OR jp.jobLocation LIKE CONCAT('%', :location, '%')) " +
+            "AND (:minSalary IS NULL OR jp.jobSalary >= :minSalary) " +
+            "AND (:maxSalary IS NULL OR jp.jobSalary <= :maxSalary) " +
             "AND (:jobType IS NULL OR jp.jobType = :jobType) " +
             "AND (:jobFieldId IS NULL OR jf.jobFieldId = :jobFieldId) " +
-            "AND (:companyName IS NULL OR e.companyName = :companyName)")
+            "AND (:companyName IS NULL OR e.companyName LIKE CONCAT('%', :companyName, '%'))")
     List<JobPost> searchJobs(
             @Param("keyword") String keyword,
             @Param("location") String location,
-            @Param("salary") Integer salary,
-            @Param("jobType") String jobType,
+            @Param("jobType") JobPost.JobType jobType,  // Enum, không phải String
             @Param("jobFieldId") Integer jobFieldId,
-            @Param("companyName") String companyName);
+            @Param("minSalary") Double minSalary,
+            @Param("maxSalary") Double maxSalary,
+            @Param("companyName") String companyName
+    );
+
+
 
 
 

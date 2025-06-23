@@ -18,7 +18,8 @@
     <!-- Header Section -->
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
-        <h2 class="mb-1 text-center">Event Details</h2>
+        <h2 class="mb-1">Event Details</h2>
+        <p class="text-muted mb-0">Complete information about this career event</p>
       </div>
       <div class="d-flex gap-2">
         <a th:href="@{/Admin/EditEvent/{id}(id=${event.eventId})}" class="btn btn-info">
@@ -55,65 +56,65 @@
             <div class="row">
               <div class="col-md-6">
                 <div class="info-row">
-                                    <span class="info-label">
-                                        <i class="bi bi-hash me-2"></i>Event ID
-                                    </span>
+                  <span class="info-label">
+                    <i class="bi bi-hash me-2"></i>Event ID
+                  </span>
                   <span class="info-value" th:text="${event.eventId}"></span>
                 </div>
 
                 <div class="info-row">
-                                    <span class="info-label">
-                                        <i class="bi bi-calendar-event me-2"></i>Event Title
-                                    </span>
+                  <span class="info-label">
+                    <i class="bi bi-calendar-event me-2"></i>Event Title
+                  </span>
                   <span class="info-value" th:text="${event.eventTitle}"></span>
                 </div>
 
                 <div class="info-row">
-                                    <span class="info-label">
-                                        <i class="bi bi-geo-alt me-2"></i>Location
-                                    </span>
+                  <span class="info-label">
+                    <i class="bi bi-geo-alt me-2"></i>Location
+                  </span>
                   <span class="info-value" th:text="${event.eventLocation}"></span>
                 </div>
 
                 <div class="info-row">
-                                    <span class="info-label">
-                                        <i class="bi bi-calendar me-2"></i>Event Date
-                                    </span>
+                  <span class="info-label">
+                    <i class="bi bi-calendar me-2"></i>Event Date
+                  </span>
                   <span class="info-value" th:text="${#temporals.format(event.eventDate, 'dd/MM/yyyy HH:mm')}"></span>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="info-row">
-                                    <span class="info-label">
-                                        <i class="bi bi-clock me-2"></i>Registration Deadline
-                                    </span>
+                  <span class="info-label">
+                    <i class="bi bi-clock me-2"></i>Registration Deadline
+                  </span>
                   <span class="info-value" th:text="${event.registrationDeadline != null ? #temporals.format(event.registrationDeadline, 'dd/MM/yyyy HH:mm') : 'No deadline'}"></span>
                 </div>
 
                 <div class="info-row">
-                                    <span class="info-label">
-                                        <i class="bi bi-people me-2"></i>Participants
-                                    </span>
+                  <span class="info-label">
+                    <i class="bi bi-people me-2"></i>Participants
+                  </span>
                   <span class="info-value">
-                                        <span class="badge bg-primary me-1" th:text="${event.currentParticipants}"></span>
-                                        <span th:if="${event.maxParticipants != null}">
-                                            / <span th:text="${event.maxParticipants}"></span>
-                                        </span>
-                                        <span th:if="${event.maxParticipants == null}"> (Unlimited)</span>
-                                    </span>
+                    <span class="badge bg-primary me-1" th:text="${event.currentParticipants}"></span>
+                    <span th:if="${event.maxParticipants != null}">
+                      / <span th:text="${event.maxParticipants}"></span>
+                    </span>
+                    <span th:if="${event.maxParticipants == null}"> (Unlimited)</span>
+                  </span>
                 </div>
 
                 <div class="info-row">
-                                    <span class="info-label">
-                                        <i class="bi bi-envelope me-2"></i>Contact Email
-                                    </span>
+                  <span class="info-label">
+                    <i class="bi bi-envelope me-2"></i>Contact Email
+                  </span>
                   <span class="info-value" th:text="${event.contactEmail != null ? event.contactEmail : 'N/A'}"></span>
                 </div>
 
                 <div class="info-row">
-                                    <span class="info-label">
-                                        <i class="bi bi-calendar-plus me-2"></i>Created Date
-                                    </span>
+                  <span class="info-label">
+                    <i class="bi bi-calendar-plus me-2"></i>Created Date
+                  </span>
                   <span class="info-value" th:text="${event.createdAt != null ? #temporals.format(event.createdAt, 'dd/MM/yyyy HH:mm') : 'N/A'}"></span>
                 </div>
               </div>
@@ -147,16 +148,16 @@
           </div>
           <div class="card-body text-center">
             <div class="mb-3">
-                            <span class="status-badge"
-                                  th:class="${event.approvalStatus.name() == 'APPROVED' ? 'status-active' :
-                                            (event.approvalStatus.name() == 'REJECTED' ? 'status-banned' : 'status-pending')}"
-                                  th:text="${event.approvalStatus.name()}"></span>
+              <span class="status-badge"
+                    th:class="${event.approvalStatus.name() == 'APPROVED' ? 'status-active' :
+                              (event.approvalStatus.name() == 'REJECTED' ? 'status-banned' : 'status-pending')}"
+                    th:text="${event.approvalStatus.name()}"></span>
             </div>
             <div class="mb-3">
-                            <span class="status-badge"
-                                  th:class="${event.eventStatus.name() == 'ACTIVE' ? 'status-active' :
-                                            (event.eventStatus.name() == 'CANCELLED' ? 'status-banned' : 'badge bg-warning')}"
-                                  th:text="${event.eventStatus.name()}"></span>
+              <span class="status-badge"
+                    th:class="${event.eventStatus.name() == 'ACTIVE' ? 'status-active' :
+                              (event.eventStatus.name() == 'CANCELLED' ? 'status-banned' : 'badge bg-warning')}"
+                    th:text="${event.eventStatus.name()}"></span>
             </div>
             <div th:if="${event.approvedAt != null}" class="text-muted small">
               <i class="bi bi-check-circle me-1"></i>
@@ -175,30 +176,29 @@
           <div class="card-body">
             <div class="employer-info">
               <div class="info-row">
-                                <span class="info-label">
-                                    <i class="bi bi-building me-2"></i>Company
-                                </span>
+                <span class="info-label">
+                  <i class="bi bi-building me-2"></i>Company
+                </span>
                 <span class="info-value" th:text="${event.employer != null ? event.employer.companyName : 'N/A'}"></span>
               </div>
 
               <div class="info-row">
-                                <span class="info-label">
-                                    <i class="bi bi-envelope me-2"></i>Email
-                                </span>
+                <span class="info-label">
+                  <i class="bi bi-envelope me-2"></i>Email
+                </span>
                 <span class="info-value">
-                                    <span th:if="${event.employer?.account?.email != null}">
-                                        <a th:href="'mailto:' + ${event.employer.account.email}"
-                                           th:text="${event.employer.account.email}"></a>
-                                    </span>
-                                    <span th:unless="${event.employer?.account?.email != null}">N/A</span>
-                                </span>
+                  <span th:if="${event.employer?.account?.email != null}">
+                    <a th:href="'mailto:' + ${event.employer.account.email}"
+                       th:text="${event.employer.account.email}"></a>
+                  </span>
+                  <span th:unless="${event.employer?.account?.email != null}">N/A</span>
+                </span>
               </div>
 
-              <!-- SỬA: Phone field - tạm thời hardcode để tránh lỗi -->
               <div class="info-row">
-                                <span class="info-label">
-                                    <i class="bi bi-telephone me-2"></i>Phone
-                                </span>
+                <span class="info-label">
+                  <i class="bi bi-telephone me-2"></i>Phone
+                </span>
                 <span class="info-value">N/A</span>
               </div>
             </div>
@@ -231,10 +231,13 @@
                 </button>
               </div>
 
-              <button type="button" class="btn btn-outline-danger"
-                      data-bs-toggle="modal" data-bs-target="#deleteModal">
-                <i class="bi bi-trash me-2"></i>Delete Event
-              </button>
+              <form th:action="@{/Admin/DeleteEvent/{id}(id=${event.eventId})}"
+                    method="post"
+                    onsubmit="return confirm('Are you sure you want to delete this event? This action cannot be undone!')">
+                <button type="submit" class="btn btn-outline-danger w-100">
+                  <i class="bi bi-trash me-2"></i>Delete Event
+                </button>
+              </form>
             </div>
           </div>
         </div>
@@ -268,31 +271,6 @@
           <button type="submit" class="btn btn-danger"
                   onclick="document.getElementById('hiddenRejectReason').value = document.getElementById('rejectReason').value">
             Reject Event
-          </button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Delete Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Delete Event</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <p>Are you sure you want to delete this event?</p>
-        <p><strong>Event:</strong> <span th:text="${event.eventTitle}"></span></p>
-        <p class="text-warning"><i class="bi bi-exclamation-triangle me-2"></i>This action cannot be undone!</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <form th:action="@{/Admin/DeleteEvent/{id}(id=${event.eventId})}" method="post" style="display: inline;">
-          <button type="submit" class="btn btn-danger">
-            Delete Event
           </button>
         </form>
       </div>

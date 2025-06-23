@@ -6,6 +6,11 @@
   <title>Edit Event - Admin</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- CKEditor 5 CDN -->
+  <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.css" />
+  <script src="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.umd.js"></script>
+
   <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
   <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
 </head>
@@ -15,76 +20,207 @@
 <div class="main-content">
   <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2>Edit Career Event</h2>
-      <a th:href="@{/Admin/Events}" class="btn btn-secondary">
-        <i class="bi bi-arrow-left me-2"></i>Back to Events
-      </a>
-    </div>
-
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="filter-form">
-          <form th:action="@{/Admin/UpdateEvent/{id}(id=${event.eventId})}" th:object="${event}" method="post">
-            <div class="row">
-              <div class="col-md-12 mb-3">
-                <label for="eventTitle" class="form-label">Event Title *</label>
-                <input type="text" class="form-control" id="eventTitle"
-                       th:field="*{eventTitle}" required>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="eventDate" class="form-label">Event Date *</label>
-                <input type="datetime-local" class="form-control" id="eventDate"
-                       th:field="*{eventDate}" required>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="registrationDeadline" class="form-label">Registration Deadline</label>
-                <input type="datetime-local" class="form-control" id="registrationDeadline"
-                       th:field="*{registrationDeadline}">
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-8 mb-3">
-                <label for="eventLocation" class="form-label">Location *</label>
-                <input type="text" class="form-control" id="eventLocation"
-                       th:field="*{eventLocation}" required>
-              </div>
-              <div class="col-md-4 mb-3">
-                <label for="maxParticipants" class="form-label">Max Participants</label>
-                <input type="number" class="form-control" id="maxParticipants"
-                       th:field="*{maxParticipants}" min="1" max="1000">
-              </div>
-            </div>
-
-            <div class="mb-3">
-              <label for="contactEmail" class="form-label">Contact Email</label>
-              <input type="email" class="form-control" id="contactEmail"
-                     th:field="*{contactEmail}">
-            </div>
-
-            <div class="mb-3">
-              <label for="eventDescription" class="form-label">Event Description *</label>
-              <textarea class="form-control" id="eventDescription" rows="6"
-                        th:field="*{eventDescription}" required></textarea>
-            </div>
-
-            <div class="d-flex gap-2">
-              <button type="submit" class="btn btn-success">
-                <i class="bi bi-check-circle me-2"></i>Update Event
-              </button>
-              <a th:href="@{/Admin/Events}" class="btn btn-secondary">
-                <i class="bi bi-x-circle me-2"></i>Cancel
-              </a>
-            </div>
-          </form>
-        </div>
+      <div>
+        <h2 class="mb-1">Edit Event</h2>
+        <p class="text-muted mb-0">Update event information</p>
+      </div>
+      <div class="d-flex gap-2">
+        <a th:href="@{/Admin/Events}" class="btn btn-secondary">
+          <i class="bi bi-arrow-left me-2"></i>Back to Events
+        </a>
       </div>
     </div>
+
+    <form th:action="@{/Admin/UpdateEvent/{id}(id=${event.eventId})}"
+          th:object="${event}"
+          method="post"
+          class="filter-form">
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="eventTitle" class="form-label">
+              <i class="bi bi-calendar-event me-2"></i>Event Title *
+            </label>
+            <input type="text" class="form-control" id="eventTitle"
+                   name="eventTitle" th:value="${event.eventTitle}" required>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="eventLocation" class="form-label">
+              <i class="bi bi-geo-alt me-2"></i>Location *
+            </label>
+            <input type="text" class="form-control" id="eventLocation"
+                   name="eventLocation" th:value="${event.eventLocation}" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="eventDate" class="form-label">
+              <i class="bi bi-calendar me-2"></i>Event Date *
+            </label>
+            <input type="datetime-local" class="form-control" id="eventDate"
+                   name="eventDate" th:value="${event.eventDate}" required>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="registrationDeadline" class="form-label">
+              <i class="bi bi-clock me-2"></i>Registration Deadline
+            </label>
+            <input type="datetime-local" class="form-control" id="registrationDeadline"
+                   name="registrationDeadline" th:value="${event.registrationDeadline}">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="maxParticipants" class="form-label">
+              <i class="bi bi-people me-2"></i>Max Participants
+            </label>
+            <input type="number" class="form-control" id="maxParticipants"
+                   name="maxParticipants" th:value="${event.maxParticipants}" min="1">
+            <div class="form-text">Leave empty for unlimited participants</div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="contactEmail" class="form-label">
+              <i class="bi bi-envelope me-2"></i>Contact Email
+            </label>
+            <input type="email" class="form-control" id="contactEmail"
+                   name="contactEmail" th:value="${event.contactEmail}">
+          </div>
+        </div>
+      </div>
+
+      <!-- Event Description với CKEditor -->
+      <div class="mb-3">
+        <label for="eventDescription" class="form-label">
+          <i class="bi bi-file-text me-2"></i>Event Description *
+        </label>
+        <textarea class="form-control"
+                  id="eventDescription"
+                  name="eventDescription"
+                  rows="8"
+                  th:text="${event.eventDescription}"
+                  required></textarea>
+      </div>
+
+      <div class="d-flex gap-3">
+        <button type="submit" class="btn btn-success">
+          <i class="bi bi-check-circle me-2"></i>Update Event
+        </button>
+        <a th:href="@{/Admin/Events}" class="btn btn-secondary">
+          <i class="bi bi-x-circle me-2"></i>Cancel
+        </a>
+      </div>
+    </form>
   </div>
 </div>
+
+<!-- CKEditor Initialization Script -->
+<script>
+  const {
+    ClassicEditor,
+    Essentials,
+    Bold,
+    Italic,
+    Underline,
+    Strikethrough,
+    Font,
+    Paragraph,
+    Heading,
+    List,
+    Link,
+    BlockQuote,
+    Table,
+    MediaEmbed,
+    Indent,
+    Alignment,
+    Image,
+    ImageCaption,
+    ImageStyle,
+    ImageToolbar,
+    ImageUpload,
+    ImageResize,
+    PictureEditing,
+    ImageInsert,
+    Base64UploadAdapter
+  } = CKEDITOR;
+
+  ClassicEditor
+          .create(document.querySelector('#eventDescription'), {
+            plugins: [
+              Essentials, Bold, Italic, Underline, Strikethrough,
+              Font, Paragraph, Heading, List, Link, BlockQuote,
+              Table, MediaEmbed, Indent, Alignment,
+              // THÊM: Image plugins
+              Image, ImageCaption, ImageStyle, ImageToolbar,
+              ImageUpload, ImageResize, PictureEditing,
+              ImageInsert, Base64UploadAdapter
+            ],
+            toolbar: [
+              'heading', '|',
+              'bold', 'italic', 'underline', 'strikethrough', '|',
+              'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+              'alignment', '|',
+              'numberedList', 'bulletedList', '|',
+              'outdent', 'indent', '|',
+              'link', 'blockQuote', 'insertTable', 'mediaEmbed', '|',
+              // THÊM: Image toolbar
+              'insertImage', 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+              'undo', 'redo'
+            ],
+            image: {
+              toolbar: [
+                'imageStyle:inline',
+                'imageStyle:block',
+                'imageStyle:side',
+                '|',
+                'toggleImageCaption',
+                'imageTextAlternative',
+                '|',
+                'imageResize'
+              ],
+              styles: [
+                'inline',
+                'block',
+                'side'
+              ]
+            },
+            // THÊM: Upload adapter configuration
+            simpleUpload: {
+              uploadUrl: '/Admin/uploadImage', // Endpoint để upload image
+              headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]')?.getAttribute('content')
+              }
+            }
+          })
+          .then(editor => {
+            window.eventDescriptionEditor = editor;
+
+            // Sync CKEditor data với form khi submit
+            const form = document.querySelector('form');
+            if (form) {
+              form.addEventListener('submit', function() {
+                document.querySelector('#eventDescription').value = editor.getData();
+              });
+            }
+          })
+          .catch(error => {
+            console.error('Error initializing CKEditor:', error);
+          });
+</script>
 
 <script th:src="@{/js/navbarAdmin.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

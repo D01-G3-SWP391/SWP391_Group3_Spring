@@ -1,0 +1,19 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  background-color: #f4f4f4; /* From Figma style_1 (1:95 Login Frame) */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
