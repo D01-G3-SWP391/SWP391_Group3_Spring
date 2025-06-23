@@ -195,11 +195,11 @@ public class JobPostController {
         model.addAttribute("jobPost", jobPost);
         model.addAttribute("applications", applications);
         model.addAttribute("totalApplications", applications.size());
-        model.addAttribute("statuses", com.example.swp391_d01_g3.model.JobApplication.ApplicationStatus.values());
+        model.addAttribute("statuses", JobApplication.ApplicationStatus.values());
         return "employee/jobPostApplications";
     }
 
-    // REMOVED: CV view/download methods - Chỉ sử dụng inline CV display
+
 
     // Update Application Status
     @PostMapping("/JobPosts/{jobPostId}/applications/{applicationId}/updateStatus")

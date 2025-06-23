@@ -66,10 +66,8 @@ public class Dashboard {
     public String blogDetail(@PathVariable Long id, Model model) {
         BlogPost blog = blogService.getBlogPostById(id).orElse(null);
         if (blog == null) return "redirect:/admin/blogs";
-        List<BlogImage> images = blogService.getImagesForBlog(id);
-        model.addAttribute("blog", blog);
-        model.addAttribute("images", images);
-        return "blog/detailBlog";
+        model.addAttribute("blogPost", blog);
+        return "blog/blog-detail";
     }
 
     // Đổi status (POST)

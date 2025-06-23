@@ -1,9 +1,7 @@
 package com.example.swp391_d01_g3.service.blog;
 
-import com.example.swp391_d01_g3.model.BlogImage;
 import com.example.swp391_d01_g3.model.BlogPost;
 import com.example.swp391_d01_g3.model.Resource;
-import com.example.swp391_d01_g3.repository.IBlogImageRepository;
 import com.example.swp391_d01_g3.repository.IBlogPostRepository;
 import com.example.swp391_d01_g3.repository.IResourceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +24,7 @@ public class BlogServiceImpl implements IBlogService {
     @Autowired
     private IResourceRepository resourceRepository;
 
-    @Autowired
-    private IBlogImageRepository  blogImageRepository;
+
 
     @Override
     public List<BlogPost> getAllPublishedBlogPosts() {
@@ -152,15 +149,7 @@ public class BlogServiceImpl implements IBlogService {
         return blogPostRepository.findAll();
     }
 
-    @Override
-    public long countImagesForBlog(Long blogPostId) {
-        return blogImageRepository.countByBlogPost_BlogPostId(blogPostId);
-    }
 
-    @Override
-    public List<BlogImage> getImagesForBlog(Long blogPostId) {
-        return blogImageRepository.findByBlogPost_BlogPostId(blogPostId);
-    }
 
     @Override
     public void updateBlogStatus(Long blogPostId, BlogPost.BlogStatus newStatus) {

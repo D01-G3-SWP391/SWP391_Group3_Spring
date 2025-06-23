@@ -6,42 +6,49 @@
     <title>Danh Sách Ứng Viên</title>
     <link rel="stylesheet" th:href="@{/css/navbarStudent_Employer.css}"/>
     <link rel="stylesheet" th:href="@{/css/viewListApplication.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarViewJobPost.css}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/navbar.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarEmployer.css}" />
+    <link rel="stylesheet" th:href="@{/css/viewListApplication.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarViewJobPost.css}" />
+    <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
     <style>
         /* Fix dropdown overflow issues */
         .table-container {
             overflow: visible !important;
         }
-        
+
         table {
             overflow: visible !important;
         }
-        
+
         tbody {
             overflow: visible !important;
         }
-        
+
         tbody tr {
             position: relative;
             overflow: visible !important;
         }
-        
+
         tbody td {
             overflow: visible !important;
             position: relative;
         }
-        
+
         .action-buttons {
             position: relative;
             overflow: visible !important;
         }
-        
+
         .dropdown {
             position: relative !important;
             overflow: visible !important;
         }
-        
+
         /* Ensure dropdown shows on top - open UPWARD */
         .dropdown-menu {
             position: absolute !important;
@@ -64,39 +71,57 @@
             transform: none !important;
             margin-bottom: 5px !important;
         }
-        
+
         /* Additional dropdown fixes */
         .dropdown-menu.show {
             position: absolute !important;
             z-index: 99999 !important;
             display: block !important;
         }
-        
+
         .table-responsive {
             overflow: visible !important;
         }
-        
+
         /* Force dropdown to stay on top in table - open UPWARD */
         .dropdown.show .dropdown-menu,
-        .dropup.show .dropdown-menu {
+        .dropup.show .dropdown-menu,
+        .dropup .dropdown-menu.show {
             position: absolute !important;
             z-index: 99999 !important;
             display: block !important;
             visibility: visible !important;
             opacity: 1 !important;
             bottom: 100% !important;
+            top: auto !important;
             left: 0 !important;
             right: auto !important;
             margin-bottom: 5px !important;
+            margin-top: 0 !important;
         }
-        
+
+        /* Force show dropdown when clicked */
+        .dropdown .dropdown-menu.show {
+            display: block !important;
+            position: absolute !important;
+            z-index: 99999 !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            top: auto !important;
+            bottom: 100% !important;
+            left: 0 !important;
+            right: auto !important;
+            margin-bottom: 5px !important;
+            transform: none !important;
+        }
+
         /* Ensure table cells don't clip dropdown */
         tbody td:last-child {
             overflow: visible !important;
             position: relative;
             min-width: 250px !important;
         }
-        
+
         /* Action column styling */
         .action-buttons {
             display: flex;
@@ -105,12 +130,12 @@
             flex-wrap: nowrap;
             min-width: 220px;
         }
-        
+
         /* Prevent table layout from constraining cells */
         table {
             table-layout: auto !important;
         }
-        
+
         .dropdown-item {
             display: block !important;
             width: 100% !important;
@@ -124,23 +149,23 @@
             background-color: transparent;
             border: 0;
         }
-        
+
         .dropdown-item:hover {
             background-color: #e9ecef !important;
         }
-        
+
         .dropdown-item:disabled {
             color: #6c757d !important;
             background-color: transparent !important;
         }
-        
+
         /* Force visibility of dropdown toggle */
         .dropdown-toggle {
             background: transparent !important;
             border: 1px solid #dee2e6 !important;
             color: #6c757d !important;
         }
-        
+
         /* Active state when dropdown is open */
         .dropdown.show .dropdown-toggle,
         .dropup.show .dropdown-toggle {
@@ -149,19 +174,19 @@
             color: #007bff !important;
             box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
         }
-        
+
         /* Hover state */
         .dropdown-toggle:hover {
             background: #f8f9fa !important;
             border-color: #adb5bd !important;
             color: #495057 !important;
         }
-        
+
         /* Icon color changes */
         .dropdown-toggle i {
             color: inherit !important;
         }
-        
+
         /* Focus state */
         .dropdown-toggle:focus {
             background: #f8f9fa !important;
@@ -169,7 +194,7 @@
             color: #007bff !important;
             box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
         }
-        
+
         .dropdown-toggle::after {
             display: inline-block;
             margin-left: 0.255em;
@@ -180,7 +205,7 @@
             border-bottom: 0;
             border-left: 0.3em solid transparent;
         }
-        
+
         /* Arrow for dropup - points up */
         .dropup .dropdown-toggle::after {
             border-bottom: 0.3em solid;
@@ -244,6 +269,7 @@
 
         .cell.action-col { min-width: 220px; }
         .status-badge { font-size: 1rem; font-weight: 600; padding: 6px 18px; border-radius: 16px; }
+        .btn-view-details { min-width: 120px; }
         .dropdown.dropend { margin-left: 0; }
         tbody tr { margin-bottom: 18px !important; }
 
@@ -292,6 +318,17 @@
             background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
             color: white;
         }
+        thead th {
+            padding: 20px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: white;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none;
+            position: relative;
+        }
 
         .chat-header .avatar {
             width: 50px;
@@ -304,18 +341,21 @@
             font-weight: bold;
             font-size: 18px;
             margin-right: 15px;
+            color: white;
         }
 
         .chat-header .info h4 {
             margin: 0;
             font-size: 18px;
             font-weight: 600;
+            color: white;
         }
 
         .chat-header .info p {
             margin: 0;
             opacity: 0.8;
             font-size: 14px;
+            color: white;
         }
 
         .chat-header .close-btn {
@@ -461,27 +501,27 @@
             letter-spacing: 0.5px !important;
             display: inline-block !important;
         }
-        
+
         .status-badge.submitted {
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
             color: white !important;
         }
-        
+
         .status-badge.interview {
             background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
             color: white !important;
         }
-        
+
         .status-badge.accepted {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
             color: white !important;
         }
-        
+
         .status-badge.rejected {
             background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
             color: white !important;
         }
-        
+
         /* Larger buttons */
         .btn-cv, .btn-chat {
             padding: 10px 16px !important;
@@ -490,48 +530,47 @@
             border-radius: 8px !important;
             transition: all 0.3s ease !important;
         }
-        
+
         .btn-cv {
             background: linear-gradient(90deg, #7c3aed 0%, #a78bfa 100%) !important;
             color: #fff !important;
             border: 2px solid #7c3aed !important;
         }
-        
+
         .btn-cv:hover {
             transform: translateY(-2px) !important;
             box-shadow: 0 6px 20px rgba(124, 58, 237, 0.3) !important;
         }
-        
+
         .btn-chat {
             background: linear-gradient(90deg, #10b981 0%, #059669 100%) !important;
             color: #fff !important;
             border: 2px solid #10b981 !important;
         }
-        
+
         .btn-chat:hover {
             transform: translateY(-2px) !important;
             box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3) !important;
         }
-        
+
         /* Dropdown button larger */
         .dropdown-toggle {
             padding: 10px 12px !important;
             font-size: 0.9rem !important;
         }
-        
+
         /* Fix table overflow and responsive */
         .table-container {
-            overflow-x: auto !important;
+            overflow: hidden !important;
             max-width: 100% !important;
             margin: 0 auto !important;
         }
-        
+
         table {
-            min-width: 100% !important;
             width: 100% !important;
             table-layout: fixed !important;
         }
-        
+
         /* Column widths */
         table th:nth-child(1) { width: 8% !important; } /* STT */
         table th:nth-child(2) { width: 15% !important; } /* Tên */
@@ -539,14 +578,14 @@
         table th:nth-child(4) { width: 15% !important; } /* Ngày */
         table th:nth-child(5) { width: 12% !important; } /* Trạng thái */
         table th:nth-child(6) { width: 30% !important; } /* Hành động */
-        
+
         table td:nth-child(1) { width: 8% !important; }
         table td:nth-child(2) { width: 15% !important; }
         table td:nth-child(3) { width: 20% !important; }
         table td:nth-child(4) { width: 15% !important; }
         table td:nth-child(5) { width: 12% !important; }
         table td:nth-child(6) { width: 30% !important; }
-        
+
         /* Text overflow handling */
         .candidate-name strong {
             display: block !important;
@@ -555,7 +594,7 @@
             text-overflow: ellipsis !important;
             max-width: 100% !important;
         }
-        
+
         .candidate-contact small {
             display: block !important;
             white-space: nowrap !important;
@@ -563,7 +602,7 @@
             text-overflow: ellipsis !important;
             max-width: 100% !important;
         }
-        
+
         /* Action buttons responsive */
         .action-buttons {
             display: flex !important;
@@ -572,32 +611,83 @@
             flex-wrap: wrap !important;
             justify-content: center !important;
         }
-        
+
         .btn-cv, .btn-chat {
             flex: 0 0 auto !important;
             min-width: 60px !important;
         }
-        
+
         /* Mobile responsive */
         @media (max-width: 1200px) {
             .action-buttons {
                 gap: 4px !important;
             }
-            
+
             .btn-cv, .btn-chat {
                 padding: 8px 12px !important;
                 font-size: 0.8rem !important;
             }
-            
+
             .btn-cv span, .btn-chat span {
                 display: none !important;
             }
         }
+
+        /* Hide scrollbars */
+        html, body {
+            overflow-x: hidden !important;
+            overflow-y: hidden !important;
+        }
+
+        .table-container {
+            overflow: hidden !important;
+        }
+
+        .table-responsive {
+            overflow: hidden !important;
+        }
+
+        .page-container {
+            overflow: hidden !important;
+        }
+
+        /* Hide scrollbars completely */
+        ::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+
+        * {
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+        }
+
+        /* Ensure content fits without scrolling */
+        .container, .container-fluid {
+            overflow: hidden !important;
+        }
+
+        /* Override navbarViewJobPost.css table container styling */
+        .table-container {
+            background: transparent !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+            border: none !important;
+            padding: 0 !important;
+        }
+
+        table {
+            background: white !important;
+            border-radius: 15px !important;
+            box-shadow: none !important;
+            overflow: hidden !important;
+        }
     </style>
 </head>
 <body>
-<div th:replace="~{navbar/navbarEmployee :: navbarAdmin}"></div>
-<script src="/js/navbarAdmin.js"></script>
+<div th:replace="~{navbar/navbarEmployee :: navbarEmployee}"></div>
 
 <!-- Modal Gửi Lịch Phỏng Vấn -->
 <div class="modal fade" id="interviewModal" tabindex="-1" aria-labelledby="interviewModalLabel" aria-hidden="true">
@@ -658,7 +748,7 @@
 
 <div class="main-content">
     <h1 th:text="'Ứng viên cho công việc: ' + ${jobPost.jobTitle}"></h1>
-    
+
     <!-- Statistics cards -->
     <div class="stats-container">
         <div class="stat-card">
@@ -721,7 +811,7 @@
                                     <i class="bi bi-chevron-down"></i>
                                     <span>CV</span>
                                 </button>
-                                <button class="btn-chat" title="Nhắn tin với ứng viên" 
+                                <button class="btn-chat" title="Nhắn tin với ứng viên"
                                         th:attr="data-user-name=${jobApplication.fullName},data-user-email=${jobApplication.email}"
                                         onclick="openChatFromButton(this)">
                                     <i class="bi bi-chat-dots"></i>
@@ -729,14 +819,14 @@
                                 </button>
                                 <div class="dropdown dropup" style="position: relative;">
                                     <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                                            type="button" 
-                                            th:id="'dropdownMenuButton' + ${jobApplication.applicationId}" 
-                                            data-bs-toggle="dropdown" 
+                                            type="button"
+                                            th:id="'dropdownMenuButton' + ${jobApplication.applicationId}"
+                                            data-bs-toggle="dropdown"
                                             data-bs-auto-close="true"
                                             aria-expanded="false">
                                         <i class="bi bi-gear"></i>
                                     </button>
-                                    
+
                                     <ul class="dropdown-menu" th:aria-labelledby="'dropdownMenuButton' + ${jobApplication.applicationId}">
                                         <li th:each="statusOption : ${statuses}">
                                             <form th:action="@{/Employer/JobPosts/{jobPostId}/applications/{applicationId}/updateStatus(jobPostId=${jobPost.jobPostId},applicationId=${jobApplication.applicationId})}"
@@ -786,10 +876,7 @@
         </a>
     </div>
 
-    <!-- Floating action button -->
-    <a th:href="@{/Employer/JobPosts}" class="fab">
-        <i class="bi bi-arrow-left"></i>
-    </a>
+
 </div>
 
 <!-- Chat Off-canvas -->
@@ -808,7 +895,7 @@
             <i class="bi bi-x"></i>
         </button>
     </div>
-    
+
     <div class="chat-messages" id="chatMessages">
         <!-- Sample messages -->
         <div class="message received">
@@ -830,7 +917,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="typing-indicator" id="typingIndicator">
         <span id="typingUser">Việt Tài</span> đang soạn tin nhắn
         <div class="typing-dots">
@@ -839,7 +926,7 @@
             <span></span>
         </div>
     </div>
-    
+
     <div class="chat-input">
         <form class="chat-input-form" onsubmit="sendMessage(event)">
             <input type="text" id="messageInput" placeholder="Nhập tin nhắn..." autocomplete="off">
@@ -858,13 +945,13 @@
 <script th:src="@{/js/chat-websocket.js}"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/language-dropdown.js}"></script>
 <script>
 function toggleDetails(index) {
     const detailsRow = document.getElementById('details-' + index);
     const button = document.getElementById('btn-details-' + index);
     const icon = button.querySelector('i');
     const text = button.querySelector('span');
-    
     if (detailsRow.classList.contains('show')) {
         detailsRow.classList.remove('show');
         detailsRow.style.display = 'none';
@@ -879,7 +966,7 @@ function toggleDetails(index) {
         icon.className = 'bi bi-chevron-up';
         text.textContent = 'CV';
         button.classList.add('expanded');
-        
+
         // Scroll to the details row
         setTimeout(() => {
             detailsRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -889,30 +976,66 @@ function toggleDetails(index) {
 function handleStatusClick(event, btn) {
     var status = btn.getAttribute('data-status');
     var applicationId = btn.getAttribute('data-application-id');
+    
+    console.log('🎯 Status click:', status, 'for application:', applicationId);
+    
     if (status === 'INTERVIEW') {
         event.preventDefault();
         // Get jobPostId from current URL path
         var pathParts = window.location.pathname.split('/');
         var jobPostId = pathParts[3]; // /Employer/JobPosts/{jobPostId}/applications
-        
+
         // Set action cho form modal
         var form = document.getElementById('interviewForm');
         form.action = '/Employer/JobPosts/' + jobPostId + '/applications/' + applicationId + '/sendInterviewMail';
-        
+
         // Set jobPostId cho modal nếu có hidden input
         var modalJobPostIdInput = document.getElementById('modalJobPostId');
         if (modalJobPostIdInput) {
             modalJobPostIdInput.value = jobPostId;
         }
-        
+
         // Reset form modal nếu cần
         form.reset();
         // Hiện modal
         var modal = new bootstrap.Modal(document.getElementById('interviewModal'));
         modal.show();
         return false;
+    } else {
+        // Show confirmation for other status changes
+        const confirmMessage = `Bạn có chắc chắn muốn đổi trạng thái thành "${status}"?`;
+        
+        // Get the dropdown menu to keep it open if cancelled
+        const dropdownMenu = btn.closest('.dropdown-menu');
+        const dropdownToggle = btn.closest('.dropdown').querySelector('[data-bs-toggle="dropdown"]');
+        
+        if (confirm(confirmMessage)) {
+            console.log('✅ Status change confirmed:', status, 'for application:', applicationId);
+            return true; // Allow form submission
+        } else {
+            event.preventDefault();
+            event.stopPropagation(); // Prevent event bubbling
+            console.log('❌ Status change cancelled');
+            
+            // Keep dropdown open and maintain dropup state
+            setTimeout(() => {
+                if (dropdownMenu && dropdownToggle) {
+                    dropdownMenu.classList.add('show');
+                    dropdownToggle.setAttribute('aria-expanded', 'true');
+                    
+                    // Ensure dropup positioning is maintained
+                    const dropdown = dropdownToggle.closest('.dropdown');
+                    if (dropdown.classList.contains('dropup')) {
+                        dropdownMenu.style.bottom = '100%';
+                        dropdownMenu.style.top = 'auto';
+                        dropdownMenu.style.marginBottom = '5px';
+                    }
+                }
+            }, 50);
+            
+            return false; // Prevent form submission
+        }
     }
-    return true;
 }
 
 // Chat WebSocket Client
@@ -944,7 +1067,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeWebSocket() {
     if (window.ChatWebSocketClient) {
         chatWebSocketClient = new ChatWebSocketClient();
-        
+
         // Set callbacks with debug
         chatWebSocketClient.onMessageReceived = (message) => {
             console.log('🔄 WebSocket callback triggered with message:', message);
@@ -952,7 +1075,7 @@ function initializeWebSocket() {
         };
         chatWebSocketClient.onConnected = () => console.log('✅ Chat WebSocket connected');
         chatWebSocketClient.onError = (error) => console.error('❌ Chat error:', error);
-        
+
         // Connect to WebSocket
         chatWebSocketClient.connect(currentUserId, currentUserName);
     }
@@ -961,7 +1084,7 @@ function initializeWebSocket() {
 // Handle new message received from WebSocket
 function handleNewMessage(message) {
     console.log('💬 Handling new message:', message);
-    
+
     // Only add message to UI if it's from someone else
     if (message.senderId !== currentUserId) {
         addMessageToUI(message);
@@ -975,15 +1098,15 @@ function handleNewMessage(message) {
 function openChatFromButton(button) {
     const userName = button.getAttribute('data-user-name');
     const userEmail = button.getAttribute('data-user-email');
-    
+
     console.log('🎯 Opening direct chat with student:', userName, userEmail);
-    
+
     if (!userName || !userEmail) {
         console.error('❌ Missing user data on button');
         alert('Không thể lấy thông tin ứng viên. Vui lòng thử lại.');
         return;
     }
-    
+
     // Chat trực tiếp với student này
     openDirectChatWithStudent(userName, userEmail);
 }
@@ -991,7 +1114,7 @@ function openChatFromButton(button) {
 // Function to open direct chat with a specific student
 function openDirectChatWithStudent(userName, userEmail) {
     console.log('🚀 Opening direct chat with:', userName, userEmail);
-    
+
     // Update chat header info
     document.getElementById('chatName').textContent = userName;
     document.getElementById('chatAvatar').textContent = userName.charAt(0).toUpperCase();
@@ -1000,7 +1123,7 @@ function openDirectChatWithStudent(userName, userEmail) {
     // Show chat off-canvas
     document.getElementById('chatOverlay').classList.add('show');
     document.getElementById('chatOffcanvas').classList.add('show');
-    
+
     // Hide back button since we're going directly to chat
     const backBtn = document.getElementById('chatBackBtn');
     if (backBtn) {
@@ -1014,39 +1137,39 @@ function openDirectChatWithStudent(userName, userEmail) {
 async function tryCreateChatRoomWithStudent(userName, userEmail) {
     try {
         console.log('🔍 Finding student by email:', userEmail);
-        
+
         // First, try to find existing chat rooms
         const roomsResponse = await fetch('/api/chat/rooms');
         if (roomsResponse.ok) {
             const rooms = await roomsResponse.json();
             console.log('📋 Existing rooms:', rooms);
-            
+
             // Try to find a room for this student
-            const existingRoom = rooms.find(room => 
-                room.otherParticipantName && 
+            const existingRoom = rooms.find(room =>
+                room.otherParticipantName &&
                 (room.otherParticipantName.toLowerCase().includes(userName.toLowerCase()) ||
                  room.otherParticipantName.includes(userEmail.split('@')[0]))
             );
-            
+
             if (existingRoom) {
                 console.log('✅ Found existing room:', existingRoom);
                 currentChatRoomId = String(existingRoom.chatRoomId);
-                
+
                 // Join WebSocket room
                 if (chatWebSocketClient && chatWebSocketClient.isConnected) {
                     chatWebSocketClient.joinRoom(Number(currentChatRoomId));
                 }
-                
+
                 // Load chat history
                 loadChatHistory(currentChatRoomId);
                 return;
             }
         }
-        
+
         // If no existing room found, try to CREATE REAL chat room
         console.log('🏗️ No existing room found, creating REAL chat room for:', userName, userEmail);
         await createRealChatRoomWithStudent(userName, userEmail);
-        
+
     } catch (error) {
         console.error('Error finding/creating chat room:', error);
         // Fallback to demo mode if API fails
@@ -1058,10 +1181,10 @@ async function tryCreateChatRoomWithStudent(userName, userEmail) {
 async function createRealChatRoomWithStudent(userName, userEmail) {
     try {
         console.log('🏗️ Creating REAL chat room via API for:', userName, userEmail);
-        
+
         // Try to find student ID by email first
         const studentResponse = await fetch(`/api/students/findByEmail?email=${encodeURIComponent(userEmail)}`);
-        
+
         let studentUserId = null;
         if (studentResponse.ok) {
             const studentData = await studentResponse.json();
@@ -1069,14 +1192,14 @@ async function createRealChatRoomWithStudent(userName, userEmail) {
             console.log('👤 Found student data:', studentData);
             console.log('👤 Using student userId:', studentUserId);
         }
-        
+
         // If we can't find student userId, use current user ID as fallback
         if (!studentUserId) {
             console.warn('⚠️ Could not find student userId, creating demo session');
             createNewChatSession(userName, userEmail);
             return;
         }
-        
+
         // Create real chat room via API
         const createRoomResponse = await fetch('/api/chat/rooms', {
             method: 'POST',
@@ -1085,31 +1208,31 @@ async function createRealChatRoomWithStudent(userName, userEmail) {
             },
             body: JSON.stringify({
                 studentId: studentUserId,    // Student's Account.userId
-                employerId: currentUserId,   // Employer's Account.userId  
+                employerId: currentUserId,   // Employer's Account.userId
                 jobPostId: null             // General chat, not job-specific
             })
         });
-        
+
         if (createRoomResponse.ok) {
             const newRoom = await createRoomResponse.json();
             console.log('✅ Successfully created real chat room:', newRoom);
-            
+
             currentChatRoomId = String(newRoom.chatRoomId);
-            
+
             // Join WebSocket room
             if (chatWebSocketClient && chatWebSocketClient.isConnected) {
                 chatWebSocketClient.joinRoom(Number(currentChatRoomId));
             }
-            
+
             // Show ready chat interface
             showReadyChatInterface(userName);
-            
+
         } else {
             console.error('❌ Failed to create chat room via API');
             // Fallback to demo mode
             createNewChatSession(userName, userEmail);
         }
-        
+
     } catch (error) {
         console.error('Error creating real chat room:', error);
         // Fallback to demo mode
@@ -1122,7 +1245,7 @@ function showReadyChatInterface(userName) {
     // LOAD CHAT HISTORY FIRST before showing UI
     console.log('📜 Loading chat history for room:', currentChatRoomId);
     loadChatHistory(currentChatRoomId);
-    
+
     // Enable input for sending messages
     const messageInput = document.getElementById('messageInput');
     if (messageInput) {
@@ -1130,23 +1253,23 @@ function showReadyChatInterface(userName) {
         messageInput.disabled = false;
         messageInput.focus();
     }
-    
+
     // Update chat title and status
     document.getElementById('chatName').textContent = `💬 ${userName}`;
     document.getElementById('chatStatus').textContent = 'Đang hoạt động';
     document.getElementById('chatOverlay').classList.add('show');
     document.getElementById('chatOffcanvas').classList.add('show');
-    
+
     console.log('✅ Chat ready with history for:', userName);
 }
 
 // Function to create new chat session when no existing room found
 function createNewChatSession(userName, userEmail) {
     console.log('📝 Creating new chat session for:', userName, userEmail);
-    
+
     // Show chat interface ready for messaging
     const messagesContainer = document.getElementById('chatMessages');
-    
+
     messagesContainer.innerHTML = `
         <div style="text-align: center; padding: 20px; color: #666;">
             <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
@@ -1160,7 +1283,7 @@ function createNewChatSession(userName, userEmail) {
             </div>
         </div>
     `;
-    
+
     // Enable input for sending messages
     const messageInput = document.getElementById('messageInput');
     if (messageInput) {
@@ -1168,7 +1291,7 @@ function createNewChatSession(userName, userEmail) {
         messageInput.disabled = false;
         messageInput.focus(); // Auto focus vào input
     }
-    
+
     // Set a temporary room ID for this conversation
     currentChatRoomId = 'new_' + userEmail.replace('@', '_').replace('.', '_');
     console.log('📝 Created new chat session with ID:', currentChatRoomId);
@@ -1186,14 +1309,14 @@ function loadChatHistory(roomId) {
         .then(messages => {
             const messagesContainer = document.getElementById('chatMessages');
             messagesContainer.innerHTML = ''; // Clear existing messages
-            
+
             // Handle both array and paginated response
             const messageList = Array.isArray(messages) ? messages : (messages.content || []);
-            
+
             messageList.forEach(message => {
                 addMessageToUI(message);
             });
-            
+
             // Scroll to bottom
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         })
@@ -1216,27 +1339,27 @@ function closeChat() {
         chatWebSocketClient.leaveRoom();
         currentChatRoomId = null;
     }
-    
+
     document.getElementById('chatOverlay').classList.remove('show');
     document.getElementById('chatOffcanvas').classList.remove('show');
 }
 
 function addMessageToUI(message) {
     const messagesContainer = document.getElementById('chatMessages');
-    
+
     // Generate unique ID for duplicate detection
     const messageId = message.id || `local_${message.content}_${message.senderId}_${message.sentAt}`;
-    
+
     // Check for duplicate messages
     if (document.querySelector(`[data-message-id="${messageId}"]`)) {
         console.log('🔄 Duplicate message detected, skipping:', message.content);
         return;
     }
-    
+
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${message.senderId === currentUserId ? 'sent' : 'received'}`;
     messageDiv.setAttribute('data-message-id', messageId);
-    
+
     // Safe timestamp parsing - use sentAt field from backend
     let time = 'Bây giờ';
     try {
@@ -1256,42 +1379,42 @@ function addMessageToUI(message) {
         console.warn('Invalid timestamp:', message.sentAt || message.timestamp);
         time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
     }
-    
+
     messageDiv.innerHTML = `
         <div class="message-bubble">
             ${message.content}
             <div class="message-time">${time}</div>
         </div>
     `;
-    
+
     messagesContainer.appendChild(messageDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    
+
     console.log('💬 Added message to UI:', message.content, 'ID:', messageId);
 }
 
 function sendMessage(event) {
     event.preventDefault();
-    
+
     const input = document.getElementById('messageInput');
     const content = input.value.trim();
-    
+
     if (!content || !currentChatRoomId) return;
-    
+
     // Prevent double sending
     if (input.dataset.sending === 'true') {
         console.log('⚠️ Message already being sent, ignoring duplicate');
         return;
     }
-    
+
     // Mark as sending
     input.dataset.sending = 'true';
     input.disabled = true;
-    
+
     // Send via WebSocket if available
     if (chatWebSocketClient && chatWebSocketClient.isConnected) {
         const success = chatWebSocketClient.sendMessage(content);
-        
+
         if (success) {
             // Add message to UI immediately for better UX
             const message = {
@@ -1300,12 +1423,12 @@ function sendMessage(event) {
                 sentAt: new Date().toISOString()
             };
             addMessageToUI(message);
-            
+
             // Clear input
             input.value = '';
         }
     }
-    
+
     // Reset sending state
     setTimeout(() => {
         input.dataset.sending = 'false';
@@ -1315,6 +1438,7 @@ function sendMessage(event) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Bootstrap Popovers
     var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
     var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
         return new bootstrap.Popover(popoverTriggerEl, {
@@ -1323,9 +1447,81 @@ document.addEventListener('DOMContentLoaded', function() {
             html: true
         });
     });
-    
 
+    // Initialize Bootstrap Dropdowns
+    var dropdownElementList = [].slice.call(document.querySelectorAll('[data-bs-toggle="dropdown"]'));
+    var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+        return new bootstrap.Dropdown(dropdownToggleEl, {
+            boundary: 'viewport',
+            placement: 'top'
+        });
+    });
+
+    console.log('✅ Initialized', dropdownList.length, 'dropdowns');
+    
+    // Debug: Check if dropdowns are working
+    dropdownElementList.forEach((toggle, index) => {
+        console.log(`🔧 Dropdown ${index}:`, toggle.id, toggle.getAttribute('data-bs-toggle'));
+        
+        toggle.addEventListener('click', function(e) {
+            console.log('🔘 Dropdown clicked:', this.id);
+            const menu = this.nextElementSibling;
+            console.log('📋 Dropdown menu:', menu);
+            console.log('🎭 Menu classes:', menu?.className);
+            console.log('👁️ Menu display:', menu?.style.display);
+            
+            // Force show dropdown if Bootstrap fails
+            setTimeout(() => {
+                if (menu && !menu.classList.contains('show')) {
+                    console.log('🔧 Forcing dropdown to show...');
+                    menu.classList.add('show');
+                    menu.style.display = 'block';
+                    menu.style.position = 'absolute';
+                    menu.style.zIndex = '99999';
+                    menu.style.bottom = '100%';
+                    menu.style.left = '0';
+                    menu.style.marginBottom = '5px';
+                }
+            }, 100);
+        });
+    });
+    
+    // Alternative: Manual dropdown toggle as backup
+    document.addEventListener('click', function(e) {
+        // Check if click is on dropdown item (not trigger button)
+        if (e.target.closest('.dropdown-item')) {
+            console.log('🎯 Dropdown item clicked:', e.target);
+            return; // Let the item handle its own click
+        }
+        
+        if (e.target.closest('[data-bs-toggle="dropdown"]')) {
+            const trigger = e.target.closest('[data-bs-toggle="dropdown"]');
+            const menu = trigger.nextElementSibling;
+            
+            console.log('🎯 Manual backup dropdown toggle for:', trigger.id);
+            
+            if (menu && menu.classList.contains('dropdown-menu')) {
+                // Close all other dropdowns first
+                document.querySelectorAll('.dropdown-menu.show').forEach(otherMenu => {
+                    if (otherMenu !== menu) {
+                        otherMenu.classList.remove('show');
+                    }
+                });
+                
+                // Toggle current dropdown
+                menu.classList.toggle('show');
+                console.log('📋 Manual toggle - menu now has show:', menu.classList.contains('show'));
+            }
+        } else {
+            // Click outside - close all dropdowns
+            document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+                menu.classList.remove('show');
+            });
+        }
+    });
 });
+
+
 let statusModal = null;
 function openStatusModal(el) {
     const applicationId = el.getAttribute('data-application-id');

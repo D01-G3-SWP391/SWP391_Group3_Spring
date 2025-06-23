@@ -108,6 +108,7 @@ public class StudentDashboard {
             if (studentAccount != null) {
                 studentProfileDTO.setFullName(studentAccount.getFullName());
                 studentProfileDTO.setPhone(studentAccount.getPhone());
+                studentProfileDTO.setAvatarUrl(studentAccount.getAvatarUrl());
             }
             if (studentDetails != null) {
                 studentProfileDTO.setAddress(studentDetails.getAddress());
@@ -115,7 +116,6 @@ public class StudentDashboard {
                 studentProfileDTO.setPreferredJobAddress(studentDetails.getPreferredJobAddress());
                 studentProfileDTO.setProfileDescription(studentDetails.getProfileDescription());
                 studentProfileDTO.setExperience(studentDetails.getExperience());
-                studentProfileDTO.setAvatarUrl(studentDetails.getAvatarUrl());
             }
             model.addAttribute("studentProfileDTO", studentProfileDTO);
             model.addAttribute("email",studentAccount.getEmail());
@@ -146,7 +146,7 @@ public class StudentDashboard {
         if (avatarFile != null && !avatarFile.isEmpty()) {
             try {
                 // Delete old avatar from Cloudinary if it exists
-                String oldAvatarUrl = currentStudent.getAvatarUrl();
+                String oldAvatarUrl = currentAccount.getAvatarUrl();
                 if (oldAvatarUrl != null && oldAvatarUrl.contains("cloudinary.com")) {
                     String oldPublicId = cloudinaryService.extractPublicId(oldAvatarUrl);
                     if (oldPublicId != null) {
@@ -158,9 +158,9 @@ public class StudentDashboard {
                     }
                 }
                 
-                // Upload new avatar to Cloudinary
+                // Upload new avatar to Cloudinary and save to Account table
                 String avatarUrl = cloudinaryService.uploadImage(avatarFile, "student-avatars");
-                currentStudent.setAvatarUrl(avatarUrl);
+                currentAccount.setAvatarUrl(avatarUrl);
                 studentProfileDTO.setAvatarUrl(avatarUrl);
             } catch (Exception e) {
                 redirectAttributes.addFlashAttribute("errorMessage", "Lỗi khi upload ảnh: " + e.getMessage());
@@ -168,7 +168,7 @@ public class StudentDashboard {
             }
         } else {
             // Keep existing avatar if no new file is uploaded
-            currentStudent.setAvatarUrl(studentProfileDTO.getAvatarUrl());
+            currentAccount.setAvatarUrl(studentProfileDTO.getAvatarUrl());
         }
 
         // Update Account information

@@ -1,0 +1,91 @@
+    /* Navbar Language Dropdown Styles - NO CONFLICTS */
+.navbar-lang-item {
+    position: relative !important;
+}
+
+.navbar-lang-trigger {
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 12px 13px !important;
+    transition: all 0.3s ease !important;
+    user-select: none !important;
+}
+
+.navbar-lang-trigger:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+}
+
+.dropdown-arrow {
+    font-size: 12px !important;
+    transition: transform 0.3s ease !important;
+    margin-left: auto !important;
+}
+
+.navbar-lang-item.active .dropdown-arrow {
+    transform: rotate(180deg) !important;
+}
+
+.navbar-lang-menu {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+    overflow: hidden !important;
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
+    max-height: 0 !important;
+    opacity: 0 !important;
+    transition: all 0.3s ease !important;
+    transform: scaleY(0) !important;
+    transform-origin: top !important;
+}
+
+.navbar-lang-item.active .navbar-lang-menu {
+    max-height: 200px !important;
+    opacity: 1 !important;
+    transform: scaleY(1) !important;
+}
+
+.navbar-lang-option {
+    display: flex !important;
+    align-items: center !important;
+    padding: 12px 16px !important;
+    color: white !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.navbar-lang-option:last-child {
+    border-bottom: none !important;
+}
+
+.navbar-lang-option:hover {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    text-decoration: none !important;
+}
+
+.flag-emoji {
+    font-size: 18px !important;
+    margin-right: 10px !important;
+    display: inline-block !important;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .navbar-lang-menu {
+        margin: 5px 0 !important;
+    }
+}
+
+/* Sidebar collapsed state */
+.sidebar-collapsed .navbar-lang-item .nav-link span:not(.dropdown-arrow) {
+    display: none !important;
+}
+
+.sidebar-collapsed .navbar-lang-menu {
+    min-width: 180px !important;
+}

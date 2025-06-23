@@ -1,129 +1,215 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Navbar</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}" />
     <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbar.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}" />
+    <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
 </head>
 <body>
-<nav class="admin-vertical-navbar" id="adminNavbar" th:fragment="navbarAdmin">
-    <div class="admin-logo-area">
-        <a th:href="@{/}" class="admin-text-logo-link">
-            <span class="admin-text-logo">JOB4YOU</span>
-        </a>
-        <button class="toggle-btn" id="toggleBtn">
-            <i class="bi bi-list"></i>
-        </button>
+<!-- Sidebar Toggle Button -->
+<button class="sidebar-toggle-btn" id="sidebarToggle" onclick="toggleSidebar()">
+    <i class="bi bi-list" id="toggleIcon"></i>
+</button>
+
+<nav class="admin-sidebar" id="adminSidebar" th:fragment="navbarAdmin">
+    <!-- Header with admin profile -->
+    <div class="sidebar-header">
+        <div class="user-profile">
+            <div class="user-avatar" sec:authentication="name" th:text="${#strings.substring(#authentication.name, 0, 1)}">
+                A
+            </div>
+            <div class="user-info">
+                <h4 sec:authentication="name" th:text="${#authentication.name}">Admin</h4>
+                <p th:text="#{nav.admin.role}">Administrator</p>
+            </div>
+        </div>
     </div>
-    <ul class="admin-nav-links">
-        <li>
-            <a th:href="@{/Admin}" class="nav-link">
-                <i class="bi bi-house-door-fill"></i>
-                <span th:text="#{nav.dashboard}">Dashboard</span>
-            </a>
-        </li>
 
-        <!-- User Management Section -->
-        <li>
-            <a th:href="@{/Admin/ListStudent}" class="nav-link">
-                <i class="bi bi-people-fill"></i>
-                <span>Students</span>
-            </a>
-        </li>
-        <li>
-            <a th:href="@{/Admin/ListEmployer}" class="nav-link">
-                <i class="bi bi-building-fill"></i>
-                <span>Employers</span>
-            </a>
-        </li>
+    <!-- Navigation Menu -->
+    <div class="sidebar-nav">
+        <!-- Main Navigation -->
+        <div class="nav-section">
+            <div class="nav-section-title" th:text="#{nav.main}">Main</div>
+            <div class="nav-item">
+                <a th:href="@{/}" class="nav-link" data-path="/">
+                    <i class="bi bi-house-door nav-icon"></i>
+                    <span th:text="#{nav.home}">Home</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a th:href="@{/Admin}" class="nav-link" data-path="/Admin">
+                    <i class="bi bi-speedometer2 nav-icon"></i>
+                    <span th:text="#{nav.dashboard}">Dashboard</span>
+                </a>
+            </div>
+        </div>
 
-        <!-- Job Posts Management Section -->
-        <li>
-            <a th:href="@{/Admin/JobPosts}" class="nav-link">
-                <i class="bi bi-briefcase-fill"></i>
-                <span>Pending Posts</span>
-            </a>
-        </li>
-        <li>
-            <a th:href="@{/Admin/AllJobPosts}" class="nav-link">
-                <i class="bi bi-list-ul"></i>
-                <span>All Job Posts</span>
-            </a>
-        </li>
+        <!-- User Management -->
+        <div class="nav-section">
+            <div class="nav-section-title" th:text="#{nav.user.management}">User Management</div>
+            <div class="nav-item">
+                <a th:href="@{/Admin/ListStudent}" class="nav-link" data-path="/Admin/ListStudent">
+                    <i class="bi bi-people nav-icon"></i>
+                    <span>Students</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a th:href="@{/Admin/ListEmployer}" class="nav-link" data-path="/Admin/ListEmployer">
+                    <i class="bi bi-building nav-icon"></i>
+                    <span>Employers</span>
+                </a>
+            </div>
+        </div>
 
-        <!-- Events Management Section -->
-        <li>
-            <a th:href="@{/Admin/PendingEvents}" class="nav-link">
-                <i class="bi bi-calendar-check"></i>
-                <span>Confirm Events</span>
-            </a>
-        </li>
-        <li>
-            <a th:href="@{/Admin/Events}" class="nav-link">
-                <i class="bi bi-calendar-event"></i>
-                <span>All Events</span>
-            </a>
-        </li>
+        <!-- Job Posts Management -->
+        <div class="nav-section">
+            <div class="nav-section-title" th:text="#{nav.job.management}">Job Management</div>
+            <div class="nav-item">
+                <a th:href="@{/Admin/JobPosts}" class="nav-link" data-path="/Admin/JobPosts">
+                    <i class="bi bi-briefcase nav-icon"></i>
+                    <span>Pending Posts</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a th:href="@{/Admin/AllJobPosts}" class="nav-link" data-path="/Admin/AllJobPosts">
+                    <i class="bi bi-list-ul nav-icon"></i>
+                    <span>All Job Posts</span>
+                </a>
+            </div>
+        </div>
 
+        <!-- Events Management -->
+        <div class="nav-section">
+            <div class="nav-section-title" th:text="#{nav.events.management}">Events Management</div>
+            <div class="nav-item">
+                <a th:href="@{/Admin/PendingEvents}" class="nav-link" data-path="/Admin/PendingEvents">
+                    <i class="bi bi-calendar-check nav-icon"></i>
+                    <span>Confirm Events</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a th:href="@{/Admin/Events}" class="nav-link" data-path="/Admin/Events">
+                    <i class="bi bi-calendar-event nav-icon"></i>
+                    <span>All Events</span>
+                </a>
+            </div>
+        </div>
 
-        <!-- System Management Section -->
-        <li>
-            <a th:href="@{/Admin/blogs}" class="nav-link">
-                <i class="bi bi-journal-text"></i>
-                <span>Blogs</span>
-            </a>
-        </li>
-        <li>
-            <a th:href="@{/Admin/Reports}" class="nav-link">
-                <i class="bi bi-graph-up"></i>
-                <span>Reports</span>
-            </a>
-        </li>
+        <!-- System Management -->
+        <div class="nav-section">
+            <div class="nav-section-title" th:text="#{nav.system.management}">System Management</div>
+            <div class="nav-item">
+                <a th:href="@{/Admin/blogs}" class="nav-link" data-path="/Admin/blogs">
+                    <i class="bi bi-journal-text nav-icon"></i>
+                    <span>Blogs</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a th:href="@{/Admin/Reports}" class="nav-link" data-path="/Admin/Reports">
+                    <i class="bi bi-graph-up nav-icon"></i>
+                    <span>Reports</span>
+                </a>
+            </div>
+        </div>
 
-        <!-- Language Switcher -->
-
-        <!-- Logout -->
-        <li>
-            <a th:href="@{/logout}" class="nav-link">
-                <i class="bi bi-box-arrow-right"></i>
-                <span th:text="#{nav.logout}">Logout</span>
-            </a>
-        </li>
-    </ul>
+        <!-- Settings -->
+        <div class="nav-section">
+            <div class="nav-section-title" th:text="#{nav.settings}">Settings</div>
+            
+            <!-- Language Dropdown -->
+            <div th:replace="~{fragments/language-dropdown :: languageDropdown}"></div>
+            <div class="nav-item">
+                <a th:href="@{/logout}" class="nav-link logout-link">
+                    <i class="bi bi-box-arrow-right nav-icon"></i>
+                    <span th:text="#{nav.logout}">Logout</span>
+                </a>
+            </div>
+        </div>
+    </div>
 </nav>
-<script th:src="@{/js/navbarAdmin.js}"></script>
+
 <script th:src="@{/js/languageSwitch.js}"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Language switcher functionality for sidebar
-        const languageOptions = document.querySelectorAll('.language-option');
-        languageOptions.forEach(option => {
-            option.addEventListener('click', function(event) {
-                event.preventDefault();
-                const lang = this.getAttribute('href').split('=')[1];
-                const currentUrl = new URL(window.location.href);
-                currentUrl.searchParams.set('lang', lang);
-                window.location.href = currentUrl.toString();
-            });
-        });
+// Toggle Sidebar Function
+function toggleSidebar() {
+    document.body.classList.toggle('sidebar-collapsed');
+    const toggleIcon = document.getElementById('toggleIcon');
+    
+    if (document.body.classList.contains('sidebar-collapsed')) {
+        toggleIcon.className = 'bi bi-chevron-right';
+        localStorage.setItem('sidebarCollapsed', 'true');
+    } else {
+        toggleIcon.className = 'bi bi-list';
+        localStorage.setItem('sidebarCollapsed', 'false');
+    }
+}
 
-        const languageButton = document.querySelector('.sidebar-lang-btn');
-        const languageDropdown = document.querySelector('.language-nav-item .language-dropdown');
-        if (languageButton && languageDropdown) {
-            languageButton.addEventListener('click', function(event) {
-                event.stopPropagation();
-                languageDropdown.classList.toggle('active');
-            });
-            document.addEventListener('click', function(event) {
-                if (!languageButton.contains(event.target) && !languageDropdown.contains(event.target)) {
-                    languageDropdown.classList.remove('active');
-                }
-            });
+// Restore sidebar state from localStorage
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+    if (sidebarCollapsed) {
+        document.body.classList.add('sidebar-collapsed');
+        document.getElementById('toggleIcon').className = 'bi bi-chevron-right';
+    }
+
+    // Dynamic Active link highlighting
+    const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    // Remove all active classes first
+    navLinks.forEach(link => link.classList.remove('active'));
+    
+    // Find exact match first
+    let activeLink = null;
+    navLinks.forEach(link => {
+        const dataPath = link.getAttribute('data-path');
+        if (dataPath === currentPath) {
+            activeLink = link;
         }
     });
+    
+    // If no exact match, find best partial match
+    if (!activeLink) {
+        let bestMatch = null;
+        let bestMatchLength = 0;
+        
+        navLinks.forEach(link => {
+            const dataPath = link.getAttribute('data-path');
+            if (dataPath && currentPath.startsWith(dataPath) && dataPath.length > bestMatchLength) {
+                bestMatch = link;
+                bestMatchLength = dataPath.length;
+            }
+        });
+        
+        activeLink = bestMatch;
+    }
+    
+    // Apply active class
+    if (activeLink) {
+        activeLink.classList.add('active');
+    }
+
+    // Mobile responsive
+    const sidebar = document.getElementById('adminSidebar');
+    
+    // Show/hide mobile features
+    function checkMobile() {
+        if (window.innerWidth <= 768) {
+            // Mobile specific behavior if needed
+        }
+    }
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+});
 </script>
+<script th:src="@{/js/language-dropdown.js}"></script>
 </body>
 </html>

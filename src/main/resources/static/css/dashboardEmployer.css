@@ -9,6 +9,7 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #f8f9ff 0%, #e9ecef 100%);
     color: #2c3e50;
+    margin-left: 15px ;
 }
 
 /* ===== MAIN LAYOUT - COMPACT NHƯ FORM ===== */
