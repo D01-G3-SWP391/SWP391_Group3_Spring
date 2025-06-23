@@ -48,7 +48,7 @@ public interface IJobPostRepository extends JpaRepository<JobPost, Integer> {
     List<JobPost> searchJobs(
             @Param("keyword") String keyword,
             @Param("location") String location,
-            @Param("jobType") JobPost.JobType jobType,  // Enum, không phải String
+            @Param("jobType") JobPost.JobType jobType,
             @Param("jobFieldId") Integer jobFieldId,
             @Param("minSalary") Double minSalary,
             @Param("maxSalary") Double maxSalary,
