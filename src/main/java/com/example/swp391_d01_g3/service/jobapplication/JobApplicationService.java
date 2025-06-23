@@ -58,4 +58,9 @@ public class JobApplicationService implements IJobApplicationService {
         return iJobApplicationRepository.findByJobPostId(jobPostId);
     }
 
+    @Override
+    public List<JobApplication> findByJobPostIdAndNameAndExperience(Integer jobPostId, String searchName, String searchExperience) {
+        return iJobApplicationRepository.findByJobPostIdAndNameAndExperience(jobPostId, searchName, searchExperience);
+    }
+
 }

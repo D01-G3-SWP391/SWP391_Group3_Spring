@@ -172,17 +172,25 @@ public class JobPostController {
     }
 
     @GetMapping("/JobPosts/{jobPostId}/applications")
-    public String viewJobPostApplications(@PathVariable Integer jobPostId, Model model, Principal principal) {
+    public String viewJobPostApplications(
+        @PathVariable Integer jobPostId,
+        @RequestParam(required = false) String searchName,
+        @RequestParam(required = false) String searchExperience,
+        Model model, Principal principal) {
         Employer employer = iEmployerService.findByEmail(principal.getName());
         JobPost jobPost = iJobpostService.findByJobPostId(jobPostId).orElse(null);
         if (jobPost == null || !jobPost.getEmployer().getEmployerId().equals(employer.getEmployerId())) {
             return "redirect:/Employer/JobPosts";
         }
-        List<JobApplication> applications = iJobApplicationService.findByJobPostId(jobPostId);
+        if (searchName != null && searchName.trim().isEmpty()) searchName = null;
+        List<JobApplication> applications = iJobApplicationService
+            .findByJobPostIdAndNameAndExperience(jobPostId, searchName, null);
         model.addAttribute("jobPost", jobPost);
         model.addAttribute("applications", applications);
         model.addAttribute("totalApplications", applications.size());
         model.addAttribute("statuses", com.example.swp391_d01_g3.model.JobApplication.ApplicationStatus.values());
+        model.addAttribute("searchName", searchName);
+        model.addAttribute("searchExperience", searchExperience);
         return "employee/jobPostApplications";
     }
 }

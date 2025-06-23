@@ -43,11 +43,11 @@ public interface IReportRepository extends JpaRepository<Report,Integer> {
     @Query("SELECT r FROM Report r WHERE r.reportId IN :ids")
     List<Report> findReportsByIds(@Param("ids") List<Integer> ids);
 
-    // Xóa báo cáo theo ID với kiểm tra trạng thái
+    // Xóa báo cáo theo ID chỉ khi trạng thái là PENDING
     @Modifying
     @Transactional
-    @Query("DELETE FROM Report r WHERE r.reportId = :id AND r.status IN ('RESOLVED', 'CLOSED')")
-    int deleteResolvedReportById(@Param("id") Integer id);
+    @Query("DELETE FROM Report r WHERE r.reportId = :id AND r.status = 'PENDING'")
+    int deletePendingReportById(@Param("id") Integer id);
 
     // Xóa hàng loạt báo cáo đã giải quyết
     @Modifying

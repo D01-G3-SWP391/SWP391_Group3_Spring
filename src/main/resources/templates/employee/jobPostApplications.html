@@ -183,6 +183,22 @@
 <div class="main-content">
     <h1 th:text="'Ứng viên cho công việc: ' + ${jobPost.jobTitle}"></h1>
     <p>Tổng số ứng viên: <span th:text="${totalApplications}"></span></p>
+    <div class="search-section mb-4">
+        <form method="get" class="row g-3">
+            <div class="col-md-8">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" name="searchName" class="form-control" placeholder="Tìm kiếm theo tên ứng viên..." th:value="${searchName}">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary me-2"><i class="bi bi-search"></i> Tìm kiếm</button>
+                <a th:href="@{/Employer/JobPosts/{jobPostId}/applications(jobPostId=${jobPost.jobPostId})}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-clockwise"></i> Reset
+                </a>
+            </div>
+        </form>
+    </div>
     <div class="table-container">
         <div th:if="${applications == null or applications.isEmpty()}" class="empty-state">
             <i class="bi bi-person-x"></i>

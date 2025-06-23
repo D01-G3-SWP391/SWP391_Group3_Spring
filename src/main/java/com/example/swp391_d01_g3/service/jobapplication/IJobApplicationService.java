@@ -16,4 +16,5 @@ public interface IJobApplicationService {
     void updateApplicationStatus(Integer applicationId, JobApplication.ApplicationStatus status);
     Optional<JobApplication> findById(Integer applicationId);
     List<JobApplication> findByJobPostId(Integer jobPostId);
+    List<JobApplication> findByJobPostIdAndNameAndExperience(Integer jobPostId, String searchName, String searchExperience);
 }
