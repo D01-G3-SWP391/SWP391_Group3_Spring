@@ -208,27 +208,30 @@
             </div>
         </div>
         <!-- Pagination -->
-        <div class="pagination" th:if="${totalPages > 1}">
-            <div class="pagination-container">
-                <a th:href="@{/Blog(page=${currentPage - 1}, category=${selectedCategory}, search=${searchKeyword})}"
-                   th:class="${currentPage == 1} ? 'disabled' : ''"
-                   th:if="${currentPage > 1}">
-                    <i class="bi bi-chevron-left"></i>
-                </a>
-
-                <a th:each="pageNumber : ${#numbers.sequence(1, totalPages)}"
-                   th:href="@{/Blog(page=${pageNumber}, category=${selectedCategory}, search=${searchKeyword})}"
-                   th:text="${pageNumber}"
-                   th:class="${pageNumber == currentPage} ? 'active' : ''">
-                </a>
-
-                <a th:href="@{/Blog(page=${currentPage + 1}, category=${selectedCategory}, search=${searchKeyword})}"
-                   th:class="${currentPage == totalPages} ? 'disabled' : ''"
-                   th:if="${currentPage < totalPages}">
-                    <i class="bi bi-chevron-right"></i>
-                </a>
-            </div>
-        </div>
+        <nav th:if="${totalPages > 1}" aria-label="Page navigation" class="mt-4">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/Blog(page=${currentPage - 1}, category=${selectedCategory}, search=${searchKeyword})}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                
+                <li class="page-item" 
+                    th:each="pageNum : ${#numbers.sequence(1, totalPages)}"
+                    th:classappend="${pageNum == currentPage} ? 'active'">
+                    <a class="page-link" th:href="@{/Blog(page=${pageNum}, category=${selectedCategory}, search=${searchKeyword})}" 
+                       th:text="${pageNum}">
+                    </a>
+                </li>
+                
+                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                    <a class="page-link" th:href="@{/Blog(page=${currentPage + 1}, category=${selectedCategory}, search=${searchKeyword})}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- End Pagination -->
     </div>
 </div>
 

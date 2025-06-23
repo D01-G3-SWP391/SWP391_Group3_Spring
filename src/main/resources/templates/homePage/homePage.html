@@ -296,54 +296,29 @@
         </div>
 
         <!-- Pagination -->
-        <div class="pagination-container" th:if="${totalPages > 1}">
-            <nav aria-label="Job pagination">
-                <ul class="pagination justify-content-center">
-                    <!-- Previous Page -->
-                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                        <a class="page-link" th:href="@{/(page=${currentPage - 1}, size=${size})}"
-                           th:if="${currentPage > 0}">
-                            <i class="fas fa-chevron-left"></i> <span th:text="#{home.pagination.previous}">Trước</span>
-                        </a>
-                        <span class="page-link" th:unless="${currentPage > 0}">
-                  <i class="fas fa-chevron-left"></i> <span th:text="#{home.pagination.previous}">Trước</span>
-                </span>
-                    </li>
+        <nav th:if="${totalPages > 1}" aria-label="Page navigation" class="mt-4">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/(page=${currentPage - 1}, size=${size})}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                
+                <li class="page-item" 
+                    th:each="pageNum : ${#numbers.sequence(1, totalPages)}"
+                    th:classappend="${pageNum == currentPage} ? 'active'">
+                    <a class="page-link" th:href="@{/(page=${pageNum}, size=${size})}" 
+                       th:text="${pageNum}">
+                    </a>
+                </li>
 
-                    <!-- Page Numbers -->
-                    <li class="page-item"
-                        th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
-                        th:if="${pageNum >= currentPage - 2 && pageNum <= currentPage + 2}"
-                        th:classappend="${pageNum == currentPage} ? 'active'">
-                        <a class="page-link" th:href="@{/(page=${pageNum}, size=${size})}"
-                           th:text="${pageNum + 1}" th:if="${pageNum != currentPage}">1</a>
-                        <span class="page-link" th:if="${pageNum == currentPage}" th:text="${pageNum + 1}">1</span>
-                    </li>
-
-                    <!-- Next Page -->
-                    <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
-                        <a class="page-link" th:href="@{/(page=${currentPage + 1}, size=${size})}"
-                           th:if="${currentPage < totalPages - 1}">
-                            <span th:text="#{home.pagination.next}">Sau</span> <i class="fas fa-chevron-right"></i>
-                        </a>
-                        <span class="page-link" th:unless="${currentPage < totalPages - 1}">
-                  <span th:text="#{home.pagination.next}">Sau</span> <i class="fas fa-chevron-right"></i>
-                </span>
-              </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                    <a class="page-link" th:href="@{/(page=${currentPage + 1}, size=${size})}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
             </ul>
-          </nav>
-
-            <!-- Page Info -->
-            <div class="page-info text-center mt-3">
-                <p class="text-muted">
-                    <span th:text="#{home.pagination.showing}">Hiển thị</span> <span
-                        th:text="${currentPage * size + 1}">1</span> -
-                    <span th:text="${(currentPage * size + size) > totalElements ? totalElements : (currentPage * size + size)}">8</span>
-                    <span th:text="#{home.pagination.of}">trong tổng số</span> <span th:text="${totalElements}">0</span>
-                    <span th:text="#{home.pagination.jobs}">việc làm</span>
-                </p>
-            </div>
-        </div>
+        </nav>
     </section>
     <div th:replace="fragments/why-choose-us :: why-choose-us-section"></div>
 </div>

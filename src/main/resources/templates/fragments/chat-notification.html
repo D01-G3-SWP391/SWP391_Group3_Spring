@@ -21,7 +21,7 @@
                 <div class="chat-notification-header">
                     <h6 class="mb-0">
                         <i class="bi bi-chat-dots-fill text-dark"></i>
-                        Tin nhắn
+                        <span>Tin nhắn</span>
                     </h6>
 
                 </div>
@@ -37,6 +37,62 @@
 
             </div>
         </div>
+
+        <!-- Chat Modal - Copy từ viewListApplications.html -->
+        <div class="chat-overlay" id="chatOverlay"></div>
+        <div class="chat-offcanvas" id="chatOffcanvas">
+            <!-- Chat Header -->
+            <div class="chat-header">
+                <button class="back-btn" id="chatBackBtn" onclick="showChatRoomsList()" style="display: none;">
+                    <i class="bi bi-arrow-left"></i>
+                </button>
+                <div class="avatar" id="chatAvatar">👤</div>
+                <div class="info">
+                    <h4 id="chatName">Chat</h4>
+                    <p id="chatStatus">Chọn cuộc trò chuyện</p>
+                </div>
+                <button class="close-btn" onclick="closeChat()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <!-- Chat Messages -->
+            <div class="chat-messages" id="chatMessages">
+                <div style="text-align: center; padding: 20px; color: #666;">
+                    <h5>💬 Tin nhắn</h5>
+                    <p>Chọn cuộc trò chuyện để bắt đầu nhắn tin</p>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="chat-input">
+                <form id="messageForm" onsubmit="sendMessage(event)">
+                    <div class="chat-input-form">
+                        <input type="text" id="messageInput" placeholder="Chọn cuộc trò chuyện để nhắn tin..." disabled>
+                        <button type="submit" disabled>
+                            <i class="bi bi-send"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- WebSocket Dependencies - tham khảo từ jobPostApplications.html -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+        
+        <!-- Chat System Scripts -->
+        <script th:src="@{/js/chat-websocket.js}"></script>
+
+        <!-- Set current user for chat system -->
+        <script th:inline="javascript">
+            // Initialize user info as null - will be loaded via API
+            window.currentUserId = null;
+            window.currentUserName = null;
+            window.currentUserRole = null;
+            
+            console.log('🔍 Chat Notification - User info will be loaded via API');
+        </script>
 
         <script th:src="@{/js/chat-notification.js}"></script>
     </div>

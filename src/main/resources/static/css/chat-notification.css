@@ -373,4 +373,226 @@
         background-color: transparent;
         transform: scale(1);
     }
+}
+
+/* Chat Modal Styles - Copy từ viewListApplications.html */
+.chat-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.chat-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.chat-offcanvas {
+    position: fixed;
+    top: 0;
+    right: -500px;
+    width: 500px;
+    height: 100%;
+    background: white;
+    z-index: 11000;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    transition: right 0.3s ease;
+}
+
+.chat-offcanvas.show {
+    right: 0;
+}
+
+/* Chat Header for Modal */
+.chat-offcanvas .chat-header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.chat-offcanvas .chat-header .back-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    margin-right: 10px;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.chat-offcanvas .chat-header .back-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.chat-offcanvas .chat-header .avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-weight: bold;
+    color: #667eea;
+    font-size: 18px;
+}
+
+.chat-offcanvas .chat-header .info h4 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.chat-offcanvas .chat-header .info p {
+    margin: 0;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.chat-offcanvas .chat-header .close-btn {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.chat-offcanvas .chat-header .close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Chat Messages for Modal */
+.chat-offcanvas .chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: #f8f9fa;
+}
+
+.chat-offcanvas .message {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-end;
+}
+
+.chat-offcanvas .message.sent {
+    justify-content: flex-end;
+}
+
+.chat-offcanvas .message.received {
+    justify-content: flex-start;
+}
+
+.chat-offcanvas .message-bubble {
+    max-width: 70%;
+    padding: 12px 16px;
+    border-radius: 18px;
+    word-wrap: break-word;
+    position: relative;
+}
+
+.chat-offcanvas .message.sent .message-bubble {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+.chat-offcanvas .message.received .message-bubble {
+    background: white;
+    color: #333;
+    border: 1px solid #e0e0e0;
+    border-bottom-left-radius: 4px;
+}
+
+.chat-offcanvas .message-time {
+    font-size: 11px;
+    opacity: 0.7;
+    margin-top: 5px;
+    text-align: right;
+}
+
+.chat-offcanvas .message.received .message-time {
+    text-align: left;
+}
+
+/* Chat Input for Modal */
+.chat-offcanvas .chat-input {
+    padding: 20px;
+    background: white;
+    border-top: 1px solid #e0e0e0;
+}
+
+.chat-offcanvas .chat-input-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chat-offcanvas .chat-input-form input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 25px;
+    outline: none;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+.chat-offcanvas .chat-input-form input:focus {
+    border-color: #667eea;
+}
+
+.chat-offcanvas .chat-input-form button {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+
+.chat-offcanvas .chat-input-form button:hover {
+    transform: scale(1.05);
+}
+
+.chat-offcanvas .chat-input-form button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Mobile responsive for chat modal */
+@media (max-width: 768px) {
+    .chat-offcanvas {
+        width: 100%;
+        right: -100%;
+    }
 } 

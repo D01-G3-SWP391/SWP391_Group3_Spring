@@ -315,7 +315,7 @@
             display: flex;
             align-items: center;
             padding: 20px;
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
         thead th {
@@ -405,7 +405,7 @@
         }
 
         .message.sent .message-bubble {
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border-bottom-right-radius: 4px;
         }
@@ -470,15 +470,15 @@
         }
 
         .chat-input input:focus {
-            border-color: #4f46e5;
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         .chat-input button {
             width: 45px;
             height: 45px;
             border: none;
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
     </style>
@@ -684,7 +684,10 @@
         <button class="back-btn" id="chatBackBtn" onclick="loadAllChatRooms()" style="display: none; background: none; border: none; color: #007bff; font-size: 18px; margin-right: 10px; cursor: pointer;">
             <i class="bi bi-arrow-left"></i>
         </button>
-        <div class="avatar" id="chatAvatar">VT</div>
+        <div class="avatar" id="chatAvatar" style="position: relative;">
+            VT
+            <div class="chat-status-indicator" id="chatStatusIndicator" style="position: absolute; bottom: 2px; right: 2px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; background-color: #6c757d;"></div>
+        </div>
         <div class="info">
             <h4 id="chatName">Việt Tài</h4>
             <p id="chatStatus">Đang hoạt động</p>
@@ -745,7 +748,6 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/js/language-dropdown.js}"></script>
 <!-- Thêm vào template -->
-<div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
 <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
 <script>
 function toggleDetails(index) {
@@ -842,6 +844,7 @@ let chatWebSocketClient = null;
 let currentChatRoomId = null;
 let currentUserId = null;
 let currentUserName = null;
+let currentStudentId = null; // Track current student ID for presence updates
 
 // Initialize WebSocket when page loads
 document.addEventListener('DOMContentLoaded', function() {
@@ -853,6 +856,9 @@ document.addEventListener('DOMContentLoaded', function() {
             currentUserName = userInfo.fullName;
             initializeWebSocket();
             console.log('✅ User info loaded:', userInfo);
+            
+            // Start periodic status updates - tham khảo từ chat-notification.js
+            startPeriodicStatusUpdates();
         })
         .catch(error => {
             console.log('Could not load user info, using fallback');
@@ -860,8 +866,70 @@ document.addEventListener('DOMContentLoaded', function() {
             currentUserId = 1; // Default employer ID
             currentUserName = "Employer";
             initializeWebSocket();
+            startPeriodicStatusUpdates();
         });
 });
+
+// Function to update chat status for student - tham khảo từ chat-notification.js
+function updateChatStatusForStudent(studentId) {
+    console.log('🔍 Checking online status for student ID:', studentId);
+    
+    // Check online status via backend service
+    fetch('/api/chat/rooms')
+        .then(response => {
+            if (response.status === 401) {
+                console.log('🔒 User not authenticated for online status check');
+                document.getElementById('chatStatus').textContent = 'Offline';
+                return;
+            }
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Find chat room for this student to get online status
+            const chatRoom = data.find(room => 
+                room.otherParticipantId === parseInt(studentId) ||
+                (room.chatRoomId && room.chatRoomId.toString() === currentChatRoomId)
+            );
+            
+            if (chatRoom && chatRoom.isOnline !== undefined) {
+                const isOnline = chatRoom.isOnline;
+                const statusText = isOnline ? 'Đang hoạt động' : 'Offline';
+                document.getElementById('chatStatus').textContent = statusText;
+                
+                // Update visual status indicator - tham khảo từ chat-notification.css
+                const statusIndicator = document.getElementById('chatStatusIndicator');
+                if (statusIndicator) {
+                    statusIndicator.style.backgroundColor = isOnline ? '#28a745' : '#6c757d';
+                }
+                
+                console.log(`✅ Student ${studentId} status: ${statusText}`);
+            } else {
+                // Default to offline if no room found or no status info
+                document.getElementById('chatStatus').textContent = 'Offline';
+                
+                // Set offline indicator
+                const statusIndicator = document.getElementById('chatStatusIndicator');
+                if (statusIndicator) {
+                    statusIndicator.style.backgroundColor = '#6c757d';
+                }
+                
+                console.log(`⚠️ No online status info found for student ${studentId}, defaulting to Offline`);
+            }
+        })
+        .catch(error => {
+            console.error('Error checking student online status:', error);
+            document.getElementById('chatStatus').textContent = 'Offline';
+            
+            // Set offline indicator on error
+            const statusIndicator = document.getElementById('chatStatusIndicator');
+            if (statusIndicator) {
+                statusIndicator.style.backgroundColor = '#6c757d';
+            }
+        });
+}
 
 function initializeWebSocket() {
     if (window.ChatWebSocketClient) {
@@ -872,7 +940,11 @@ function initializeWebSocket() {
             console.log('🔄 WebSocket callback triggered with message:', message);
             handleNewMessage(message);
         };
-        chatWebSocketClient.onConnected = () => console.log('✅ Chat WebSocket connected');
+        chatWebSocketClient.onConnected = () => {
+            console.log('✅ Chat WebSocket connected');
+            // Subscribe to presence updates - tham khảo từ chat-notification.js
+            subscribeToPresenceUpdates();
+        };
         chatWebSocketClient.onError = (error) => console.error('❌ Chat error:', error);
 
         // Connect to WebSocket
@@ -888,6 +960,51 @@ function handleNewMessage(message) {
     if (message.senderId !== currentUserId) {
         addMessageToUI(message);
     }
+}
+
+// Subscribe to presence updates - tham khảo từ chat-notification.js
+function subscribeToPresenceUpdates() {
+    if (chatWebSocketClient && chatWebSocketClient.stompClient) {
+        chatWebSocketClient.stompClient.subscribe('/topic/presence', (message) => {
+            try {
+                const presenceUpdate = JSON.parse(message.body);
+                console.log('👤 Presence update received:', presenceUpdate);
+                
+                // Update chat status if this is for the current student
+                if (currentStudentId && 
+                    presenceUpdate.userId === parseInt(currentStudentId) &&
+                    presenceUpdate.userType === 'STUDENT') {
+                    
+                    const statusText = presenceUpdate.isOnline ? 'Đang hoạt động' : 'Offline';
+                    document.getElementById('chatStatus').textContent = statusText;
+                    
+                    // Update visual status indicator - tham khảo từ chat-notification.css
+                    const statusIndicator = document.getElementById('chatStatusIndicator');
+                    if (statusIndicator) {
+                        statusIndicator.style.backgroundColor = presenceUpdate.isOnline ? '#28a745' : '#6c757d';
+                    }
+                    
+                    console.log(`🔄 Updated chat status for student ${currentStudentId}: ${statusText}`);
+                }
+            } catch (error) {
+                console.error('Error handling presence update:', error);
+            }
+        });
+        
+        console.log('✅ Subscribed to presence updates');
+    }
+}
+
+// Start periodic status updates - tham khảo từ chat-notification.js
+function startPeriodicStatusUpdates() {
+    // Update status every 30 seconds if chat is open and we have a student
+    setInterval(() => {
+        if (currentStudentId && document.getElementById('chatOffcanvas').classList.contains('show')) {
+            updateChatStatusForStudent(currentStudentId);
+        }
+    }, 30000); // 30 seconds
+    
+    console.log('✅ Started periodic status updates');
 }
 
 /**
@@ -915,10 +1032,15 @@ function openChatFromButton(button) {
 function openDirectChatWithStudent(userName, userEmail, studentId) {
     console.log('🚀 Opening direct chat with:', userName, userEmail, 'ID:', studentId);
 
+    // Track current student for presence updates
+    currentStudentId = studentId;
+
     // Update chat header info
     document.getElementById('chatName').textContent = userName;
     document.getElementById('chatAvatar').textContent = userName.charAt(0).toUpperCase();
-    document.getElementById('chatStatus').textContent = 'Đang hoạt động';
+    
+    // Check online status for student - tham khảo từ chat-notification.js
+    updateChatStatusForStudent(studentId);
 
     // Show chat off-canvas
     document.getElementById('chatOverlay').classList.add('show');
@@ -1011,7 +1133,7 @@ async function createRealChatRoomWithStudent(userName, userEmail, studentId) {
             }
 
             // Show ready chat interface
-            showReadyChatInterface(userName);
+            showReadyChatInterface(userName, studentId);
 
         } else {
             console.error('❌ Failed to create chat room via API');
@@ -1027,7 +1149,7 @@ async function createRealChatRoomWithStudent(userName, userEmail, studentId) {
 }
 
 // Function to show ready chat interface after room creation
-function showReadyChatInterface(userName) {
+function showReadyChatInterface(userName, studentId) {
     // LOAD CHAT HISTORY FIRST before showing UI
     console.log('📜 Loading chat history for room:', currentChatRoomId);
     loadChatHistory(currentChatRoomId);
@@ -1040,9 +1162,22 @@ function showReadyChatInterface(userName) {
         messageInput.focus();
     }
 
-    // Update chat title and status
+    // Update chat title and check online status
     document.getElementById('chatName').textContent = `💬 ${userName}`;
-    document.getElementById('chatStatus').textContent = 'Đang hoạt động';
+    
+    // Check online status for student - tham khảo từ chat-notification.js
+    if (studentId) {
+        updateChatStatusForStudent(studentId);
+    } else {
+        document.getElementById('chatStatus').textContent = 'Offline';
+        
+        // Set offline indicator
+        const statusIndicator = document.getElementById('chatStatusIndicator');
+        if (statusIndicator) {
+            statusIndicator.style.backgroundColor = '#6c757d';
+        }
+    }
+    
     document.getElementById('chatOverlay').classList.add('show');
     document.getElementById('chatOffcanvas').classList.add('show');
 
@@ -1120,6 +1255,9 @@ function loadChatHistory(roomId) {
 }
 
 function closeChat() {
+    // Reset current student tracking
+    currentStudentId = null;
+    
     // Leave WebSocket room
     if (chatWebSocketClient && currentChatRoomId) {
         chatWebSocketClient.leaveRoom();
