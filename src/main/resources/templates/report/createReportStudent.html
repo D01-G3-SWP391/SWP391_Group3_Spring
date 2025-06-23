@@ -66,19 +66,6 @@
                             <option th:each="entityType : ${entityTypes}" th:value="${entityType}" th:text="${entityType}"></option>
                         </select>
                     </div>
-                    <div class="col-md-6">
-                        <label class="form-label">ID đối tượng (nếu có)</label>
-                        <!-- ✅ THÊM VALIDATION CHO REPORTED ENTITY ID -->
-                        <input type="number"
-                               th:field="*{reportedEntityId}"
-                               class="form-control"
-                               placeholder="Nhập ID nếu biết"
-                               th:classappend="${#fields.hasErrors('reportedEntityId')} ? 'is-invalid' : ''">
-                        <!-- ✅ HIỂN THỊ LỖI VALIDATION -->
-                        <div th:if="${#fields.hasErrors('reportedEntityId')}" class="error-message">
-                            <span th:errors="*{reportedEntityId}"></span>
-                        </div>
-                    </div>
                 </div>
             </div>
 

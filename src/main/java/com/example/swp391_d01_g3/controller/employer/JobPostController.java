@@ -10,6 +10,10 @@ import com.example.swp391_d01_g3.service.jobapplication.IJobApplicationService;
 import com.example.swp391_d01_g3.service.email.EmailService;
 import com.example.swp391_d01_g3.service.interview.IInterViewService;
 import com.example.swp391_d01_g3.service.notification.INotificationService;
+import com.example.swp391_d01_g3.service.email.EmailService;
+import com.example.swp391_d01_g3.service.interview.IInterViewService;
+import com.example.swp391_d01_g3.service.notification.INotificationService;
+import com.example.swp391_d01_g3.service.security.IAccountService;
 import com.example.swp391_d01_g3.service.security.IAccountService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,6 +129,8 @@ public class JobPostController {
             long pendingJobs = iJobpostService.countJobPostsByEmployerEmailAndStatus(employerEmail, "PENDING");
 
 
+            // Thêm account cho navbar
+            model.addAttribute("account", accountService.findByEmail(employerEmail));
             model.addAttribute("jobPostPage", jobPostPage);
             model.addAttribute("employerEmail", employerEmail);
             model.addAttribute("totalJobs", totalJobs);
@@ -196,19 +202,28 @@ public class JobPostController {
     }
 
     @GetMapping("/JobPosts/{jobPostId}/applications")
-    public String viewJobPostApplications(@PathVariable Integer jobPostId, Model model, Principal principal) {
+    public String viewJobPostApplications(
+        @PathVariable Integer jobPostId,
+        @RequestParam(required = false) String searchName,
+        @RequestParam(required = false) String searchExperience,
+        Model model, Principal principal) {
         Employer employer = iEmployerService.findByEmail(principal.getName());
         JobPost jobPost = iJobpostService.findByJobPostId(jobPostId).orElse(null);
         if (jobPost == null || !jobPost.getEmployer().getEmployerId().equals(employer.getEmployerId())) {
             return "redirect:/Employer/JobPosts";
         }
-        List<JobApplication> applications = iJobApplicationService.findByJobPostId(jobPostId);
+        if (searchName != null && searchName.trim().isEmpty()) searchName = null;
+        List<JobApplication> applications = iJobApplicationService
+            .findByJobPostIdAndNameAndExperience(jobPostId, searchName, null);
+        List<JobApplication> applications1 = iJobApplicationService.findByJobPostId(jobPostId);
         // Thêm account cho navbar
         model.addAttribute("account", accountService.findByEmail(principal.getName()));
         model.addAttribute("jobPost", jobPost);
-        model.addAttribute("applications", applications);
-        model.addAttribute("totalApplications", applications.size());
+        model.addAttribute("applications", applications1);
+        model.addAttribute("totalApplications", applications1.size());
         model.addAttribute("statuses", JobApplication.ApplicationStatus.values());
+        model.addAttribute("searchName", searchName);
+        model.addAttribute("searchExperience", searchExperience);
         return "employee/jobPostApplications";
     }
 

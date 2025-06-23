@@ -44,4 +44,28 @@ public interface IJobApplicationRepository extends JpaRepository<JobApplication,
     @Query("SELECT ja FROM JobApplication ja WHERE ja.jobPost.jobPostId = :jobPostId ORDER BY ja.appliedAt DESC")
     List<JobApplication> findByJobPostId(@Param("jobPostId") Integer jobPostId);
 
+    @Query("SELECT ja FROM JobApplication ja " +
+           "JOIN FETCH ja.student s " +
+           "WHERE ja.jobPost.jobPostId = :jobPostId " +
+           "AND (:searchName IS NULL OR LOWER(ja.fullName) LIKE LOWER(CONCAT('%', :searchName, '%'))) " +
+           "ORDER BY ja.appliedAt DESC")
+    List<JobApplication> findByJobPostIdAndNameAndExperience(
+        @Param("jobPostId") Integer jobPostId,
+        @Param("searchName") String searchName,
+        @Param("searchExperience") String searchExperience
+    );
+
+    // Tìm kiếm ứng viên theo từ khóa (tên, email, kinh nghiệm) cho employer
+    @Query("SELECT ja FROM JobApplication ja " +
+           "JOIN FETCH ja.student s " +
+           "JOIN FETCH ja.jobPost jp " +
+           "WHERE jp.employer.employerId = :employerId " +
+           "AND (LOWER(ja.fullName) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+           "     OR LOWER(ja.email) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+           "     OR LOWER(ja.description) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+           "ORDER BY ja.appliedAt DESC")
+    Page<JobApplication> searchApplicationsByEmployerIdAndKeyword(@Param("employerId") Integer employerId,
+                                                                 @Param("keyword") String keyword,
+                                                                 Pageable pageable);
+
 }

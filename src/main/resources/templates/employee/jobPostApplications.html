@@ -480,209 +480,6 @@
             border: none;
             background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
             color: white;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s;
-        }
-
-        .chat-input button:hover {
-            transform: scale(1.05);
-        }
-        /* Status badges with colors */
-        .status-badge {
-            padding: 8px 16px !important;
-            border-radius: 20px !important;
-            font-size: 0.85rem !important;
-            font-weight: 600 !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.5px !important;
-            display: inline-block !important;
-        }
-
-        .status-badge.submitted {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
-            color: white !important;
-        }
-
-        .status-badge.interview {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
-            color: white !important;
-        }
-
-        .status-badge.accepted {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-            color: white !important;
-        }
-
-        .status-badge.rejected {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
-            color: white !important;
-        }
-
-        /* Larger buttons */
-        .btn-cv, .btn-chat {
-            padding: 10px 16px !important;
-            font-size: 0.9rem !important;
-            font-weight: 600 !important;
-            border-radius: 8px !important;
-            transition: all 0.3s ease !important;
-        }
-
-        .btn-cv {
-            background: linear-gradient(90deg, #7c3aed 0%, #a78bfa 100%) !important;
-            color: #fff !important;
-            border: 2px solid #7c3aed !important;
-        }
-
-        .btn-cv:hover {
-            transform: translateY(-2px) !important;
-            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.3) !important;
-        }
-
-        .btn-chat {
-            background: linear-gradient(90deg, #10b981 0%, #059669 100%) !important;
-            color: #fff !important;
-            border: 2px solid #10b981 !important;
-        }
-
-        .btn-chat:hover {
-            transform: translateY(-2px) !important;
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3) !important;
-        }
-
-        /* Dropdown button larger */
-        .dropdown-toggle {
-            padding: 10px 12px !important;
-            font-size: 0.9rem !important;
-        }
-
-        /* Fix table overflow and responsive */
-        .table-container {
-            overflow: hidden !important;
-            max-width: 100% !important;
-            margin: 0 auto !important;
-        }
-
-        table {
-            width: 100% !important;
-            table-layout: fixed !important;
-        }
-
-        /* Column widths */
-        table th:nth-child(1) { width: 8% !important; } /* STT */
-        table th:nth-child(2) { width: 15% !important; } /* Tên */
-        table th:nth-child(3) { width: 20% !important; } /* Email & Phone */
-        table th:nth-child(4) { width: 15% !important; } /* Ngày */
-        table th:nth-child(5) { width: 12% !important; } /* Trạng thái */
-        table th:nth-child(6) { width: 30% !important; } /* Hành động */
-
-        table td:nth-child(1) { width: 8% !important; }
-        table td:nth-child(2) { width: 15% !important; }
-        table td:nth-child(3) { width: 20% !important; }
-        table td:nth-child(4) { width: 15% !important; }
-        table td:nth-child(5) { width: 12% !important; }
-        table td:nth-child(6) { width: 30% !important; }
-
-        /* Text overflow handling */
-        .candidate-name strong {
-            display: block !important;
-            white-space: nowrap !important;
-            overflow: hidden !important;
-            text-overflow: ellipsis !important;
-            max-width: 100% !important;
-        }
-
-        .candidate-contact small {
-            display: block !important;
-            white-space: nowrap !important;
-            overflow: hidden !important;
-            text-overflow: ellipsis !important;
-            max-width: 100% !important;
-        }
-
-        /* Action buttons responsive */
-        .action-buttons {
-            display: flex !important;
-            gap: 6px !important;
-            align-items: center !important;
-            flex-wrap: wrap !important;
-            justify-content: center !important;
-        }
-
-        .btn-cv, .btn-chat {
-            flex: 0 0 auto !important;
-            min-width: 60px !important;
-        }
-
-        /* Mobile responsive */
-        @media (max-width: 1200px) {
-            .action-buttons {
-                gap: 4px !important;
-            }
-
-            .btn-cv, .btn-chat {
-                padding: 8px 12px !important;
-                font-size: 0.8rem !important;
-            }
-
-            .btn-cv span, .btn-chat span {
-                display: none !important;
-            }
-        }
-
-        /* Hide scrollbars */
-        html, body {
-            overflow-x: hidden !important;
-            overflow-y: hidden !important;
-        }
-
-        .table-container {
-            overflow: hidden !important;
-        }
-
-        .table-responsive {
-            overflow: hidden !important;
-        }
-
-        .page-container {
-            overflow: hidden !important;
-        }
-
-        /* Hide scrollbars completely */
-        ::-webkit-scrollbar {
-            display: none !important;
-            width: 0 !important;
-            height: 0 !important;
-        }
-
-        * {
-            scrollbar-width: none !important;
-            -ms-overflow-style: none !important;
-        }
-
-        /* Ensure content fits without scrolling */
-        .container, .container-fluid {
-            overflow: hidden !important;
-        }
-
-        /* Override navbarViewJobPost.css table container styling */
-        .table-container {
-            background: transparent !important;
-            border-radius: 0 !important;
-            box-shadow: none !important;
-            backdrop-filter: none !important;
-            border: none !important;
-            padding: 0 !important;
-        }
-
-        table {
-            background: white !important;
-            border-radius: 15px !important;
-            box-shadow: none !important;
-            overflow: hidden !important;
         }
     </style>
 </head>
@@ -812,7 +609,7 @@
                                     <span>CV</span>
                                 </button>
                                 <button class="btn-chat" title="Nhắn tin với ứng viên"
-                                        th:attr="data-user-name=${jobApplication.fullName},data-user-email=${jobApplication.email}"
+                                        th:attr="data-user-name=${jobApplication.student.account.fullName},data-user-email=${jobApplication.student.account.email},data-student-id=${jobApplication.student.account.userId}"
                                         onclick="openChatFromButton(this)">
                                     <i class="bi bi-chat-dots"></i>
                                     <span>Chat</span>
@@ -823,15 +620,16 @@
                                             th:id="'dropdownMenuButton' + ${jobApplication.applicationId}"
                                             data-bs-toggle="dropdown"
                                             data-bs-auto-close="true"
+                                            data-bs-container="body"
+                                            data-bs-display="static"
                                             aria-expanded="false">
                                         <i class="bi bi-gear"></i>
                                     </button>
-
                                     <ul class="dropdown-menu" th:aria-labelledby="'dropdownMenuButton' + ${jobApplication.applicationId}">
                                         <li th:each="statusOption : ${statuses}">
-                                            <form th:action="@{/Employer/JobPosts/{jobPostId}/applications/{applicationId}/updateStatus(jobPostId=${jobPost.jobPostId},applicationId=${jobApplication.applicationId})}"
-                                                  method="post" class="d-inline status-form w-100">
-                                                <input type="hidden" name="status" th:value="${statusOption.name()}">
+                                            <form th:action="@{/Employer/Applications/{id}/updateStatus(id=${jobApplication.applicationId})}" method="post" class="d-inline status-form w-100">
+                                                <input type="hidden" name="jobPostId" th:value="${jobPost.jobPostId}" />
+                                                <input type="hidden" name="status" th:value="${statusOption.name()}" />
                                                 <button type="submit" class="dropdown-item w-100"
                                                         th:text="${statusOption.name()}"
                                                         th:disabled="${jobApplication.status.name() == statusOption.name()}"
@@ -946,6 +744,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/js/language-dropdown.js}"></script>
+<!-- Thêm vào template -->
+<div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
+<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
 <script>
 function toggleDetails(index) {
     const detailsRow = document.getElementById('details-' + index);
@@ -956,7 +757,7 @@ function toggleDetails(index) {
         detailsRow.classList.remove('show');
         detailsRow.style.display = 'none';
         icon.className = 'bi bi-chevron-down';
-        text.textContent = 'CV';
+        text.textContent = 'Xem chi tiết';
         button.classList.remove('expanded');
     } else {
         detailsRow.style.display = 'table-row';
@@ -964,10 +765,8 @@ function toggleDetails(index) {
             detailsRow.classList.add('show');
         }, 10);
         icon.className = 'bi bi-chevron-up';
-        text.textContent = 'CV';
+        text.textContent = 'Ẩn chi tiết';
         button.classList.add('expanded');
-
-        // Scroll to the details row
         setTimeout(() => {
             detailsRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 200);
@@ -976,9 +775,9 @@ function toggleDetails(index) {
 function handleStatusClick(event, btn) {
     var status = btn.getAttribute('data-status');
     var applicationId = btn.getAttribute('data-application-id');
-    
+
     console.log('🎯 Status click:', status, 'for application:', applicationId);
-    
+
     if (status === 'INTERVIEW') {
         event.preventDefault();
         // Get jobPostId from current URL path
@@ -1004,11 +803,11 @@ function handleStatusClick(event, btn) {
     } else {
         // Show confirmation for other status changes
         const confirmMessage = `Bạn có chắc chắn muốn đổi trạng thái thành "${status}"?`;
-        
+
         // Get the dropdown menu to keep it open if cancelled
         const dropdownMenu = btn.closest('.dropdown-menu');
         const dropdownToggle = btn.closest('.dropdown').querySelector('[data-bs-toggle="dropdown"]');
-        
+
         if (confirm(confirmMessage)) {
             console.log('✅ Status change confirmed:', status, 'for application:', applicationId);
             return true; // Allow form submission
@@ -1016,13 +815,13 @@ function handleStatusClick(event, btn) {
             event.preventDefault();
             event.stopPropagation(); // Prevent event bubbling
             console.log('❌ Status change cancelled');
-            
+
             // Keep dropdown open and maintain dropup state
             setTimeout(() => {
                 if (dropdownMenu && dropdownToggle) {
                     dropdownMenu.classList.add('show');
                     dropdownToggle.setAttribute('aria-expanded', 'true');
-                    
+
                     // Ensure dropup positioning is maintained
                     const dropdown = dropdownToggle.closest('.dropdown');
                     if (dropdown.classList.contains('dropup')) {
@@ -1032,7 +831,7 @@ function handleStatusClick(event, btn) {
                     }
                 }
             }, 50);
-            
+
             return false; // Prevent form submission
         }
     }
@@ -1098,22 +897,23 @@ function handleNewMessage(message) {
 function openChatFromButton(button) {
     const userName = button.getAttribute('data-user-name');
     const userEmail = button.getAttribute('data-user-email');
+    const studentId = button.getAttribute('data-student-id');
 
-    console.log('🎯 Opening direct chat with student:', userName, userEmail);
+    console.log('🎯 Opening direct chat with student:', userName, userEmail, 'ID:', studentId);
 
-    if (!userName || !userEmail) {
+    if (!userName || !userEmail || !studentId) {
         console.error('❌ Missing user data on button');
         alert('Không thể lấy thông tin ứng viên. Vui lòng thử lại.');
         return;
     }
 
-    // Chat trực tiếp với student này
-    openDirectChatWithStudent(userName, userEmail);
+    // Chat trực tiếp với student này sử dụng Account ID
+    openDirectChatWithStudent(userName, userEmail, studentId);
 }
 
 // Function to open direct chat with a specific student
-function openDirectChatWithStudent(userName, userEmail) {
-    console.log('🚀 Opening direct chat with:', userName, userEmail);
+function openDirectChatWithStudent(userName, userEmail, studentId) {
+    console.log('🚀 Opening direct chat with:', userName, userEmail, 'ID:', studentId);
 
     // Update chat header info
     document.getElementById('chatName').textContent = userName;
@@ -1130,13 +930,13 @@ function openDirectChatWithStudent(userName, userEmail) {
         backBtn.style.display = 'none';
     }
 
-    // Try to find or create chat room with this student
-    tryCreateChatRoomWithStudent(userName, userEmail);
+    // Try to find or create chat room with this student using Account ID
+    tryCreateChatRoomWithStudent(userName, userEmail, studentId);
 }
 
-async function tryCreateChatRoomWithStudent(userName, userEmail) {
+async function tryCreateChatRoomWithStudent(userName, userEmail, studentId) {
     try {
-        console.log('🔍 Finding student by email:', userEmail);
+        console.log('🔍 Finding student by ID:', studentId, 'Email:', userEmail);
 
         // First, try to find existing chat rooms
         const roomsResponse = await fetch('/api/chat/rooms');
@@ -1144,11 +944,11 @@ async function tryCreateChatRoomWithStudent(userName, userEmail) {
             const rooms = await roomsResponse.json();
             console.log('📋 Existing rooms:', rooms);
 
-            // Try to find a room for this student
+            // Try to find a room for this student by ID or name
             const existingRoom = rooms.find(room =>
-                room.otherParticipantName &&
-                (room.otherParticipantName.toLowerCase().includes(userName.toLowerCase()) ||
-                 room.otherParticipantName.includes(userEmail.split('@')[0]))
+                room.otherParticipantId === parseInt(studentId) ||
+                (room.otherParticipantName && 
+                 room.otherParticipantName.toLowerCase().includes(userName.toLowerCase()))
             );
 
             if (existingRoom) {
@@ -1166,9 +966,9 @@ async function tryCreateChatRoomWithStudent(userName, userEmail) {
             }
         }
 
-        // If no existing room found, try to CREATE REAL chat room
-        console.log('🏗️ No existing room found, creating REAL chat room for:', userName, userEmail);
-        await createRealChatRoomWithStudent(userName, userEmail);
+        // If no existing room found, try to CREATE REAL chat room using studentId
+        console.log('🏗️ No existing room found, creating REAL chat room for student ID:', studentId);
+        await createRealChatRoomWithStudent(userName, userEmail, studentId);
 
     } catch (error) {
         console.error('Error finding/creating chat room:', error);
@@ -1178,27 +978,13 @@ async function tryCreateChatRoomWithStudent(userName, userEmail) {
 }
 
 // CREATE REAL chat room via API
-async function createRealChatRoomWithStudent(userName, userEmail) {
+async function createRealChatRoomWithStudent(userName, userEmail, studentId) {
     try {
-        console.log('🏗️ Creating REAL chat room via API for:', userName, userEmail);
+        console.log('🏗️ Creating REAL chat room via API for student ID:', studentId, 'Name:', userName);
 
-        // Try to find student ID by email first
-        const studentResponse = await fetch(`/api/students/findByEmail?email=${encodeURIComponent(userEmail)}`);
-
-        let studentUserId = null;
-        if (studentResponse.ok) {
-            const studentData = await studentResponse.json();
-            studentUserId = studentData.userId; // Use Account.userId, not Student.studentId
-            console.log('👤 Found student data:', studentData);
-            console.log('👤 Using student userId:', studentUserId);
-        }
-
-        // If we can't find student userId, use current user ID as fallback
-        if (!studentUserId) {
-            console.warn('⚠️ Could not find student userId, creating demo session');
-            createNewChatSession(userName, userEmail);
-            return;
-        }
+        // Use studentId directly (this is Account.userId)
+        const studentUserId = parseInt(studentId);
+        console.log('👤 Using student userId directly:', studentUserId);
 
         // Create real chat room via API
         const createRoomResponse = await fetch('/api/chat/rooms', {
@@ -1438,7 +1224,6 @@ function sendMessage(event) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize Bootstrap Popovers
     var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
     var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
         return new bootstrap.Popover(popoverTriggerEl, {
@@ -1458,18 +1243,18 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     console.log('✅ Initialized', dropdownList.length, 'dropdowns');
-    
+
     // Debug: Check if dropdowns are working
     dropdownElementList.forEach((toggle, index) => {
         console.log(`🔧 Dropdown ${index}:`, toggle.id, toggle.getAttribute('data-bs-toggle'));
-        
+
         toggle.addEventListener('click', function(e) {
             console.log('🔘 Dropdown clicked:', this.id);
             const menu = this.nextElementSibling;
             console.log('📋 Dropdown menu:', menu);
             console.log('🎭 Menu classes:', menu?.className);
             console.log('👁️ Menu display:', menu?.style.display);
-            
+
             // Force show dropdown if Bootstrap fails
             setTimeout(() => {
                 if (menu && !menu.classList.contains('show')) {
@@ -1485,7 +1270,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 100);
         });
     });
-    
+
     // Alternative: Manual dropdown toggle as backup
     document.addEventListener('click', function(e) {
         // Check if click is on dropdown item (not trigger button)
@@ -1493,13 +1278,13 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('🎯 Dropdown item clicked:', e.target);
             return; // Let the item handle its own click
         }
-        
+
         if (e.target.closest('[data-bs-toggle="dropdown"]')) {
             const trigger = e.target.closest('[data-bs-toggle="dropdown"]');
             const menu = trigger.nextElementSibling;
-            
+
             console.log('🎯 Manual backup dropdown toggle for:', trigger.id);
-            
+
             if (menu && menu.classList.contains('dropdown-menu')) {
                 // Close all other dropdowns first
                 document.querySelectorAll('.dropdown-menu.show').forEach(otherMenu => {
@@ -1507,7 +1292,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         otherMenu.classList.remove('show');
                     }
                 });
-                
+
                 // Toggle current dropdown
                 menu.classList.toggle('show');
                 console.log('📋 Manual toggle - menu now has show:', menu.classList.contains('show'));
@@ -1520,8 +1305,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
-
-
 let statusModal = null;
 function openStatusModal(el) {
     const applicationId = el.getAttribute('data-application-id');
@@ -1544,4 +1327,3 @@ function openStatusModal(el) {
 }
 </script>
 </body>
-</html> 
