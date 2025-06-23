@@ -47,13 +47,7 @@
             <div class="nav-item">
                 <a th:href="@{/}" class="nav-link" data-path="/Employer">
                     <i class="bi bi-house-door nav-icon"></i>
-                    <span th:text="#{nav.home}">Dashboard</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a th:href="@{/Employer}" class="nav-link" data-path="/Employer">
-                    <i class="bi bi-house-door nav-icon"></i>
-                    <span th:text="#{nav.dashboard}">Dashboard</span>
+                    <span th:text="#{nav.home}"></span>
                 </a>
             </div>
             <div class="nav-item">
@@ -89,8 +83,13 @@
         <!-- Settings -->
         <div class="nav-section">
             <div class="nav-section-title" th:text="#{nav.settings}">Settings</div>
-            
-            <!-- Language Dropdown -->
+
+            <div class="nav-item">
+                <a th:href="@{/Admin/Reports}" class="nav-link" data-path="/Admin/Reports">
+                    <i class="bi bi-graph-up nav-icon"></i>
+                    <span>Reports</span>
+                </a>
+            </div>
 
             <div class="nav-item">
                 <a th:href="@{/Employer/ChangePassword}" class="nav-link" data-path="/Employer/ChangePassword">
@@ -105,6 +104,7 @@
                     <span th:text="#{nav.logout}">Logout</span>
                 </a>
             </div>
+
         </div>
     </div>
 </nav>

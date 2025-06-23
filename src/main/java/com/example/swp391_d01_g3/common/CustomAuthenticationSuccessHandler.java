@@ -89,9 +89,9 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_admin"))) {
                 targetUrl = "/Admin";
             } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_employer"))) {
-                targetUrl = "/Employer";
+                targetUrl = "/Employer/Profile";
             } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_student"))) {
-                targetUrl = "/Student";
+                targetUrl = "/Student/Profile";
             } else {
                 targetUrl = "/HomePage";
             }

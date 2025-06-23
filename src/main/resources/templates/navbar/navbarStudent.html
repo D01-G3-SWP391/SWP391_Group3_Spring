@@ -28,13 +28,12 @@
                      alt="Avatar" class="avatar-img"/>
                 <div th:unless="${account != null and account.avatarUrl != null and account.avatarUrl != ''}" 
                      class="avatar-text" 
-                     sec:authentication="name" 
-                     th:text="${#strings.substring(#authentication.name, 0, 1)}">
-                    S
+                     sec:authentication="name"
+                     th:text="${account != null ? #strings.substring(account.fullName != null ? account.fullName : account.email, 0, 1) : 'U'}"></span>
                 </div>
             </div>
             <div class="user-info">
-                <h4 sec:authentication="name" th:text="${#authentication.name}">Student</h4>
+                <h4 th:text="${account != null ? account.fullName : #authentication.name}">John Doe</h4>
                 <p th:text="#{nav.student.role}">Student</p>
             </div>
         </div>
@@ -108,7 +107,12 @@
         <!-- Settings -->
         <div class="nav-section">
             <div class="nav-section-title" th:text="#{nav.settings}">Settings</div>
-            
+            <div class="nav-item">
+                <a th:href="@{/Admin/Reports}" class="nav-link" data-path="/Admin/Reports">
+                    <i class="bi bi-graph-up nav-icon"></i>
+                    <span>Reports</span>
+                </a>
+            </div>
             <div class="nav-item">
                 <a th:href="@{/Student/ChangePassword}" class="nav-link" data-path="/Student/ChangePassword">
                     <i class="bi bi-key nav-icon"></i>
