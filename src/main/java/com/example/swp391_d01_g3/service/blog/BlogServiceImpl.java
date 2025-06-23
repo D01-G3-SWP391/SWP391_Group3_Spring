@@ -177,7 +177,12 @@ public class BlogServiceImpl implements IBlogService {
         blog.setTitle(updatedBlog.getTitle());
         blog.setSummary(updatedBlog.getSummary());
         blog.setContent(updatedBlog.getContent());
+        BlogPost.BlogStatus oldStatus = blog.getStatus();
         blog.setStatus(updatedBlog.getStatus());
+        // Nếu status chuyển từ khác PUBLISHED sang PUBLISHED thì cập nhật lại publishedAt
+        if (updatedBlog.getStatus() == BlogPost.BlogStatus.PUBLISHED && oldStatus != BlogPost.BlogStatus.PUBLISHED) {
+            blog.setPublishedAt(LocalDateTime.now());
+        }
         blog.setUpdatedAt(LocalDateTime.now());
         // Xử lý resource đúng cách
         if (updatedBlog.getResource() != null && updatedBlog.getResource().getResourceId() != null) {
@@ -197,6 +202,5 @@ public class BlogServiceImpl implements IBlogService {
     public List<Resource> getAllResources() {
         return resourceRepository.findAll();
     }
-
 
 } 

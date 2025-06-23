@@ -374,7 +374,10 @@
             </div>
 
             <div class="form-group">
-                <label for="fullName" th:text="#{apply.form.fullName}">Họ và tên</label> *
+                <label for="fullName">
+                    <span th:text="#{apply.form.fullName}">Họ và tên</span>
+                    <span style="color:red">*</span>
+                </label>
                 <input type="text" id="fullName" th:field="*{fullname}" required minlength="2" maxlength="100"
                        pattern="^[\p{L}\s]+$" title="Họ và tên chỉ được chứa chữ cái và khoảng trắng" />
                 <div class="error-message" th:if="${#fields.hasErrors('fullname')}" th:errors="*{fullname}"></div>
@@ -382,14 +385,20 @@
             </div>
 
             <div class="form-group">
-                <label for="email" th:text="#{apply.form.email}">Email</label> *
+                <label for="email">
+                    <span th:text="#{apply.form.email}">Email</span>
+                    <span style="color:red">*</span>
+                </label>
                 <input type="email" id="email" th:field="*{email}" required maxlength="255" />
                 <div class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
                 <div class="error-message" id="emailError" style="display: none; color: red; font-size: 12px; margin-top: 5px;"></div>
             </div>
 
             <div class="form-group">
-                <label for="phone" th:text="#{apply.form.phone}">SĐT</label> *
+                <label for="phone">
+                    <span th:text="#{apply.form.phone}">SĐT</span>
+                    <span style="color:red">*</span>
+                </label>
                 <input type="text" id="phone" th:field="*{phoneNumber}" required pattern="^(\+84|0)[3|5|7|8|9][0-9]{8}$"
                        maxlength="15" title="Số điện thoại phải bắt đầu bằng +84 hoặc 0, tiếp theo là 3,5,7,8,9 và 8 chữ số" />
                 <div class="error-message" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
@@ -397,7 +406,10 @@
             </div>
 
             <div class="form-group">
-                <label for="content" th:text="#{apply.form.content}">Nội dung</label> *
+                <label for="content">
+                    <span th:text="#{apply.form.content}">Nội dung</span>
+                    <span style="color:red">*</span>
+                </label>
                 <textarea id="content" th:field="*{description}"
                           th:placeholder="#{apply.form.content.placeholder}" required minlength="10" maxlength="1000"></textarea>
                 <div class="error-message" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
