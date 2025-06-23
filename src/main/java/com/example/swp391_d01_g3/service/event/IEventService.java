@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IEventService {
-
+    
     /**
      * Tìm tất cả events đã được approve với phân trang
      */
@@ -77,7 +77,7 @@ public interface IEventService {
     Event save(Event event);
 
     /**
-     * SỬA: Xóa event (với cascade delete EventForm)
+     * Xóa event
      */
     void delete(Integer eventId);
 
@@ -101,13 +101,14 @@ public interface IEventService {
      */
     void rejectEvent(Integer eventId, Integer rejectedById);
 
+
     /**
      * Lấy danh sách eventId mà student đã đăng ký
      */
     List<Integer> findRegisteredEventIdsByStudentId(Integer studentId);
 
     /**
-     * Lấy events theo employer với phân trang
+     * Tìm events theo employer và phân trang
      */
     Page<Event> findByEmployer(Employer employer, Pageable pageable);
 
@@ -115,4 +116,9 @@ public interface IEventService {
     Event getEventById(Long id);
     Page<Event> findByApprovalStatusAndEventDateAfterOrderByEventDateAsc(
             Event.ApprovalStatus status, LocalDateTime currentTime, Pageable pageable);
+
+    /**
+     * Tìm events đã approve, active và chưa quá hạn
+     */
+    Page<Event> findActiveApprovedEvents(LocalDateTime currentTime, Pageable pageable);
 }

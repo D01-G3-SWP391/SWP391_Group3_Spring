@@ -40,6 +40,8 @@ public class EmployerEventController {
                              Model model) {
         String email = principal.getName();
         Employer employer = employerService.findByEmail(email);
+        // Thêm account cho navbar
+        model.addAttribute("account", accountService.findByEmail(email));
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Event> eventsPage = eventService.findByEmployer(employer, pageable);
         model.addAttribute("eventsPage", eventsPage);
@@ -48,7 +50,10 @@ public class EmployerEventController {
 
     // Show create event form
     @GetMapping("/Create")
-    public String showCreateForm(Model model) {
+    public String showCreateForm(Principal principal, Model model) {
+        if (principal != null) {
+            model.addAttribute("account", accountService.findByEmail(principal.getName()));
+        }
         model.addAttribute("event", new EventCreateDTO());
         return "employee/createEvent";
     }
@@ -61,6 +66,8 @@ public class EmployerEventController {
                               Model model,
                               RedirectAttributes ra) {
         if (result.hasErrors()) {
+            // Thêm account cho navbar trong trường hợp lỗi
+            model.addAttribute("account", accountService.findByEmail(principal.getName()));
             return "employee/createEvent";
         }
         String email = principal.getName();
@@ -104,6 +111,8 @@ public class EmployerEventController {
         dto.setContactEmail(event.getContactEmail());
         model.addAttribute("event", dto);
         model.addAttribute("eventId", eventId);
+        // Thêm account cho navbar
+        model.addAttribute("account", accountService.findByEmail(email));
         return "employee/editEvent";
     }
 
@@ -124,6 +133,8 @@ public class EmployerEventController {
         }
         if (result.hasErrors()) {
             model.addAttribute("eventId", eventId);
+            // Thêm account cho navbar trong trường hợp lỗi
+            model.addAttribute("account", accountService.findByEmail(email));
             return "employee/editEvent";
         }
         // Cập nhật các trường cho phép
@@ -152,6 +163,48 @@ public class EmployerEventController {
         event.setEventStatus(Event.EventStatus.CANCELLED);
         eventService.save(event);
         ra.addFlashAttribute("successMsg", "Đã hủy sự kiện thành công!");
+        return "redirect:/Employer/Events";
+    }
+
+    // Hide event (soft delete)
+    @PostMapping("/Hide/{eventId}")
+    public String hideEvent(@PathVariable Integer eventId, Principal principal, RedirectAttributes ra) {
+        String email = principal.getName();
+        Employer employer = employerService.findByEmail(email);
+        Event event = eventService.findById(eventId);
+        
+        // Kiểm tra event tồn tại và thuộc về employer
+        if (event == null || !event.getEmployer().getEmployerId().equals(employer.getEmployerId())) {
+            ra.addFlashAttribute("errorMsg", "Không tìm thấy sự kiện hoặc bạn không có quyền ẩn!");
+            return "redirect:/Employer/Events";
+        }
+        
+        // Đổi status thành INACTIVE
+        event.setEventStatus(Event.EventStatus.INACTIVE);
+        eventService.save(event);
+        ra.addFlashAttribute("successMsg", "Đã ẩn sự kiện thành công!");
+        
+        return "redirect:/Employer/Events";
+    }
+
+    // Unhide event (show again)
+    @PostMapping("/Unhide/{eventId}")
+    public String unhideEvent(@PathVariable Integer eventId, Principal principal, RedirectAttributes ra) {
+        String email = principal.getName();
+        Employer employer = employerService.findByEmail(email);
+        Event event = eventService.findById(eventId);
+        
+        // Kiểm tra event tồn tại và thuộc về employer
+        if (event == null || !event.getEmployer().getEmployerId().equals(employer.getEmployerId())) {
+            ra.addFlashAttribute("errorMsg", "Không tìm thấy sự kiện hoặc bạn không có quyền hiện!");
+            return "redirect:/Employer/Events";
+        }
+        
+        // Đổi status thành ACTIVE
+        event.setEventStatus(Event.EventStatus.ACTIVE);
+        eventService.save(event);
+        ra.addFlashAttribute("successMsg", "Đã hiện sự kiện thành công!");
+        
         return "redirect:/Employer/Events";
     }
 } 

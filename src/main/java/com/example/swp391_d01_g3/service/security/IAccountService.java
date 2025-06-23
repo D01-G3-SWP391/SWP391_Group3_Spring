@@ -14,4 +14,6 @@ public interface IAccountService {
     List<Account> findAll();
     
     Account save(Account account);
+    
+    Account updateAccount(Account account);
 }

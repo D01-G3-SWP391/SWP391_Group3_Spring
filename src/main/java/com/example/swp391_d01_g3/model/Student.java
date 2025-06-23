@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "student_id")
     private Integer studentId;
 
     @OneToOne
@@ -32,8 +33,7 @@ public class Student {
     @Column(columnDefinition = "TEXT")
     private String experience;
 
-    @Column(name = "avatar_url", length = 255)
-    private String avatarUrl;
+
 
     public Student() {
     }
@@ -103,12 +103,6 @@ public class Student {
         this.experience = experience;
     }
 
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
 
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
-    }
 }
 

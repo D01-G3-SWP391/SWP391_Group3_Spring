@@ -1,87 +1,207 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Navbar</title>
+    <title>Student Navbar</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/navbarStudent_Employer.css}" />
     <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbar.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarStudent.css}" />
+    <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
 </head>
 <body>
-<nav class="admin-vertical-navbar" id="adminNavbar" th:fragment="navbarAdmin">
-    <div class="admin-logo-area">
-        <a th:href="@{/}" class="admin-text-logo-link">
-            <span class="admin-text-logo">JOB4YOU</span>
-        </a>
-        <!-- Notification Bell for student -->
-        <button class="toggle-btn" id="toggleBtn">
-            <i class="bi bi-list"></i>
-        </button>
+<!-- Sidebar Toggle Button -->
+<button class="sidebar-toggle-btn" id="sidebarToggle" onclick="toggleSidebar()">
+    <i class="bi bi-list" id="toggleIcon"></i>
+</button>
+
+<nav class="student-sidebar" id="studentSidebar" th:fragment="navbarStudent">
+    <!-- Header with student profile -->
+    <div class="sidebar-header">
+        <div class="user-profile">
+            <div class="user-avatar">
+                <img th:if="${account != null and account.avatarUrl != null and account.avatarUrl != ''}" 
+                     th:src="${account.avatarUrl}" 
+                     alt="Avatar" class="avatar-img"/>
+                <div th:unless="${account != null and account.avatarUrl != null and account.avatarUrl != ''}" 
+                     class="avatar-text" 
+                     sec:authentication="name" 
+                     th:text="${#strings.substring(#authentication.name, 0, 1)}">
+                    S
+                </div>
+            </div>
+            <div class="user-info">
+                <h4 sec:authentication="name" th:text="${#authentication.name}">Student</h4>
+                <p th:text="#{nav.student.role}">Student</p>
+            </div>
+        </div>
     </div>
-    <ul class="admin-nav-links">
-        <li>
-            <a th:href="@{/Notification}" class="active">
-                <i class="bi bi-house-door"></i>
-                <span>Notification</span>
-            </a>
-        </li>
-        <li>
-            <a th:href="@{/Student/Profile}">
-                <i class="bi bi-people"></i>
-                <span th:text="#{nav.profile}">Profile Student</span>
-            </a>
-        </li>
-        <li>
-            <a th:href="@{/Student/applications}">
-                <i class="bi bi-briefcase"></i>
-                <span th:text="#{nav.jobs}">Jobs</span>
-            </a>
-        </li>
-        <li>
-            <a th:href="@{/Student/ChangePassword}">
-                <i class="bi bi-gear"></i>
-                <span th:text="#{nav.changePassword}">Change Password</span>
-            </a>
-        </li>
-        <li>
-            <a th:href="@{/logout}">
-                <i class="bi bi-box-arrow-right"></i>
-                <span th:text="#{nav.logout}">Logout</span>
-            </a>
-        </li>
-    </ul>
+
+    <!-- Navigation Menu -->
+    <div class="sidebar-nav">
+        <!-- Main Navigation -->
+        <div class="nav-section">
+            <div class="nav-section-title" th:text="#{nav.main}">Main</div>
+            <div class="nav-item">
+                <a th:href="@{/}" class="nav-link" data-path="/">
+                    <i class="bi bi-house-door nav-icon"></i>
+                    <span th:text="#{nav.home}">Home</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a th:href="@{/Student/Profile}" class="nav-link" data-path="/Student/Profile">
+                    <i class="bi bi-person nav-icon"></i>
+                    <span th:text="#{nav.profile}">Profile</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Job Management -->
+        <div class="nav-section">
+            <div class="nav-section-title" th:text="#{nav.job.search}">Job</div>
+            <div class="nav-item">
+                <a th:href="@{/Student/applications}" class="nav-link" data-path="/Student/applications">
+                    <i class="bi bi-briefcase nav-icon"></i>
+                    <span>My Applications</span>
+                </a>
+            </div>
+<!--            <div class="nav-item">-->
+<!--                <a th:href="@{/jobs}" class="nav-link" data-path="/jobs">-->
+<!--                    <i class="bi bi-search nav-icon"></i>-->
+<!--                    <span th:text="#{nav.jobs}">Find Jobs</span>-->
+<!--                </a>-->
+<!--            </div>-->
+<!--            <div class="nav-item">-->
+<!--                <a th:href="@{/Student/saved-jobs}" class="nav-link" data-path="/Student/saved-jobs">-->
+<!--                    <i class="bi bi-heart nav-icon"></i>-->
+<!--                    <span th:text="#{nav.favJobs}">Saved Jobs</span>-->
+<!--                </a>-->
+<!--            </div>-->
+        </div>
+
+        <!-- Tools & Resources -->
+<!--        <div class="nav-section">-->
+<!--            <div class="nav-section-title" th:text="#{nav.tools.resources}">Tools & Resources</div>-->
+<!--            <div class="nav-item">-->
+<!--                <a th:href="@{/createCV}" class="nav-link" data-path="/createCV">-->
+<!--                    <i class="bi bi-file-text nav-icon"></i>-->
+<!--                    <span th:text="#{nav.createCV}">Create CV</span>-->
+<!--                </a>-->
+<!--            </div>-->
+<!--            <div class="nav-item">-->
+<!--                <a th:href="@{/blogs}" class="nav-link" data-path="/blogs">-->
+<!--                    <i class="bi bi-journal-text nav-icon"></i>-->
+<!--                    <span th:text="#{nav.blogs}">Career Guide</span>-->
+<!--                </a>-->
+<!--            </div>-->
+<!--            <div class="nav-item">-->
+<!--                <a th:href="@{/events}" class="nav-link" data-path="/events">-->
+<!--                    <i class="bi bi-calendar-event nav-icon"></i>-->
+<!--                    <span th:text="#{nav.events}">Events</span>-->
+<!--                </a>-->
+<!--            </div>-->
+<!--        </div>-->
+
+        <!-- Settings -->
+        <div class="nav-section">
+            <div class="nav-section-title" th:text="#{nav.settings}">Settings</div>
+            
+            <div class="nav-item">
+                <a th:href="@{/Student/ChangePassword}" class="nav-link" data-path="/Student/ChangePassword">
+                    <i class="bi bi-key nav-icon"></i>
+                    <span th:text="#{nav.changePassword}">Change Password</span>
+                </a>
+            </div>
+            <!-- Language Dropdown -->
+            <div th:replace="~{fragments/language-dropdown :: languageDropdown}"></div>
+            <div class="nav-item">
+                <a th:href="@{/logout}" class="nav-link logout-link">
+                    <i class="bi bi-box-arrow-right nav-icon"></i>
+                    <span th:text="#{nav.logout}">Logout</span>
+                </a>
+            </div>
+        </div>
+    </div>
 </nav>
-<script src="/js/navbarAdmin.js"></script>
+
 <script th:src="@{/js/languageSwitch.js}"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Language switcher functionality for sidebar
-    const languageOptions = document.querySelectorAll('.language-option');
-    languageOptions.forEach(option => {
-        option.addEventListener('click', function(event) {
-            event.preventDefault();
-            const lang = this.getAttribute('href').split('=')[1];
-            const currentUrl = new URL(window.location.href);
-            currentUrl.searchParams.set('lang', lang);
-            window.location.href = currentUrl.toString();
-        });
-    });
+// Toggle Sidebar Function
+function toggleSidebar() {
+    document.body.classList.toggle('sidebar-collapsed');
+    const toggleIcon = document.getElementById('toggleIcon');
+    
+    if (document.body.classList.contains('sidebar-collapsed')) {
+        toggleIcon.className = 'bi bi-chevron-right';
+        localStorage.setItem('sidebarCollapsed', 'true');
+    } else {
+        toggleIcon.className = 'bi bi-list';
+        localStorage.setItem('sidebarCollapsed', 'false');
+    }
+}
 
-    const languageButton = document.querySelector('.sidebar-lang-btn');
-    const languageDropdown = document.querySelector('.language-nav-item .language-dropdown');
-    if (languageButton && languageDropdown) {
-        languageButton.addEventListener('click', function(event) {
-            event.stopPropagation();
-            languageDropdown.classList.toggle('active');
-        });
-        document.addEventListener('click', function(event) {
-            if (!languageButton.contains(event.target) && !languageDropdown.contains(event.target)) {
-                languageDropdown.classList.remove('active');
+// Restore sidebar state from localStorage
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+    if (sidebarCollapsed) {
+        document.body.classList.add('sidebar-collapsed');
+        document.getElementById('toggleIcon').className = 'bi bi-chevron-right';
+    }
+
+    // Dynamic Active link highlighting
+    const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    // Remove all active classes first
+    navLinks.forEach(link => link.classList.remove('active'));
+    
+    // Find exact match first
+    let activeLink = null;
+    navLinks.forEach(link => {
+        const dataPath = link.getAttribute('data-path');
+        if (dataPath === currentPath) {
+            activeLink = link;
+        }
+    });
+    
+    // If no exact match, find best partial match
+    if (!activeLink) {
+        let bestMatch = null;
+        let bestMatchLength = 0;
+        
+        navLinks.forEach(link => {
+            const dataPath = link.getAttribute('data-path');
+            if (dataPath && currentPath.startsWith(dataPath) && dataPath.length > bestMatchLength) {
+                bestMatch = link;
+                bestMatchLength = dataPath.length;
             }
         });
+        
+        activeLink = bestMatch;
     }
+    
+    // Apply active class
+    if (activeLink) {
+        activeLink.classList.add('active');
+    }
+
+    // Mobile responsive
+    const sidebar = document.getElementById('studentSidebar');
+    
+    // Show/hide mobile features
+    function checkMobile() {
+        if (window.innerWidth <= 768) {
+            // Mobile specific behavior if needed
+        }
+    }
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
 });
 </script>
+<script th:src="@{/js/language-dropdown.js}"></script>
 </body>
 </html>

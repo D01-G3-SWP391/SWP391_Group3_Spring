@@ -6,6 +6,7 @@ import com.example.swp391_d01_g3.model.JobApplication;
 import com.example.swp391_d01_g3.model.JobPost;
 import com.example.swp391_d01_g3.model.Student;
 import com.example.swp391_d01_g3.repository.IJobApplicationRepository;
+import com.example.swp391_d01_g3.service.jobapplication.IJobApplicationService;
 import com.example.swp391_d01_g3.service.jobfield.IJobfieldService;
 import com.example.swp391_d01_g3.service.jobpost.IJobpostService;
 import com.example.swp391_d01_g3.service.security.IAccountService;
@@ -29,6 +30,8 @@ public class JobsDescription {
     private IStudentService iStudentService;
     @Autowired
     private IAccountService iAccountService;
+    @Autowired
+    private IJobApplicationService jobApplicationService;
 
     @GetMapping("/JobPost")
     public String showDescription(@RequestParam("id") Integer id, 
@@ -54,7 +57,13 @@ public class JobsDescription {
                 Student studentDetails = iStudentService.findByAccountUserId(userAccount.getUserId());
                 if (studentDetails != null){
                     model.addAttribute("studentDetails", studentDetails);
+                    
+                    // Kiểm tra xem student đã apply vào job này chưa
+                    boolean hasApplied = jobApplicationService.hasStudentAppliedToJob(studentDetails.getStudentId(), id);
+                    model.addAttribute("hasApplied", hasApplied);
+                    
                     System.out.println("Student ID: " + studentDetails.getStudentId());
+                    System.out.println("Has Applied: " + hasApplied);
                 }
                 // Không redirect nếu không phải student - cho phép tất cả role xem
             } else {

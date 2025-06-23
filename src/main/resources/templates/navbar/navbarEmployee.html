@@ -1,99 +1,209 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Navbar</title>
+    <title>Employer Navbar</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/navbarStudent_Employer.css}" />
     <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbar.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarEmployer.css}" />
+    <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
 </head>
 <body>
-<nav class="admin-vertical-navbar" id="adminNavbar" th:fragment="navbarAdmin">
-    <div class="admin-logo-area">
-        <a th:href="@{/}" class="admin-text-logo-link">
-            <span class="admin-text-logo">JOB4YOU</span>
-        </a>
-        <button class="toggle-btn" id="toggleBtn">
-            <i class="bi bi-list"></i>
-        </button>
+<!-- Sidebar Toggle Button - IMPROVED VISIBILITY -->
+<button class="sidebar-toggle-btn" id="sidebarToggle" onclick="toggleSidebar()">
+    <i class="bi bi-list" id="toggleIcon"></i>
+</button>
+
+<nav class="employer-sidebar" id="employerSidebar" th:fragment="navbarEmployee">
+    <!-- Header with user profile -->
+    <div class="sidebar-header">
+        <div class="user-profile">
+            <div class="user-avatar">
+                <!-- Display avatar image if available, otherwise show initials -->
+                <img th:if="${account != null and account.avatarUrl != null and account.avatarUrl != ''}" 
+                     th:src="${account.avatarUrl}" 
+                     alt="User Avatar" 
+                     class="avatar-img"/>
+                <span th:if="${account == null or account.avatarUrl == null or account.avatarUrl == ''}" 
+                      class="avatar-text" 
+                      th:text="${account != null ? #strings.substring(account.fullName != null ? account.fullName : account.email, 0, 1) : 'U'}">U</span>
+            </div>
+            <div class="user-info">
+                <h4 th:text="${account != null ? account.fullName : #authentication.name}">John Doe</h4>
+                <p th:text="#{nav.employer.role}">Employer</p>
+            </div>
+        </div>
     </div>
-    <ul class="admin-nav-links">
-        <li>
-            <a th:href="@{/Employer}" class="active">
-                <i class="bi bi-house-door"></i>
-                <span th:text="#{nav.dashboard}">Dashboard</span>
-            </a>
-        </li>
-        <li>
-            <a th:href="@{/Employer/Profile}">
-                <i class="bi bi-people"></i>
-                <span th:text="#{nav.profile}">Profile Employer</span>
-            </a>
-        </li>
-        <li>
-            <a th:href="@{/Employer/CreateJobPost}">
-                <i class="bi bi-briefcase"></i>
-                <span th:text="#{nav.jobs}">Jobs</span>
-            </a>
-        </li>
-        <li>
-            <a th:href="@{/Employer/JobPosts}">
-                <i class="bi bi-briefcase"></i>
-                <span th:text="#{nav.jobList}">Danh sách tuyển dụng</span>
-            </a>
-        </li>
-        <li>
-            <a th:href="@{/Employer/Events}">
-                <i class="bi bi-briefcase"></i>
-                <span th:text="#{nav.events}">Sự kiện</span>
-            </a>
-        </li>
-        <li>
-            <a th:href="@{/Employer/ChangePassword}">
-                <i class="bi bi-gear"></i>
-                <span th:text="#{nav.changePassword}">Change Password</span>
-            </a>
-        </li>
-        <li>
-            <a th:href="@{/logout}">
-                <i class="bi bi-box-arrow-right"></i>
-                <span th:text="#{nav.logout}">Logout</span>
-            </a>
-        </li>
-    </ul>
+
+    <!-- Navigation Menu -->
+    <div class="sidebar-nav">
+        <!-- Main Navigation -->
+        <div class="nav-section">
+            <div class="nav-section-title" th:text="#{nav.main}">Main</div>
+            <div class="nav-item">
+                <a th:href="@{/}" class="nav-link" data-path="/Employer">
+                    <i class="bi bi-house-door nav-icon"></i>
+                    <span th:text="#{nav.home}">Dashboard</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a th:href="@{/Employer}" class="nav-link" data-path="/Employer">
+                    <i class="bi bi-house-door nav-icon"></i>
+                    <span th:text="#{nav.dashboard}">Dashboard</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a th:href="@{/Employer/Profile}" class="nav-link" data-path="/Employer/Profile">
+                    <i class="bi bi-person nav-icon"></i>
+                    <span th:text="#{nav.profile}">Profile</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Job Management - REMOVED CREATE JOB BUTTON -->
+        <div class="nav-section">
+            <div class="nav-section-title" th:text="#{nav.jobs.management}">Job Management</div>
+            <div class="nav-item">
+                <a th:href="@{/Employer/JobPosts}" class="nav-link" data-path="/Employer/JobPosts">
+                    <i class="bi bi-briefcase nav-icon"></i>
+                    <span th:text="#{nav.job.list}">Job List</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Events & Activities -->
+        <div class="nav-section">
+            <div class="nav-section-title" th:text="#{nav.events.activities}">Events & Activities</div>
+            <div class="nav-item">
+                <a th:href="@{/Employer/Events}" class="nav-link" data-path="/Employer/Events">
+                    <i class="bi bi-calendar-event nav-icon"></i>
+                    <span th:text="#{nav.events}">Events</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Settings -->
+        <div class="nav-section">
+            <div class="nav-section-title" th:text="#{nav.settings}">Settings</div>
+            
+            <!-- Language Dropdown -->
+
+            <div class="nav-item">
+                <a th:href="@{/Employer/ChangePassword}" class="nav-link" data-path="/Employer/ChangePassword">
+                    <i class="bi bi-key nav-icon"></i>
+                    <span th:text="#{nav.changePassword}">Change Password</span>
+                </a>
+            </div>
+            <div th:replace="~{fragments/language-dropdown :: languageDropdown}"></div>
+            <div class="nav-item">
+                <a th:href="@{/logout}" class="nav-link logout-link">
+                    <i class="bi bi-box-arrow-right nav-icon"></i>
+                    <span th:text="#{nav.logout}">Logout</span>
+                </a>
+            </div>
+        </div>
+    </div>
 </nav>
-</div>
-<script src="/js/navbarAdmin.js"></script>
+
 <script th:src="@{/js/languageSwitch.js}"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Language switcher functionality for sidebar
-    const languageOptions = document.querySelectorAll('.language-option');
-    languageOptions.forEach(option => {
-        option.addEventListener('click', function(event) {
-            event.preventDefault();
-            const lang = this.getAttribute('href').split('=')[1];
-            const currentUrl = new URL(window.location.href);
-            currentUrl.searchParams.set('lang', lang);
-            window.location.href = currentUrl.toString();
-        });
-    });
+// Toggle Sidebar Function
+function toggleSidebar() {
+    document.body.classList.toggle('sidebar-collapsed');
+    const toggleIcon = document.getElementById('toggleIcon');
+    
+    if (document.body.classList.contains('sidebar-collapsed')) {
+        toggleIcon.className = 'bi bi-chevron-right';
+        localStorage.setItem('sidebarCollapsed', 'true');
+    } else {
+        toggleIcon.className = 'bi bi-list';
+        localStorage.setItem('sidebarCollapsed', 'false');
+    }
+}
 
-    const languageButton = document.querySelector('.sidebar-lang-btn');
-    const languageDropdown = document.querySelector('.language-nav-item .language-dropdown');
-    if (languageButton && languageDropdown) {
-        languageButton.addEventListener('click', function(event) {
-            event.stopPropagation();
-            languageDropdown.classList.toggle('active');
-        });
-        document.addEventListener('click', function(event) {
-            if (!languageButton.contains(event.target) && !languageDropdown.contains(event.target)) {
-                languageDropdown.classList.remove('active');
+// Restore sidebar state from localStorage
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+    if (sidebarCollapsed) {
+        document.body.classList.add('sidebar-collapsed');
+        document.getElementById('toggleIcon').className = 'bi bi-chevron-right';
+    }
+
+    // Language switcher functionality - handled by fragment
+
+    // Dynamic Active link highlighting - improved algorithm
+    const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    // Remove all active classes first
+    navLinks.forEach(link => link.classList.remove('active'));
+    
+    // Find exact match first
+    let activeLink = null;
+    navLinks.forEach(link => {
+        const dataPath = link.getAttribute('data-path');
+        if (dataPath === currentPath) {
+            activeLink = link;
+        }
+    });
+    
+    // If no exact match, find best partial match
+    if (!activeLink) {
+        let bestMatch = null;
+        let bestMatchLength = 0;
+        
+        navLinks.forEach(link => {
+            const dataPath = link.getAttribute('data-path');
+            if (dataPath && currentPath.startsWith(dataPath) && dataPath.length > bestMatchLength) {
+                bestMatch = link;
+                bestMatchLength = dataPath.length;
             }
         });
+        
+        activeLink = bestMatch;
     }
-});
+    
+    // Apply active class
+    if (activeLink) {
+        activeLink.classList.add('active');
+    }
+
+    // Search functionality
+    const searchInput = document.querySelector('.search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            navItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = searchTerm ? 'none' : 'block';
+                }
+            });
+        });
+    }
+
+    // Mobile responsive
+    const sidebar = document.getElementById('employerSidebar');
+    
+    // Show/hide mobile features
+    function checkMobile() {
+        if (window.innerWidth <= 768) {
+            // Mobile specific behavior if needed
+        }
+    }
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    });
 </script>
+<script th:src="@{/js/language-dropdown.js}"></script>
 </body>
 </html>

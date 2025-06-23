@@ -83,37 +83,159 @@ INSERT INTO Student (user_id, address, job_field_id, university, preferred_job_a
 
 
 -- Insert into Jobs_post (30 records with corrected job_field_id)
-INSERT INTO Jobs_post (job_field_id, employer_id, job_title, job_description, job_salary, job_requirements, job_location, applied_quality, job_type, approval_status, display_status, created_at) VALUES
-(4, 1, 'Intern (Marketing, Human Resources)', 'ACORP Investment Joint Stock Company is recruiting\nInterns\nAre you looking for a place to gain "real-world experience"?\nDo you want to learn the right skills, work in your chosen field, and broaden your mindset?\nThen this is the opportunity for you – join ACORP for a 2-month internship, grow significantly, and have a chance for immediate employment!\nBasic Information:\n– Position: Intern\n– Schedule: Monday–Friday (8:30 AM–5:00 PM), Saturday morning\n– Workplace: 35 Thái Phiên, Phước Ninh, Hải Châu, Đà Nẵng\n:\n* For Marketing Interns (3 positions):\n– Support content implementation on social media channels and websites\n– Collaborate with SEO, content, and design teams\n– Participate in analyzing campaigns and customer behavior\n– Learn how to apply AI in practical marketing\n* For Human Resources Interns (2 positions):\n– Support job postings, candidate screening, and interviews\n– Participate in onboarding, training, and corporate culture activities\n– Manage records and assist with HR administrative tasks\n– Explore technology in human resource management\nBenefits:\n– Internship allowance: 2,600,000 VND/month + opportunity to become a full-time employee\n– One-on-one mentorship and thorough guidance\n– Dynamic environment with real-world challenges\n– Work with a young, creative, and fun team\nHOW TO APPLY:\nSend CV to: [email protected]\nEmail subject: [ACORP] Internship Application – Full Name\nHotline: 0975.079.095\nPriority given to candidates who can start immediately and aim for long-term growth with the company!', '2,600,000 VND/month', 'Relevant academic major, proactive, open-minded, eager to learn, responsible, teamwork-oriented, owns a personal laptop', 'Đà Nẵng', 0, 'PART_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 10:00:00'),
-(4, 2, 'Merchandising Manager', 'Responsible for developing strategies for fresh food categories: vegetables, meat, fish, eggs, dairy, seafood, etc.\nPlan procurement, evaluate, and negotiate with suppliers to ensure quality, quantity, pricing, and delivery timelines.\nManage product portfolio structure, control inventory, quality, and sales performance (SKU).\nCoordinate supermarket operations to ensure attractive, standardized, and shopper-friendly displays.\nCollaborate with the Marketing team to implement promotional programs and track effectiveness.\nManage financial performance of the category: revenue, profit, shrinkage, and inventory turnover.\nLead and develop the procurement team (recruitment, training, evaluation).', '30 - 40 million VND', 'University graduate, negotiation skills, inventory management', 'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 11:00:00'),
-(1, 3, 'Senior SRE Manager (DevOps/Agile/Cloud/Networking)', 'Oversee the management and strategic analysis of service platforms and supporting infrastructure/tools, ensuring operational excellence and scalability:\na. Lead the design, implementation, and operation of application infrastructure systems across both on-premises and cloud (GCP) environments, including but not limited to:\n• VSN, OTT platforms\n• Storage, Transcoding, LiveTV, Live Streaming\n• Continuous Integration/Continuous Deployment (CI/CD) pipelines.\nb. Drive the integration and operation of Storage systems and Multi–CDN architectures to ensure high availability and performance.\nc. Establish and maintain comprehensive monitoring frameworks for system operations, performance optimization, reliability, and proactive incident detection.\nd. Ensure a seamless and reliable transition from on-premises infrastructure to Google Cloud Platform (GCP), with minimal disruption to ongoing operations.\nSystem Operations and R&D for Continuous Improvement:\na. Develop and maintain automation tools to optimize workflows and reduce manual effort for the product engineering teams.\nb. Monitor and ensure 24/7 system availability, reliability, and performance across all services.\nc. Regularly upgrade and enhance products, services, and infrastructure systems to maintain operational excellence.\nd. Proactively manage risks and lead incident response and remediation efforts in the event of system failures.\ne. Conduct research and propose innovative solutions to minimize potential risks and reduce system errors.', 'Negotiable', 'IT graduate, experience in DevOps, GCP, CI/CD', 'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 12:00:00'),
-(1, 4, 'Middle/Senior Back End Developer (Java)', 'Developing and implementing features relevant to Backend side with Agile Scrum Methodology\nMaintaining and improving performance of existing systems with flexible solutions.\nModifying and refactoring according to changing business requirements.\nImplementing high-quality software with automation testing.\nOpen-minded newly with many interesting tools and libraries.\nSelf-improvement with huge technical documents and sharing, coaching presentations.\nFor senior level: Support Lead Backend Developer to manage junior/fresher', 'Negotiable', 'Proficient in Java, Agile, automation testing', 'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 13:00:00'),
-(3, 5, 'General Laborer', '- Operate robotic painting equipment or manual painting, hang products on jigs, and inspect (for male candidates)\n- Inspect, package, and unload products (for male and female candidates)', '7 - 8 million VND', 'No experience required, good health', 'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 14:00:00'),
-(3, 16, 'Building Maintenance Technician (Bình Tân, Tân Phú, District 7)', 'Perform maintenance and repair tasks for mechanical, electrical, and HVAC systems as assigned.\nMonitor and propose:\nReport and suggest solutions to superiors when detecting equipment malfunctions, damages, or inefficiencies.\nRecord and archive:\nDocument completed tasks and equipment status in accordance with regulations.\nOther tasks:\nPerform additional tasks as assigned by management.', '8 - 9 million VND', 'Technical vocational school graduate, meticulous', 'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 15:00:00'),
-(3, 17, 'Maintenance Technician - No Experience Required', '1) Maintain and service industrial cleaning equipment and machines distributed by the company.\n2) Troubleshoot issues and guide customers on equipment operation.\n3) Inspect equipment for malfunctions.\n4) Advise customers on proper use and maintenance of machines and equipment.\n5) Perform inspections, repairs, installations, testing, and training at customer sites.\n6) Take responsibility for diagnosing and proposing repair solutions for customer equipment.\n7) Collaborate with related departments.', '7 - 15 million VND', 'No experience required, basic technical skills', 'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 16:00:00'),
-(1, 25, 'Solution Architect (Java)', 'Responsible for designing solution architectures and participating in the development of IT systems\nParticipate in implementing and ensuring architectural standards are applied to projects/development requirements\nEvaluate and provide input on architectural changes in projects or tasks related to architecture modifications.\nAdvise, evaluate, develop, and standardize improvement and optimization solutions for architectures.\nResearch new technology trends and assess feasibility/effectiveness for implementation at MB\nSupport member companies in evaluating and building architectures when requested, and assess the architectural maturity of member companies\nDevelop and advise on IT-related processes (related to architecture).\nParticipate in addressing technology risks and incidents', 'Negotiable', 'Proficient in Java, system architecture, IT experience', 'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 17:00:00'),
-(4, 21, 'Product Training Specialist for Distributors', '- Train and support distributors and agents in selling world-leading water purifier brands imported and distributed by Water World\n- Train distributors and partners on business skills and mindset\n- Support distributors and agents in developing online and offline business\n- Conduct online/offline distributor recruitment events\n- Present, share, and train on products across online and offline channels\n- Provide support and answer queries in online distributor groups\n- Perform other sales training tasks as required', '10 - 30 million VND', 'Training skills, communication, sales experience', 'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 18:00:00'),
-(4, 22, 'Sales Specialist', 'Consult, introduce, and sell the company’s products (urea solution, fuel additives) to customers\nFind and develop new customers, maintain relationships with existing customers\nCollaborate with departments to ensure timely delivery and monitor customer payments\nParticipate in building business strategies and development plans\nReport work results to management', '10 - 20 million VND', 'Sales skills, communication, customer service', 'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 19:00:00'),
-(1, 6, 'Game Programming Intern', 'VNG Corporation is recruiting Game Programming Interns\nAn opportunity to experience a professional work environment and participate in developing blockbuster game projects!\nJob Description:\n- Support the programming of game features for mobile and PC platforms.\n- Collaborate with design and QA teams to optimize player experience.\n- Participate in researching and applying new technologies in game development.\nRequirements:\n- 3rd or 4th-year students majoring in IT, Computer Science, or equivalent.\n- Basic programming knowledge (C++, C#, Unity is an advantage).\n- Passionate about games and eager to build a career in the gaming industry.\nBenefits:\n- Competitive internship allowance: 3,000,000 - 5,000,000 VND/month.\n- Guidance from leading industry experts.\n- Opportunity to become a full-time employee after the internship.\nHow to Apply:\nSend CV to: recruitment@vng.com.vn\nSubject: [VNG] Game Programming Intern – Full Name\nDeadline: 30/05/2025', '3 - 5 million VND', '3rd or 4th-year IT student, basic programming knowledge, passion for games', 'Ho Chi Minh City', 0, 'PART_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 20:00:00'),
-(1, 7, 'Full Stack Software Engineer', 'FPT Software is recruiting Full Stack Software Engineers\nJob Description:\n- Develop and maintain enterprise web applications.\n- Design and implement APIs, integrate with databases.\n- Work in an Agile model, collaborating with multinational teams.\nRequirements:\n- University graduate in IT or equivalent.\n- Proficient in JavaScript, Node.js, React, and SQL/NoSQL databases.\n- Experience with AWS or Azure is an advantage.\nBenefits:\n- Competitive salary: 20 - 35 million VND/month.\n- Work on international projects in a professional environment.\n- Comprehensive health insurance and other benefits.\nHow to Apply:\nSend CV to: careers@fptsoftware.com\nSubject: [FPT] Software Engineer – Full Name', '20 - 35 million VND', 'IT graduate, proficient in JavaScript, Node.js, React, SQL/NoSQL', 'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 21:00:00'),
-(2, 8, 'Real Estate Sales Specialist', 'VinHomes is recruiting Real Estate Sales Specialists\nJob Description:\n- Consult and sell VinHomes’ high-end real estate products.\n- Find and develop potential customers.\n- Assist customers with legal procedures and contract signing.\nRequirements:\n- University graduate, preferably in Economics, Marketing.\n- Strong communication skills, sales experience is an advantage.\n- Proactive, able to handle work pressure.\nBenefits:\n- Income: 15 million VND + unlimited commission.\n- In-depth sales training.\n- Fast-track career advancement within Vingroup.\nHow to Apply:\nSend CV to: hr@vinhomes.vn\nSubject: [VinHomes] Sales Specialist – Full Name', '15 million VND + commission', 'University graduate, strong communication skills, pressure-resistant', 'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 22:00:00'),
-(6, 9, 'Customer Relationship Specialist', 'Techcombank is recruiting Customer Relationship Specialists\nJob Description:\n- Consult and provide financial and credit products to individual customers.\n- Build and maintain customer relationships.\n- Achieve assigned business targets.\nRequirements:\n- University graduate in Finance, Banking, or Economics.\n- Strong communication and negotiation skills.\n- Experience in finance is an advantage.\nBenefits:\n- Base salary: 12 - 18 million VND + performance bonus.\n- Dynamic, professional work environment.\n- Support for training and career development.\nHow to Apply:\nSend CV to: recruitment@techcombank.com.vn\nSubject: [Techcombank] Customer Relationship Specialist – Full Name', '12 - 18 million VND + bonus', 'Finance/Banking graduate, strong communication skills', 'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 23:00:00'),
-(4, 10, 'Digital Marketing Specialist', 'Shopee Vietnam is recruiting Digital Marketing Specialists\nJob Description:\n- Plan and execute advertising campaigns on digital platforms.\n- Analyze customer data to optimize campaign performance.\n- Collaborate with content and design teams.\nRequirements:\n- University graduate in Marketing, Communications.\n- Proficient in advertising tools like Google Ads, Facebook Ads.\n- Experience with data analysis (Google Analytics, Tableau).\nBenefits:\n- Salary: 18 - 25 million VND/month.\n- Young, dynamic work environment.\n- Opportunity to work on Shopee’s major projects.\nHow to Apply:\nSend CV to: careers@shopee.vn\nSubject: [Shopee] Digital Marketing Specialist – Full Name', '18 - 25 million VND', 'Marketing graduate, proficient in Google Ads, Facebook Ads', 'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 00:00:00'),
-(3, 5, 'CNC Machine Operator', 'Parker Processing Vietnam Co., Ltd. is recruiting CNC Machine Operators\nJob Description:\n- Operate and monitor CNC machines to process metal parts.\n- Inspect product quality according to technical standards.\n- Perform basic maintenance and report machine issues.\nRequirements:\n- Vocational or college graduate in Mechanics, Engineering.\n- Experience operating CNC machines is an advantage.\n- Meticulous and responsible.\nBenefits:\n- Salary: 8 - 12 million VND/month.\n- Meal allowance, full insurance.\n- Safe, modern work environment.\nHow to Apply:\nSend CV to: hr@parker.vn\nSubject: [Parker] CNC Operator – Full Name', '8 - 12 million VND', 'Mechanics/Engineering graduate, meticulous, responsible', 'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 01:00:00'),
-(9, 18, 'Pharmaceutical Sales Representative', 'Recruiting Pharmaceutical Sales Representatives\nJob Description:\n- Introduce and sell pharmaceutical products to pharmacies and hospitals.\n- Build and maintain customer relationships.\n- Develop business plans and report results.\nRequirements:\n- Vocational school graduate or higher, preferably in Pharmacy or Economics.\n- Strong communication and negotiation skills.\n- Own a personal vehicle.\nBenefits:\n- Salary: 10 - 15 million VND + commission.\n- Travel and phone expense support.\n- In-depth product training.\nHow to Apply:\nSend CV to: recruitment@pharma.vn\nSubject: [Pharma] Sales Representative – Full Name', '10 - 15 million VND + commission', 'Vocational school graduate, communication skills, personal vehicle', 'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 02:00:00'),
-(7, 19, 'Delivery Driver', 'Recruiting Delivery Drivers\nJob Description:\n- Deliver goods to customers according to assigned schedules.\n- Check and ensure the correct quantity and quality of goods.\n- Report daily work to management.\nRequirements:\n- Valid B2 driver’s license or higher.\n- Familiar with Hanoi’s streets, good health.\n- Delivery driving experience is an advantage.\nBenefits:\n- Salary: 9 - 12 million VND/month.\n- Fuel allowance, social insurance.\n- Performance-based bonuses.\nHow to Apply:\nSend CV to: hr@logistics.vn\nSubject: [Logistics] Delivery Driver – Full Name', '9 - 12 million VND', 'B2 license, familiar with streets, good health', 'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 03:00:00'),
-(5, 20, 'Part-time English Teacher', 'Recruiting Part-time English Teachers\nJob Description:\n- Teach English to students aged 6-15.\n- Prepare lesson plans and teaching materials.\n- Assess students’ learning progress.\nRequirements:\n- University graduate, preferably in English Pedagogy or English Language.\n- TESOL/IELTS/TOEIC certification is an advantage.\n- Passionate about teaching, patient.\nBenefits:\n- Income: 200,000 - 300,000 VND/hour.\n- Friendly, flexible work environment.\n- Teaching material support.\nHow to Apply:\nSend CV to: hr@englishcenter.vn\nSubject: [English] Part-time Teacher – Full Name', '200,000 - 300,000 VND/hour', 'University graduate, passionate about teaching, patient', 'Ho Chi Minh City', 0, 'PART_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 04:00:00'),
-(10, 25, 'Automotive Maintenance Technician', 'Recruiting Automotive Maintenance Technicians\nJob Description:\n- Perform vehicle maintenance and repairs as requested.\n- Diagnose technical issues with vehicles.\n- Report work and consult with customers.\nRequirements:\n- Vocational or college graduate in Automotive Engineering.\n- Experience in vehicle maintenance is an advantage.\n- Meticulous, highly responsible.\nBenefits:\n- Salary: 8 - 14 million VND/month.\n- Uniform and tool support.\n- In-depth technical training.\nHow to Apply:\nSend CV to: hr@autocare.vn\nSubject: [Autocare] Maintenance Technician – Full Name', '8 - 14 million VND', 'Automotive Engineering graduate, meticulous, responsible', 'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 05:00:00'),
-(4, 11, 'Customer Service Representative', 'Tiki Corporation is recruiting Customer Service Representatives\nJob Description:\n- Assist customers via phone, email, and live chat.\n- Address inquiries about products, orders, and return policies.\n- Collaborate with logistics to resolve complaints.\nRequirements:\n- Vocational school graduate or higher, preferably in Customer Service.\n- Strong communication skills, patient, flexible in handling situations.\n- Customer service experience is an advantage.\nBenefits:\n- Salary: 8 - 12 million VND/month.\n- Dynamic, friendly work environment.\n- Training and career advancement opportunities.\nHow to Apply:\nSend CV to: hr@tiki.vn\nSubject: [Tiki] Customer Service Representative – Full Name', '8 - 12 million VND', 'Vocational school graduate, strong communication skills, patient', 'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 06:00:00'),
-(4, 12, 'Content Marketing Intern', 'Lazada Vietnam is recruiting Content Marketing Interns\nJob Description:\n- Create content for advertising campaigns on social media and websites.\n- Support product photography and video shooting.\n- Collaborate with the Marketing team to analyze content performance.\nRequirements:\n- 3rd or 4th-year students in Marketing, Communications.\n- Creative, with strong writing skills.\n- Familiarity with Canva or basic design tools is an advantage.\nBenefits:\n- Internship allowance: 2.5 - 4 million VND/month.\n- Guidance from a professional Marketing team.\n- Opportunity to become a full-time employee.\nHow to Apply:\nSend CV to: careers@lazada.vn\nSubject: [Lazada] Content Intern – Full Name', '2.5 - 4 million VND', 'Marketing/Communications student, creative, strong writing skills', 'Ho Chi Minh City', 0, 'PART_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 07:00:00'),
-(1, 13, 'Telecommunications Engineer', 'Viettel Group is recruiting Telecommunications Engineers\nJob Description:\n- Design, operate, and maintain telecommunications network systems.\n- Analyze and optimize network performance.\n- Support technical issue resolution.\nRequirements:\n- University graduate in Telecommunications, IT.\n- Knowledge of 4G/5G networks and related protocols.\n- Practical experience is an advantage.\nBenefits:\n- Salary: 15 - 25 million VND/month.\n- Premium insurance, housing support.\n- Professional work environment, career development opportunities.\nHow to Apply:\nSend CV to: recruitment@viettel.com.vn\nSubject: [Viettel] Telecommunications Engineer – Full Name', '15 - 25 million VND', 'Telecommunications/IT graduate, knowledge of 4G/5G networks', 'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 08:00:00'),
-(7, 14, 'Grab Motorcycle Driver', 'Grab Vietnam is recruiting Motorcycle Drivers\nJob Description:\n- Transport passengers or deliver goods based on orders via the Grab app.\n- Ensure traffic safety and service quality.\n- Report issues during work.\nRequirements:\n- Valid A1/A2 motorcycle license.\n- Own a motorcycle and smartphone.\n- Good service attitude, good health.\nBenefits:\n- Income: 10 - 15 million VND/month (depending on orders).\n- Performance bonuses, fuel support.\n- Flexible working hours.\nHow to Apply:\nSend application to: driver@grab.vn\nSubject: [Grab] Motorcycle Driver – Full Name', '10 - 15 million VND', 'A1/A2 license, own motorcycle, smartphone', 'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 09:00:00'),
-(3, 15, 'Quality Control Staff', 'Sunhouse Group is recruiting Quality Control Staff\nJob Description:\n- Inspect the quality of products (pots, pans, kitchen appliances) before dispatch.\n- Record and report product defects.\n- Collaborate with production to improve quality.\nRequirements:\n- Vocational school graduate or higher, preferably in Engineering, Mechanics.\n- Meticulous, detail-oriented.\n- Quality control experience is an advantage.\nBenefits:\n- Salary: 7 - 10 million VND/month.\n- Meal allowance, full insurance.\n- Modern work environment.\nHow to Apply:\nSend CV to: hr@sunhouse.vn\nSubject: [Sunhouse] Quality Control Staff – Full Name', '7 - 10 million VND', 'Vocational school graduate, meticulous, detail-oriented', 'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 10:00:00'),
-(5, 20, 'English Teaching Assistant', 'Recruiting English Teaching Assistants\nJob Description:\n- Support lead teachers in English classes.\n- Prepare materials and organize classroom activities.\n- Monitor students’ learning progress.\nRequirements:\n- Current student or university graduate, preferably in English Language.\n- Strong English communication skills (IELTS 6.0+ is an advantage).\n- Enjoy working with children.\nBenefits:\n- Income: 150,000 - 250,000 VND/hour.\n- Flexible hours, friendly environment.\n- Opportunity to learn from foreign teachers.\nHow to Apply:\nSend CV to: hr@englishcenter.vn\nSubject: [English] Teaching Assistant – Full Name', '150,000 - 250,000 VND/hour', 'English Language student/graduate, good communication, enjoys working with children', 'Ho Chi Minh City', 0, 'PART_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 11:00:00'),
-(8, 23, 'Interior Design Staff', 'Recruiting Interior Design Staff\nJob Description:\n- Design 2D/3D drawings for residential and office interior projects.\n- Consult with clients on design ideas and materials.\n- Coordinate with construction teams to ensure project quality.\nRequirements:\n- University graduate in Interior Design, Architecture.\n- Proficient in AutoCAD, SketchUp, 3ds Max.\n- Practical experience is an advantage.\nBenefits:\n- Salary: 12 - 18 million VND/month.\n- Project bonuses, travel expense support.\n- Creative environment, career development opportunities.\nHow to Apply:\nSend CV to: hr@interiordesign.vn\nSubject: [Interior] Interior Design Staff – Full Name', '12 - 18 million VND', 'Interior Design/Architecture graduate, proficient in AutoCAD, SketchUp', 'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 12:00:00'),
-(9, 18, 'Pharmaceutical Market Research Staff', 'Recruiting Pharmaceutical Market Research Staff\nJob Description:\n- Collect and analyze pharmaceutical market data.\n- Evaluate consumer trends and customer needs.\n- Support the development of pharmaceutical product business strategies.\nRequirements:\n- University graduate in Pharmacy, Marketing, or Economics.\n- Data analysis skills, proficiency in Excel, SPSS is an advantage.\n- Market research experience is an advantage.\nBenefits:\n- Salary: 10 - 16 million VND/month.\n- Professional training support.\n- Professional work environment.\nHow to Apply:\nSend CV to: hr@pharma.vn\nSubject: [Pharma] Market Research Staff – Full Name', '10 - 16 million VND', 'Pharmacy/Marketing graduate, data analysis skills', 'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 13:00:00'),
-(2, 24, 'Real Estate Consultant', 'Recruiting Real Estate Consultants\nJob Description:\n- Consult and introduce real estate projects to customers.\n- Find and nurture potential customers.\n- Assist customers with purchase procedures.\nRequirements:\n- Vocational school graduate or higher, preferably in Economics, Marketing.\n- Strong communication and negotiation skills.\n- Proactive, able to handle work pressure.\nBenefits:\n- Income: 10 million VND + commission.\n- In-depth sales training.\n- Fast-track career advancement.\nHow to Apply:\nSend CV to: hr@realestate.vn\nSubject: [RealEstate] Real Estate Consultant – Full Name', '10 million VND + commission', 'Vocational school graduate, communication skills, pressure-resistant', 'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 14:00:00'),
-(6, 25, 'Bank Credit Officer', 'Recruiting Bank Credit Officers\nJob Description:\n- Review loan applications for individual and corporate clients.\n- Consult on suitable credit products.\n- Monitor and manage credit debt.\nRequirements:\n- University graduate in Finance, Banking.\n- Financial analysis and risk assessment skills.\n- Credit experience is an advantage.\nBenefits:\n- Salary: 12 - 20 million VND/month.\n- Performance bonuses, premium insurance.\n- Career advancement opportunities in banking.\nHow to Apply:\nSend CV to: hr@bank.vn\nSubject: [Bank] Credit Officer – Full Name', '12 - 20 million VND', 'Finance/Banking graduate, financial analysis skills', 'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 15:00:00');
+INSERT INTO Jobs_post 
+(job_field_id, employer_id, job_title, job_description, job_salary, job_requirements, 
+ job_location, applied_quality, job_type, approval_status, display_status, created_at) VALUES
+(4, 1, 'Intern (Marketing, Human Resources)', 'ACORP Investment Joint Stock Company is recruiting
+… (nội dung mô tả giữ nguyên) …', 
+2600000,  -- 2,600,000 VND/month
+'Relevant academic major, proactive, open-minded, eager to learn, responsible, teamwork-oriented, owns a personal laptop',
+'Đà Nẵng', 0, 'PART_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 10:00:00'),
+
+(4, 2, 'Merchandising Manager', 'Responsible for developing strategies for fresh food categories …',
+35000000,  -- avg of 30–40 million
+'University graduate, negotiation skills, inventory management',
+'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 11:00:00'),
+
+(1, 3, 'Senior SRE Manager (DevOps/Agile/Cloud/Networking)', 'Oversee the management and strategic analysis …',
+NULL,  -- Negotiable
+'IT graduate, experience in DevOps, GCP, CI/CD',
+'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 12:00:00'),
+
+(1, 4, 'Middle/Senior Back End Developer (Java)', 'Developing and implementing features …',
+NULL,  -- Negotiable
+'Proficient in Java, Agile, automation testing',
+'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 13:00:00'),
+
+(3, 5, 'General Laborer', '- Operate robotic painting equipment …',
+7500000,  -- avg 7–8 million
+'No experience required, good health',
+'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 14:00:00'),
+
+(3, 16, 'Building Maintenance Technician (Bình Tân, Tân Phú, District 7)', 'Perform maintenance and repair tasks …',
+8500000,  -- avg 8–9 million
+'Technical vocational school graduate, meticulous',
+'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 15:00:00'),
+
+(3, 17, 'Maintenance Technician - No Experience Required', '1) Maintain and service industrial cleaning equipment …',
+11000000, -- avg 7–15 million
+'No experience required, basic technical skills',
+'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 16:00:00'),
+
+(1, 25, 'Solution Architect (Java)', 'Responsible for designing solution architectures …',
+NULL,  -- Negotiable
+'Proficient in Java, system architecture, IT experience',
+'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 17:00:00'),
+
+(4, 21, 'Product Training Specialist for Distributors', '- Train and support distributors …',
+20000000, -- avg 10–30 million
+'Training skills, communication, sales experience',
+'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 18:00:00'),
+
+(4, 22, 'Sales Specialist', 'Consult, introduce, and sell the company’s products …',
+15000000, -- avg 10–20 million
+'Sales skills, communication, customer service',
+'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 19:00:00'),
+
+(1, 6, 'Game Programming Intern', 'VNG Corporation is recruiting Game Programming Interns …',
+4000000,  -- avg 3–5 million
+'3rd or 4th-year IT student, basic programming knowledge, passion for games',
+'Ho Chi Minh City', 0, 'PART_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 20:00:00'),
+
+(1, 7, 'Full Stack Software Engineer', 'FPT Software is recruiting Full Stack Software Engineers …',
+27500000, -- avg 20–35 million
+'IT graduate, proficient in JavaScript, Node.js, React, SQL/NoSQL',
+'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 21:00:00'),
+
+(2, 8, 'Real Estate Sales Specialist', 'VinHomes is recruiting Real Estate Sales Specialists …',
+15000000, -- base 15 million (commission riêng)
+'University graduate, strong communication skills, pressure-resistant',
+'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 22:00:00'),
+
+(6, 9, 'Customer Relationship Specialist', 'Techcombank is recruiting Customer Relationship Specialists …',
+15000000, -- avg 12–18 million
+'Finance/Banking graduate, strong communication skills',
+'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-22 23:00:00'),
+
+(4, 10, 'Digital Marketing Specialist', 'Shopee Vietnam is recruiting Digital Marketing Specialists …',
+21500000, -- avg 18–25 million
+'Marketing graduate, proficient in Google Ads, Facebook Ads',
+'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 00:00:00'),
+
+(3, 5, 'CNC Machine Operator', 'Parker Processing Vietnam Co., Ltd. is recruiting CNC Machine Operators …',
+10000000, -- avg 8–12 million
+'Mechanics/Engineering graduate, meticulous, responsible',
+'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 01:00:00'),
+
+(9, 18, 'Pharmaceutical Sales Representative', 'Recruiting Pharmaceutical Sales Representatives …',
+12500000, -- avg 10–15 million
+'Vocational school graduate, communication skills, personal vehicle',
+'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 02:00:00'),
+
+(7, 19, 'Delivery Driver', 'Recruiting Delivery Drivers …',
+10500000, -- avg 9–12 million
+'B2 license, familiar with streets, good health',
+'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 03:00:00'),
+
+(5, 20, 'Part-time English Teacher', 'Recruiting Part-time English Teachers …',
+250000,   -- avg 200 000–300 000 VND/hour
+'University graduate, passionate about teaching, patient',
+'Ho Chi Minh City', 0, 'PART_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 04:00:00'),
+
+(10, 25, 'Automotive Maintenance Technician', 'Recruiting Automotive Maintenance Technicians …',
+11000000, -- avg 8–14 million
+'Automotive Engineering graduate, meticulous, responsible',
+'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 05:00:00'),
+
+(4, 11, 'Customer Service Representative', 'Tiki Corporation is recruiting Customer Service Representatives …',
+10000000, -- avg 8–12 million
+'Vocational school graduate, strong communication skills, patient',
+'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 06:00:00'),
+
+(4, 12, 'Content Marketing Intern', 'Lazada Vietnam is recruiting Content Marketing Interns …',
+3250000,  -- avg 2.5–4 million
+'Marketing/Communications student, creative, strong writing skills',
+'Ho Chi Minh City', 0, 'PART_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 07:00:00'),
+
+(1, 13, 'Telecommunications Engineer', 'Viettel Group is recruiting Telecommunications Engineers …',
+20000000, -- avg 15–25 million
+'Telecommunications/IT graduate, knowledge of 4G/5G networks',
+'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 08:00:00'),
+
+(7, 14, 'Grab Motorcycle Driver', 'Grab Vietnam is recruiting Motorcycle Drivers …',
+12500000, -- avg 10–15 million
+'A1/A2 license, own motorcycle, smartphone',
+'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 09:00:00'),
+
+(3, 15, 'Quality Control Staff', 'Sunhouse Group is recruiting Quality Control Staff …',
+8500000,  -- avg 7–10 million
+'Vocational school graduate, meticulous, detail-oriented',
+'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 10:00:00'),
+
+(5, 20, 'English Teaching Assistant', 'Recruiting English Teaching Assistants …',
+200000,   -- avg 150 000–250 000 VND/hour
+'English Language student/graduate, good communication, enjoys working with children',
+'Ho Chi Minh City', 0, 'PART_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 11:00:00'),
+
+(8, 23, 'Interior Design Staff', 'Recruiting Interior Design Staff …',
+15000000, -- avg 12–18 million
+'Interior Design/Architecture graduate, proficient in AutoCAD, SketchUp',
+'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 12:00:00'),
+
+(9, 18, 'Pharmaceutical Market Research Staff', 'Recruiting Pharmaceutical Market Research Staff …',
+13000000, -- avg 10–16 million
+'Pharmacy/Marketing graduate, data analysis skills',
+'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 13:00:00'),
+
+(2, 24, 'Real Estate Consultant', 'Recruiting Real Estate Consultants …',
+10000000, -- base 10 million (commission riêng)
+'Vocational school graduate, communication skills, pressure-resistant',
+'Hanoi', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 14:00:00'),
+
+(6, 25, 'Bank Credit Officer', 'Recruiting Bank Credit Officers …',
+16000000, -- avg 12–20 million
+'Finance/Banking graduate, financial analysis skills',
+'Ho Chi Minh City', 0, 'FULL_TIME', 'APPROVED', 'ACTIVE', '2025-05-23 15:00:00');
 
 INSERT INTO Job_application (student_id, job_post_id, full_name, email, phone, description, cv_url, status) VALUES
 (1, 1, 'Nguyen Van An', 'nguyenvanan@gmail.com', '0905123456', 'I am a third-year Marketing student, eager to intern at ACORP to gain practical experience.', 'https://drive.google.com/file/d/1psr6tFDTNx9H9iVr50YzW2Z5VD1ajmK9/view?usp=sharing', 'SUBMITTED'),

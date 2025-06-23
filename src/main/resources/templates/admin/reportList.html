@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý báo cáo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
+    <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
+    <link rel="stylesheet" th:href="@{/css/reportList.css}">
+    <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
+</head>
+<body>
+<div th:replace="~{navbar/navbarAdmin :: navbarAdmin}"></div>
+<script th:src="@{/js/navbarAdmin.js}"></script>
+<script th:src="@{/js/languageSwitch.js}"></script>
+
+<div class="main-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-flag-fill text-danger"></i> Quản lý báo cáo</h2>
+        <!-- ✅ THÊM MỚI: Nút quản lý xóa báo cáo -->
+        <div class="btn-group">
+            <a th:href="@{/Admin/Deletable}" class="btn btn-outline-danger">
+                <i class="bi bi-trash"></i> Quản lý xóa báo cáo
+                <span class="badge bg-danger ms-1" th:text="${deletableCount}">0</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-number" th:text="${statistics.get(T(com.example.swp391_d01_g3.model.Report.ReportStatus).PENDING) ?: 0}">0</div>
+            <div class="stat-label">Chờ xử lý</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" th:text="${statistics.get(T(com.example.swp391_d01_g3.model.Report.ReportStatus).UNDER_REVIEW) ?: 0}">0</div>
+            <div class="stat-label">Đang xem xét</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" th:text="${statistics.get(T(com.example.swp391_d01_g3.model.Report.ReportStatus).RESOLVED) ?: 0}">0</div>
+            <div class="stat-label">Đã giải quyết</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" th:text="${statistics.get(T(com.example.swp391_d01_g3.model.Report.ReportStatus).REJECTED) ?: 0}">0</div>
+            <div class="stat-label">Từ chối</div>
+        </div>
+        <!-- ✅ THÊM MỚI: Thống kê báo cáo có thể xóa -->
+        <div class="stat-card">
+            <div class="stat-number text-danger" th:text="${deletableCount ?: 0}">0</div>
+            <div class="stat-label">Có thể xóa</div>
+        </div>
+    </div>
+
+    <!-- Alert Messages -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Lọc theo trạng thái</label>
+                    <select name="status" class="form-select">
+                        <option value="">-- Tất cả trạng thái --</option>
+                        <option th:each="statusOption : ${statuses}"
+                                th:value="${statusOption}"
+                                th:text="${statusOption}"
+                                th:selected="${statusOption == selectedStatus}"></option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Tìm kiếm</label>
+                    <input type="text" name="search" class="form-control"
+                           placeholder="Tìm theo tiêu đề hoặc mô tả..."
+                           th:value="${searchKeyword}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">&nbsp;</label>
+                    <button type="submit" class="btn btn-primary d-block w-100">
+                        <i class="bi bi-search"></i> Lọc
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reports Table -->
+    <!-- Reports Table -->
+    <div class="card">
+        <div class="card-body">
+            <div th:if="${reports == null or reports.content.isEmpty()}" class="text-center py-5">
+                <i class="bi bi-inbox display-1 text-muted"></i>
+                <h4 class="mt-3">Không có báo cáo nào</h4>
+                <p class="text-muted">Chưa có báo cáo nào phù hợp với bộ lọc hiện tại.</p>
+            </div>
+
+            <div th:if="${reports != null and !reports.content.isEmpty()}">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                        <tr>
+                            <!-- ✅ THAY ĐỔI: STT thay vì ID -->
+                            <th width="80">STT</th>
+                            <th>Tiêu đề</th>
+                            <th>Người báo cáo</th>
+                            <th>Loại</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày tạo</th>
+                            <th>Hành động</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- ✅ THÊM iterStat để lấy số thứ tự -->
+                        <tr th:each="report, iterStat : ${reports.content}">
+                            <td>
+                                <!-- ✅ HIỂN THỊ STT với tính toán phân trang -->
+                                <strong class="text-primary" th:text="${(reports.number * reports.size) + iterStat.index + 1}"></strong>
+                            </td>
+                            <td>
+                                <div class="fw-bold" th:text="${report.title}"></div>
+                                <small class="text-muted">
+                                    <span th:text="${#strings.abbreviate(report.description, 40)}"></span>
+                                </small>
+                            </td>
+                            <td>
+                                <div th:text="${report.reporterEmail}"></div>
+                                <small class="badge bg-info" th:text="${report.reporterType}"></small>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary" th:text="${report.reportType}"></span>
+                            </td>
+                            <td>
+                            <span class="status-badge"
+                                  th:classappend="${report.status.toString().toLowerCase()}"
+                                  th:text="${report.status}"></span>
+                            </td>
+                            <td th:text="${#temporals.format(report.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a th:href="@{/Admin/Edit/{id}(id=${report.reportId})}"
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <!-- ✅ Nút xóa báo cáo -->
+                                    <button th:if="${report.status.toString() == 'RESOLVED' or report.status.toString() == 'CLOSED'}"
+                                            type="button"
+                                            class="btn btn-sm btn-outline-danger"
+                                            th:onclick="'deleteReport(' + ${report.reportId} + ')'">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination giữ nguyên -->
+                <div th:if="${reports.totalPages > 1}" class="d-flex justify-content-center mt-4">
+                    <nav>
+                        <ul class="pagination">
+                            <li class="page-item" th:classappend="${!reports.hasPrevious()} ? 'disabled'">
+                                <a class="page-link" th:href="@{/Admin/List(page=${reports.number - 1}, status=${selectedStatus}, search=${searchKeyword})}">
+                                    <i class="bi bi-chevron-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, reports.totalPages - 1)}"
+                                th:classappend="${pageNum == reports.number} ? 'active'">
+                                <a class="page-link" th:href="@{/Admin/List(page=${pageNum}, status=${selectedStatus}, search=${searchKeyword})}"
+                                   th:text="${pageNum + 1}"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${!reports.hasNext()} ? 'disabled'">
+                                <a class="page-link" th:href="@{/Admin/List(page=${reports.number + 1}, status=${selectedStatus}, search=${searchKeyword})}">
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function deleteReport(reportId) {
+        if (confirm('Bạn có chắc chắn muốn xóa báo cáo #' + reportId + '?\nHành động này không thể hoàn tác!')) {
+            // Tạo form để submit
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/Admin/Delete/' + reportId;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+</script>
+<script th:src="@{/js/language-dropdown.js}"></script>
+
+</body>
+</html>

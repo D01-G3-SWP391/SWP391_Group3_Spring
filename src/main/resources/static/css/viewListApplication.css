@@ -244,23 +244,27 @@ table tbody td {
 }
 
 .status-badge.submitted {
-    background: #ebf4ff;
-    color: #3182ce;
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    color: #856404;
+    border: 1px solid #ffeaa7;
 }
 
 .status-badge.interview {
-    background: #faf5ff;
-    color: #805ad5;
+    background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+    color: #0c5460;
+    border: 1px solid #bee5eb;
 }
 
 .status-badge.accepted {
-    background: #f0fff4;
-    color: #38a169;
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #155724;
+    border: 1px solid #c3e6cb;
 }
 
 .status-badge.rejected {
-    background: #fff5f5;
-    color: #e53e3e;
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+    border: 1px solid #f5c6cb;
 }
 
 /* ===== ACTION BUTTONS ===== */
@@ -639,37 +643,38 @@ table tbody td {
     .main-content {
         padding: 10px;
     }
-    
+
     .table-container {
         padding: 10px;
     }
-    
+
     .details-content {
         padding: 20px 10px;
     }
-    
+
     .details-grid {
         grid-template-columns: 1fr;
         gap: 20px;
     }
-    
+
     .detail-section {
         padding: 15px;
     }
-    
+
     .detail-item {
         grid-template-columns: 1fr;
         gap: 8px;
     }
-    
-    .detail-actions {
-        flex-direction: column;
-        align-items: stretch;
+
+    .pagination-btn {
+        padding: 8px 12px;
+        min-width: 80px;
     }
-    
-    .detail-actions .btn {
-        text-align: center;
-        justify-content: center;
+
+    .page-number {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
     }
 }
 

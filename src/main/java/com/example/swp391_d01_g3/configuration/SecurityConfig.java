@@ -54,12 +54,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/Login", "/*.css","/*.js","/HomePage/**","/Register/**","/ForgotPassword/**","/Blog/**","/Events/**","/TopJob/**", "/api/query/**").permitAll()
-                        .requestMatchers("/JobDescription/JobPost").permitAll()
+                        .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/Login", "/*.css","/*.js","/HomePage/**","/Register/**","/ForgotPassword/**","/Blog/**","/Events/**","/TopJob/**","/JobDescription/JobPost", "/api/query/**","/api/chat/**", "/api/students/**", "/api/employers/**").permitAll()
                         .requestMatchers("/Admin/**").hasRole("admin")
                         .requestMatchers("/Employer/**").hasRole("employer")
-                        .requestMatchers("/Student/**").hasRole("student")
-                        .requestMatchers("/JobDescription/**").hasRole("student")
+                        .requestMatchers("/Student/**","/JobDescription/**").hasRole("student")
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)

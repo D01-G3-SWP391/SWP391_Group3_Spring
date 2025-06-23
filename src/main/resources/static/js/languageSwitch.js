@@ -18,18 +18,25 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle both .language-switcher and .sidebar-lang-btn
     const languageButtons = document.querySelectorAll('.language-switcher, .sidebar-lang-btn');
     const languageDropdowns = document.querySelectorAll('.language-dropdown');
+    const languageContainers = document.querySelectorAll('.language-switcher-container');
     
     languageButtons.forEach((button, index) => {
         const dropdown = languageDropdowns[index] || document.querySelector('.language-dropdown');
+        const container = languageContainers[index] || document.querySelector('.language-switcher-container');
+        
         if (button && dropdown) {
             button.addEventListener('click', function(event) {
                 event.stopPropagation();
                 
                 // Close all other dropdowns first
                 languageDropdowns.forEach(dd => dd.classList.remove('active'));
+                languageContainers.forEach(lc => lc.classList.remove('active'));
                 
                 // Toggle current dropdown
                 dropdown.classList.toggle('active');
+                if (container) {
+                    container.classList.toggle('active');
+                }
             });
         }
     });
@@ -41,6 +48,9 @@ document.addEventListener('DOMContentLoaded', function() {
             languageDropdowns.forEach(dropdown => {
                 dropdown.classList.remove('active');
             });
+            languageContainers.forEach(container => {
+                container.classList.remove('active');
+            });
         }
     });
 
@@ -49,6 +59,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (event.key === 'Escape') {
             languageDropdowns.forEach(dropdown => {
                 dropdown.classList.remove('active');
+            });
+            languageContainers.forEach(container => {
+                container.classList.remove('active');
             });
         }
     });

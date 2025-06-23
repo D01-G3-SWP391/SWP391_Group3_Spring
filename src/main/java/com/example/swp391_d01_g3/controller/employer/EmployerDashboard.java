@@ -11,6 +11,7 @@ import com.example.swp391_d01_g3.service.jobfield.IJobfieldService;
 import com.example.swp391_d01_g3.service.security.IAccountService;
 import com.example.swp391_d01_g3.service.security.IAccountServiceImpl;
 import com.example.swp391_d01_g3.service.email.EmailService;
+import com.example.swp391_d01_g3.service.notification.INotificationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -61,9 +62,21 @@ public class EmployerDashboard {
     private EmailService emailService;
     @Autowired
     private IInterViewService iInterViewService;
+    
+    @Autowired
+    private INotificationService notificationService;
 
     @GetMapping("")
-    public String showEmployeeDashboard() {
+    public String showEmployeeDashboard(Model model, Principal principal) {
+        if (principal != null) {
+            String currentUserEmail = principal.getName();
+            Account currentAccount = accountService.findByEmail(currentUserEmail);
+            if (currentAccount != null) {
+                Employer employer = employerService.findByUserId(currentAccount.getUserId());
+                model.addAttribute("account", currentAccount);
+                model.addAttribute("employer", employer);
+            }
+        }
         return "employee/dashboardEmployee";
     }
     
@@ -93,6 +106,7 @@ public class EmployerDashboard {
 //                }
                 
                 model.addAttribute("currentAccount", currentAccount);
+                model.addAttribute("account", currentAccount);  // Thêm account để template có thể truy cập avatarUrl
                 model.addAttribute("employer", employer);
             }
         }
@@ -109,6 +123,7 @@ public class EmployerDashboard {
             if (currentAccount != null) {
                 Employer employer = employerService.findByUserId(currentAccount.getUserId());
                 model.addAttribute("currentAccount", currentAccount);
+                model.addAttribute("account", currentAccount);  // Thêm account cho navbar
                 model.addAttribute("employer", employer);
             }
         }
@@ -140,6 +155,7 @@ public class EmployerDashboard {
         if (!changePassword.isCurrentPasswordValid(currentPassword, account.getPassword())) {
             model.addAttribute("error", "Mật khẩu hiện tại không đúng.");
             model.addAttribute("currentAccount", account);
+            model.addAttribute("account", account);  // Thêm account cho navbar
             Employer employer = employerService.findByUserId(account.getUserId());
             model.addAttribute("employer", employer);
             return "employee/changePassword";
@@ -149,6 +165,7 @@ public class EmployerDashboard {
         if (!changePassword.isNewPasswordConfirmed(newPassword, confirmPassword)) {
             model.addAttribute("error", "Mật khẩu mới và xác nhận mật khẩu không khớp.");
             model.addAttribute("currentAccount", account);
+            model.addAttribute("account", account);  // Thêm account cho navbar
             Employer employer = employerService.findByUserId(account.getUserId());
             model.addAttribute("employer", employer);
             return "employee/changePassword";
@@ -158,6 +175,7 @@ public class EmployerDashboard {
         if (!changePassword.isNewPasswordValidLength(newPassword, 6)) {
             model.addAttribute("error", "Mật khẩu mới phải có ít nhất 6 ký tự.");
             model.addAttribute("currentAccount", account);
+            model.addAttribute("account", account);  // Thêm account cho navbar
             Employer employer = employerService.findByUserId(account.getUserId());
             model.addAttribute("employer", employer);
             return "employee/changePassword";
@@ -167,6 +185,7 @@ public class EmployerDashboard {
         if (!changePassword.isNewPasswordDifferent(newPassword, account.getPassword())) {
             model.addAttribute("error", "Mật khẩu mới phải khác mật khẩu hiện tại.");
             model.addAttribute("currentAccount", account);
+            model.addAttribute("account", account);  // Thêm account cho navbar
             Employer employer = employerService.findByUserId(account.getUserId());
             model.addAttribute("employer", employer);
             return "employee/changePassword";
@@ -194,6 +213,7 @@ public class EmployerDashboard {
             EmployerEditDTO employerProfileDTO = new EmployerEditDTO(employerAccount, employerDetails);
             
             model.addAttribute("employerProfileDTO", employerProfileDTO);
+            model.addAttribute("account", employerAccount);  // Thêm account để hiển thị avatar
             model.addAttribute("jobFields", jobfieldService.findAll());
             return "employee/editEmployerProfile";
         }
@@ -224,6 +244,7 @@ public class EmployerDashboard {
         }
 
         if (bindingResult.hasErrors()) {
+            model.addAttribute("account", currentAccount);  // Thêm account cho trường hợp error
             model.addAttribute("jobFields", jobfieldService.findAll());
             return "employee/editEmployerProfile";
         }
@@ -243,13 +264,14 @@ public class EmployerDashboard {
             String description = employerEditDTO.getCompanyDescription();
             employer.setCompanyDescription(description);
             
-            // Xử lý upload logo nếu có file mới
+            // Xử lý upload logo nếu có file mới - LưU VÀO ACCOUNT.AVATARURL
             System.out.println("🔍 Checking logo file...");
+            Account employerAccount = employer.getAccount();
             if (logoFile != null && !logoFile.isEmpty()) {
 //                System.out.println("Logo file detected: " + logoFile.getOriginalFilename());
                 try {
-                    // Xóa logo cũ từ Cloudinary nếu tồn tại
-                    String oldLogoUrl = employer.getLogoUrl();
+                    // Xóa logo cũ từ Cloudinary nếu tồn tại (từ Account)
+                    String oldLogoUrl = employerAccount.getAvatarUrl();
                     if (oldLogoUrl != null && oldLogoUrl.contains("cloudinary.com")) {
                         String oldPublicId = cloudinaryService.extractPublicId(oldLogoUrl);
                         if (oldPublicId != null) {
@@ -265,8 +287,9 @@ public class EmployerDashboard {
                     // Upload logo mới lên Cloudinary
 //                    System.out.println("🚀 Starting Cloudinary upload...");
                     String logoUrl = cloudinaryService.uploadImage(logoFile, "employer-logos");
-                    employer.setLogoUrl(logoUrl);
-//                    System.out.println("✅ Logo uploaded successfully to Cloudinary: " + logoUrl);
+                    employerAccount.setAvatarUrl(logoUrl);  // Lưu vào Account thay vì Employer
+                    accountService.save(employerAccount);  // Cập nhật Account
+//                    System.out.println("✅ Logo uploaded successfully to Account.avatarUrl: " + logoUrl);
                 } catch (Exception e) {
 //                    System.out.println("❌ Upload error in controller: " + e.getMessage());
                     e.printStackTrace();
@@ -274,10 +297,6 @@ public class EmployerDashboard {
                     model.addAttribute("jobFields", jobfieldService.findAll());
                     return "employee/editEmployerProfile";
                 }
-            } else {
-//                System.out.println("📝 No new logo file, keeping existing: " + employerEditDTO.getLogoUrl());
-                // Giữ nguyên logo cũ nếu không upload file mới
-                employer.setLogoUrl(employerEditDTO.getLogoUrl());
             }
             
             // Cập nhật JobField
@@ -325,6 +344,9 @@ public class EmployerDashboard {
         }
         model.addAttribute("applications", applications);
         model.addAttribute("statuses", JobApplication.ApplicationStatus.values());
+        
+        // Add authentication status for chat system
+        model.addAttribute("isAuthenticated", authentication != null && authentication.isAuthenticated());
 
         return "employee/viewListApplications";
     }
@@ -337,6 +359,7 @@ public class EmployerDashboard {
     public String updateApplicationStatus(
             @PathVariable Integer applicationId,
             @RequestParam String status,
+            @RequestParam(required = false) Integer jobPostId,
             RedirectAttributes redirectAttributes,
             Authentication authentication) {
 
@@ -355,12 +378,64 @@ public class EmployerDashboard {
 
             JobApplication.ApplicationStatus newStatus = JobApplication.ApplicationStatus.valueOf(status);
             iJobApplicationService.updateApplicationStatus(applicationId, newStatus);
+            
+            // Gửi email cho ACCEPTED và REJECTED (không gửi cho INTERVIEW qua dropdown)
+            if (newStatus == JobApplication.ApplicationStatus.ACCEPTED || newStatus == JobApplication.ApplicationStatus.REJECTED) {
+                String candidateEmail = application.getEmail();
+                String candidateName = application.getFullName();
+                String jobTitle = application.getJobPost().getJobTitle();
+                String companyName = employer.getCompanyName();
+                
+                if (newStatus == JobApplication.ApplicationStatus.ACCEPTED) {
+                    emailService.sendApplicationAcceptedEmail(candidateEmail, candidateName, jobTitle, companyName);
+                } else if (newStatus == JobApplication.ApplicationStatus.REJECTED) {
+                    emailService.sendApplicationRejectedEmail(candidateEmail, candidateName, jobTitle, companyName);
+                }
+            }
+            
+            // Tạo thông báo cho ứng viên về việc thay đổi trạng thái
+            String notificationTitle = "Cập nhật trạng thái ứng tuyển";
+            String notificationMessage = "";
+            String notificationType = "APPLICATION_STATUS_UPDATE";
+            
+            switch (newStatus) {
+                case SUBMITTED:
+                    notificationMessage = "Đơn ứng tuyển của bạn cho vị trí " + application.getJobPost().getJobTitle() + 
+                                        " đã được gửi thành công và đang chờ xét duyệt.";
+                    break;
+                case INTERVIEW:
+                    notificationMessage = "Đơn ứng tuyển của bạn cho vị trí " + application.getJobPost().getJobTitle() + 
+                                        " đã chuyển sang giai đoạn phỏng vấn.";
+                    notificationType = "INTERVIEW_SCHEDULE";
+                    break;
+                case ACCEPTED:
+                    notificationMessage = "Chúc mừng! Bạn đã vượt qua phỏng vấn cho vị trí " + application.getJobPost().getJobTitle() + 
+                                        " tại " + employer.getCompanyName() + ".";
+                    break;
+                case REJECTED:
+                    notificationMessage = "Rất tiếc, đơn ứng tuyển của bạn cho vị trí " + application.getJobPost().getJobTitle() + 
+                                        " tại " + employer.getCompanyName() + " chưa phù hợp lần này.";
+                    break;
+            }
+            
+            // Gửi thông báo cho student
+            notificationService.createNotification(
+                application.getStudent().getAccount(),
+                notificationTitle,
+                notificationMessage,
+                notificationType,
+                application.getApplicationId().longValue()
+            );
+            
             redirectAttributes.addFlashAttribute("successMessage", "Cập nhật trạng thái thành công!");
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi cập nhật trạng thái!");
         }
 
+        if (jobPostId != null) {
+            return "redirect:/Employer/JobPosts/" + jobPostId + "/applications";
+        }
         return "redirect:/Employer/Applications";
     }
 
@@ -371,6 +446,7 @@ public class EmployerDashboard {
             @RequestParam String interviewType,
             @RequestParam(required = false) String meetingLink,
             @RequestParam(required = false) String note,
+            @RequestParam(required = false) Integer jobPostId,
             RedirectAttributes redirectAttributes,
             Authentication authentication) {
         try {
@@ -402,12 +478,29 @@ public class EmployerDashboard {
             emailService.sendInterviewScheduleEmail(candidateEmail, candidateName, jobTitle, interviewTime, interviewType, meetingLink, note);
             // Cập nhật trạng thái ứng viên sang INTERVIEW
             iJobApplicationService.updateApplicationStatus(applicationId, JobApplication.ApplicationStatus.INTERVIEW);
+            
+            // Tạo thông báo cho ứng viên về lịch phỏng vấn
+            notificationService.createNotification(
+                    application.getStudent().getAccount(),
+                    "Lịch phỏng vấn mới",
+                    "Bạn có lịch phỏng vấn cho vị trí " + jobTitle +
+                            " vào " + interviewTime +
+                            " theo hình thức " + interviewType + "." +
+                    " Link meeting: " + meetingLink +
+                    " Ghi chú: " + note,
+                    "NEW_APPLICATION",
+                    application.getApplicationId().longValue()
+            );
+
+            
             redirectAttributes.addFlashAttribute("successMessage", "Đã gửi lịch phỏng vấn cho ứng viên!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi gửi lịch phỏng vấn!");
         }
+        if (jobPostId != null) {
+            return "redirect:/Employer/JobPosts/" + jobPostId + "/applications";
+        }
         return "redirect:/Employer/Applications";
     }
-
 }
 

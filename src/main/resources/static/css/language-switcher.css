@@ -9,54 +9,76 @@
   margin-left: 10px;
 }
 
-/* Language switcher button */
+/* Language switcher button - Theme matching design */
 .language-switcher {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #4f46e5 0%, #7e6bff 100%);
   color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 16px;
+  border: 1px solid #4f46e5;
+  border-radius: 20px;
+  padding: 6px 12px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.5px;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 8px;
-  min-width: 100px;
+  gap: 6px;
+  min-width: 60px;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.2);
+  position: relative;
 }
 
 .language-switcher:hover {
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  background: linear-gradient(135deg, #3730a3 0%, #5b47d5 100%);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  border-color: #3730a3;
 }
 
 .language-switcher:active {
   transform: translateY(0);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
-/* Add an icon to the language switcher */
-.language-switcher::after {
-  content: "🌐";
+/* Current language flag and code */
+.language-switcher .current-flag {
   font-size: 14px;
-  margin-left: 4px;
+  display: inline-block;
+  vertical-align: middle;
 }
 
-/* Language dropdown menu */
+.language-switcher .current-code {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-left: 2px;
+}
+
+/* Dropdown arrow */
+.language-switcher::after {
+  content: "▼";
+  font-size: 10px;
+  margin-left: 4px;
+  opacity: 0.7;
+  transition: transform 0.3s ease;
+}
+
+.language-switcher-container.active .language-switcher::after {
+  transform: rotate(180deg);
+}
+
+/* Language dropdown menu - Theme matching */
 .language-dropdown {
   position: absolute;
-  top: calc(100% + 5px);
+  top: calc(100% + 8px);
   right: 0;
-  background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
   box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-  min-width: 180px;
+  min-width: 160px;
   z-index: 1001;
   opacity: 0;
   visibility: hidden;
@@ -73,15 +95,17 @@
 
 /* Language options */
 .language-option {
-  display: block;
-  padding: 12px 16px;
-  color: #333;
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  color: #1f2937;
   text-decoration: none;
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 13px;
+  font-weight: 500;
   transition: all 0.2s ease;
   border-bottom: 1px solid #f5f5f5;
   position: relative;
+  gap: 10px;
 }
 
 .language-option:last-child {
@@ -89,30 +113,63 @@
 }
 
 .language-option:hover {
-  background: linear-gradient(90deg, #f8f9ff 0%, #f0f2ff 100%);
-  color: #667eea;
+  background: rgba(79, 70, 229, 0.1);
+  color: #4f46e5;
   text-decoration: none;
-  padding-left: 20px;
+  padding-left: 18px;
 }
 
 .language-option.active {
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #4f46e5 0%, #7e6bff 100%);
   color: white;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .language-option.active:hover {
-  background: linear-gradient(90deg, #764ba2 0%, #667eea 100%);
+  background: linear-gradient(135deg, #3730a3 0%, #5b47d5 100%);
   color: white;
-  padding-left: 16px;
+  padding-left: 14px;
 }
 
 /* Flag styling */
 .language-option .flag {
-  margin-right: 10px;
   font-size: 16px;
   display: inline-block;
   vertical-align: middle;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Flag image styling */
+.language-option .flag img,
+.language-switcher .current-flag img {
+  width: 20px;
+  height: 20px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: inline-block;
+  vertical-align: middle;
+  margin-top: -1px;
+}
+
+/* Current flag in switcher button */
+.language-switcher .current-flag img {
+  width: 18px;
+  height: 18px;
+}
+
+/* Language text */
+.language-option .lang-text {
+  flex: 1;
+  font-size: 13px;
+}
+
+/* Current language code in switcher button */
+.language-switcher .lang-code {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  opacity: 0.9;
 }
 
 /* Responsive adjustments */
@@ -122,9 +179,18 @@
   }
   
   .language-switcher {
-    padding: 6px 10px;
-    font-size: 11px;
-    min-width: 70px;
+    padding: 5px 8px;
+    font-size: 10px;
+    min-width: 50px;
+    gap: 4px;
+  }
+  
+  .language-switcher .current-flag {
+    font-size: 12px;
+  }
+  
+  .language-switcher .current-code {
+    font-size: 9px;
   }
   
   .language-dropdown {
@@ -136,6 +202,21 @@
     padding: 8px 12px;
     font-size: 12px;
   }
+  
+  .language-option .flag {
+    font-size: 14px;
+  }
+  
+  .language-option .flag img,
+  .language-switcher .current-flag img {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .language-switcher .current-flag img {
+    width: 16px;
+    height: 16px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -144,19 +225,44 @@
   }
   
   .language-switcher {
-    padding: 5px 8px;
-    font-size: 10px;
-    min-width: 60px;
+    padding: 4px 6px;
+    font-size: 9px;
+    min-width: 45px;
+    gap: 3px;
+  }
+  
+  .language-switcher .current-flag {
+    font-size: 11px;
+  }
+  
+  .language-switcher .current-code {
+    font-size: 8px;
   }
   
   .language-switcher::after {
-    font-size: 10px;
+    font-size: 8px;
     margin-left: 2px;
   }
   
   .language-dropdown {
     min-width: 120px;
     right: -5px;
+  }
+  
+  .language-option {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+  
+  .language-option .flag img,
+  .language-switcher .current-flag img {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .language-switcher .current-flag img {
+    width: 14px;
+    height: 14px;
   }
 }
 
@@ -198,75 +304,70 @@
 
 .language-switcher-container .language-dropdown {
   position: absolute !important;
-  z-index: 1001 !important;
 }
 
-/* Sidebar Language Switcher Styles */
+/* Navbar styling for language switcher */
 .language-nav-item {
-  padding: 10px 15px;
+  position: relative;
 }
 
 .language-nav-item .language-switcher-container {
-  width: 100%;
   margin: 0;
 }
 
 .sidebar-lang-btn {
-  width: 100%;
-  min-width: auto;
-  background: rgba(102, 126, 234, 0.1);
-  color: #667eea;
-  border: 1px solid rgba(102, 126, 234, 0.3);
-  justify-content: flex-start;
-  padding: 8px 12px;
-  font-size: 13px;
+  background: linear-gradient(135deg, #3a3530 0%, #4a433d 100%);
+  color: white;
+  border: 1px solid #5a4f47;
+  border-radius: 15px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .sidebar-lang-btn:hover {
-  background: rgba(102, 126, 234, 0.2);
-  color: #5a67d8;
+  background: linear-gradient(135deg, #4a433d 0%, #5a4f47 100%);
+  border-color: #6a5f57;
 }
 
 .sidebar-lang-btn::after {
-  margin-left: auto;
-  content: "🌐";
+  content: "▼";
+  font-size: 8px;
+  opacity: 0.7;
 }
 
 .language-nav-item .language-dropdown {
+  top: calc(100% + 5px);
   left: 0;
   right: auto;
-  top: calc(100% + 5px);
-  width: 100%;
+  min-width: 140px;
 }
 
-/* Dark mode support */
+/* Dark theme support */
 @media (prefers-color-scheme: dark) {
   .language-dropdown {
-    background: #2d3748;
-    border-color: #4a5568;
-    color: #e2e8f0;
+    background: linear-gradient(135deg, #1a1816 0%, #2d2922 100%);
+    border-color: #3a3530;
   }
-  
-  .language-option {
-    color: #e2e8f0;
-    border-bottom-color: #4a5568;
-  }
-  
-  .language-option:hover {
-    background: rgba(102, 126, 234, 0.1);
-    color: #90cdf4;
-  }
-  
-  .sidebar-lang-btn {
-    background: rgba(102, 126, 234, 0.2);
-    color: #90cdf4;
-    border-color: rgba(102, 126, 234, 0.4);
-  }
-  
-  .sidebar-lang-btn:hover {
-    background: rgba(102, 126, 234, 0.3);
-    color: #bee3f8;
-  }
-  /*viewApplication*/
 
+  .language-option {
+    color: #f0eee9;
+  }
+
+  .language-option:hover {
+    background: linear-gradient(90deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.08) 100%);
+  }
+
+  .sidebar-lang-btn {
+    background: linear-gradient(135deg, #2d2922 0%, #3a3530 100%);
+    border-color: #4a433d;
+  }
+
+  .sidebar-lang-btn:hover {
+    background: linear-gradient(135deg, #3a3530 0%, #4a433d 100%);
+  }
 } 

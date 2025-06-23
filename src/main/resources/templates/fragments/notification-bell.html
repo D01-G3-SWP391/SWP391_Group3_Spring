@@ -83,6 +83,16 @@
                 // Update notifications initially and every 30 seconds
                 // Skip initial update since Thymeleaf already rendered data
                 setInterval(updateNotifications, 30000);
+                
+                // Add ESC key listener to close modals
+                document.addEventListener('keydown', function(event) {
+                    if (event.key === 'Escape') {
+                        const dropdown = document.getElementById('notificationDropdown');
+                        if (dropdown && dropdown.style.display === 'block') {
+                            dropdown.style.display = 'none';
+                        }
+                    }
+                });
             });
 
             // Toggle notification dropdown
@@ -92,6 +102,12 @@
                 const isVisible = dropdown.style.display === 'block';
                 
                 if (!isVisible) {
+                    // Close AI chat modal if open
+                    const aiChatModal = document.getElementById('aiChatModal');
+                    if (aiChatModal && aiChatModal.style.display === 'block') {
+                        aiChatModal.style.display = 'none';
+                    }
+                    
                     dropdown.style.display = 'block';
                     // Only update if we want fresh data when opening
                     // updateNotifications();
@@ -108,6 +124,14 @@
                     dropdown.style.display = 'none';
                 }
             });
+
+            // Global function to close notifications (can be called from other components)
+            window.closeNotifications = function() {
+                const dropdown = document.getElementById('notificationDropdown');
+                if (dropdown) {
+                    dropdown.style.display = 'none';
+                }
+            };
 
             // Update notifications (for real-time updates)
             function updateNotifications() {
