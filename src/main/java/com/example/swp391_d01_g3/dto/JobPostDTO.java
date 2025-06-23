@@ -2,7 +2,6 @@ package com.example.swp391_d01_g3.dto;
 
 import jakarta.validation.constraints.*;
 
-
 public class JobPostDTO {
 
     @NotEmpty(message = "Tên công việc không được để trống.")
@@ -11,9 +10,10 @@ public class JobPostDTO {
     @NotEmpty(message = "Khu vực không được để trống.")
     private String jobLocation;
 
+    // ✅ SAU (ĐÚNG)
     @DecimalMin(value = "0.0", inclusive = false, message = "Lương phải lớn hơn 0")
     @DecimalMax(value = "999999999.0", message = "Lương không được quá 999,999,999")
-    private Double jobSalary;
+    private Double jobSalary;  // Dùng @DecimalMin/@DecimalMax cho số    private Double jobSalary;
 
     @NotEmpty(message = "Yêu cầu công việc không được để trống.")
     private String jobRequirements;

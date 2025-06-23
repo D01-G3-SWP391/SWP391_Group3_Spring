@@ -65,14 +65,19 @@
                     
                     <!-- Mật khẩu -->
                     <div class="form-group">
-                        <input type="password" 
-                               id="password" 
-                               name="password" 
-                               th:placeholder="#{register.password.placeholder}" 
-                               th:field="*{password}"
-                               required
-                               autocomplete="new-password"
-                               aria-describedby="passwordError passwordStrength">
+                        <div class="password-input-wrapper">
+                            <input type="password" 
+                                   id="password" 
+                                   name="password" 
+                                   th:placeholder="#{register.password.placeholder}" 
+                                   th:field="*{password}"
+                                   required
+                                   autocomplete="new-password"
+                                   aria-describedby="passwordError passwordStrength">
+                            <button type="button" class="password-toggle-btn" onclick="togglePassword('password')">
+                                <i class="bi bi-eye" id="passwordToggleIcon"></i>
+                            </button>
+                        </div>
                         <!-- Server-side errors (hidden by default, only show if has actual validation errors AND field has value) -->
                         <span class="error-message server-error" 
                               th:if="${#fields.hasErrors('password') and accountDTO.password != null and !#strings.isEmpty(accountDTO.password)}" 
@@ -85,13 +90,18 @@
                     
                     <!-- Xác nhận mật khẩu -->
                     <div class="form-group">
-                        <input type="password" 
-                               id="confirmPassword" 
-                               name="confirmPassword" 
-                               th:placeholder="#{register.confirmPassword.placeholder}" 
-                               required
-                               autocomplete="new-password"
-                               aria-describedby="confirmPasswordError">
+                        <div class="password-input-wrapper">
+                            <input type="password" 
+                                   id="confirmPassword" 
+                                   name="confirmPassword" 
+                                   th:placeholder="#{register.confirmPassword.placeholder}" 
+                                   required
+                                   autocomplete="new-password"
+                                   aria-describedby="confirmPasswordError">
+                            <button type="button" class="password-toggle-btn" onclick="togglePassword('confirmPassword')">
+                                <i class="bi bi-eye" id="confirmPasswordToggleIcon"></i>
+                            </button>
+                        </div>
                         <!-- Client-side error container -->
                         <span class="error-message" id="confirmPasswordError"></span>
                         <div class="form-tooltip" th:text="#{register.validation.confirmPassword}">Nhập lại mật khẩu để xác nhận</div>
@@ -542,6 +552,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // Auto-focus first input
     fullNameInput.focus();
 });
+
+// Toggle password visibility function
+function togglePassword(fieldId) {
+    const passwordField = document.getElementById(fieldId);
+    const toggleIcon = document.getElementById(fieldId + 'ToggleIcon');
+    
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        toggleIcon.classList.remove('bi-eye');
+        toggleIcon.classList.add('bi-eye-slash');
+    } else {
+        passwordField.type = 'password';
+        toggleIcon.classList.remove('bi-eye-slash');
+        toggleIcon.classList.add('bi-eye');
+    }
+}
 </script>
 <script th:src="@{/js/languageSwitch.js}"></script>
 

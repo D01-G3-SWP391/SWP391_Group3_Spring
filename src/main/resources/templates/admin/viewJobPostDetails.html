@@ -56,7 +56,10 @@
                         <span class="info-label">
                             <i class="bi bi-cash me-2"></i>Salary
                         </span>
-                        <span class="info-value" th:text="${jobPost.jobSalary}"></span>
+                        <span class="info-value" th:if="${jobPost.jobSalary != null}">
+                            <span th:text="${#numbers.formatInteger(jobPost.jobSalary, 1, 'COMMA') + ' VND'}"></span>
+                        </span>
+                        <span class="info-value" th:if="${jobPost.jobSalary == null}">Thỏa thuận</span>
                     </div>
 
                     <div class="info-row">

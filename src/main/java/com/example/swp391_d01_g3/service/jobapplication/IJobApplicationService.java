@@ -15,6 +15,8 @@ public interface IJobApplicationService {
     Page<JobApplication> searchApplicationsByEmployerIdAndName(Integer employerId, String searchName, Pageable pageable);
     void updateApplicationStatus(Integer applicationId, JobApplication.ApplicationStatus status);
     Optional<JobApplication> findById(Integer applicationId);
+    boolean hasStudentAppliedToJob(Integer studentId, Integer jobPostId);
+
     List<JobApplication> findByJobPostId(Integer jobPostId);
     List<JobApplication> findByJobPostIdAndNameAndExperience(Integer jobPostId, String searchName, String searchExperience);
 }

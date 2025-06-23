@@ -88,7 +88,12 @@
                     </td>
                     <td th:text="${jobPost.employer.companyName}"></td>
                     <td th:text="${jobPost.jobLocation}"></td>
-                    <td th:text="${jobPost.jobSalary}"></td>
+                    <td>
+                        <span th:if="${jobPost.jobSalary != null}">
+                          <span th:text="${#numbers.formatInteger(jobPost.jobSalary, 1, 'COMMA') + ' VND'}"></span>
+                        </span>
+                        <span th:if="${jobPost.jobSalary == null}">Thỏa thuận</span>
+                    </td>
                     <td>
                         <span class="badge bg-info" th:text="${jobPost.jobType}"></span>
                     </td>

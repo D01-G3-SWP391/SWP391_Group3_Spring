@@ -70,7 +70,7 @@ public interface IJobPostRepository extends JpaRepository<JobPost, Integer> {
             "WHERE jp.displayStatus = 'ACTIVE' " +
             "AND jp.appliedQuality > 0 " +
             "ORDER BY jp.appliedQuality DESC")
-    List<JobPost> findTopJobsByAppliedQualityLimit(Pageable pageable);
+    Page<JobPost> findTopJobsByAppliedQuality(Pageable pageable);
 
 
 
