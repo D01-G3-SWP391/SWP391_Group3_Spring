@@ -223,7 +223,7 @@
                 <div class="job-card-header">
                     <div class="company-logo">
                         <img
-                                th:src="${job.employer.logoUrl}"
+                                                                            th:src="${job.employer.account.avatarUrl}"
                                 th:alt="${job.employer.companyName}"
                                 onerror="this.style.display='none'; this.parentElement.classList.add('default-logo'); this.parentElement.innerHTML='<span>' + this.alt.charAt(0).toUpperCase() + '</span>';"
                         />
@@ -383,9 +383,10 @@
         </div>
     </section>
 </div>
-<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
-<div th:replace="~{fragments/report-button :: report-button}"></div>
+<!-- Floating UI Components -->
+<div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
 
+<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
 
 <!-- Footer -->
 <div th:replace="~{fragments/footer :: footer}"></div>
@@ -462,7 +463,6 @@
         }
     }
 </script>
-<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
 
 </body>
 </html>

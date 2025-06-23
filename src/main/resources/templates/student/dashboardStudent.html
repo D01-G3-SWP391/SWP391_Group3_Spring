@@ -5,16 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title th:text="#{student.dashboard.title}">Student</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-  <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-  />
-  <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+
 </head>
-<link rel="stylesheet" th:href="@{/css/navbarStudent_Employer.css}" />
+<link rel="stylesheet" th:href="@{/css/navbarStudent.css}" />
 <link rel="stylesheet" th:href="@{/css/dashboardEmployer.css}" />
+<link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
 <body>
-<div th:replace="~{navbar/navbarStudent :: navbarAdmin}"></div>
+<div th:replace="~{navbar/navbarStudent :: navbarStudent}"></div>
 <p th:text="#{student.dashboard.welcome}">Welcome to the THCLT JOBS Student Dashboard.</p>
 
 <script th:src="@{/js/navbarAdmin.js}"></script>
@@ -49,6 +46,8 @@
 
 <!-- Add notification bell -->
 <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
-<div th:replace="~{fragments/report-button :: report-button}"></div>
+<script th:src="@{/js/language-dropdown.js}"></script>
+
+
 </body>
 </html>

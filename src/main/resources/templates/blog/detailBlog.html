@@ -9,6 +9,7 @@
     <link rel="stylesheet" th:href="@{/css/detailsBlog.css}">
     <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
     <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
+    <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
 </head>
 <body class="details-blog-bg">
 <div th:replace="~{navbar/navbarAdmin :: navbarAdmin}"></div>
@@ -89,4 +90,6 @@
 <!-- Add notification bell -->
 <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
 </body>
+<script th:src="@{/js/language-dropdown.js}"></script>
+
 </html>

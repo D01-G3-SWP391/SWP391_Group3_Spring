@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- AI Chatbox fragment - shows for authenticated users -->
+    <div th:fragment="ai-chatbox" sec:authorize="hasRole('student') or hasRole('employer') or hasRole('admin')">
+        <link rel="stylesheet" th:href="@{/css/ai-chatbox.css}" />
+        
+        <div class="ai-chatbox-wrapper" id="aiChatboxWrapper">
+            <!-- AI Chat Button -->
+            <div class="ai-chat-button" id="aiChatButton" onclick="toggleAIChat(event)" title="Hỏi AI về dữ liệu">
+                <div class="ai-chat-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <span class="ai-chat-label" th:text="#{ai.chat.button}">AI Chat</span>
+            </div>
+            
+            <!-- AI Chat Modal -->
+            <div class="ai-chat-modal" id="aiChatModal" style="display: none;">
+                <div class="ai-chat-header">
+                    <div class="ai-chat-title">
+                        <i class="fas fa-robot"></i>
+                        <span th:text="#{ai.chat.title}">AI Assistant</span>
+                    </div>
+                    <button class="ai-chat-close" onclick="closeAIChat()" title="Đóng">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="ai-chat-content">
+                    <div class="ai-chat-messages" id="aiChatMessages">
+                        <div class="ai-message ai-welcome">
+                            <div class="ai-message-avatar">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div class="ai-message-content">
+                                <p th:text="#{ai.chat.welcome}">Xin chào! Tôi có thể giúp bạn tìm kiếm thông tin trong cơ sở dữ liệu. Hãy đặt câu hỏi bằng tiếng Việt!</p>
+                                <div class="ai-message-examples">
+                                    <span class="ai-example" onclick="askExample(this)" 
+                                          th:text="#{ai.chat.example1}">"Hiển thị tất cả công việc mới nhất"</span>
+                                    <span class="ai-example" onclick="askExample(this)" 
+                                          th:text="#{ai.chat.example2}">"Tìm sinh viên có kinh nghiệm"</span>
+                                    <span class="ai-example" onclick="askExample(this)" 
+                                          th:text="#{ai.chat.example3}">"Công việc lương cao nhất"</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="ai-chat-input-area">
+                        <div class="ai-chat-input-container">
+                            <input type="text" 
+                                   class="ai-chat-input" 
+                                   id="aiChatInput" 
+                                   th:placeholder="#{ai.chat.placeholder}"
+                                   placeholder="Hỏi gì đó về dữ liệu..."
+                                   onkeypress="handleEnterKey(event)">
+                            <button class="ai-chat-send" onclick="sendAIMessage()" id="aiSendButton">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <div class="ai-chat-loading" id="aiChatLoading" style="display: none;">
+                            <div class="ai-loading-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span th:text="#{ai.chat.thinking}">AI đang suy nghĩ...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Check for other floating elements and adjust position
+            document.addEventListener('DOMContentLoaded', function() {
+                adjustAIChatboxPosition();
+                
+                // Add animation to AI button
+                const aiButton = document.getElementById('aiChatButton');
+                if (aiButton) {
+                    // Breathing animation
+                    setInterval(function() {
+                        aiButton.animate([
+                            { transform: 'scale(1)' },
+                            { transform: 'scale(1.05)' },
+                            { transform: 'scale(1)' }
+                        ], {
+                            duration: 2000,
+                            easing: 'ease-in-out'
+                        });
+                    }, 3000);
+                }
+                
+                // Add ESC key listener to close modals
+                document.addEventListener('keydown', function(event) {
+                    if (event.key === 'Escape') {
+                        const aiModal = document.getElementById('aiChatModal');
+                        if (aiModal && aiModal.style.display === 'block') {
+                            aiModal.style.display = 'none';
+                        }
+                    }
+                });
+            });
+
+            // Adjust position based on other floating elements
+            function adjustAIChatboxPosition() {
+                const wrapper = document.getElementById('aiChatboxWrapper');
+                const reportButton = document.querySelector('.report-button-container');
+                const notificationBell = document.getElementById('notificationBell');
+                
+                // Default to bottom position, but always above notification bell
+                wrapper.classList.add('position-bottom');
+                wrapper.classList.remove('position-top');
+                
+                // Add class if report button exists for spacing
+                if (reportButton) {
+                    wrapper.classList.add('has-report');
+                } else {
+                    wrapper.classList.remove('has-report');
+                }
+                
+                // Move to top only if screen is very small and crowded
+                const viewportHeight = window.innerHeight;
+                if (viewportHeight < 500 && notificationBell && reportButton) {
+                    wrapper.classList.add('position-top');
+                    wrapper.classList.remove('position-bottom');
+                }
+            }
+
+            // Toggle AI chat modal
+            function toggleAIChat(event) {
+                event.stopPropagation();
+                const modal = document.getElementById('aiChatModal');
+                const isVisible = modal.style.display === 'block';
+                
+                if (!isVisible) {
+                    // Close notification bell if open
+                    const notificationDropdown = document.getElementById('notificationDropdown');
+                    if (notificationDropdown && notificationDropdown.style.display === 'block') {
+                        notificationDropdown.style.display = 'none';
+                    }
+                    
+                    modal.style.display = 'block';
+                    document.getElementById('aiChatInput').focus();
+                } else {
+                    modal.style.display = 'none';
+                }
+            }
+
+            // Close AI chat
+            function closeAIChat() {
+                document.getElementById('aiChatModal').style.display = 'none';
+            }
+
+            // Global function to close AI chat (can be called from other components)
+            window.closeAIChat = closeAIChat;
+
+            // Close when clicking outside
+            document.addEventListener('click', function(event) {
+                const wrapper = document.getElementById('aiChatboxWrapper');
+                const modal = document.getElementById('aiChatModal');
+                if (!wrapper.contains(event.target) && modal.style.display === 'block') {
+                    modal.style.display = 'none';
+                }
+            });
+
+            // Handle Enter key
+            function handleEnterKey(event) {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    sendAIMessage();
+                }
+            }
+
+            // Ask example question
+            function askExample(element) {
+                const question = element.textContent;
+                document.getElementById('aiChatInput').value = question;
+                sendAIMessage();
+            }
+
+            // Send message to AI
+            async function sendAIMessage() {
+                const input = document.getElementById('aiChatInput');
+                const question = input.value.trim();
+                
+                if (!question) return;
+                
+                // Clear input and show loading
+                input.value = '';
+                showLoading(true);
+                
+                // Add user message to chat
+                addMessageToChat('user', question);
+                
+                try {
+                    const response = await fetch('/api/query/ask', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ question: question })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        // Only show natural response
+                        if (data.response) {
+                            addMessageToChat('ai', data.response);
+                        } else {
+                            addMessageToChat('ai', 'Tôi đã xử lý yêu cầu của bạn thành công.');
+                        }
+                    } else {
+                        if (data.response) {
+                            addMessageToChat('ai', data.response);
+                        } else {
+                            addMessageToChat('ai', `Xin lỗi, tôi không thể hiểu câu hỏi của bạn. Hãy thử hỏi một cách khác.`);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    addMessageToChat('ai', '**Lỗi:** Không thể kết nối đến AI service.');
+                } finally {
+                    showLoading(false);
+                }
+            }
+
+            // Add message to chat
+            function addMessageToChat(type, message) {
+                const messagesContainer = document.getElementById('aiChatMessages');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `ai-message ${type === 'user' ? 'user-message' : 'ai-response'}`;
+                
+                if (type === 'user') {
+                    messageDiv.innerHTML = `
+                        <div class="ai-message-content user-content">
+                            <p>${escapeHtml(message)}</p>
+                        </div>
+                        <div class="ai-message-avatar user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    `;
+                } else {
+                    messageDiv.innerHTML = `
+                        <div class="ai-message-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="ai-message-content">
+                            ${formatMessage(message)}
+                        </div>
+                    `;
+                }
+                
+                messagesContainer.appendChild(messageDiv);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            // Format message with markdown-like syntax
+            function formatMessage(message) {
+                return message
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/```sql\n([\s\S]*?)\n```/g, '<pre class="sql-code"><code>$1</code></pre>')
+                    .replace(/\n/g, '<br>');
+            }
+
+            // Format query results as HTML table
+            function formatResults(results) {
+                if (!results || results.length === 0) return '';
+                
+                let html = '<div class="ai-results-table">';
+                
+                // Table header (if results have consistent structure)
+                if (results[0] && Array.isArray(results[0])) {
+                    html += '<table><thead><tr>';
+                    for (let i = 0; i < results[0].length; i++) {
+                        html += `<th>Column ${i + 1}</th>`;
+                    }
+                    html += '</tr></thead><tbody>';
+                    
+                    // Table rows
+                    results.slice(0, 10).forEach(row => { // Limit to 10 rows
+                        html += '<tr>';
+                        row.forEach(cell => {
+                            html += `<td>${escapeHtml(cell?.toString() || '')}</td>`;
+                        });
+                        html += '</tr>';
+                    });
+                    
+                    html += '</tbody></table>';
+                    
+                    if (results.length > 10) {
+                        html += `<p class="ai-results-more">... và ${results.length - 10} dòng khác</p>`;
+                    }
+                } else {
+                    // Simple list format
+                    html += '<ul>';
+                    results.slice(0, 10).forEach(item => {
+                        html += `<li>${escapeHtml(item?.toString() || '')}</li>`;
+                    });
+                    html += '</ul>';
+                }
+                
+                html += '</div>';
+                return html;
+            }
+
+            // Show/hide loading
+            function showLoading(show) {
+                const loading = document.getElementById('aiChatLoading');
+                const sendButton = document.getElementById('aiSendButton');
+                
+                loading.style.display = show ? 'flex' : 'none';
+                sendButton.disabled = show;
+            }
+
+            // Escape HTML
+            function escapeHtml(text) {
+                const map = {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                };
+                return String(text).replace(/[&<>"']/g, function(m) { return map[m]; });
+            }
+        </script>
+    </div>
+</body>
+</html> 

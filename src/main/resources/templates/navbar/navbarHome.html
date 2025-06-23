@@ -77,7 +77,16 @@
             <div class="dropdown" th:if="${userEmail}">
               <input type="checkbox" id="account-toggle" class="dropdown-toggle"/>
               <label for="account-toggle" class="nav-link user-greeting">
-                <i class="bi bi-person-circle"></i>
+                <div class="navbar-user-info">
+                  <div class="navbar-user-avatar">
+                    <img th:if="${account != null and account.avatarUrl != null and account.avatarUrl != ''}" 
+                         th:src="${account.avatarUrl}" 
+                         alt="Avatar" class="navbar-avatar-img"/>
+                    <i th:unless="${account != null and account.avatarUrl != null and account.avatarUrl != ''}" 
+                       class="bi bi-person-circle navbar-avatar-fallback"></i>
+                  </div>
+                  <span class="navbar-user-name" th:text="${account != null ? account.fullName : #authentication.name}">User Name</span>
+                </div>
                 <i class="bi bi-caret-down-fill"></i>
               </label>
 

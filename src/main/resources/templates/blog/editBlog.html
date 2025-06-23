@@ -15,6 +15,7 @@
     <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
     <!-- Custom Edit Blog CSS -->
     <link rel="stylesheet" th:href="@{/css/editBlog.css}">
+    <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
 </head>
 <body class="edit-blog-bg">
 <div th:replace="~{navbar/navbarAdmin :: navbarAdmin}"></div>
@@ -60,4 +61,6 @@
         });
 </script>
 </body>
+<script th:src="@{/js/language-dropdown.js}"></script>
+
 </html>

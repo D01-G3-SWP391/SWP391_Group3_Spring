@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Language Dropdown Fragment</title>
+</head>
+<body>
+
+<!-- Language Dropdown Fragment -->
+<div class="nav-item navbar-lang-item" th:fragment="languageDropdown">
+    <div class="nav-link navbar-lang-trigger" id="languageDropdownBtn">
+        <i class="bi bi-globe nav-icon"></i>
+        <span th:text="#{nav.language}">Language</span>
+        <i class="bi bi-chevron-down dropdown-arrow"></i>
+    </div>
+    <div class="navbar-lang-menu" id="languageDropdownMenu">
+        <a href="?lang=vi" class="navbar-lang-option" data-lang="vi">
+            <span class="flag-emoji">🇻🇳</span>
+            <span>Tiếng Việt</span>
+        </a>
+        <a href="?lang=en" class="navbar-lang-option" data-lang="en">
+            <span class="flag-emoji">🇺🇸</span>
+            <span>English</span>
+        </a>
+    </div>
+</div>
+</body>
+</html> 

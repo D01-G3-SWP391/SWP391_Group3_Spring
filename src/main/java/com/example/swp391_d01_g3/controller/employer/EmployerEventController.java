@@ -40,6 +40,8 @@ public class EmployerEventController {
                              Model model) {
         String email = principal.getName();
         Employer employer = employerService.findByEmail(email);
+        // Thêm account cho navbar
+        model.addAttribute("account", accountService.findByEmail(email));
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Event> eventsPage = eventService.findByEmployer(employer, pageable);
         model.addAttribute("eventsPage", eventsPage);
@@ -48,7 +50,10 @@ public class EmployerEventController {
 
     // Show create event form
     @GetMapping("/Create")
-    public String showCreateForm(Model model) {
+    public String showCreateForm(Principal principal, Model model) {
+        if (principal != null) {
+            model.addAttribute("account", accountService.findByEmail(principal.getName()));
+        }
         model.addAttribute("event", new EventCreateDTO());
         return "employee/createEvent";
     }
@@ -61,6 +66,8 @@ public class EmployerEventController {
                               Model model,
                               RedirectAttributes ra) {
         if (result.hasErrors()) {
+            // Thêm account cho navbar trong trường hợp lỗi
+            model.addAttribute("account", accountService.findByEmail(principal.getName()));
             return "employee/createEvent";
         }
         String email = principal.getName();
@@ -104,6 +111,8 @@ public class EmployerEventController {
         dto.setContactEmail(event.getContactEmail());
         model.addAttribute("event", dto);
         model.addAttribute("eventId", eventId);
+        // Thêm account cho navbar
+        model.addAttribute("account", accountService.findByEmail(email));
         return "employee/editEvent";
     }
 
@@ -124,6 +133,8 @@ public class EmployerEventController {
         }
         if (result.hasErrors()) {
             model.addAttribute("eventId", eventId);
+            // Thêm account cho navbar trong trường hợp lỗi
+            model.addAttribute("account", accountService.findByEmail(email));
             return "employee/editEvent";
         }
         // Cập nhật các trường cho phép
