@@ -80,5 +80,16 @@ public interface IBlogPostRepository extends JpaRepository<BlogPost, Long> {
     @Transactional
     @Query("UPDATE BlogPost bp SET bp.updatedAt = CURRENT_TIMESTAMP WHERE bp.blogPostId = :id")
     void incrementViewCount(@Param("id") Long id);
+    // Thêm vào IBlogPostRepository.java
+    @Query("SELECT b FROM BlogPost b WHERE b.title LIKE %:title% ORDER BY b.createdAt DESC")
+    Page<BlogPost> findByTitleContainingIgnoreCase(@Param("title") String title, Pageable pageable);
+
+    @Query("SELECT b FROM BlogPost b WHERE b.title LIKE %:title% AND b.status = :status ORDER BY b.createdAt DESC")
+    Page<BlogPost> findByTitleContainingIgnoreCaseAndStatus(@Param("title") String title,
+                                                            @Param("status") BlogPost.BlogStatus status,
+                                                            Pageable pageable);
+
+    Page<BlogPost> findByStatus(BlogPost.BlogStatus status, Pageable pageable);
+
 
 }

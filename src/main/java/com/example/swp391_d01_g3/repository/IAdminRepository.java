@@ -41,4 +41,29 @@ public interface IAdminRepository extends JpaRepository<Account, Integer> {
     @Query("SELECT a FROM Account a WHERE a.role = 'employer' AND (a.fullName LIKE %:keyword% OR a.email LIKE %:keyword% OR a.phone LIKE %:keyword%)")
     Page<Account> searchEmployers(@Param("keyword") String keyword, Pageable pageable);
 
+    // THÊM: Tìm employers theo status với phân trang
+    @Query("SELECT a FROM Account a WHERE a.role = 'employer' AND a.status = :status")
+    Page<Account> findEmployersByStatus(@Param("status") Account.Status status, Pageable pageable);
+
+    // THÊM: Tìm kiếm employers theo keyword và status với phân trang
+    @Query("SELECT a FROM Account a WHERE a.role = 'employer' AND a.status = :status AND (a.fullName LIKE %:keyword% OR a.email LIKE %:keyword% OR a.phone LIKE %:keyword%)")
+    Page<Account> searchEmployersByKeywordAndStatus(@Param("keyword") String keyword,
+                                                    @Param("status") Account.Status status,
+                                                    Pageable pageable);
+
+    // THÊM: Tìm students theo status với phân trang
+    @Query("SELECT a FROM Account a WHERE a.role = 'student' AND a.status = :status")
+    Page<Account> findStudentsByStatus(@Param("status") Account.Status status, Pageable pageable);
+
+    // THÊM: Tìm kiếm students theo keyword và status với phân trang
+    @Query("SELECT a FROM Account a WHERE a.role = 'student' AND a.status = :status AND (a.fullName LIKE %:keyword% OR a.email LIKE %:keyword% OR a.phone LIKE %:keyword%)")
+    Page<Account> searchStudentsByKeywordAndStatus(@Param("keyword") String keyword,
+                                                   @Param("status") Account.Status status,
+                                                   Pageable pageable);
+
+    // THÊM: Count methods cho filter badges
+    // Spring Data JPA naming convention methods
+    long countByRole(Account.Role role);
+    long countByRoleAndStatus(Account.Role role, Account.Status status);
+    long countByStatus(Account.Status status);
 }

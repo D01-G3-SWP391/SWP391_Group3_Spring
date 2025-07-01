@@ -30,29 +30,24 @@
                     <h5 class="mb-3">
                         <i class="bi bi-briefcase me-2"></i>Job Information
                     </h5>
-
-
                     <div class="info-row">
                         <span class="info-label">
                             <i class="bi bi-briefcase me-2"></i>Job Title
                         </span>
                         <span class="info-value" th:text="${jobPost.jobTitle}"></span>
                     </div>
-
                     <div class="info-row">
                         <span class="info-label">
                             <i class="bi bi-building me-2"></i>Company
                         </span>
                         <span class="info-value" th:text="${jobPost.employer.companyName}"></span>
                     </div>
-
                     <div class="info-row">
                         <span class="info-label">
                             <i class="bi bi-geo-alt me-2"></i>Location
                         </span>
                         <span class="info-value" th:text="${jobPost.jobLocation}"></span>
                     </div>
-
                     <div class="info-row">
                         <span class="info-label">
                             <i class="bi bi-cash me-2"></i>Salary
@@ -62,7 +57,6 @@
                         </span>
                         <span class="info-value" th:if="${jobPost.jobSalary == null}">Thỏa thuận</span>
                     </div>
-
                     <div class="info-row">
                         <span class="info-label">
                             <i class="bi bi-clock me-2"></i>Job Type
@@ -71,7 +65,6 @@
                             <span class="badge bg-info" th:text="${jobPost.jobType}"></span>
                         </span>
                     </div>
-
                     <div class="info-row">
                         <span class="info-label">
                             <i class="bi bi-shield-check me-2"></i>Status
@@ -106,27 +99,63 @@
             </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="detail-card" th:if="${jobPost.approvalStatus.name() == 'PENDING'}">
+        <!-- Quick Actions: Show buttons based on status -->
+        <div class="detail-card">
             <h5 class="mb-3">
-                <i class="bi bi-gear me-2"></i>Actions
+                <i class="bi bi-gear me-2"></i>Quick Actions
             </h5>
-            <div class="d-flex gap-3">
-                <form th:action="@{/Admin/ApproveJobPost/{id}(id=${jobPost.jobPostId})}"
+            <div class="d-flex gap-3 flex-wrap">
+                <!-- Show Approve/Reject only if status is PENDING -->
+                <form th:if="${jobPost.approvalStatus.name() == 'PENDING'}"
+                      th:action="@{/Admin/ApproveJobPost/{id}(id=${jobPost.jobPostId})}"
                       method="post">
                     <button type="submit" class="btn btn-success">
                         <i class="bi bi-check-circle me-2"></i>Approve Job Post
                     </button>
                 </form>
-
-                <form th:action="@{/Admin/RejectJobPost/{id}(id=${jobPost.jobPostId})}"
+                <form th:if="${jobPost.approvalStatus.name() == 'PENDING'}"
+                      th:action="@{/Admin/RejectJobPost/{id}(id=${jobPost.jobPostId})}"
                       method="post">
                     <button type="submit" class="btn btn-danger">
                         <i class="bi bi-x-circle me-2"></i>Reject Job Post
                     </button>
                 </form>
+                <!-- Show Change Status button ONLY if NOT PENDING -->
+                <button type="button" class="btn btn-warning"
+                        data-bs-toggle="modal" data-bs-target="#changeStatusModal"
+                        th:if="${jobPost.approvalStatus.name() != 'PENDING'}">
+                    <i class="bi bi-arrow-repeat me-2"></i>Change Status
+                </button>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- Change Status Modal (only for non-pending status) -->
+<div class="modal fade" id="changeStatusModal" tabindex="-1">
+    <div class="modal-dialog">
+        <form th:action="@{/Admin/ChangeJobPostStatus/{id}(id=${jobPost.jobPostId})}" method="post" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Change Job Post Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <label class="form-label mb-2">Select new status:</label>
+                <select class="form-select mb-3" name="status" required>
+                    <option value="PENDING" th:selected="${jobPost.approvalStatus.name() == 'PENDING'}">Pending</option>
+                    <option value="APPROVED" th:selected="${jobPost.approvalStatus.name() == 'APPROVED'}">Approved</option>
+                    <option value="REJECTED" th:selected="${jobPost.approvalStatus.name() == 'REJECTED'}">Rejected</option>
+                </select>
+                <label class="form-label mb-2">Reason (optional):</label>
+                <textarea class="form-control" name="reason" rows="3" placeholder="Enter reason if needed..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-warning">
+                    <i class="bi bi-arrow-repeat me-2"></i>Update Status
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 

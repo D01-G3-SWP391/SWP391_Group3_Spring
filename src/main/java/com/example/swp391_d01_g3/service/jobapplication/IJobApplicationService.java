@@ -18,4 +18,7 @@ public interface IJobApplicationService {
     boolean hasStudentAppliedToJob(Integer studentId, Integer jobPostId);
 
     List<JobApplication> findByJobPostId(Integer jobPostId);
+    List<JobApplication> findByJobPostIdAndNameAndExperience(Integer jobPostId, String searchName, String searchExperience);
+
+    Page<JobApplication> searchApplicationsByEmployerIdAndKeyword(Integer employerId, String keyword, Pageable pageable);
 }

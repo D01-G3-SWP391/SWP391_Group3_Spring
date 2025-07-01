@@ -94,6 +94,29 @@ public class AdminJobPostServiceImpl implements IAdminJobPostService {
         }
     }
 
+    // THÊM: Search methods
+    @Override
+    public Page<JobPost> searchAllJobPosts(String keyword, int page, int size) {
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            return jobPostRepository.searchJobPostsByKeyword(keyword.trim(), pageable);
+        } catch (Exception e) {
+            logger.error("Error searching all job posts: ", e);
+            throw new RuntimeException("Error searching all job posts: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Page<JobPost> searchJobPostsByKeywordAndStatus(String keyword, JobPost.ApprovalStatus status, int page, int size) {
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            return jobPostRepository.searchJobPostsByKeywordAndStatus(keyword.trim(), status, pageable);
+        } catch (Exception e) {
+            logger.error("Error searching job posts by keyword and status: ", e);
+            throw new RuntimeException("Error searching job posts by keyword and status: " + e.getMessage());
+        }
+    }
+
     @Override
     public void deleteJobPost(Integer jobPostId) {
         try {
@@ -190,6 +213,7 @@ public class AdminJobPostServiceImpl implements IAdminJobPostService {
             throw new RuntimeException("Job post not found with ID: " + jobPostId);
         }
     }
+
     @Override
     public void changeJobPostStatus(Integer jobPostId, JobPost.ApprovalStatus newStatus) {
         try {
@@ -211,6 +235,17 @@ public class AdminJobPostServiceImpl implements IAdminJobPostService {
         } catch (Exception e) {
             logger.error("Error changing job post status: ", e);
             throw new RuntimeException("Error changing job post status: " + e.getMessage());
+        }
+    }
+
+    // THÊM: Count methods cho filter badges
+    @Override
+    public long getTotalJobPostsCount() {
+        try {
+            return jobPostRepository.count();
+        } catch (Exception e) {
+            logger.error("Error counting total job posts: ", e);
+            throw new RuntimeException("Error counting total job posts: " + e.getMessage());
         }
     }
 

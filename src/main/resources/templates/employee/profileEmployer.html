@@ -39,7 +39,7 @@
               <p class="profile-subtitle" th:text="#{employer.profile.roleLabel}">Employer</p>
               <div class="profile-actions">
                 <a th:href="@{/Employer/EditProfile}" class="btn-edit">
-                  <i class="bi bi-pencil-square"></i> <span th:text="#{employer.editInformation}">Edit information</span>
+                  <i class="bi bi-pencil-square"></i> <span th:text="#{employer.editInformation}">Sửa thông tin</span>
                 </a>
               </div>
             </div>
@@ -130,6 +130,7 @@
   </div>
 
   <!-- Add notification bell -->
+  <div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
   <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
 
   <!-- Bootstrap JS -->

@@ -235,4 +235,9 @@ public class EventServiceImpl implements IEventService {
     public Page<Event> findActiveApprovedEvents(LocalDateTime currentTime, Pageable pageable) {
         return eventRepository.findActiveApprovedEvents(currentTime, pageable);
     }
+
+    @Override
+    public List<Event> findAllEventsByEmployer(Employer employer) {
+        return eventRepository.findByEmployer_EmployerIdOrderByEventDateDesc(employer.getEmployerId());
+    }
 }

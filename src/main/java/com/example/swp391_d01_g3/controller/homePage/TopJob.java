@@ -1,7 +1,9 @@
 package com.example.swp391_d01_g3.controller.homePage;
 
+import com.example.swp391_d01_g3.model.Account;
 import com.example.swp391_d01_g3.model.JobPost;
 import com.example.swp391_d01_g3.service.jobpost.IJobpostService;
+import com.example.swp391_d01_g3.service.security.IAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +22,8 @@ public class TopJob {
 
     @Autowired
     private IJobpostService jobpostService;
+    @Autowired
+    private IAccountService accountService;
 
     @GetMapping
     public String showTopJobs(
@@ -34,6 +38,8 @@ public class TopJob {
 
         if (principal != null) {
             model.addAttribute("userEmail", principal.getName());
+            Account account = accountService.findByEmail(principal.getName());
+            model.addAttribute("account", account);
         }
         return "homePage/topJobs";
     }

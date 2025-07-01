@@ -12,6 +12,10 @@ public interface IAdminJobPostService {
     Page<JobPost> getAllJobPosts(int page, int size);
     Page<JobPost> getAllJobPostsWithDetails(int page, int size);
 
+    // THÊM: Search methods với keyword only
+    Page<JobPost> searchAllJobPosts(String keyword, int page, int size);
+    Page<JobPost> searchJobPostsByKeywordAndStatus(String keyword, JobPost.ApprovalStatus status, int page, int size);
+
     // Delete functionality
     void deleteJobPost(Integer jobPostId);
     boolean canDeleteJobPost(Integer jobPostId);
@@ -22,7 +26,8 @@ public interface IAdminJobPostService {
     JobPost getJobPostById(Integer jobPostId);
     void changeJobPostStatus(Integer jobPostId, JobPost.ApprovalStatus newStatus);
 
-    // Dashboard statistics
+    // THÊM: Count methods cho filter badges
+    long getTotalJobPostsCount();
     long getPendingCount();
     long getApprovedCount();
     long getRejectedCount();

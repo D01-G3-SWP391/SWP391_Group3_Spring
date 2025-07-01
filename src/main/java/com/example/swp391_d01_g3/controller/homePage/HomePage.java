@@ -37,10 +37,10 @@ public class HomePage {
 
     @GetMapping()
     public String showHomePage (Model model, Principal principal,
-                               @RequestParam(value = "page", defaultValue = "0") int page,
+                               @RequestParam(value = "page", defaultValue = "1") int page,
                                @RequestParam(value = "size", defaultValue = "8") int size){
         
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page - 1, size);
         Page<JobPost> jobPostsPage = iJobpostService.findAll(pageable);
         
         model.addAttribute("jobPostsPage", jobPostsPage);

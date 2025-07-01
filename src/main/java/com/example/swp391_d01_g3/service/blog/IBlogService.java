@@ -1,6 +1,5 @@
 package com.example.swp391_d01_g3.service.blog;
 
-import com.example.swp391_d01_g3.model.BlogImage;
 import com.example.swp391_d01_g3.model.BlogPost;
 import com.example.swp391_d01_g3.model.Resource;
 import org.springframework.data.domain.Page;
@@ -66,12 +65,25 @@ public interface IBlogService {
     Optional<BlogPost> getPreviousPost(Long currentId);
 
     List<BlogPost> getAllBlogPosts();
-    long countImagesForBlog(Long blogPostId);
-    List<BlogImage> getImagesForBlog(Long blogPostId);
     void updateBlogStatus(Long blogPostId, BlogPost.BlogStatus newStatus);
 
     void updateBlog(Long id,BlogPost updatedBlog);
 
     void save(BlogPost blogPost);
     List<Resource> getAllResources();
+    Page<BlogPost> getAllBlogPostsWithPagination(Pageable pageable);
+    Page<BlogPost> searchBlogsByTitle(String title, Pageable pageable);
+    Page<BlogPost> searchBlogsByTitleAndStatus(String title, BlogPost.BlogStatus status, Pageable pageable);
+    Page<BlogPost> findByStatus(BlogPost.BlogStatus status, Pageable pageable);
+
+    // THÊM: Count methods cho filter badges
+    long getTotalBlogsCount();
+    long getDraftBlogsCount();
+    long getPublishedBlogsCount();
+    long getArchivedBlogsCount();
+    
+    // THÊM: Create new blog method
+    BlogPost createBlog(BlogPost newBlog);
+
+    Resource createResource(Resource resource);
 } 

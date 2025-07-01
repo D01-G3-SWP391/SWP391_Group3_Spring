@@ -1,0 +1,311 @@
+/* General Body Style */
+body {
+    background-color: #f8f9fa; /* Light gray background, common for admin panels */
+}
+
+/* Main Content Wrapper */
+.main-content {
+    padding-top: 80px; /* Adjust if navbar height changes */
+    padding-bottom: 40px;
+}
+
+/* Header Section */
+.create-blog-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.create-blog-header h2 {
+    color: #343a40; /* Darker text color */
+    font-size: 2.2rem;
+    font-weight: 600;
+}
+
+.create-blog-header p {
+    color: #6c757d; /* Muted text color */
+    font-size: 1.1rem;
+}
+
+/* Main Form Container */
+.create-blog-container {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Form Card Styling */
+.form-card {
+    background: white;
+    border-radius: 8px; /* Softer border-radius */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    padding: 2.5rem;
+    border: 1px solid #dee2e6;
+}
+
+/* Form Elements */
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.form-label.required::after {
+    content: '*';
+    color: #dc3545;
+    margin-left: 0.25rem;
+}
+
+.form-control, .form-select {
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Settings and Info Cards */
+.settings-card {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.settings-card .card-title {
+    font-weight: 600;
+    color: #343a40;
+    margin-bottom: 1rem;
+}
+
+.info-card {
+    background: #e9ecef;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+/* Action Buttons */
+.action-buttons .btn {
+    border-radius: 6px;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+}
+
+.action-buttons .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    box-shadow: none;
+}
+
+.action-buttons .btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.action-buttons .btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.action-buttons .btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+/* CKEditor Customization */
+.ck-editor__editable {
+    min-height: 250px; /* Reduced height */
+    border-radius: 0 0 6px 6px;
+}
+
+.ck.ck-editor {
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+}
+
+.ck.ck-toolbar {
+    background: #f8f9fa;
+    border-radius: 6px 6px 0 0;
+    border-bottom: 1px solid #ced4da;
+}
+
+/* Image Preview */
+#imagePreview img {
+    border: 1px solid #dee2e6;
+    padding: 4px;
+    border-radius: 6px;
+    background-color: #fff;
+}
+
+/* Alert Styling */
+.alert {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+}
+
+.alert-danger {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
+    color: white;
+}
+
+/* Animations */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-card {
+    animation: slideInUp 0.6s ease-out;
+}
+
+.create-blog-header {
+    animation: slideInUp 0.4s ease-out;
+}
+
+/* Input Focus Animations */
+.form-control:focus, .form-select:focus {
+    animation: focusPulse 0.3s ease;
+}
+
+@keyframes focusPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .main-content {
+        padding-top: 80px;
+        padding-bottom: 30px;
+    }
+
+    .form-card {
+        padding: 1.5rem;
+        margin: 0 10px;
+        border-radius: 16px;
+    }
+
+    .create-blog-header h2 {
+        font-size: 2rem;
+    }
+
+    .settings-card {
+        margin-top: 2rem;
+        padding: 1rem;
+    }
+
+    .col-lg-4 {
+        margin-top: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .form-card {
+        padding: 1rem;
+        border-radius: 12px;
+    }
+
+    .create-blog-header h2 {
+        font-size: 1.75rem;
+    }
+
+    .action-buttons .btn {
+        padding: 0.625rem 1.25rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Loading State */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.btn.loading {
+    position: relative;
+    color: transparent;
+}
+
+.btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Form Validation Styles */
+.form-control.is-invalid, .form-select.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.form-control.is-valid, .form-select.is-valid {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+/* Tooltip Styling */
+.tooltip {
+    font-size: 0.875rem;
+}
+
+.tooltip-inner {
+    background: #2c3e50;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+}
+
+/* Additional Icon Styling */
+.bi {
+    font-size: 1.1em;
+}
+
+.form-label .bi {
+    color: #667eea;
+}
+
+/* Hover Effects for Form Elements */
+.form-control:hover, .form-select:hover {
+    border-color: #c3c9d1;
+    background: white;
+}
+
+.settings-card:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+    transition: all 0.3s ease;
+} 
