@@ -342,22 +342,36 @@
             </div>
 
             <div class="form-group">
-                <label for="fullName" th:text="#{apply.form.fullName}">Họ và tên</label> *
-                <input type="text" id="fullName" th:field="*{fullname}" required minlength="2" maxlength="100"
-                       pattern="^[\p{L}\s]+$" title="Họ và tên chỉ được chứa chữ cái và khoảng trắng" />
-                <div class="error-message" th:if="${#fields.hasErrors('fullname')}" th:errors="*{fullname}"></div>
-                <div class="error-message" id="fullNameError" style="display: none; color: red; font-size: 12px; margin-top: 5px;"></div>
+                <label for="fullName">
+                    <span th:text="#{apply.form.fullName}">Họ và tên</span>
+                    <span style="color:red">*</span>
+                </label>
+                <input type="text" id="fullName" th:field="*{fullname}" readonly
+                       style="background-color: #f8f9fa; cursor: not-allowed;" 
+                       title="Họ và tên được tự động điền từ thông tin tài khoản" />
+                <small class="text-muted" style="font-size: 11px; margin-top: 3px; display: block;">
+<!--                    <i class="fas fa-info-circle"></i> Thông tin được tự động điền từ tài khoản của bạn-->
+                </small>
             </div>
 
             <div class="form-group">
-                <label for="email" th:text="#{apply.form.email}">Email</label> *
-                <input type="email" id="email" th:field="*{email}" required maxlength="255" />
-                <div class="error-message" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
-                <div class="error-message" id="emailError" style="display: none; color: red; font-size: 12px; margin-top: 5px;"></div>
+                <label for="email">
+                    <span th:text="#{apply.form.email}">Email</span>
+                    <span style="color:red">*</span>
+                </label>
+                <input type="email" id="email" th:field="*{email}" readonly
+                       style="background-color: #f8f9fa; cursor: not-allowed;"
+                       title="Email được tự động điền từ thông tin tài khoản" />
+                <small class="text-muted" style="font-size: 11px; margin-top: 3px; display: block;">
+<!--                    <i class="fas fa-info-circle"></i> Thông tin được tự động điền từ tài khoản của bạn-->
+                </small>
             </div>
 
             <div class="form-group">
-                <label for="phone" th:text="#{apply.form.phone}">SĐT</label> *
+                <label for="phone">
+                    <span th:text="#{apply.form.phone}">SĐT</span>
+                    <span style="color:red">*</span>
+                </label>
                 <input type="text" id="phone" th:field="*{phoneNumber}" required pattern="^(\+84|0)[3|5|7|8|9][0-9]{8}$"
                        maxlength="15" title="Số điện thoại phải bắt đầu bằng +84 hoặc 0, tiếp theo là 3,5,7,8,9 và 8 chữ số" />
                 <div class="error-message" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
@@ -365,7 +379,10 @@
             </div>
 
             <div class="form-group">
-                <label for="content" th:text="#{apply.form.content}">Nội dung</label> *
+                <label for="content">
+                    <span th:text="#{apply.form.content}">Nội dung</span>
+                    <span style="color:red">*</span>
+                </label>
                 <textarea id="content" th:field="*{description}"
                           th:placeholder="#{apply.form.content.placeholder}" required minlength="10" maxlength="1000"></textarea>
                 <div class="error-message" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
@@ -608,29 +625,9 @@
 
         // Enhanced interaction effects
         document.addEventListener('DOMContentLoaded', function() {
-            // Add event listeners for real-time validation
-            const fullNameInput = document.getElementById('fullName');
-            const emailInput = document.getElementById('email');
+            // Add event listeners for real-time validation (chỉ cho các field có thể chỉnh sửa)
             const phoneInput = document.getElementById('phone');
             const descriptionInput = document.getElementById('content');
-
-            if (fullNameInput) {
-                fullNameInput.addEventListener('blur', validateFullName);
-                fullNameInput.addEventListener('input', function() {
-                    if (this.value.trim().length > 0) {
-                        validateFullName();
-                    }
-                });
-            }
-
-            if (emailInput) {
-                emailInput.addEventListener('blur', validateEmail);
-                emailInput.addEventListener('input', function() {
-                    if (this.value.trim().length > 0) {
-                        validateEmail();
-                    }
-                });
-            }
 
             if (phoneInput) {
                 phoneInput.addEventListener('blur', validatePhone);
@@ -652,9 +649,7 @@
                 form.addEventListener('submit', function(e) {
                     let isValid = true;
 
-                    // Validate all fields
-                    if (!validateFullName()) isValid = false;
-                    if (!validateEmail()) isValid = false;
+                    // Validate các fields còn lại (bỏ qua fullName và email vì đã readonly)
                     if (!validatePhone()) isValid = false;
                     if (!validateDescription()) isValid = false;
 
@@ -701,7 +696,18 @@
             // Reset loading state when modal is closed
             function resetFormState() {
                 hideSubmitLoading();
-                document.getElementById('jobApplicationForm').reset();
+                
+                // Reset chỉ các field có thể chỉnh sửa, giữ nguyên fullName và email
+                const form = document.getElementById('jobApplicationForm');
+                const fullNameValue = document.getElementById('fullName').value;
+                const emailValue = document.getElementById('email').value;
+                
+                form.reset();
+                
+                // Khôi phục lại fullName và email
+                document.getElementById('fullName').value = fullNameValue;
+                document.getElementById('email').value = emailValue;
+                
                 // Clear all error messages
                 document.querySelectorAll('.error-message[id$="Error"]').forEach(el => {
                     el.style.display = 'none';

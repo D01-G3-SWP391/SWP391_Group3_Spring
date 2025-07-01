@@ -138,8 +138,9 @@ public class AddJobApplication {
         }
 
         // Set các thuộc tính từ DTO vào JobApplication
-        jobApplication.setFullName(jobApplicationDTO.getFullname());
-        jobApplication.setEmail(jobApplicationDTO.getEmail());
+        // Lấy fullName và email từ Account thay vì từ form để đảm bảo dữ liệu chính xác
+        jobApplication.setFullName(account.getFullName());
+        jobApplication.setEmail(account.getEmail());
         jobApplication.setPhone(jobApplicationDTO.getPhoneNumber());
         jobApplication.setDescription(jobApplicationDTO.getDescription());
 

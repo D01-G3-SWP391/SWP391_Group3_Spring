@@ -41,7 +41,7 @@ public class JobsDescription {
         List<JobPost> jobPosts = iJobpostService.findAllWithEmployer(id);
         model.addAttribute("jobPosts", jobPosts);
 
-        // Tạo DTO cho modal form (chỉ bind dữ liệu form)
+        // Tạo DTO cho modal form
         JobApplicationDTO jobApplicationDTO = new JobApplicationDTO();
         
         // Lấy thông tin user nếu đã đăng nhập
@@ -53,6 +53,10 @@ public class JobsDescription {
             model.addAttribute("account", userAccount);
 
             if (userAccount != null) {
+                // Auto-fill họ tên và email từ database vào JobApplicationDTO
+                jobApplicationDTO.setFullname(userAccount.getFullName());
+                jobApplicationDTO.setEmail(userAccount.getEmail());
+                
                 // Chỉ lấy thông tin student nếu user có role student
                 Student studentDetails = iStudentService.findByAccountUserId(userAccount.getUserId());
                 if (studentDetails != null){

@@ -3,14 +3,9 @@ package com.example.swp391_d01_g3.dto;
 import jakarta.validation.constraints.*;
 
 public class JobApplicationDTO {
-    @NotBlank(message = "Họ và tên không được để trống")
-    @Size(min = 2, max = 100, message = "Họ và tên phải từ 2-100 ký tự")
-    @Pattern(regexp = "^[\\p{L}\\s]+$", message = "Họ và tên chỉ được chứa chữ cái và khoảng trắng")
+    // Fullname và email sẽ được auto-fill từ database, không cần validation
     private String fullname;
-
-    @NotBlank(message = "Email không được để trống")
-    @Email(message = "Email không đúng định dạng")
-    @Size(max = 255, message = "Email không được quá 255 ký tự")
+    
     private String email;
 
     @NotBlank(message = "Số điện thoại không được để trống")
