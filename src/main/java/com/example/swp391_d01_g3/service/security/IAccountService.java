@@ -16,4 +16,6 @@ public interface IAccountService {
     Account save(Account account);
     
     Account updateAccount(Account account);
+
+    Account findByEmailBan(String email);
 }
