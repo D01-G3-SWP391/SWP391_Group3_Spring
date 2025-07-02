@@ -31,16 +31,7 @@
 
     
     <main class="blog-detail-container">
-        <!-- Breadcrumb -->
-        <nav class="breadcrumb">
-            <a href="/">
-                <i class="bi bi-house"></i> Trang chủ
-            </a>
-            <i class="bi bi-chevron-right"></i>
-                         <a href="/Blog">Blog</a>
-            <i class="bi bi-chevron-right"></i>
-            <span th:text="${blogPost.title}"></span>
-        </nav>
+
         
         <!-- Article Header -->
         <header class="article-header">
@@ -274,9 +265,14 @@
     </script>
 
 <!-- Add notification bell -->
+<div th:replace="fragments/why-choose-us :: why-choose-us-section"></div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+<div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
+
+
 <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
 </body>
 <script th:src="@{/js/languageSwitch.js}"></script>
-
 
 </html> 

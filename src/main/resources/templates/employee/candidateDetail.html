@@ -13,14 +13,13 @@
 <body>
 <div th:replace="~{navbar/navbarEmployee :: navbarEmployee}"></div>
 <div class="container">
-    <!-- Back Button -->
-    <a th:href="@{/Employer/SearchCandidate}" class="back-btn">
-        <i class="bi bi-arrow-left"></i>
-        Back to List
-    </a>
-
-    <!-- Page Title -->
-    <h1 class="page-title">STUDENT DETAILS</h1>
+    <!-- Header row (title + back button) matching viewListApplications -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Chi Tiết Ứng Viên</h1>
+        <a th:href="@{/Employer/SearchCandidate}" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
 
     <!-- Profile Card -->
     <div class="card">
@@ -131,6 +130,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script th:src="@{/js/language-dropdown.js}"></script>
 </body>
-</html> 
+<script th:src="@{/js/language-dropdown.js}"></script>
+
+</html>

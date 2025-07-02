@@ -10,6 +10,10 @@ import com.example.swp391_d01_g3.service.jobapplication.IJobApplicationService;
 import com.example.swp391_d01_g3.service.email.EmailService;
 import com.example.swp391_d01_g3.service.interview.IInterViewService;
 import com.example.swp391_d01_g3.service.notification.INotificationService;
+import com.example.swp391_d01_g3.service.email.EmailService;
+import com.example.swp391_d01_g3.service.interview.IInterViewService;
+import com.example.swp391_d01_g3.service.notification.INotificationService;
+import com.example.swp391_d01_g3.service.security.IAccountService;
 import com.example.swp391_d01_g3.service.security.IAccountService;
 import com.example.swp391_d01_g3.service.security.IAccountService;
 import jakarta.validation.Valid;
@@ -224,7 +228,7 @@ public class JobPostController {
         return "employee/jobPostApplications";
     }
 
-    // REMOVED: CV view/download methods - Chỉ sử dụng inline CV display
+
 
     // Update Application Status
     @PostMapping("/JobPosts/{jobPostId}/applications/{applicationId}/updateStatus")

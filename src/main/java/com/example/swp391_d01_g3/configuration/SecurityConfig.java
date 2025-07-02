@@ -2,6 +2,7 @@ package com.example.swp391_d01_g3.configuration;
 
 
 import com.example.swp391_d01_g3.common.CustomAuthenticationEntryPoint;
+import com.example.swp391_d01_g3.common.CustomAuthenticationFailureHandler;
 import com.example.swp391_d01_g3.common.CustomAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +26,9 @@ public class SecurityConfig {
 
     @Autowired
     private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
+    @Autowired
+    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
     @Autowired
     private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
@@ -54,10 +58,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/Login", "/*.css","/*.js","/HomePage/**","/Register/**","/ForgotPassword/**","/Blog/**","/Events/**","/TopJob/**","/JobDescription/JobPost", "/api/query/**","/api/chat/**", "/api/students/**", "/api/employers/**").permitAll()
+                        .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/favicon.ico", "/Login", "/*.css","/*.js",
+                                "/HomePage/**","/Register/**","/ForgotPassword/**","/Blog/**","/Events/**","/TopJob/**",
+                                "/JobDescription/JobPost", "/api/query/**","/api/chat/**", "/api/students/**", "/api/employers/**"
+                                ,"/top-jobs"
+                        ).permitAll()
+
                         .requestMatchers("/Admin/**").hasRole("admin")
                         .requestMatchers("/Employer/**").hasRole("employer")
-                        .requestMatchers("/Student/**","/JobDescription/**").hasRole("student")
+                        .requestMatchers("/Student/**").hasRole("student")
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
@@ -67,13 +76,13 @@ public class SecurityConfig {
                         .usernameParameter("email")
                         .passwordParameter("password")
                         .successHandler(customAuthenticationSuccessHandler)
-                        .failureUrl("/Login?error")
+                        .failureHandler(customAuthenticationFailureHandler)
                         .permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/Login")
                         .successHandler(customAuthenticationSuccessHandler)
-                        .failureUrl("/Login?error")
+                        .failureHandler(customAuthenticationFailureHandler)
                         .permitAll()
                 )
                 .logout(logout -> logout

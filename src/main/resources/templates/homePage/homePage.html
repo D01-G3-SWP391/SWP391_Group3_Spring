@@ -145,7 +145,6 @@
                   </div>
 
                   <div class="search-field">
-                    <i class="fas fa-map-marker-alt field-icon"></i>
                     <input
                       type="text"
                       name="location"
@@ -297,92 +296,31 @@
         </div>
 
         <!-- Pagination -->
-        <div class="pagination-container" th:if="${totalPages > 1}">
-            <nav aria-label="Job pagination">
-                <ul class="pagination justify-content-center">
-                    <!-- Previous Page -->
-                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                        <a class="page-link" th:href="@{/(page=${currentPage - 1}, size=${size})}"
-                           th:if="${currentPage > 0}">
-                            <i class="fas fa-chevron-left"></i> <span th:text="#{home.pagination.previous}">Trước</span>
-                        </a>
-                        <span class="page-link" th:unless="${currentPage > 0}">
-                  <i class="fas fa-chevron-left"></i> <span th:text="#{home.pagination.previous}">Trước</span>
-                </span>
-                    </li>
+        <nav th:if="${totalPages > 1}" aria-label="Page navigation" class="mt-4">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/(page=${currentPage - 1}, size=${size})}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                
+                <li class="page-item" 
+                    th:each="pageNum : ${#numbers.sequence(1, totalPages)}"
+                    th:classappend="${pageNum == currentPage} ? 'active'">
+                    <a class="page-link" th:href="@{/(page=${pageNum}, size=${size})}" 
+                       th:text="${pageNum}">
+                    </a>
+                </li>
 
-                    <!-- Page Numbers -->
-                    <li class="page-item"
-                        th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
-                        th:if="${pageNum >= currentPage - 2 && pageNum <= currentPage + 2}"
-                        th:classappend="${pageNum == currentPage} ? 'active'">
-                        <a class="page-link" th:href="@{/(page=${pageNum}, size=${size})}"
-                           th:text="${pageNum + 1}" th:if="${pageNum != currentPage}">1</a>
-                        <span class="page-link" th:if="${pageNum == currentPage}" th:text="${pageNum + 1}">1</span>
-                    </li>
-
-                    <!-- Next Page -->
-                    <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
-                        <a class="page-link" th:href="@{/(page=${currentPage + 1}, size=${size})}"
-                           th:if="${currentPage < totalPages - 1}">
-                            <span th:text="#{home.pagination.next}">Sau</span> <i class="fas fa-chevron-right"></i>
-                        </a>
-                        <span class="page-link" th:unless="${currentPage < totalPages - 1}">
-                  <span th:text="#{home.pagination.next}">Sau</span> <i class="fas fa-chevron-right"></i>
-                </span>
-              </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                    <a class="page-link" th:href="@{/(page=${currentPage + 1}, size=${size})}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
             </ul>
-          </nav>
-
-            <!-- Page Info -->
-            <div class="page-info text-center mt-3">
-                <p class="text-muted">
-                    <span th:text="#{home.pagination.showing}">Hiển thị</span> <span
-                        th:text="${currentPage * size + 1}">1</span> -
-                    <span th:text="${(currentPage * size + size) > totalElements ? totalElements : (currentPage * size + size)}">8</span>
-                    <span th:text="#{home.pagination.of}">trong tổng số</span> <span th:text="${totalElements}">0</span>
-                    <span th:text="#{home.pagination.jobs}">việc làm</span>
-                </p>
-            </div>
-        </div>
+        </nav>
     </section>
-
-    <!-- Why Choose Us Section -->
-    <section class="why-choose-us">
-        <div class="section-header">
-            <h2>Tại sao chọn Job4You?</h2>
-        </div>
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-briefcase"></i>
-                </div>
-                <h3>Hàng nghìn việc làm</h3>
-                <p>Cơ hội việc làm đa dạng từ các công ty hàng đầu</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-users"></i>
-                </div>
-                <h3>Nhà tuyển dụng uy tín</h3>
-                <p>Kết nối với các công ty được xác minh và đáng tin cậy</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <h3>Phát triển sự nghiệp</h3>
-                <p>Công cụ và tài nguyên hỗ trợ phát triển nghề nghiệp</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-                <h3>An toàn & bảo mật</h3>
-                <p>Thông tin cá nhân được bảo vệ tuyệt đối</p>
-            </div>
-        </div>
-    </section>
+    <div th:replace="~{fragments/why-choose-us :: why-choose-us-section}"></div>
 </div>
 <!-- Floating UI Components -->
 <div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>

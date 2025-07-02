@@ -55,6 +55,7 @@
                             <input type="datetime-local"
                                    th:field="*{registrationDeadline}"
                                    class="form-control" id="registrationDeadline" />
+                            <div th:if="${#fields.hasErrors('registrationDeadline')}" th:errors="*{registrationDeadline}" class="text-danger"></div>
                         </div>
                     </div>
                     <div class="mb-3 mt-3">

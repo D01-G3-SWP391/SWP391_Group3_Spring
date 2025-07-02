@@ -1,10 +1,12 @@
 package com.example.swp391_d01_g3.service.security;
 
 
+
 import com.example.swp391_d01_g3.model.Account;
 import com.example.swp391_d01_g3.model.Student;
 import com.example.swp391_d01_g3.service.student.IStudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,11 +28,18 @@ public class AccountDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        // Kiểm tra nếu người dùng bị ban
+        Account banAccount = IAccountService.findByEmailBan(email);
+        if (banAccount != null) {
+            throw new DisabledException("Bạn đã bị ban khỏi hệ thống");
+        }
         Account account = IAccountService.findByEmail(email);
 
         if (account == null) {
             throw new UsernameNotFoundException("Không tìm thấy người dùng với email: " + email);
         }
+        
+
 
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_" + account.getRole().name()));

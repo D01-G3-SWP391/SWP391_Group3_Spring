@@ -28,8 +28,8 @@ public class BlogPost {
     private String featuredImageUrl;
     
     // Danh sách ảnh minh họa trong bài viết
-    @OneToMany(mappedBy = "blogPost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<BlogImage> blogImages;
+//    @OneToMany(mappedBy = "blogPost", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private List<BlogImage> blogImages;
     
     @Enumerated(EnumType.STRING)
     private BlogStatus status;
@@ -118,13 +118,13 @@ public class BlogPost {
         this.featuredImageUrl = featuredImageUrl;
     }
     
-    public List<BlogImage> getBlogImages() {
-        return blogImages;
-    }
-    
-    public void setBlogImages(List<BlogImage> blogImages) {
-        this.blogImages = blogImages;
-    }
+//    public List<BlogImage> getBlogImages() {
+//        return blogImages;
+//    }
+//
+//    public void setBlogImages(List<BlogImage> blogImages) {
+//        this.blogImages = blogImages;
+//    }
     
     public BlogStatus getStatus() {
         return status;
