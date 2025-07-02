@@ -7,8 +7,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
     <link rel="stylesheet" th:href="@{/css/candidateDetail.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarEmployer.css}" />
+    <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
 </head>
 <body>
+<div th:replace="~{navbar/navbarEmployee :: navbarEmployee}"></div>
 <div class="container">
     <!-- Back Button -->
     <a th:href="@{/Employer/SearchCandidate}" class="back-btn">
@@ -128,5 +131,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/language-dropdown.js}"></script>
 </body>
 </html> 
