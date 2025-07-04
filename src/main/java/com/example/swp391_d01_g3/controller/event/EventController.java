@@ -143,7 +143,7 @@ public class EventController {
      * Hiển thị chi tiết event
      */
     @GetMapping("/{eventId}")
-    public String eventDetail(@PathVariable Integer eventId, Model model, Authentication authentication) {
+    public String eventDetail(@PathVariable Integer eventId, Model model, Authentication authentication, Principal principal) {
         try {
             Event event = eventService.findById(eventId);
             if (event == null) {
@@ -169,6 +169,11 @@ public class EventController {
             model.addAttribute("event", event);
             model.addAttribute("isRegistered", isRegistered);
             model.addAttribute("relatedEvents", relatedEvents);
+            if (principal != null) {
+                model.addAttribute("userEmail", principal.getName());
+                Account account = accountService.findByEmail(principal.getName());
+                model.addAttribute("account", account);
+            }
             
             return "events/eventDetail";
             
