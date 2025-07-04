@@ -72,6 +72,7 @@ public class EventServiceImpl implements IEventService {
         return eventRepository.findRelatedActiveEvents(
                 eventId, 
                 currentEvent.getEmployer().getEmployerId(),
+                currentEvent.getEventLocation(),
                 Event.ApprovalStatus.APPROVED,
                 Event.EventStatus.ACTIVE,
                 pageable);

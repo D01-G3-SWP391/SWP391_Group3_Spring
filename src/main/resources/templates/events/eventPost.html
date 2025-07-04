@@ -40,6 +40,31 @@
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
 
+    <!-- Custom styles for readonly fields -->
+    <style>
+        .form-control[readonly] {
+            background-color: #f8f9fa !important;
+            cursor: not-allowed !important;
+            opacity: 0.8;
+            border: 1px solid #dee2e6 !important;
+        }
+        
+        .form-control[readonly]:focus {
+            box-shadow: none !important;
+            border-color: #dee2e6 !important;
+        }
+        
+        #notes:focus {
+            border-color: #0d6efd !important;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25) !important;
+        }
+        
+        .readonly-field-note {
+            font-size: 0.8rem;
+            color: #6c757d;
+            font-style: italic;
+        }
+    </style>
 
 </head>
 <body>
@@ -130,6 +155,13 @@
             <div class="row align-items-stretch">
                 <!-- Main Events Grid -->
                 <div class="col-lg-8 d-flex flex-column">
+                    <!-- Error Alert -->
+                    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <span th:text="${errorMessage}"></span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    
                     <div class="search-section">
                         <form class="search-form" th:action="@{/Events}" method="get">
                             <div class="row g-3">
@@ -177,21 +209,34 @@
                                 </div>
                                 <div class="event-actions">
                                     <a th:href="@{/Events/{id}(id=${event.eventId})}" class="btn btn-outline-primary">Xem chi tiết</a>
-                                    <button
+                                    
+                                    <!-- Nút đăng ký cho Student đã đăng ký -->
+                                    <button sec:authorize="hasRole('student')"
                                         th:if="${registeredEventIds != null and registeredEventIds.contains(event.eventId)}"
                                         class="btn btn-success" disabled>Đã đăng ký</button>
+                                    
+                                    <!-- Nút đăng nhập cho user chưa xác thực -->
                                     <div sec:authorize="!isAuthenticated()">
                                         <a th:href="@{/Login}" class="btn btn-primary">
                                             <i class="fas fa-sign-in-alt"></i>
                                             <span>Đăng nhập để tham gia</span>
                                         </a>
                                     </div>
-                                    <!-- Hiển thị nút ứng tuyển cho người dùng đã xác thực -->
-                                    <div sec:authorize="isAuthenticated()">
+                                    
+                                    <!-- Nút đăng ký chỉ cho Student -->
+                                    <div sec:authorize="hasRole('student')">
                                         <button
                                                 th:if="${registeredEventIds == null or !registeredEventIds.contains(event.eventId)}"
                                                 th:onclick="'registerEvent(' + ${event.eventId} + ')'"
                                                 class="btn btn-primary">Đăng ký tham gia</button>
+                                    </div>
+                                    
+                                    <!-- Thông báo cho Employer -->
+                                    <div sec:authorize="hasRole('employer')">
+                                        <span class="text-muted small">
+                                            <i class="bi bi-info-circle"></i>
+                                            Chỉ sinh viên mới có thể đăng ký
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -228,23 +273,27 @@
                                             </span>
                                         </div>
                                         <div class="event-actions mt-2">
-
                                             <a th:href="@{/Events/{id}(id=${event.eventId})}" class="btn btn-outline-primary btn-sm me-2">Xem chi tiết</a>
-                                            <button
+                                            
+                                            <!-- Nút đăng ký cho Student đã đăng ký -->
+                                            <button sec:authorize="hasRole('student')"
                                                 th:if="${registeredEventIds != null and registeredEventIds.contains(event.eventId)}"
                                                 class="btn btn-success btn-sm" disabled>Đã đăng ký</button>
+                                            
+                                            <!-- Nút đăng nhập cho user chưa xác thực -->
                                             <div sec:authorize="!isAuthenticated()">
-                                                <a th:href="@{/Login}" class="btn btn-primary">
+                                                <a th:href="@{/Login}" class="btn btn-primary btn-sm">
                                                     <i class="fas fa-sign-in-alt"></i>
                                                     <span>Đăng nhập để tham gia</span>
                                                 </a>
                                             </div>
-                                            <!-- Hiển thị nút ứng tuyển cho người dùng đã xác thực -->
-                                            <div sec:authorize="isAuthenticated()">
+                                            
+                                            <!-- Nút đăng ký chỉ cho Student -->
+                                            <div sec:authorize="hasRole('student')">
                                                 <button
                                                         th:if="${registeredEventIds == null or !registeredEventIds.contains(event.eventId)}"
                                                         th:onclick="'registerEvent(' + ${event.eventId} + ')'"
-                                                        class="btn btn-primary">Đăng ký tham gia</button>
+                                                        class="btn btn-primary btn-sm">Đăng ký tham gia</button>
                                             </div>
                                         </div>
                                     </div>
@@ -328,13 +377,60 @@
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     
     <!-- Custom JavaScript -->
-    <script>
+    <script th:inline="javascript">
+        // Student information for pre-filling form
+        var currentStudentInfo = /*[[${currentStudent}]]*/ null;
+        
+        // Check user role for authorization
+        var isStudent = /*[[${#authorization.expression('hasRole(''student'')')}]]*/ false;
+        var isEmployer = /*[[${#authorization.expression('hasRole(''employer'')')}]]*/ false;
+        
+        // Function to fill form with student information
+        function fillFormWithStudentInfo() {
+            // Chỉ điền form cho student
+            if (isStudent && currentStudentInfo && currentStudentInfo.account) {
+                var fullNameField = document.getElementById('fullName');
+                var phoneField = document.getElementById('phone');
+                var organizationField = document.getElementById('organization');
+                
+                if (fullNameField && currentStudentInfo.account.fullName) {
+                    fullNameField.value = currentStudentInfo.account.fullName;
+                }
+                
+                if (phoneField && currentStudentInfo.account.phone) {
+                    phoneField.value = currentStudentInfo.account.phone;
+                }
+                
+                if (organizationField && currentStudentInfo.university) {
+                    organizationField.value = currentStudentInfo.university;
+                }
+            }
+        }
+        
         // Make registerEvent global
         window.registerEvent = function(eventId) {
+            // Kiểm tra quyền trước khi cho phép đăng ký
+            if (!isStudent) {
+                alert('Chỉ sinh viên mới có thể đăng ký tham gia sự kiện!');
+                return;
+            }
+            
             // Show modal and set event ID
             document.getElementById('eventId').value = eventId;
+            
+            // Pre-fill form with student information
+            fillFormWithStudentInfo();
+            
             var registrationModal = new bootstrap.Modal(document.getElementById('registrationModal'));
             registrationModal.show();
+            
+            // Focus vào trường notes sau khi modal hiển thị (chỉ cho student)
+            document.getElementById('registrationModal').addEventListener('shown.bs.modal', function () {
+                const notesField = document.getElementById('notes');
+                if (notesField && isStudent) {
+                    notesField.focus();
+                }
+            }, { once: true }); // Chỉ thực hiện 1 lần
         };
 
         // Initialize AOS with custom settings to prevent scroll conflicts
@@ -360,7 +456,8 @@
             const submitButton = document.getElementById('submitRegistration');
             const registrationModal = document.getElementById('registrationModal');
 
-            if (submitButton) {
+            // Chỉ khởi tạo cho student
+            if (submitButton && isStudent) {
                 submitButton.addEventListener('click', handleRegistrationSubmit);
             }
 
@@ -369,6 +466,13 @@
                     const form = document.getElementById('registrationForm');
                     form.reset();
                     form.classList.remove('was-validated');
+                    
+                    // Re-fill form with student information after reset (chỉ cho student)
+                    if (isStudent) {
+                        setTimeout(() => {
+                            fillFormWithStudentInfo();
+                        }, 100);
+                    }
                 });
             }
         }
@@ -377,7 +481,18 @@
         function handleRegistrationSubmit() {
             const form = document.getElementById('registrationForm');
             
-            // Check form validation
+            // Custom validation: chỉ kiểm tra trường notes nếu cần
+            // Các trường readonly không cần validate
+            const notesField = document.getElementById('notes');
+            let isValid = true;
+            
+            // Remove validation for readonly fields
+            const readonlyFields = form.querySelectorAll('input[readonly]');
+            readonlyFields.forEach(field => {
+                field.removeAttribute('required');
+            });
+            
+            // Validate form (chỉ còn lại trường notes và eventId)
             if (!form.checkValidity()) {
                 form.classList.add('was-validated');
                 return;
@@ -409,30 +524,56 @@
                 body: JSON.stringify(formData)
             })
             .then(response => {
-                if (!response.ok) {
-                    return response.text().then(text => {
-                        throw new Error(`Network response was not ok (${response.status}): ${text}`);
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    // If response is not OK, get the body for error analysis
+                    return response.json().catch(() => response.text()).then(errorBody => {
+                        // Create a custom error object to pass to the final .catch
+                        let error = new Error(`HTTP ${response.status}: ${response.statusText}`);
+                        error.body = errorBody;
+                        error.status = response.status;
+                        throw error;
                     });
                 }
-                return response.text();
             })
-            .then(data => {
-                try {
-                    if (data.startsWith('success:')) {
-                        modal.hide();
-                        showToast('Thành công', data.substring(8), 'success');
-                        setTimeout(() => location.reload(), 1500);
-                    } else if (data.startsWith('error:')) {
-                        showToast('Lỗi', data.substring(6), 'error');
-                    } else {
-                        showToast('Lỗi', 'Đã xảy ra lỗi không xác định', 'error');
-                    }
-                } catch (e) {
-                    showToast('Lỗi', 'Đã xảy ra lỗi khi xử lý phản hồi từ máy chủ', 'error');
+            .then(data => { // This will only be called for OK responses
+                if (data.startsWith('success:')) {
+                    modal.hide();
+                    showToast('Thành công', data.substring(8), 'success');
+                    setTimeout(() => location.reload(), 1500);
+                } else if (data.startsWith('error:')) {
+                    showToast('Lỗi', data.substring(6), 'error');
+                } else {
+                    showToast('Lỗi', 'Phản hồi từ máy chủ không hợp lệ.', 'error');
                 }
             })
             .catch(error => {
-                showToast('Lỗi', 'Đã xảy ra lỗi khi đăng ký sự kiện: ' + error.message, 'error');
+                console.error('Registration failed:', error);
+                let errorMessage = 'Đã xảy ra lỗi khi đăng ký sự kiện.';
+
+                if (error.body) {
+                    if (typeof error.body === 'object') {
+                        // Handle Spring Boot validation errors
+                        if (error.body.errors && Array.isArray(error.body.errors)) {
+                            errorMessage = error.body.errors.map(e => e.defaultMessage).join('<br>');
+                        } else if (error.body.error) { // General error format
+                             errorMessage = error.body.error;
+                        } else if (error.body.message) {
+                            errorMessage = error.body.message;
+                        } else {
+                            errorMessage = 'Lỗi không xác định từ máy chủ.';
+                        }
+                    } else {
+                        // Body is plain text
+                        errorMessage = error.body;
+                    }
+                } else if (error.message) {
+                    // Fallback for network errors or other JS errors
+                    errorMessage = 'Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại đường truyền.';
+                }
+
+                showToast('Lỗi', errorMessage, 'error');
             })
             .finally(() => {
                 button.innerHTML = originalText;
@@ -498,45 +639,107 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <!-- Thông báo cho Student -->
+                    <div class="alert alert-info" sec:authorize="hasRole('student')" style="font-size: 0.9rem;">
+                        <i class="bi bi-info-circle"></i>
+                        Thông tin cá nhân được lấy từ hồ sơ của bạn. Bạn chỉ cần điền thêm ghi chú nếu muốn.
+                    </div>
+                    
+                    <!-- Thông báo cho Employer -->
+                    <div class="alert alert-warning" sec:authorize="hasRole('employer')" style="font-size: 0.9rem;">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <strong>Lưu ý:</strong> Bạn đang đăng nhập với tài khoản Employer. 
+                        Chỉ có sinh viên mới có thể đăng ký tham gia sự kiện.
+                    </div>
+                    
+                    <!-- Thông báo cho Admin -->
+                    <div class="alert alert-secondary" sec:authorize="hasRole('admin')" style="font-size: 0.9rem;">
+                        <i class="bi bi-shield-check"></i>
+                        <strong>Thông tin:</strong> Bạn đang đăng nhập với tài khoản Admin. 
+                        Chỉ có sinh viên mới có thể đăng ký tham gia sự kiện.
+                    </div>
+                    
                     <form id="registrationForm" class="needs-validation" novalidate>
                         <input type="hidden" id="eventId" name="eventId">
                         
                         <div class="mb-3">
-                            <label for="fullName" class="form-label">Họ và tên người tham gia <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="fullName" name="fullName" required
-                                   minlength="5" maxlength="100">
-                            <div class="invalid-feedback">
-                                Vui lòng nhập họ và tên (5-100 ký tự)
-                            </div>
+                            <label for="fullName" class="form-label">Họ và tên người tham gia</label>
+                            <input type="text" class="form-control" id="fullName" name="fullName" readonly>
+                            <small class="readonly-field-note">
+                                <i class="bi bi-lock-fill"></i>
+                                Thông tin này được lấy từ hồ sơ của bạn
+                            </small>
                         </div>
 
                         <div class="mb-3">
-                            <label for="phone" class="form-label">Số điện thoại người tham gia <span class="text-danger">*</span></label>
-                            <input type="tel" class="form-control" id="phone" name="phone" required
-                                   pattern="[0-9]{10,11}">
-                            <div class="invalid-feedback">
-                                Vui lòng nhập số điện thoại hợp lệ (10-11 số)
-                            </div>
+                            <label for="phone" class="form-label">Số điện thoại người tham gia</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" readonly>
+                            <small class="readonly-field-note">
+                                <i class="bi bi-lock-fill"></i>
+                                Thông tin này được lấy từ hồ sơ của bạn
+                            </small>
                         </div>
 
                         <div class="mb-3">
-                            <label for="organization" class="form-label">Trường/Công ty <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="organization" name="organization" required>
-                            <div class="invalid-feedback">
-                                Vui lòng nhập tên trường/công ty
-                            </div>
+                            <label for="organization" class="form-label">Trường/Công ty</label>
+                            <input type="text" class="form-control" id="organization" name="organization" readonly>
+                            <small class="readonly-field-note">
+                                <i class="bi bi-lock-fill"></i>
+                                Thông tin này được lấy từ hồ sơ của bạn
+                            </small>
                         </div>
 
                         <div class="mb-3">
-                            <label for="notes" class="form-label">Ghi chú</label>
-                            <textarea class="form-control" id="notes" name="notes" rows="3" 
-                                    placeholder="Nhập thông tin bổ sung hoặc yêu cầu đặc biệt (nếu có)"></textarea>
+                            <label for="notes" class="form-label">
+                                <i class="bi bi-pencil-square text-primary" sec:authorize="hasRole('student')"></i>
+                                <i class="bi bi-lock-fill text-warning" sec:authorize="hasRole('employer') or hasRole('admin')"></i>
+                                Ghi chú (Tùy chọn)
+                            </label>
+                            
+                            <!-- Textarea cho Student -->
+                            <textarea sec:authorize="hasRole('student')" class="form-control" id="notes" name="notes" rows="4" 
+                                    style="border-color: #0d6efd; border-width: 2px;"
+                                    placeholder="💡 Bạn có thể nhập thông tin bổ sung hoặc yêu cầu đặc biệt tại đây...&#10;&#10;Ví dụ:&#10;- Có nhu cầu hỗ trợ đặc biệt&#10;- Câu hỏi muốn được giải đáp&#10;- Mong muốn về nội dung sự kiện"></textarea>
+                            
+                            <!-- Textarea disabled cho Employer/Admin -->
+                            <textarea sec:authorize="hasRole('employer') or hasRole('admin')" class="form-control" id="notes" name="notes" rows="4" 
+                                    disabled
+                                    style="border-color: #ffc107; border-width: 2px; background-color: #fff3cd; cursor: not-allowed;"
+                                    placeholder="⚠️ Chỉ sinh viên mới có thể điền ghi chú khi đăng ký sự kiện"></textarea>
+                            
+                            <!-- Thông báo khác nhau theo role -->
+                            <small class="form-text text-primary" sec:authorize="hasRole('student')">
+                                <i class="bi bi-info-circle"></i>
+                                Đây là trường duy nhất bạn có thể chỉnh sửa
+                            </small>
+                            
+                            <small class="form-text text-warning" sec:authorize="hasRole('employer') or hasRole('admin')">
+                                <i class="bi bi-lock-fill"></i>
+                                Trường này chỉ dành cho sinh viên đăng ký sự kiện
+                            </small>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-primary" id="submitRegistration">Xác nhận đăng ký</button>
+                    
+                    <!-- Nút đăng ký chỉ cho Student -->
+                    <button sec:authorize="hasRole('student')" type="button" class="btn btn-primary" id="submitRegistration">
+                        <i class="bi bi-check-circle"></i>
+                        Xác nhận đăng ký
+                    </button>
+                    
+                    <!-- Thông báo cho Employer -->
+                    <div sec:authorize="hasRole('employer')" class="d-flex align-items-center text-muted">
+                        <i class="bi bi-building me-2"></i>
+                        <span>Chỉ sinh viên mới có thể đăng ký sự kiện</span>
+                    </div>
+                    
+                    <!-- Thông báo cho Admin hoặc user khác -->
+                    <div sec:authorize="hasRole('admin')" class="d-flex align-items-center text-muted">
+                        <i class="bi bi-shield-check me-2"></i>
+                        <span>Admin không thể đăng ký sự kiện</span>
+                    </div>
                 </div>
             </div>
         </div>
