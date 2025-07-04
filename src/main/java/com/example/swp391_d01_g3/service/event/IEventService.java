@@ -121,4 +121,9 @@ public interface IEventService {
      * Tìm events đã approve, active và chưa quá hạn
      */
     Page<Event> findActiveApprovedEvents(LocalDateTime currentTime, Pageable pageable);
+
+    /**
+     * Lấy tất cả events của một employer (không phân trang)
+     */
+    List<Event> findAllEventsByEmployer(Employer employer);
 }

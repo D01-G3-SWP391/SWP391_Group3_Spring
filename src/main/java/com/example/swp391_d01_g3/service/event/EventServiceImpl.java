@@ -72,6 +72,7 @@ public class EventServiceImpl implements IEventService {
         return eventRepository.findRelatedActiveEvents(
                 eventId, 
                 currentEvent.getEmployer().getEmployerId(),
+                currentEvent.getEventLocation(),
                 Event.ApprovalStatus.APPROVED,
                 Event.EventStatus.ACTIVE,
                 pageable);
@@ -234,5 +235,10 @@ public class EventServiceImpl implements IEventService {
     @Override
     public Page<Event> findActiveApprovedEvents(LocalDateTime currentTime, Pageable pageable) {
         return eventRepository.findActiveApprovedEvents(currentTime, pageable);
+    }
+
+    @Override
+    public List<Event> findAllEventsByEmployer(Employer employer) {
+        return eventRepository.findByEmployer_EmployerIdOrderByEventDateDesc(employer.getEmployerId());
     }
 }

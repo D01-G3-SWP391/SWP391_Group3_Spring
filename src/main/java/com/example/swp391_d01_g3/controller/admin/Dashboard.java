@@ -1,18 +1,27 @@
 package com.example.swp391_d01_g3.controller.admin;
 
+import com.example.swp391_d01_g3.dto.BlogCreateDTO;
 import com.example.swp391_d01_g3.model.*;
 import com.example.swp391_d01_g3.service.admin.IAdminEmployerService;
 import com.example.swp391_d01_g3.service.admin.IAdminStudentService;
 import com.example.swp391_d01_g3.service.blog.IBlogService;
+import com.example.swp391_d01_g3.service.cloudinary.CloudinaryService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -27,6 +36,9 @@ public class Dashboard {
 
     @Autowired
     private IBlogService blogService;
+
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     @GetMapping("")
     public String showDashboard() {
@@ -52,23 +64,152 @@ public class Dashboard {
         return "redirect:/Admin/blogs";
     }
 
-
-    // Trang list blog
-    @GetMapping("/blogs")
-    public String listBlogs(Model model) {
-        List<BlogPost> blogs = blogService.getAllBlogPosts();
-        model.addAttribute("blogs", blogs);
-        return "blog/managementBlog";
+    // CREATE NEW BLOG - GET Form
+    @GetMapping("/blogs/create")
+    public String createBlogForm(Model model) {
+        model.addAttribute("blogCreateDTO", new BlogCreateDTO());
+        model.addAttribute("resourceTypes", Resource.ResourceType.values());
+        model.addAttribute("statuses", BlogPost.BlogStatus.values());
+        model.addAttribute("allResources", blogService.getAllResources());
+        return "blog/createBlog";
     }
+
+    // CREATE NEW BLOG - POST Submit with Server-side Validation
+    @PostMapping("/blogs/create")
+    public String createBlog(@Valid @ModelAttribute("blogCreateDTO") BlogCreateDTO blogCreateDTO,
+                           BindingResult bindingResult,
+                           @RequestParam(value = "featureImage", required = false) MultipartFile featureImage,
+                           Model model,
+                           RedirectAttributes redirectAttributes) {
+        
+        // Server-side validation
+        if (bindingResult.hasErrors()) {
+            // Return form with validation errors
+            model.addAttribute("resourceTypes", Resource.ResourceType.values());
+            model.addAttribute("statuses", BlogPost.BlogStatus.values());
+            model.addAttribute("allResources", blogService.getAllResources());
+            return "blog/createBlog";
+        }
+        
+        try {
+            // Handle feature image upload if provided
+            if (featureImage != null && !featureImage.isEmpty()) {
+                String imageUrl = cloudinaryService.uploadImage(featureImage, "blog-images");
+                blogCreateDTO.setFeaturedImageUrl(imageUrl);
+            }
+            
+            // Convert DTO to entity
+            BlogPost newBlog = blogCreateDTO.toBlogPost();
+            
+            // Set resource if provided
+            if (blogCreateDTO.getResourceId() != null && blogCreateDTO.getResourceId() > 0) {
+                Resource resource = blogService.getAllResources().stream()
+                    .filter(r -> r.getResourceId().equals(blogCreateDTO.getResourceId()))
+                    .findFirst()
+                    .orElse(null);
+                newBlog.setResource(resource);
+            }
+            
+            // Create blog
+            blogService.createBlog(newBlog);
+            redirectAttributes.addFlashAttribute("success", "Tạo blog mới thành công!");
+            return "redirect:/Admin/blogs";
+            
+        } catch (Exception e) {
+            logger.error("Error creating blog: ", e);
+            model.addAttribute("error", "Có lỗi xảy ra khi tạo blog: " + e.getMessage());
+            model.addAttribute("resourceTypes", Resource.ResourceType.values());
+            model.addAttribute("statuses", BlogPost.BlogStatus.values());
+            model.addAttribute("allResources", blogService.getAllResources());
+            return "blog/createBlog";
+        }
+    }
+
+    // Trang list blog với pagination
+    @GetMapping("/blogs")
+    public String listBlogs(@RequestParam(defaultValue = "0") int page,
+                            @RequestParam(defaultValue = "10") int size,
+                            @RequestParam(required = false) String keyword,
+                            @RequestParam(required = false) String status,
+                            Model model) {
+        try {
+            Page<BlogPost> blogPage;
+            BlogPost.BlogStatus blogStatus = null;
+
+            if (page < 0) page = 0;
+            if (size <= 0 || size > 50) size = 10;
+
+            Pageable pageable = PageRequest.of(page, size);
+
+            if (status != null && !status.isEmpty()) {
+                try {
+                    blogStatus = BlogPost.BlogStatus.valueOf(status.toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    logger.warn("Invalid status parameter: {}", status);
+                }
+            }
+
+            // Search logic với pagination
+            if (keyword != null && !keyword.trim().isEmpty() && blogStatus != null) {
+                blogPage = blogService.searchBlogsByTitleAndStatus(keyword.trim(), blogStatus, pageable);
+            } else if (keyword != null && !keyword.trim().isEmpty()) {
+                blogPage = blogService.searchBlogsByTitle(keyword.trim(), pageable);
+            } else if (blogStatus != null) {
+                blogPage = blogService.findByStatus(blogStatus, pageable);
+            } else {
+                blogPage = blogService.getAllBlogPostsWithPagination(pageable);
+            }
+
+            // THÊM: Lấy số lượng cho badges
+            long totalBlogs = blogService.getTotalBlogsCount();
+            long draftBlogs = blogService.getDraftBlogsCount();
+            long publishedBlogs = blogService.getPublishedBlogsCount();
+            long archivedBlogs = blogService.getArchivedBlogsCount();
+
+            model.addAttribute("blogs", blogPage.getContent());
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalPages", blogPage.getTotalPages());
+            model.addAttribute("totalItems", blogPage.getTotalElements());
+            model.addAttribute("hasNext", blogPage.hasNext());
+            model.addAttribute("hasPrevious", blogPage.hasPrevious());
+            model.addAttribute("selectedStatus", status);
+            model.addAttribute("keyword", keyword);
+
+            // THÊM: Số lượng cho badges
+            model.addAttribute("totalBlogs", totalBlogs);
+            model.addAttribute("draftBlogs", draftBlogs);
+            model.addAttribute("publishedBlogs", publishedBlogs);
+            model.addAttribute("archivedBlogs", archivedBlogs);
+
+            return "blog/managementBlog";
+
+        } catch (Exception e) {
+            logger.error("Error loading blogs: ", e);
+            model.addAttribute("error", "Error loading blogs: " + e.getMessage());
+
+            // Safe defaults for error case
+            model.addAttribute("blogs", Collections.emptyList());
+            model.addAttribute("currentPage", 0);
+            model.addAttribute("totalPages", 0);
+            model.addAttribute("totalItems", 0);
+            model.addAttribute("hasNext", false);
+            model.addAttribute("hasPrevious", false);
+            model.addAttribute("selectedStatus", "");
+            model.addAttribute("keyword", "");
+
+            return "blog/managementBlog";
+        }
+    }
+
 
     // Trang chi tiết blog
     @GetMapping("/blogs/{id}")
     public String blogDetail(@PathVariable Long id, Model model) {
         BlogPost blog = blogService.getBlogPostById(id).orElse(null);
         if (blog == null) return "redirect:/admin/blogs";
-        List<BlogImage> images = blogService.getImagesForBlog(id);
+//        List<BlogImage> images = blogService.getImagesForBlog(id);
         model.addAttribute("blog", blog);
-        model.addAttribute("images", images);
+//        model.addAttribute("images", images);
         return "blog/detailBlog";
     }
 
@@ -84,16 +225,29 @@ public class Dashboard {
     public String showListStudent(@RequestParam(defaultValue = "0") int page,
                                   @RequestParam(defaultValue = "6") int size,
                                   @RequestParam(required = false) String keyword,
+                                  @RequestParam(required = false) String status,
                                   Model model) {
         try {
             Page<Account> studentPage;
 
-            if (keyword != null && !keyword.trim().isEmpty()) {
+            if (page < 0) page = 0;
+            if (size <= 0 || size > 50) size = 6;
+
+            // Filter logic
+            if (keyword != null && !keyword.trim().isEmpty() && status != null && !status.isEmpty()) {
+                studentPage = adminStudentService.searchByKeywordAndStatus(keyword.trim(), status, page, size);
+            } else if (keyword != null && !keyword.trim().isEmpty()) {
                 studentPage = adminStudentService.searchStudents(keyword.trim(), page, size);
-                model.addAttribute("keyword", keyword);
+            } else if (status != null && !status.isEmpty()) {
+                studentPage = adminStudentService.findByStatus(status, page, size);
             } else {
                 studentPage = adminStudentService.getStudentsWithPagination(page, size);
             }
+
+            // THÊM: Lấy số lượng cho badges
+            long totalStudents = adminStudentService.countAllStudents();
+            long activeStudents = adminStudentService.countStudentsByStatus("active");
+            long bannedStudents = adminStudentService.countStudentsByStatus("inactive");
 
             model.addAttribute("studentList", studentPage.getContent());
             model.addAttribute("currentPage", page);
@@ -101,6 +255,13 @@ public class Dashboard {
             model.addAttribute("totalItems", studentPage.getTotalElements());
             model.addAttribute("hasNext", studentPage.hasNext());
             model.addAttribute("hasPrevious", studentPage.hasPrevious());
+            model.addAttribute("selectedStatus", status);
+            model.addAttribute("keyword", keyword);
+
+            // THÊM: Số lượng cho badges
+            model.addAttribute("totalStudents", totalStudents);
+            model.addAttribute("activeStudents", activeStudents);
+            model.addAttribute("bannedStudents", bannedStudents);
 
             return "admin/viewListStudent";
         } catch (Exception e) {
@@ -110,20 +271,34 @@ public class Dashboard {
         }
     }
 
+
     @GetMapping("/ListEmployer")
     public String showListEmployer(@RequestParam(defaultValue = "0") int page,
                                    @RequestParam(defaultValue = "6") int size,
                                    @RequestParam(required = false) String keyword,
+                                   @RequestParam(required = false) String status,
                                    Model model) {
         try {
             Page<Account> employerPage;
 
-            if (keyword != null && !keyword.trim().isEmpty()) {
+            if (page < 0) page = 0;
+            if (size <= 0 || size > 50) size = 6;
+
+            // Filter logic
+            if (keyword != null && !keyword.trim().isEmpty() && status != null && !status.isEmpty()) {
+                employerPage = adminEmployerService.searchByKeywordAndStatus(keyword.trim(), status, page, size);
+            } else if (keyword != null && !keyword.trim().isEmpty()) {
                 employerPage = adminEmployerService.searchEmployers(keyword.trim(), page, size);
-                model.addAttribute("keyword", keyword);
+            } else if (status != null && !status.isEmpty()) {
+                employerPage = adminEmployerService.findByStatus(status, page, size);
             } else {
                 employerPage = adminEmployerService.getEmployersWithPagination(page, size);
             }
+
+            // THÊM: Lấy số lượng cho badges
+            long totalEmployers = adminEmployerService.countAllEmployers();
+            long activeEmployers = adminEmployerService.countEmployersByStatus("active");
+            long bannedEmployers = adminEmployerService.countEmployersByStatus("inactive");
 
             model.addAttribute("employerList", employerPage.getContent());
             model.addAttribute("currentPage", page);
@@ -131,6 +306,13 @@ public class Dashboard {
             model.addAttribute("totalItems", employerPage.getTotalElements());
             model.addAttribute("hasNext", employerPage.hasNext());
             model.addAttribute("hasPrevious", employerPage.hasPrevious());
+            model.addAttribute("selectedStatus", status);
+            model.addAttribute("keyword", keyword);
+
+            // THÊM: Số lượng cho badges
+            model.addAttribute("totalEmployers", totalEmployers);
+            model.addAttribute("activeEmployers", activeEmployers);
+            model.addAttribute("bannedEmployers", bannedEmployers);
 
             return "admin/viewListEmployer";
         } catch (Exception e) {
@@ -139,6 +321,7 @@ public class Dashboard {
             return "admin/error";
         }
     }
+
 
     // Student Ban/Unban Methods
     @PostMapping("/banStudent/{id}")

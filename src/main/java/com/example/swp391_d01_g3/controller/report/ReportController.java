@@ -3,6 +3,7 @@ package com.example.swp391_d01_g3.controller.report;
 import com.example.swp391_d01_g3.dto.ReportDTO;
 import com.example.swp391_d01_g3.model.Report;
 import com.example.swp391_d01_g3.service.report.IReportService;
+import com.example.swp391_d01_g3.service.security.IAccountService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,9 +16,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
+
 @Controller
 @RequestMapping("/Report")
 public class ReportController {
+    @Autowired
+    private IAccountService accountService;
     @Autowired
     private IReportService reportService;
     private String getUserRole(Authentication authentication) {
@@ -29,7 +34,10 @@ public class ReportController {
     }
 
     @GetMapping("/CreateReport")
-    public String showCreateReportForm(Model model, Authentication authentication) {
+    public String showCreateReportForm(Model model, Authentication authentication, Principal principal) {
+        if (principal != null) {
+            model.addAttribute("account", accountService.findByEmail(principal.getName()));
+        }
         model.addAttribute("reportDTO", new ReportDTO());
         model.addAttribute("reportTypes", Report.ReportType.values());
         model.addAttribute("entityTypes", Report.ReportedEntityType.values());
@@ -101,7 +109,10 @@ public class ReportController {
     public String viewMyReports(@RequestParam(defaultValue = "0") int page,
                                 @RequestParam(defaultValue = "10") int size,
                                 Model model,
-                                Authentication authentication) {
+                                Authentication authentication,Principal principal) {
+        if (principal != null) {
+            model.addAttribute("account", accountService.findByEmail(principal.getName()));
+        }
 
         String userEmail = authentication.getName();
         Pageable pageable = PageRequest.of(page, size);
@@ -124,7 +135,10 @@ public class ReportController {
     @GetMapping("/Detail/{reportId}")
     public String viewReportDetail(@PathVariable Integer reportId,
                                    Model model,
-                                   Authentication authentication) {
+                                   Authentication authentication, Principal principal) {
+        if (principal != null) {
+            model.addAttribute("account", accountService.findByEmail(principal.getName()));
+        }
 
         Report report = reportService.getReportById(reportId)
                 .orElseThrow(() -> new RuntimeException("Report not found"));

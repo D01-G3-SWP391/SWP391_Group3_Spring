@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -78,7 +79,7 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                     null,
                     userDetails.getAuthorities()
             );
-            org.springframework.security.core.context.SecurityContextHolder.getContext().setAuthentication(authentication);
+           SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         // Đã TẮT email notification cho login thường xuyên bằng Email/Password
         
@@ -87,11 +88,11 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 targetUrl.endsWith(".css") || targetUrl.endsWith(".js") || targetUrl.endsWith(".json") ||
                 targetUrl.startsWith("/notifications/") || targetUrl.startsWith("/api/")) {
             if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_admin"))) {
-                targetUrl = "/Admin";
+                targetUrl = "/";
             } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_employer"))) {
-                targetUrl = "/Employer";
+                targetUrl = "/";
             } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_student"))) {
-                targetUrl = "/Student";
+                targetUrl = "/";
             } else {
                 targetUrl = "/HomePage";
             }

@@ -19,6 +19,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Date;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Controller
 @RequestMapping("/Register/EmailVerification")
@@ -103,15 +105,15 @@ public class EmailVerificationController {
                 if (pendingRegistration.getRole() == Account.Role.student) {
                     Student student = new Student();
                     student.setAccount(savedAccount);
-                    Account account = student.getAccount();
-                    emailService.sendWelcomeEmail(account.getEmail(),account.getFullName(), String.valueOf(Account.Role.student));
                     studentService.save(student);
                 } else if (pendingRegistration.getRole() == Account.Role.employer) {
                     Employer employer = new Employer();
                     employer.setCompanyName(pendingRegistration.getCompanyName());
                     employer.setCompanyAddress(pendingRegistration.getCompanyAddress());
                     employer.setCompanyDescription(pendingRegistration.getCompanyDescription());
-                    employer.setLogoUrl(pendingRegistration.getLogoUrl());
+                    // Lưu logo vào account.avatarUrl thay vì employer.logoUrl
+                    savedAccount.setAvatarUrl(pendingRegistration.getLogoUrl());
+                    accountService.save(savedAccount);
                     employer.setAccount(savedAccount);
                     
                     // Set JobField
@@ -121,8 +123,6 @@ public class EmailVerificationController {
                     }
                     
                     employerService.saveEmployer(employer);
-                    Account account = employer.getAccount();
-                    emailService.sendWelcomeEmail(account.getEmail(),account.getFullName(), String.valueOf(Account.Role.employer));
                 }
                 
                 // Xóa session data
@@ -155,12 +155,22 @@ public class EmailVerificationController {
             return "register/registerPage";
         }
         
-        // Gửi OTP mới
-        Integer newOTP = emailService.sendVerifyMailForRegistration(email, pendingRegistration.getFullName());
-        
-        // Cập nhật session
-        session.setAttribute("registrationOTP", newOTP);
-        session.setAttribute("otpExpirationTime", new Date(System.currentTimeMillis() + 10 * 60 * 1000)); // 10 phút
+        try {
+            // Gửi OTP mới
+            CompletableFuture<Integer> newOTPFuture = emailService.sendVerifyMailForRegistration(email, pendingRegistration.getFullName());
+            
+            // Lấy giá trị OTP từ CompletableFuture
+            Integer newOTP = newOTPFuture.get(); // Chờ async operation hoàn thành
+            
+            // Cập nhật session
+            session.setAttribute("registrationOTP", newOTP);
+            session.setAttribute("otpExpirationTime", new Date(System.currentTimeMillis() + 10 * 60 * 1000)); // 10 phút
+            
+            System.out.println("New OTP sent successfully to: " + email + " with OTP: " + newOTP);
+        } catch (Exception e) {
+            System.err.println("Error resending OTP to: " + email + " - Error: " + e.getMessage());
+            model.addAttribute("error", "Đã xảy ra lỗi khi gửi lại mã OTP. Vui lòng thử lại sau.");
+        }
         
         model.addAttribute("email", email);
         model.addAttribute("fullName", pendingRegistration.getFullName());

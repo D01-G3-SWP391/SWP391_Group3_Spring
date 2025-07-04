@@ -1,29 +1,591 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sự kiện của doanh nghiệp</title>
+    <title>Các Sự Kiện Của Bạn</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbar.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarEmployer.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarViewJobPost.css}" />
     <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
+    <style>
+    /* Flash message (success) */
+    .flash-message {
+        display: flex;
+        align-items: center;
+        background: #e0ffe6;
+        color: #218838;
+        border: 2px solid #34c759;
+        border-radius: 8px;
+        padding: 16px 24px;
+        font-size: 1.15rem;
+        font-weight: 600;
+        margin: 20px auto 0 auto;
+        max-width: 450px;
+        box-shadow: 0 4px 16px rgba(52,199,89,0.12);
+        position: relative;
+        animation: fadeIn 0.7s;
+        z-index: 1000;
+    }
+    .flash-message .icon {
+        font-size: 1.5em;
+        margin-right: 12px;
+    }
+    .flash-message .close-btn {
+        position: absolute;
+        right: 12px;
+        top: 10px;
+        background: none;
+        border: none;
+        font-size: 1.2em;
+        color: #218838;
+        cursor: pointer;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px);}
+        to { opacity: 1; transform: translateY(0);}
+    }
+
+    /* Page Header with Create Event Button */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding: 1.5rem 0;
+        border-bottom: 2px solid #f1f5f9;
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+        border-radius: 12px;
+        padding: 1.5rem 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .page-title-section h1 {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0 0 0.5rem 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .page-title-section p {
+        color: #64748b;
+        font-size: 1.1rem;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    .create-event-header-btn {
+        background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        border: 2px solid transparent;
+    }
+
+    .create-event-header-btn:hover {
+        background: linear-gradient(135deg, #388E3C 0%, #2E7D32 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        color: white;
+        text-decoration: none;
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .create-event-header-btn i {
+        font-size: 1.2rem;
+        color: white;
+    }
+
+    /* Statistics cards styling - giống viewJobPost */
+    .stats-container {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 30px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .stat-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        min-width: 200px;
+        transition: all 0.3s ease;
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .stat-card:nth-child(1) .stat-icon {
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    }
+
+    .stat-card:nth-child(2) .stat-icon {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .stat-card:nth-child(3) .stat-icon {
+        background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .stat-info h3 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        color: #1f2937;
+        line-height: 1;
+    }
+
+    .stat-info p {
+        font-size: 0.9rem;
+        color: #6b7280;
+        margin: 4px 0 0 0;
+        font-weight: 500;
+    }
+
+    /* Animation keyframes */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .stats-container {
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            min-width: auto;
+            padding: 16px;
+        }
+
+        .stat-info h3 {
+            font-size: 1.5rem;
+        }
+    }
+
+    /* Table Container */
+    .table-container {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e2e8f0;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #64748b;
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        color: #cbd5e1;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+    }
+
+    .empty-state .btn {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .empty-state .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Table Styling */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.95rem;
+    }
+
+    thead {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        color: white;
+    }
+
+    th {
+        padding: 1rem;
+        text-align: left;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    tbody tr {
+        border-bottom: 1px solid #f1f5f9;
+        transition: all 0.2s ease;
+    }
+
+    tbody tr:hover {
+        background-color: #f8fafc;
+    }
+
+    td {
+        padding: 1rem;
+        vertical-align: middle;
+    }
+
+    .event-title {
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .event-type-badge {
+        background: #e0e7ff;
+        color: #6366f1;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+
+    .status-badge {
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-badge[data-status="APPROVED"] {
+        background: #dcfce7;
+        color: #16a34a;
+    }
+
+    .status-badge[data-status="PENDING"] {
+        background: #fef3c7;
+        color: #d97706;
+    }
+
+    .status-badge[data-status="REJECTED"] {
+        background: #fecaca;
+        color: #dc2626;
+    }
+
+    .date-info {
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+        background: #6366f1;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #4f46e5;
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-danger {
+        background: #ef4444;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #dc2626;
+        color: white;
+    }
+
+    .btn-info {
+        background: white;
+        color: #0277bd;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.8rem;
+    }
+
+    /*.btn-info:hover {*/
+    /*    background: linear-gradient(135deg, #b3e5fc 0%, #81d4fa 100%);*/
+    /*    */
+    /*    text-decoration: none;*/
+    /*    transform: translateY(-1px);*/
+    /*    box-shadow: 0 4px 12px rgba(3, 169, 244, 0.3);*/
+    /*    border-color: #29b6f6;*/
+    /*}*/
+
+    .btn-success {
+        background: #22c55e;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background: #16a34a;
+        color: white;
+    }
+
+    .btn-warning {
+        background: #f59e0b;
+        color: white;
+    }
+
+    .btn-warning:hover {
+        background: #d97706;
+        color: white;
+    }
+
+    .delete-form {
+        display: inline;
+    }
+
+    /* Pagination */
+    .bottom-pagination {
+        margin-top: 2rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .pagination-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: white;
+        padding: 1rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e2e8f0;
+    }
+
+    .pagination-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        background: #f8fafc;
+        color: #64748b;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        border: 1px solid #e2e8f0;
+    }
+
+    .pagination-btn:hover {
+        background: #6366f1;
+        color: white;
+        text-decoration: none;
+    }
+
+    .pagination-btn.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    .page-numbers {
+        display: flex;
+        gap: 0.25rem;
+        margin: 0 1rem;
+    }
+
+    .page-number {
+        width: 2.5rem;
+        height: 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        background: #f8fafc;
+        color: #64748b;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        border: 1px solid #e2e8f0;
+    }
+
+    .page-number:hover, .page-number.active {
+        background: #6366f1;
+        color: white;
+        text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+        .page-header {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .page-title-section h1 {
+            font-size: 1.8rem;
+        }
+        
+        .create-event-header-btn {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .stats-container {
+            grid-template-columns: 1fr;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .pagination-wrapper {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        table {
+            font-size: 0.85rem;
+        }
+        
+        th, td {
+            padding: 0.75rem 0.5rem;
+        }
+    }
+    </style>
 </head>
 <body>
 <div th:replace="~{navbar/navbarEmployee :: navbarEmployee}"></div>
 
+<!-- Main content area -->
 <div class="main-content">
-    <h1 class="page-title" style="text-align:center; color:#6c3ae6; font-size:2.5rem; font-weight:800; margin-bottom:2rem;">Các Sự Kiện Của Bạn</h1>
+    <!-- PAGE HEADER WITH CREATE EVENT BUTTON -->
+    <div class="page-header">
+        <div class="page-title-section">
+            <h1>Các Sự Kiện Của Bạn</h1>
+        </div>
+        <a th:href="@{/Employer/Events/Create}" class="create-event-header-btn">
+            <i class="bi bi-plus-circle"></i>
+            <span>Tạo Sự Kiện Mới</span>
+        </a>
+    </div>
+
     <!-- Flash message (success) -->
     <div th:if="${successMsg}" class="flash-message" id="flashMessage">
         <span class="icon">✔️</span>
         <span th:text="${successMsg}"></span>
         <button class="close-btn" onclick="document.getElementById('flashMessage').style.display='none'">&times;</button>
     </div>
+
+    <!-- Statistics cards -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="bi bi-calendar-event"></i>
+            </div>
+            <div class="stat-info">
+                <h3 th:text="${totalEvents}">0</h3>
+                <p>Tổng số sự kiện</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="bi bi-clock"></i>
+            </div>
+            <div class="stat-info">
+                <h3 th:text="${pendingEvents}">0</h3>
+                <p>Chờ phê duyệt</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Table container -->
     <div class="table-container">
-        <!-- Empty state nếu chưa có event -->
         <div th:if="${eventsPage == null or eventsPage.content.isEmpty()}" class="empty-state">
-            <i class="bi bi-calendar3"></i>
+            <i class="bi bi-calendar-event"></i>
             <h3>Chưa có sự kiện nào</h3>
             <p>Bạn chưa tạo sự kiện nào. Hãy bắt đầu tạo sự kiện đầu tiên!</p>
             <a th:href="@{/Employer/Events/Create}" class="btn btn-primary">
@@ -31,34 +593,43 @@
                 Tạo sự kiện mới
             </a>
         </div>
-        <!-- Table với event -->
+
         <table th:if="${eventsPage != null and !eventsPage.content.isEmpty()}">
             <thead>
             <tr>
                 <th>STT</th>
-                <th>Tên sự kiện</th>
-                <th>Địa điểm</th>
-                <th>Ngày tổ chức</th>
+                <th>Tên Sự Kiện</th>
+                <th>Ngày Tổ Chức</th>
                 <th>Số lượng tối đa</th>
-                <th>Trạng thái</th>
-                <th>Ngày tạo</th>
-                <th>Hành động</th>
+                <th>Số người đã đăng ký</th>
+                <th>Trạng Thái</th>
+                <th>Hành Động</th>
             </tr>
             </thead>
             <tbody>
             <th:block th:each="event,iter : ${eventsPage.content}">
                 <tr>
                     <td th:text="${iter.index + 1}"></td>
-                    <td th:text="${event.eventTitle}"></td>
-                    <td th:text="${event.eventLocation}"></td>
-                    <td th:text="${#temporals.format(event.eventDate, 'dd/MM/yyyy HH:mm')}"></td>
-                    <td th:text="${event.maxParticipants}"></td>
                     <td>
-                        <span class="status-badge" th:text="${event.eventStatus}"></span>
+                        <div class="event-title">
+                            <strong th:text="${event.eventTitle}"></strong>
+                        </div>
                     </td>
-                    <td th:text="${#temporals.format(event.createdAt, 'dd/MM/yyyy HH:mm')}"></td>
+                    <td>
+                        <div class="date-info">
+                            <span th:text="${#temporals.format(event.eventDate, 'dd/MM/yyyy HH:mm')}"></span>
+                        </div>
+                    </td>
+                    <td th:text="${event.maxParticipants}"></td>
+                    <td th:text="${event.currentParticipants != null ? event.currentParticipants : 0}"></td>
+                    <td>
+                        <span class="status-badge" th:attr="data-status=${event.eventStatus.name()}" th:text="${event.eventStatus}"></span>
+                    </td>
                     <td>
                         <div class="action-buttons">
+                            <a th:href="@{'/Employer/Events/Details/' + ${event.eventId}}" class="btn btn-info">
+                                <i class="bi bi-eye"></i> Xem chi tiết
+                            </a>
                             <a th:href="@{'/Employer/Events/Edit/' + ${event.eventId}}" class="btn btn-primary">
                                 <i class="bi bi-pencil-square"></i> Sửa
                             </a>
@@ -88,10 +659,8 @@
             </tbody>
         </table>
     </div>
-    <!-- Nút tạo mới (floating action button) -->
-    <a th:href="@{/Employer/Events/Create}" class="fab">
-        <i class="bi bi-plus"></i>
-    </a>
+
+    <!-- Pagination -->
     <div th:if="${eventsPage != null and eventsPage.totalPages > 1}" class="bottom-pagination">
         <div class="pagination-wrapper">
             <!-- Previous button -->
@@ -131,7 +700,8 @@
         </div>
     </div>
 </div>
-</div> <!-- Close main-content -->
+
+<script src="/js/navbarAdmin.js"></script>
 <script>
     setTimeout(function() {
         var msg = document.getElementById('flashMessage');
@@ -139,4 +709,9 @@
     }, 3000);
 </script>
 <script th:src="@{/js/language-dropdown.js}"></script>
+
+<!-- Add notification bell -->
+<div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
+<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
 </body>
+</html>

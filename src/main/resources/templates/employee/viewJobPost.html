@@ -6,9 +6,6 @@
     <title>Các Công Việc Của Bạn</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
     <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
-    <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
-    <link rel="stylesheet" th:href="@{/css/navbar.css}" />
-    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarEmployer.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarViewJobPost.css}" />
     <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
@@ -130,6 +127,21 @@
             justify-content: center;
         }
     }
+
+    /* Application count styling */
+    .application-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 24px;
+        height: 24px;
+        padding: 0 8px;
+       color: #374151;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    
     </style>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
 </head>
@@ -142,7 +154,6 @@
     <div class="page-header">
         <div class="page-title-section">
             <h1>Các Công Việc Của Bạn</h1>
-            <p>Quản lý và theo dõi tất cả tin tuyển dụng của công ty</p>
         </div>
         <a th:href="@{/Employer/CreateJobPost}" class="create-job-header-btn">
             <i class="bi bi-plus-circle"></i>
@@ -166,15 +177,6 @@
             <div class="stat-info">
                 <h3 th:text="${jobPostPage != null ? jobPostPage.totalElements : 0}">0</h3>
                 <p>Tổng số công việc</p>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="bi bi-check-circle-fill"></i>
-            </div>
-            <div class="stat-info">
-                <h3>0</h3>
-                <p>Đã phê duyệt</p>
             </div>
         </div>
         <div class="stat-card">
@@ -207,6 +209,7 @@
                 <th>Tên Công Việc</th>
                 <th>Loại Công Việc</th>
                 <th>Trạng Thái</th>
+                <th>Số Ứng Viên</th>
                 <th>Ngày Tạo</th>
                 <th>Hành Động</th>
             </tr>
@@ -227,6 +230,9 @@
                         <span class="status-badge" th:text="${jobPost.approvalStatus}"></span>
                     </td>
                     <td>
+                        <span class="application-count" th:text="${jobPost.appliedQuality ?: 0}"></span>
+                    </td>
+                    <td>
                         <div class="date-info">
                             <span th:text="${jobPost.createdAt}"></span>
                         </div>
@@ -236,7 +242,7 @@
                             <a th:href="@{/Employer/EditJobPost/{jobPostId}(jobPostId=${jobPost.jobPostId})}"
                                class="btn btn-primary">
                                 <i class="bi bi-pencil-square"></i>
-                                Chỉnh sửa
+                                Sửa
                             </a>
 
                             <form th:action="@{/Employer/DeleteJobPost/{jobPostId}(jobPostId=${jobPost.jobPostId})}"
@@ -250,7 +256,7 @@
                             </form>
 
                             <a th:href="@{/Employer/JobPosts/{jobPostId}/applications(jobPostId=${jobPost.jobPostId})}" class="btn btn-info">
-                                <i class="bi bi-people"></i> Xem chi tiết
+                                <i class="bi bi-people"></i> Xem ứng viên
                             </a>
                         </div>
                     </td>
@@ -308,8 +314,8 @@
     }, 3000);
 </script>
 <script th:src="@{/js/language-dropdown.js}"></script>
-
-<!-- Add notification bell -->
+<div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
 <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
+
 </body>
 </html>

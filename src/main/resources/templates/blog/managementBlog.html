@@ -11,106 +11,200 @@
     <link rel="stylesheet" th:href="@{/css/managementBlog.css}">
     <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
     <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
+    <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
+    <link rel="stylesheet" th:href="@{/css/pagination.css}">
 </head>
 <body class="management-blog-bg">
 <!-- Navbar cố định trên cùng -->
 <div th:replace="~{navbar/navbarAdmin :: navbarAdmin}"></div>
-<!-- Nội dung chính, luôn căn giữa -->
-<div class="main-content d-flex flex-column align-items-center justify-content-center">
-    <h2 class="mb-4 management-blog-title text-center">
-        <i class="bi bi-journal-text"></i> Blog Management
-    </h2>
-    <div class="admin-table w-100 mb-4">
-        <table class="table table-hover align-middle mb-0">
-            <thead>
-            <tr>
-                <th><i class="bi bi-file-earmark-text"></i> Title</th>
-                <th><i class="bi bi-link-45deg"></i> Resource Type</th>
-                <th><i class="bi bi-info-circle"></i> Status</th>
-                <th><i class="bi bi-calendar"></i> Created At</th>
-                <th><i class="bi bi-eye"></i> Actions</th>
-            </tr>
-            </thead>
-            <tbody id="blog-table-body">
-            <tr th:each="blog : ${blogs}">
-                <td>
-                    <div class="blog-title">
-                        <i class="bi bi-file-earmark-text"></i>
-                        <span th:text="${blog.title}"></span>
-                    </div>
-                    <div class="blog-summary">
-                        <i class="bi bi-card-text"></i>
-                        <span th:text="${blog.summary}"></span>
-                    </div>
-                </td>
-                <td>
+
+<!-- Nội dung chính -->
+<div class="main-content">
+    <div class="container-fluid">
+        <!-- Header Section -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="mb-1">Blog Management</h2>
+            </div>
+            <div class="d-flex gap-2">
+                <a th:href="@{/Admin/blogs/create}" class="btn btn-success">
+                    <i class="bi bi-plus-circle me-2"></i>Create New Blog
+                </a>
+            </div>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <form method="get" class="row g-3 mb-4 filter-form">
+            <div class="col-md-6">
+                <input class="form-control" name="keyword"
+                       th:value="${keyword}"
+                       placeholder="Search by blog title..." />
+            </div>
+            <div class="col-md-3">
+                <select class="form-control" name="status">
+                    <option value="">All Status</option>
+                    <option value="DRAFT" th:selected="${selectedStatus == 'DRAFT'}">Draft</option>
+                    <option value="PUBLISHED" th:selected="${selectedStatus == 'PUBLISHED'}">Published</option>
+                    <option value="ARCHIVED" th:selected="${selectedStatus == 'ARCHIVED'}">Archived</option>
+                </select>
+            </div>
+            <div class="col-auto d-flex gap-2">
+                <button class="btn-equal" type="submit">
+                    <i class="bi bi-search me-2"></i>Search
+                </button>
+                <a th:href="@{/Admin/blogs}" class="btn-equal">
+                    <i class="bi bi-arrow-clockwise me-2"></i>Reset
+                </a>
+            </div>
+        </form>
+
+
+        <!-- Results Info -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-muted">
+                Showing <strong th:text="${currentPage * 10 + 1}"></strong> to
+                <strong th:text="${currentPage * 10 + #lists.size(blogs)}"></strong>
+                of <strong th:text="${totalItems}"></strong> blog posts
+                <span th:if="${selectedStatus != null and selectedStatus != ''}"
+                      th:text="'(' + ${selectedStatus} + ')'" class="text-primary"></span>
+            </span>
+            <span class="text-muted" th:if="${totalPages > 1}">
+                Page <strong th:text="${currentPage + 1}"></strong> of <strong th:text="${totalPages}"></strong>
+            </span>
+        </div>
+
+        <!-- Blog Table -->
+        <div class="admin-table w-100 mb-4">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                <tr>
+                    <th><i class="bi bi-file-earmark-text"></i> Title</th>
+                    <th><i class="bi bi-link-45deg"></i> Resource Type</th>
+                    <th><i class="bi bi-info-circle"></i> Status</th>
+                    <th><i class="bi bi-calendar"></i> Created At</th>
+                    <th><i class="bi bi-eye"></i> Actions</th>
+                </tr>
+                </thead>
+                <tbody id="blog-table-body">
+                <tr th:each="blog : ${blogs}">
+                    <td>
+                        <div class="blog-title">
+                            <i class="bi bi-file-earmark-text"></i>
+                            <span th:text="${blog.title}"></span>
+                        </div>
+                        <div class="blog-summary">
+                            <i class="bi bi-card-text"></i>
+                            <span th:text="${blog.summary}"></span>
+                        </div>
+                    </td>
+                    <td>
                         <span th:if="${blog.resource != null}" class="resource-badge">
                             <i class="bi bi-link-45deg"></i>
-                            <span th:text="${blog.resource.resourceType}"></span>
+                            <span th:text="${blog.resource.resourceType.name() == 'interview_guide'} ? 'Hướng dẫn phỏng vấn' : 
+                                           (${blog.resource.resourceType.name() == 'application_tips'} ? 'Mẹo ứng tuyển' : 
+                                           (${blog.resource.resourceType.name() == 'quotes'} ? 'Câu nói hay' : ${blog.resource.resourceType.name()}))"></span>
                         </span>
-                    <span th:if="${blog.resource == null}" class="text-muted">
-                            <i class="bi bi-x-circle"></i> No resource
+                        <span th:if="${blog.resource == null}" class="text-muted">
+                            <i class="bi bi-x-circle"></i> Không có tài nguyên
                         </span>
-                </td>
-                <td>
-                    <form th:action="@{/Admin/blogs/{id}/status(id=${blog.blogPostId})}" method="post" style="display:inline;">
-                        <div class="d-flex align-items-center justify-content-center gap-2">
-                            <i class="bi bi-info-circle"></i>
-                            <select name="status" class="form-select form-select-sm status-select"
-                                    onchange="confirmStatusChange(this)" th:data-old-value="${blog.status}">
-                                <option th:each="status : ${T(com.example.swp391_d01_g3.model.BlogPost.BlogStatus).values()}"
-                                        th:value="${status}" th:text="${status}" th:selected="${blog.status != null and status.name() == blog.status.name()}"
-                                ></option>
-                            </select>
+                    </td>
+                    <td>
+                        <!-- THÊM: Clickable Status -->
+                        <a th:href="@{/Admin/blogs(status=${blog.status.name()}, keyword=${keyword})}"
+                           th:class="${blog.status.name() == 'PUBLISHED' ? 'clickable-status status-active' :
+                                     (blog.status.name() == 'ARCHIVED' ? 'clickable-status status-banned' : 'clickable-status status-pending')}"
+                           th:text="${blog.status.name()}"></a>
+                    </td>
+                    <td>
+                        <i class="bi bi-calendar"></i>
+                        <span th:text="${#temporals.format(blog.createdAt, 'dd/MM/yyyy HH:mm')}"></span>
+                    </td>
+                    <td>
+                        <div class="action-btns">
+                            <a th:href="@{/Admin/blogs/{id}(id=${blog.blogPostId})}" class="btn btn-equal">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                            <a th:href="@{/Admin/blogs/{id}/edit(id=${blog.blogPostId})}" class="btn btn-equal">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a>
                         </div>
-                    </form>
-                </td>
-                <td>
-                    <i class="bi bi-calendar"></i>
-                    <span th:text="${#temporals.format(blog.createdAt, 'dd/MM/yyyy HH:mm')}"></span>
-                </td>
-                <td>
-                    <div class="action-btns">
-                        <a th:href="@{/Admin/blogs/{id}(id=${blog.blogPostId})}" class="btn btn-equal">
-                            <i class="bi bi-eye"></i> View
-                        </a>
-                        <a th:href="@{/Admin/blogs/{id}/edit(id=${blog.blogPostId})}" class="btn btn-equal">
-                            <i class="bi bi-pencil-square"></i> Edit
-                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- No Results Message -->
+        <div th:if="${#lists.isEmpty(blogs)}" class="text-center py-5">
+            <i class="bi bi-journal-text display-1 text-muted"></i>
+            <h4 class="text-muted mt-3">No blog posts found</h4>
+            <p class="text-muted">Try adjusting your search criteria or create a new blog post</p>
+        </div>
+
+        <!-- Pagination Info -->
+        <div th:if="${totalItems != null and totalItems > 0}" class="pagination-info">
+            Showing <strong th:text="${currentPage * 10 + 1}"></strong> to
+            <strong th:text="${currentPage * 10 + #lists.size(blogs)}"></strong>
+            of <strong th:text="${totalItems}"></strong> blog posts
+        </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation" th:if="${totalPages != null and totalPages > 1}">
+            <div class="bottom-pagination">
+                <div class="pagination-wrapper">
+                    <!-- Previous button -->
+                    <a th:if="${hasPrevious}"
+                       th:href="@{/Admin/blogs(page=${currentPage - 1}, keyword=${keyword}, status=${selectedStatus})}"
+                       class="pagination-btn prev-btn">
+                        <i class="bi bi-chevron-left"></i>
+                        <span>Previous</span>
+                    </a>
+                    <span th:unless="${hasPrevious}" class="pagination-btn prev-btn disabled">
+                        <i class="bi bi-chevron-left"></i>
+                        <span>Previous</span>
+                    </span>
+
+                    <div class="page-numbers">
+                        <th:block th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}">
+                            <a th:if="${pageNum >= currentPage - 2 and pageNum <= currentPage + 2 and pageNum != currentPage}"
+                               th:href="@{/Admin/blogs(page=${pageNum}, keyword=${keyword}, status=${selectedStatus})}"
+                               class="page-number"
+                               th:text="${pageNum + 1}">1</a>
+                            <span th:if="${pageNum >= currentPage - 2 and pageNum <= currentPage + 2 and pageNum == currentPage}"
+                                  class="page-number active"
+                                  th:text="${pageNum + 1}">1</span>
+                        </th:block>
                     </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+
+                    <a th:if="${hasNext}"
+                       th:href="@{/Admin/blogs(page=${currentPage + 1}, keyword=${keyword}, status=${selectedStatus})}"
+                       class="pagination-btn next-btn">
+                        <span>Next</span>
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                    <span th:unless="${hasNext}" class="pagination-btn next-btn disabled">
+                        <span>Next</span>
+                        <i class="bi bi-chevron-right"></i>
+                    </span>
+                </div>
+            </div>
+        </nav>
     </div>
     <div id="pagination" class="d-flex justify-content-center mt-3"></div>
 </div>
 <script>
-    const rowsPerPage = 10;
-    const tableBody = document.getElementById('blog-table-body');
-    const allRows = Array.from(tableBody.querySelectorAll('tr'));
-    const totalPages = Math.ceil(allRows.length / rowsPerPage);
-    const paginationDiv = document.getElementById('pagination');
-
-    function showPage(page) {
-        if(page < 0 || page >= totalPages) return;
-        allRows.forEach((row, idx) => {
-            row.style.display = (idx >= page * rowsPerPage && idx < (page + 1) * rowsPerPage) ? '' : 'none';
-        });
-        renderPagination(page);
-    }
-    function renderPagination(currentPage) {
-        let html = `<nav aria-label="Page navigation"><ul class="pagination">`;
-        html += `<li class="page-item${currentPage === 0 ? ' disabled' : ''}"><a class="page-link" href="#" onclick="showPage(${currentPage-1});return false;">&laquo;</a></li>`;
-        for(let i=0; i<totalPages; i++) {
-            html += `<li class="page-item${i===currentPage?' active':''}"><a class="page-link" href="#" onclick="showPage(${i});return false;">${i+1}</a></li>`;
-        }
-        html += `<li class="page-item${currentPage === totalPages-1 ? ' disabled' : ''}"><a class="page-link" href="#" onclick="showPage(${currentPage+1});return false;">&raquo;</a></li>`;
-        html += `</ul></nav>`;
-        paginationDiv.innerHTML = html;
-    }
-    if (allRows.length > 0) showPage(0);
-
     function confirmStatusChange(selectElem) {
         const oldValue = selectElem.getAttribute('data-old-value');
         const newValue = selectElem.value;
@@ -125,4 +219,6 @@
 <script th:src="@{/js/navbarAdmin.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+<script th:src="@{/js/language-dropdown.js}"></script>
+
 </html>

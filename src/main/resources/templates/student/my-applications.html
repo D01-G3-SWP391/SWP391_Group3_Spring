@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đơn ứng tuyển của tôi - JOB4YOU</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/navbarStudent.css}"/>
     <link rel="stylesheet" th:href="@{/css/my-applications.css}"/>
     <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
-    
+
     <!-- 💬 Chat System CSS -->
     <style>
         /* Modern Chat System for Student - Based on Employer Design */
@@ -267,7 +268,7 @@
             </div>
             <!-- 💬 Chat Rooms Button -->
             <button class="btn btn-primary" onclick="showAllChatRooms()" title="Xem tất cả cuộc trò chuyện" style="display: flex; align-items: center; gap: 8px;">
-                <i class="bi bi-chat-text"></i> 
+                <i class="bi bi-chat-text"></i>
                 <span>Tin nhắn</span>
             </button>
         </div>
@@ -343,7 +344,7 @@
                     <div class="cell action-col">
                         <div style="display: flex; gap: 8px; align-items: center;">
                             <!-- 💬 Chat Button -->
-                            <button class="chat-employer-btn" 
+                            <button class="chat-employer-btn"
                                     th:data-employer-email="${jobApp.jobPost?.employer?.account?.email ?: ''}"
                                     th:data-employer-name="${jobApp.jobPost?.employer?.companyName ?: 'Nhà tuyển dụng'}"
                                     onclick="openChatWithEmployerFromButton(this)"
@@ -351,7 +352,7 @@
                                 <i class="bi bi-chat-dots"></i>
                                 <span>Chat</span>
                             </button>
-                            
+
                             <button class="view-details-btn" th:onclick="'toggleDetails(' + ${iterStat.index} + ')'">
                                 <i class="bi bi-chevron-down"></i>
                                 <span>Chi tiết</span>
@@ -493,7 +494,7 @@
     window.currentUserName = /*[[${account?.fullName}]]*/ 'Student';
     window.currentUserRole = 'STUDENT';
     window.currentChatRoomId = null;
-    
+
     console.log('🔍 Student Chat - currentUserId:', window.currentUserId);
     console.log('🔍 Student Chat - currentUserName:', window.currentUserName);
 </script>
@@ -523,7 +524,7 @@
                 },
                 onConnect: function (frame) {
                     console.log('✅ Chat WebSocket connected successfully!');
-                    
+
                     // Personal messages subscription removed to avoid duplicates
                     // We'll only use room-specific subscriptions
                 },
@@ -556,9 +557,9 @@
             console.warn('WebSocket not connected, cannot subscribe to room messages');
             return;
         }
-        
+
         console.log('📡 Subscribing to room messages for room:', roomId);
-        
+
         // Subscribe to room specific messages
         chatWebSocketClient.subscribe(`/topic/chat/${roomId}`, function(message) {
             console.log('📨 Received room message:', message);
@@ -575,15 +576,15 @@
             console.warn('WebSocket not connected, cannot mark messages as read');
             return;
         }
-        
+
         console.log('✅ Marking messages as read for room:', roomId);
-        
+
         // Send mark as read via WebSocket
         chatWebSocketClient.publish({
             destination: '/app/chat.markRead',
-            body: JSON.stringify({ 
+            body: JSON.stringify({
                 chatRoomId: Number(roomId),
-                userId: window.currentUserId 
+                userId: window.currentUserId
             })
         });
     }
@@ -593,27 +594,27 @@
      */
     function openChatWithEmployer(employerEmail, employerName) {
         console.log('🎯 Opening chat with employer:', employerName, employerEmail);
-        
+
         if (!employerEmail || !window.currentUserId) {
             alert('Không thể mở chat. Vui lòng thử lại.');
             return;
         }
-        
+
         // Update chat header
         document.getElementById('chatName').textContent = employerName;
         document.getElementById('chatAvatar').textContent = employerName.charAt(0).toUpperCase();
         document.getElementById('chatStatus').textContent = 'Đang hoạt động';
-        
+
         // Show chat panel
         document.getElementById('chatOverlay').classList.add('show');
         document.getElementById('chatOffcanvas').classList.add('show');
-        
+
         // Hide back button since we're going directly to chat
         const backBtn = document.getElementById('chatBackBtn');
         if (backBtn) {
             backBtn.style.display = 'none';
         }
-        
+
         // Try to create or find chat room with this employer
         createChatWithEmployer(employerEmail, employerName);
     }
@@ -632,22 +633,22 @@
      */
     function showAllChatRooms() {
         console.log('📋 Opening chat rooms list');
-        
+
         // Update header for rooms list
         document.getElementById('chatName').textContent = 'Tin nhắn';
         document.getElementById('chatAvatar').textContent = '💬';
         document.getElementById('chatStatus').textContent = 'Chọn cuộc trò chuyện';
-        
+
         // Hide back button for rooms list
         const backBtn = document.getElementById('chatBackBtn');
         if (backBtn) {
             backBtn.style.display = 'none';
         }
-        
+
         // Show chat panel
         document.getElementById('chatOverlay').classList.add('show');
         document.getElementById('chatOffcanvas').classList.add('show');
-        
+
         // Load all chat rooms
         loadAllChatRooms();
     }
@@ -658,45 +659,45 @@
     async function createChatWithEmployer(employerEmail, employerName) {
         try {
             console.log('🔍 Finding employer by email:', employerEmail);
-            
+
             // First, try to find existing chat rooms
             const roomsResponse = await fetch('/api/chat/rooms');
             if (roomsResponse.ok) {
                 const rooms = await roomsResponse.json();
                 console.log('📋 Existing rooms:', rooms);
-                
+
                 // Try to find a room for this employer
-                const existingRoom = rooms.find(room => 
-                    room.otherParticipantName && 
+                const existingRoom = rooms.find(room =>
+                    room.otherParticipantName &&
                     (room.otherParticipantName.toLowerCase().includes(employerName.toLowerCase()) ||
-                     room.otherParticipantName.includes(employerEmail.split('@')[0]))
+                        room.otherParticipantName.includes(employerEmail.split('@')[0]))
                 );
-                
+
                 if (existingRoom) {
                     console.log('✅ Found existing room:', existingRoom);
                     currentChatRoomId = String(existingRoom.chatRoomId);
-                    
+
                     // Join WebSocket room
                     if (chatWebSocketClient && chatWebSocketClient.connected) {
                         // Subscribe to room messages
                         subscribeToRoomMessages(currentChatRoomId);
-                        
+
                         chatWebSocketClient.publish({
                             destination: '/app/chat.joinRoom',
                             body: JSON.stringify({ chatRoomId: Number(currentChatRoomId) })
                         });
                     }
-                    
-                    // Load chat history
-                    loadChatHistory(currentChatRoomId);
+
+                    // Load chat history AND enable input/UI
+                    showReadyChatInterface(employerName);
                     return;
                 }
             }
-            
+
             // If no existing room found, try to CREATE REAL chat room
             console.log('🏗️ No existing room found, creating REAL chat room for:', employerName, employerEmail);
             await createRealChatRoomWithEmployer(employerName, employerEmail);
-            
+
         } catch (error) {
             console.error('Error finding/creating chat room:', error);
             createNewChatSession(employerName, employerEmail);
@@ -709,10 +710,10 @@
     async function createRealChatRoomWithEmployer(employerName, employerEmail) {
         try {
             console.log('🏗️ Creating REAL chat room via API for:', employerName, employerEmail);
-            
+
             // Try to find employer ID by email first
             const employerResponse = await fetch(`/api/employers/findByEmail?email=${encodeURIComponent(employerEmail)}`);
-            
+
             let employerUserId = null;
             if (employerResponse.ok) {
                 const employerData = await employerResponse.json();
@@ -720,13 +721,13 @@
                 console.log('👤 Found employer data:', employerData);
                 console.log('👤 Using employer userId:', employerUserId);
             }
-            
+
             if (!employerUserId) {
                 console.warn('⚠️ Could not find employer userId, creating demo session');
                 createNewChatSession(employerName, employerEmail);
                 return;
             }
-            
+
             // Create real chat room via API
             const createRoomResponse = await fetch('/api/chat/rooms', {
                 method: 'POST',
@@ -735,39 +736,39 @@
                 },
                 body: JSON.stringify({
                     studentId: window.currentUserId,   // Student's Account.userId
-                    employerId: employerUserId,        // Employer's Account.userId  
+                    employerId: employerUserId,        // Employer's Account.userId
                     jobPostId: null                    // General chat, not job-specific
                 })
             });
-            
+
             if (createRoomResponse.ok) {
                 const newRoom = await createRoomResponse.json();
                 console.log('✅ Successfully created real chat room:', newRoom);
-                
+
                 currentChatRoomId = String(newRoom.chatRoomId);
-                
+
                 // Join WebSocket room
                 if (chatWebSocketClient && chatWebSocketClient.connected) {
                     // Subscribe to room messages
                     subscribeToRoomMessages(currentChatRoomId);
-                    
+
                     chatWebSocketClient.publish({
                         destination: '/app/chat.joinRoom',
                         body: JSON.stringify({ chatRoomId: Number(currentChatRoomId) })
                     });
-                    
+
                     // Mark messages as read
                     markMessagesAsRead(currentChatRoomId);
                 }
-                
+
                 // Show ready chat interface
                 showReadyChatInterface(employerName);
-                
+
             } else {
                 console.error('❌ Failed to create chat room via API');
                 createNewChatSession(employerName, employerEmail);
             }
-            
+
         } catch (error) {
             console.error('Error creating real chat room:', error);
             createNewChatSession(employerName, employerEmail);
@@ -781,7 +782,7 @@
         // LOAD CHAT HISTORY FIRST before showing UI
         console.log('📜 Loading chat history for room:', currentChatRoomId);
         loadChatHistory(currentChatRoomId);
-        
+
         // Enable input for sending messages
         const messageInput = document.getElementById('messageInput');
         const sendButton = messageInput.nextElementSibling;
@@ -791,13 +792,13 @@
             sendButton.disabled = false;
             messageInput.focus();
         }
-        
+
         // Update chat title and status
         document.getElementById('chatName').textContent = `💬 ${employerName}`;
         document.getElementById('chatStatus').textContent = 'Đang hoạt động';
         document.getElementById('chatOverlay').classList.add('show');
         document.getElementById('chatOffcanvas').classList.add('show');
-        
+
         console.log('✅ Chat ready with history for:', employerName);
     }
 
@@ -806,9 +807,9 @@
      */
     function createNewChatSession(employerName, employerEmail) {
         console.log('📝 Creating new chat session for:', employerName, employerEmail);
-        
+
         const messagesContainer = document.getElementById('chatMessages');
-        
+
         messagesContainer.innerHTML = `
             <div style="text-align: center; padding: 20px; color: #666;">
                 <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
@@ -822,7 +823,7 @@
                 </div>
             </div>
         `;
-        
+
         // Enable input for sending messages
         const messageInput = document.getElementById('messageInput');
         const sendButton = messageInput.nextElementSibling;
@@ -832,7 +833,7 @@
             sendButton.disabled = false;
             messageInput.focus();
         }
-        
+
         // Set a temporary room ID for this conversation
         currentChatRoomId = 'new_' + employerEmail.replace('@', '_').replace('.', '_');
         console.log('📝 Created new chat session with ID:', currentChatRoomId);
@@ -847,12 +848,12 @@
             if (!response.ok) {
                 throw new Error('Failed to load chat rooms');
             }
-            
+
             const rooms = await response.json();
             console.log('📋 Loaded chat rooms:', rooms);
-            
+
             showChatRoomsList(rooms);
-            
+
         } catch (error) {
             console.error('❌ Error loading chat rooms:', error);
             showRoomsError();
@@ -864,7 +865,7 @@
      */
     function showChatRoomsList(rooms) {
         const messagesContainer = document.getElementById('chatMessages');
-        
+
         if (!rooms || rooms.length === 0) {
             messagesContainer.innerHTML = `
                 <div style="text-align: center; padding: 40px 20px; color: #666;">
@@ -875,7 +876,7 @@
                     </p>
                 </div>
             `;
-            
+
             // Disable input for rooms list
             const messageInput = document.getElementById('messageInput');
             const sendButton = messageInput.nextElementSibling;
@@ -884,10 +885,10 @@
                 sendButton.disabled = true;
                 messageInput.placeholder = 'Chọn cuộc trò chuyện để gửi tin nhắn...';
             }
-            
+
             return;
         }
-        
+
         // Create rooms list HTML
         const roomsHTML = rooms.map(room => {
             const participantName = room.otherParticipantName || 'Nhà tuyển dụng';
@@ -895,17 +896,17 @@
             const lastMessageTime = room.lastMessageTime || '';
             const avatar = participantName.charAt(0).toUpperCase();
             const unreadBadge = room.unreadCount > 0 ? `<span style="background: #ff4757; color: white; font-size: 11px; padding: 2px 6px; border-radius: 10px; margin-left: 5px;">${room.unreadCount}</span>` : '';
-            
+
             return `
-                <div class="chat-room-item" onclick="openChatRoom(${room.chatRoomId}, '${participantName}')" 
+                <div class="chat-room-item" onclick="openChatRoom(${room.chatRoomId}, '${participantName}')"
                      style="display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s; border-radius: 8px; margin-bottom: 5px;"
                      onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='white'">
-                    
-                    <div style="width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+
+                    <div style="width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                                color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px; font-size: 18px;">
                         ${avatar}
                     </div>
-                    
+
                     <div style="flex: 1; min-width: 0;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                             <h6 style="margin: 0; font-weight: 600; color: #333; font-size: 15px;">${participantName}</h6>
@@ -921,7 +922,7 @@
                 </div>
             `;
         }).join('');
-        
+
         messagesContainer.innerHTML = `
             <div style="padding: 10px;">
                 <div style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #667eea;">
@@ -932,7 +933,7 @@
                 ${roomsHTML}
             </div>
         `;
-        
+
         // Disable input for rooms list
         const messageInput = document.getElementById('messageInput');
         const sendButton = messageInput.nextElementSibling;
@@ -948,36 +949,36 @@
      */
     function openChatRoom(roomId, participantName) {
         console.log('🔓 Opening chat room:', roomId, 'with participant:', participantName);
-        
+
         // Update header for individual chat
         document.getElementById('chatName').textContent = participantName;
         document.getElementById('chatAvatar').textContent = participantName.charAt(0).toUpperCase();
         document.getElementById('chatStatus').textContent = 'Đang hoạt động';
-        
+
         // Show back button for individual chat
         const backBtn = document.getElementById('chatBackBtn');
         if (backBtn) backBtn.style.display = 'inline-block';
-        
+
         // Set current room
         currentChatRoomId = String(roomId);
-        
-        // Join WebSocket room  
+
+        // Join WebSocket room
         if (chatWebSocketClient && chatWebSocketClient.connected) {
             // Subscribe to room messages
             subscribeToRoomMessages(roomId);
-            
+
             chatWebSocketClient.publish({
                 destination: '/app/chat.joinRoom',
                 body: JSON.stringify({ chatRoomId: Number(roomId) })
             });
-            
+
             // Mark messages as read
             markMessagesAsRead(roomId);
         }
-        
+
         // Load chat history
         loadChatHistory(roomId);
-        
+
         // Enable input
         const messageInput = document.getElementById('messageInput');
         const sendButton = messageInput.nextElementSibling;
@@ -985,7 +986,7 @@
             messageInput.disabled = false;
             sendButton.disabled = false;
             messageInput.placeholder = `Nhập tin nhắn cho ${participantName}...`;
-            
+
             // Focus on input
             setTimeout(() => {
                 messageInput.focus();
@@ -1007,13 +1008,13 @@
             .then(messages => {
                 const messagesContainer = document.getElementById('chatMessages');
                 messagesContainer.innerHTML = '';
-                
+
                 const messageList = Array.isArray(messages) ? messages : (messages.content || []);
-                
+
                 messageList.forEach(message => {
                     addMessageToUI(message);
                 });
-                
+
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             })
             .catch(error => {
@@ -1033,25 +1034,25 @@
      */
     function sendMessage(event) {
         event.preventDefault();
-        
+
         const messageInput = document.getElementById('messageInput');
         const messageText = messageInput.value.trim();
-        
+
         if (!messageText || !currentChatRoomId) return;
-        
+
         // Handle demo chat sessions (fallback mode)
         if (String(currentChatRoomId).startsWith('new_') || String(currentChatRoomId).startsWith('temp_')) {
             console.log('📤 Sending message in demo mode');
-            
+
             addMessageToUI({
                 content: messageText,
                 senderId: window.currentUserId,
                 sentAt: new Date().toISOString(),
                 senderName: window.currentUserName
             });
-            
+
             messageInput.value = '';
-            
+
             setTimeout(() => {
                 addMessageToUI({
                     content: 'Tin nhắn demo - API tạo chat room thất bại.',
@@ -1060,26 +1061,26 @@
                     senderName: 'Demo'
                 });
             }, 1500);
-            
+
             return;
         }
-        
+
         // Send via WebSocket for real rooms
         if (chatWebSocketClient && chatWebSocketClient.connected) {
             console.log('📤 Sending message via WebSocket:', messageText);
-            
+
             const messageData = {
                 chatRoomId: Number(currentChatRoomId),
                 content: messageText,
                 senderId: window.currentUserId,
                 senderType: 'STUDENT'
             };
-            
+
             chatWebSocketClient.publish({
                 destination: '/app/chat.sendMessage',
                 body: JSON.stringify(messageData)
             });
-            
+
             messageInput.value = '';
         } else {
             console.error('❌ WebSocket not connected');
@@ -1093,10 +1094,10 @@
     function addMessageToUI(message) {
         const messagesContainer = document.getElementById('chatMessages');
         if (!messagesContainer) return;
-        
+
         const isSent = message.senderId == window.currentUserId;
         const messageClass = isSent ? 'sent' : 'received';
-        
+
         const messageHTML = `
             <div class="message ${messageClass}">
                 <div class="message-bubble">
@@ -1105,7 +1106,7 @@
                 </div>
             </div>
         `;
-        
+
         messagesContainer.insertAdjacentHTML('beforeend', messageHTML);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
@@ -1119,7 +1120,7 @@
         const messageClass = isSent ? 'sent' : 'received';
         const senderName = message.senderName || (isSent ? 'Bạn' : 'Họ');
         const messageTime = formatMessageTime(message.sentAt);
-        
+
         const messageHTML = `
             <div class="message ${messageClass}">
                 <div class="message-bubble">
@@ -1128,7 +1129,7 @@
                 </div>
             </div>
         `;
-        
+
         messagesContainer.insertAdjacentHTML('beforeend', messageHTML);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
@@ -1138,7 +1139,7 @@
      */
     function handleNewMessage(message) {
         console.log('📨 New message received:', message);
-        
+
         if (currentChatRoomId && message.chatRoomId == Number(currentChatRoomId)) {
             console.log('✅ Adding message to current chat UI');
             addMessageToUI(message);
@@ -1152,9 +1153,9 @@
         if (!timeString) return '';
         try {
             const date = new Date(timeString);
-            return date.toLocaleTimeString('vi-VN', { 
-                hour: '2-digit', 
-                minute: '2-digit' 
+            return date.toLocaleTimeString('vi-VN', {
+                hour: '2-digit',
+                minute: '2-digit'
             });
         } catch (error) {
             return '';
@@ -1166,7 +1167,7 @@
      */
     function goBackToRooms() {
         console.log('⬅️ Going back to rooms list');
-        
+
         // Leave current room
         if (chatWebSocketClient && currentChatRoomId) {
             chatWebSocketClient.publish({
@@ -1175,7 +1176,7 @@
             });
             currentChatRoomId = null;
         }
-        
+
         // Show rooms list
         showAllChatRooms();
     }
@@ -1192,7 +1193,7 @@
             });
             currentChatRoomId = null;
         }
-        
+
         document.getElementById('chatOverlay').classList.remove('show');
         document.getElementById('chatOffcanvas').classList.remove('show');
     }

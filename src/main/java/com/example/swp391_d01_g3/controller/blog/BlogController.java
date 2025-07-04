@@ -1,17 +1,19 @@
 package com.example.swp391_d01_g3.controller.blog;
 
+import com.example.swp391_d01_g3.model.Account;
 import com.example.swp391_d01_g3.service.blog.IBlogService;
 import com.example.swp391_d01_g3.model.BlogPost;
 import com.example.swp391_d01_g3.model.Resource;
+import com.example.swp391_d01_g3.service.security.IAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.Optional;
@@ -22,19 +24,23 @@ public class BlogController {
 
     @Autowired
     private IBlogService blogService;
+    
+    @Autowired
+    private IAccountService accountService;
 
     /**
      * Hiển thị danh sách blog posts với phân trang và lọc
      */
     @GetMapping
     public String blogList(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "6") int size,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "3") int size,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String search,
             Model model, Principal principal) {
         
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        // Convert 1-based page to 0-based for Spring Data
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("createdAt").descending());
         Page<BlogPost> blogPosts;
         
         // Lọc theo category và search
@@ -78,8 +84,10 @@ public class BlogController {
         model.addAttribute("totalElements", blogPosts.getTotalElements());
         if (principal != null) {
             model.addAttribute("userEmail", principal.getName());
+            Account account = accountService.findByEmail(principal.getName());
+            model.addAttribute("account", account);
         }
-        return "blog/blog-list";
+        return "blog/blogPost";
     }
 
     /**
@@ -111,6 +119,8 @@ public class BlogController {
         model.addAttribute("previousPost", previousPost.orElse(null));
         if (principal != null) {
             model.addAttribute("userEmail", principal.getName());
+            Account account = accountService.findByEmail(principal.getName());
+            model.addAttribute("account", account);
         }
         
         return "blog/blog-detail";
@@ -122,11 +132,12 @@ public class BlogController {
     @GetMapping("/api/load-more")
     @ResponseBody
     public Page<BlogPost> loadMorePosts(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "6") int size,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "3") int size,
             @RequestParam(required = false) String category) {
         
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        // Convert 1-based page to 0-based for Spring Data
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("createdAt").descending());
         
         if (category != null && !category.isEmpty()) {
             return blogService.findByCategory(category, pageable);

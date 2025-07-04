@@ -12,6 +12,15 @@ public interface IAdminEmployerService {
 
     Page<Account> getEmployersWithPagination(int page, int size);
     Page<Account> searchEmployers(String keyword, int page, int size);
+
+    // THÊM: Filter methods
+    Page<Account> findByStatus(String status, int page, int size);
+    Page<Account> searchByKeywordAndStatus(String keyword, String status, int page, int size);
+
+    // THÊM: Count methods cho badges
+    long countAllEmployers();
+    long countEmployersByStatus(String status);
+
     // Ban nhà tuyển dụng (thay đổi trạng thái thành INACTIVE)
     void banEmployer(Integer userId);
 

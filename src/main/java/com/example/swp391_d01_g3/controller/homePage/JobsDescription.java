@@ -41,7 +41,7 @@ public class JobsDescription {
         List<JobPost> jobPosts = iJobpostService.findAllWithEmployer(id);
         model.addAttribute("jobPosts", jobPosts);
 
-        // Tạo DTO cho modal form (chỉ bind dữ liệu form)
+        // Tạo DTO cho modal form
         JobApplicationDTO jobApplicationDTO = new JobApplicationDTO();
         
         // Lấy thông tin user nếu đã đăng nhập
@@ -53,6 +53,10 @@ public class JobsDescription {
             model.addAttribute("account", userAccount);
 
             if (userAccount != null) {
+                // Auto-fill họ tên và email từ database vào JobApplicationDTO
+                jobApplicationDTO.setFullname(userAccount.getFullName());
+                jobApplicationDTO.setEmail(userAccount.getEmail());
+                
                 // Chỉ lấy thông tin student nếu user có role student
                 Student studentDetails = iStudentService.findByAccountUserId(userAccount.getUserId());
                 if (studentDetails != null){
@@ -61,13 +65,8 @@ public class JobsDescription {
                     // Kiểm tra xem student đã apply vào job này chưa
                     boolean hasApplied = jobApplicationService.hasStudentAppliedToJob(studentDetails.getStudentId(), id);
                     model.addAttribute("hasApplied", hasApplied);
-                    
-                    System.out.println("Student ID: " + studentDetails.getStudentId());
-                    System.out.println("Has Applied: " + hasApplied);
                 }
-                // Không redirect nếu không phải student - cho phép tất cả role xem
             } else {
-                // Nếu không tìm thấy account, redirect về trang login
                 return "redirect:/Login";
             }
         }

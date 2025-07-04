@@ -34,8 +34,6 @@
             </a>
           </div>
           <a th:href="@{/top-jobs}" class="nav-link" th:text="#{nav.jobs}">Việc làm</a>
-          <a href="#" class="nav-link" th:text="#{nav.createCV}">Tạo CV</a>
-          <a href="#" class="nav-link" th:text="#{nav.tools}">Công cụ</a>
           <a th:href="@{/Blog}" class="nav-link" th:text="#{nav.blogs}">Blogs</a>
           <a th:href="@{/Events}" class="nav-link" th:text="#{nav.events}">Events</a>
         </div>
@@ -77,13 +75,22 @@
             <div class="dropdown" th:if="${userEmail}">
               <input type="checkbox" id="account-toggle" class="dropdown-toggle"/>
               <label for="account-toggle" class="nav-link user-greeting">
-                <i class="bi bi-person-circle"></i>
+                <div class="navbar-user-info">
+                  <div class="navbar-user-avatar">
+                    <img th:if="${account != null and account.avatarUrl != null and account.avatarUrl != ''}" 
+                         th:src="${account.avatarUrl}" 
+                         alt="Avatar" class="navbar-avatar-img"/>
+                    <i th:unless="${account != null and account.avatarUrl != null and account.avatarUrl != ''}" 
+                       class="bi bi-person-circle navbar-avatar-fallback"></i>
+                  </div>
+                  <span class="navbar-user-name" th:text="${account != null ? account.fullName : #authentication.name}">User Name</span>
+                </div>
                 <i class="bi bi-caret-down-fill"></i>
               </label>
 
               <div class="dropdown-menu">
-                <a class="dropdown-item" th:href="@{/Student}"  sec:authorize="hasRole('student')"  th:text="#{nav.account}">Tài khoản</a>
-                <a class="dropdown-item" th:href="@{/Employer}" sec:authorize="hasRole('employer')" th:text="#{nav.account}">Tài khoản</a>
+                <a class="dropdown-item" th:href="@{/Student/Profile}"  sec:authorize="hasRole('student')"  th:text="#{nav.account}">Tài khoản</a>
+                <a class="dropdown-item" th:href="@{/Employer/Profile}" sec:authorize="hasRole('employer')" th:text="#{nav.account}">Tài khoản</a>
                 <a class="dropdown-item" th:href="@{/Admin}"    sec:authorize="hasRole('admin')"    th:text="#{nav.account}">Tài khoản</a>
               </div>
             </div>

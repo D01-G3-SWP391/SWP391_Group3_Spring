@@ -86,7 +86,7 @@
       <div class="row">
         <div class="col-md-4 text-center">
           <img class="avatar-large"
-               th:src="${employer.logoUrl != null ? employer.logoUrl : '/images/default-company.png'}"
+                                       th:src="${employer.account.avatarUrl != null ? employer.account.avatarUrl : '/images/default-company.png'}"
                alt="Company Logo" />
           <h4 class="mt-3 mb-2" th:text="${employer.companyName ?: 'Company Name Not Set'}"></h4>
           <span class="badge bg-info" th:text="${employer.jobField != null ? employer.jobField.jobFieldName : 'No Field Set'}"></span>
@@ -127,7 +127,7 @@
         <i class="bi bi-file-text me-2"></i>Company Description
       </h5>
       <div class="company-description">
-        <p th:text="${employer.companyDescription}"></p>
+        <p th:utext="${employer.companyDescription}"></p>
       </div>
     </div>
 

@@ -14,6 +14,12 @@ public interface IAdminEventService {
     // View Career Event List
     Page<Event> getAllEvents(int page, int size);
     Page<Event> searchAllEvents(String keyword, Event.ApprovalStatus status, int page, int size);
+
+    // THÊM: Search methods với keyword only
+    Page<Event> searchEventsByKeyword(String keyword, int page, int size);
+    Page<Event> searchEventsByKeywordAndStatus(String keyword, Event.ApprovalStatus status, int page, int size);
+    Page<Event> getEventsByStatus(Event.ApprovalStatus status, int page, int size);
+
     Event getEventById(Integer eventId);
 
     // Update Career Event
@@ -23,7 +29,8 @@ public interface IAdminEventService {
     void deleteEvent(Integer eventId);
     boolean canDeleteEvent(Integer eventId);
 
-    // Statistics
+    // THÊM: Count methods cho filter badges
+    long getTotalEventsCount();
     long getPendingCount();
     long getApprovedCount();
     long getRejectedCount();

@@ -22,11 +22,18 @@
     <!-- Header with user profile -->
     <div class="sidebar-header">
         <div class="user-profile">
-            <div class="user-avatar" sec:authentication="name" th:text="${#strings.substring(#authentication.name, 0, 1)}">
-                J
+            <div class="user-avatar">
+                <!-- Display avatar image if available, otherwise show initials -->
+                <img th:if="${account != null and account.avatarUrl != null and account.avatarUrl != ''}" 
+                     th:src="${account.avatarUrl}" 
+                     alt="User Avatar" 
+                     class="avatar-img"/>
+                <span th:if="${account == null or account.avatarUrl == null or account.avatarUrl == ''}" 
+                      class="avatar-text" 
+                      th:text="${account != null ? #strings.substring(account.fullName != null ? account.fullName : account.email, 0, 1) : 'U'}">U</span>
             </div>
             <div class="user-info">
-                <h4 sec:authentication="name" th:text="${#authentication.name}">John Doe</h4>
+                <h4 th:text="${account != null ? account.fullName : #authentication.name}">John Doe</h4>
                 <p th:text="#{nav.employer.role}">Employer</p>
             </div>
         </div>
@@ -40,13 +47,7 @@
             <div class="nav-item">
                 <a th:href="@{/}" class="nav-link" data-path="/Employer">
                     <i class="bi bi-house-door nav-icon"></i>
-                    <span th:text="#{nav.home}">Dashboard</span>
-                </a>
-            </div>
-            <div class="nav-item">
-                <a th:href="@{/Employer}" class="nav-link" data-path="/Employer">
-                    <i class="bi bi-house-door nav-icon"></i>
-                    <span th:text="#{nav.dashboard}">Dashboard</span>
+                    <span th:text="#{nav.home}"></span>
                 </a>
             </div>
             <div class="nav-item">
@@ -66,6 +67,12 @@
                     <span th:text="#{nav.job.list}">Job List</span>
                 </a>
             </div>
+            <div class="nav-item">
+                <a th:href="@{/Employer/SearchCandidate}" class="nav-link" data-path="/Employer/SearchCandidate">
+                    <i class="bi bi-briefcase nav-icon"></i>
+                    <span th:text="#{nav.job.searchCandidate}"></span>
+                </a>
+            </div>
         </div>
 
         <!-- Events & Activities -->
@@ -82,8 +89,13 @@
         <!-- Settings -->
         <div class="nav-section">
             <div class="nav-section-title" th:text="#{nav.settings}">Settings</div>
-            
-            <!-- Language Dropdown -->
+
+            <div class="nav-item">
+                <a th:href="@{/Report/CreateReport}" class="nav-link" data-path="/Admin/Reports">
+                    <i class="bi bi-graph-up nav-icon"></i>
+                    <span>Reports</span>
+                </a>
+            </div>
 
             <div class="nav-item">
                 <a th:href="@{/Employer/ChangePassword}" class="nav-link" data-path="/Employer/ChangePassword">
@@ -98,6 +110,7 @@
                     <span th:text="#{nav.logout}">Logout</span>
                 </a>
             </div>
+
         </div>
     </div>
 </nav>

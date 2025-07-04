@@ -41,28 +41,6 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 
-    <!-- Cleanup Actions -->
-    <div class="cleanup-card">
-        <h5><i class="bi bi-tools me-2"></i>Dọn dẹp hàng loạt</h5>
-        <div class="row g-3 cleanup-actions">
-            <div class="col-md-6">
-                <form th:action="@{/Admin/Cleanup}" method="post" class="d-flex gap-2">
-                    <input type="number" name="daysOld" value="30" min="1" max="365"
-                           class="form-control cleanup-input" style="width: 100px;"
-                           placeholder="Ngày">
-                    <button type="submit" class="btn btn-warning-custom">
-                        <i class="bi bi-clock-history me-1"></i> Xóa báo cáo cũ
-                    </button>
-                </form>
-            </div>
-            <div class="col-md-6">
-                <button type="button" class="btn btn-danger-custom" onclick="deleteSelectedReports()">
-                    <i class="bi bi-trash me-1"></i> Xóa báo cáo đã chọn
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- Reports Table -->
     <div class="reports-card">
         <div class="d-flex justify-content-between align-items-center mb-3">

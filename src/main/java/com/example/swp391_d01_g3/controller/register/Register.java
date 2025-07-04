@@ -26,6 +26,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Date;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Controller
 @RequestMapping("/Register")
@@ -118,13 +120,12 @@ public class Register {
             return "register/registerStudentPage";
         }
         
-        // Kiểm tra số điện thoại đã tồn tại chưa (nếu cần)
-        // Account existingPhoneAccount = iAccountService.findByPhone(accountDTO.getPhone());
-        // if (existingPhoneAccount != null) {
-        //     bindingResult.rejectValue("phone", "error.phone", "Số điện thoại này đã được sử dụng. Vui lòng chọn số khác.");
-        //     model.addAttribute("accountDTO", accountDTO);
-        //     return "register/registerStudentPage";
-        // }
+        // Kiểm tra số điện thoại đã tồn tại chưa
+        if (iAccountService.existsByPhone(accountDTO.getPhone())) {
+            bindingResult.rejectValue("phone", "error.phone", "Số điện thoại này đã được sử dụng. Vui lòng chọn số khác.");
+            model.addAttribute("accountDTO", accountDTO);
+            return "register/registerStudentPage";
+        }
         
         try {
             // Tạo DTO để lưu trong session
@@ -134,21 +135,32 @@ public class Register {
             pendingRegistration.setPassword(passwordEncoder.encode(accountDTO.getPassword()));
             
             // Gửi OTP và lưu thông tin trong session
-            Integer otp = emailService.sendVerifyMailForRegistration(accountDTO.getEmail(), accountDTO.getFullName());
+            CompletableFuture<Integer> otpFuture = emailService.sendVerifyMailForRegistration(accountDTO.getEmail(), accountDTO.getFullName());
+            
+            // Lấy giá trị OTP từ CompletableFuture (async call sẽ block ở đây)
+            Integer otp = otpFuture.get(); // Chờ async operation hoàn thành
             
             // Lưu thông tin đăng ký và OTP trong session
             session.setAttribute("pendingRegistration", pendingRegistration);
             session.setAttribute("registrationOTP", otp);
-            session.setAttribute("otpExpirationTime", new Date(System.currentTimeMillis() + 5 * 60 * 1000)); // 5 phút
+            session.setAttribute("otpExpirationTime", new Date(System.currentTimeMillis() + 10 * 60 * 1000)); // 10 phút
             
             // Log successful registration attempt
-            System.out.println("Registration OTP sent successfully to: " + accountDTO.getEmail());
+            System.out.println("Registration OTP sent successfully to: " + accountDTO.getEmail() + " with OTP: " + otp);
             
             redirectAttributes.addFlashAttribute("messages", "Mã OTP đã được gửi đến email của bạn. Vui lòng kiểm tra và nhập mã để hoàn tất đăng ký.");
             return "redirect:/Register/EmailVerification/verify?email=" + accountDTO.getEmail();
             
+        } catch (ExecutionException | InterruptedException e) {
+            // Log email specific error
+            System.err.println("Error sending registration email to student: " + e.getMessage());
+            e.printStackTrace();
+            
+            model.addAttribute("accountDTO", accountDTO);
+            model.addAttribute("errorMessage", "Đã xảy ra lỗi khi gửi email xác thực. Vui lòng thử lại sau.");
+            return "register/registerStudentPage";
         } catch (Exception e) {
-            // Log error
+            // Log general error
             System.err.println("Error during student registration: " + e.getMessage());
             e.printStackTrace();
             
@@ -207,6 +219,14 @@ public class Register {
             return "register/registerEmployerPage";
         }
         
+        // Kiểm tra số điện thoại đã tồn tại chưa
+        if (iAccountService.existsByPhone(employerDTO.getPhone())) {
+            bindingResult.rejectValue("phone", "error.phone", "Số điện thoại này đã được sử dụng. Vui lòng chọn số khác.");
+            model.addAttribute("accountEmployerDTO", employerDTO);
+            model.addAttribute("jobFields", iJobfieldService.findAll());
+            return "register/registerEmployerPage";
+        }
+        
         // Kiểm tra job field hợp lệ
         Optional<JobField> jobFieldOptional = iJobfieldService.findById(employerDTO.getJobsFieldId());
         if (!jobFieldOptional.isPresent()) {
@@ -230,12 +250,15 @@ public class Register {
             pendingRegistration.setJobsFieldId(employerDTO.getJobsFieldId());
             
             // Gửi OTP và lưu thông tin trong session
-            Integer otp = emailService.sendVerifyMailForRegistration(employerDTO.getEmail(), employerDTO.getFullName());
+            CompletableFuture<Integer> otpFuture = emailService.sendVerifyMailForRegistration(employerDTO.getEmail(), employerDTO.getFullName());
+            
+            // Lấy giá trị OTP từ CompletableFuture (async call sẽ block ở đây)
+            Integer otp = otpFuture.get(); // Chờ async operation hoàn thành
             
             // Lưu thông tin đăng ký và OTP trong session
             session.setAttribute("pendingRegistration", pendingRegistration);
             session.setAttribute("registrationOTP", otp);
-            session.setAttribute("otpExpirationTime", new Date(System.currentTimeMillis() + 5 * 60 * 1000)); // 5 phút
+            session.setAttribute("otpExpirationTime", new Date(System.currentTimeMillis() + 10 * 60 * 1000)); // 10 phút
             
             // Log successful registration attempt
             System.out.println("Employer registration OTP sent successfully to: " + employerDTO.getEmail());
@@ -243,8 +266,17 @@ public class Register {
             redirectAttributes.addFlashAttribute("messages", "Mã OTP đã được gửi đến email của bạn. Vui lòng kiểm tra và nhập mã để hoàn tất đăng ký.");
             return "redirect:/Register/EmailVerification/verify?email=" + employerDTO.getEmail();
             
+        } catch (ExecutionException | InterruptedException e) {
+            // Log email specific error
+            System.err.println("Error sending registration email to employer: " + e.getMessage());
+            e.printStackTrace();
+            
+            model.addAttribute("accountEmployerDTO", employerDTO);
+            model.addAttribute("jobFields", iJobfieldService.findAll());
+            model.addAttribute("errorMessage", "Đã xảy ra lỗi khi gửi email xác thực. Vui lòng thử lại sau.");
+            return "register/registerEmployerPage";
         } catch (Exception e) {
-            // Log error
+            // Log general error
             System.err.println("Error during employer registration: " + e.getMessage());
             e.printStackTrace();
             
