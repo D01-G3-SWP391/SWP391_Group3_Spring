@@ -482,6 +482,49 @@ public class EmailService {
             return CompletableFuture.failedFuture(e);
         }
     }
+    @Async("emailTaskExecutor")
+    public CompletableFuture<Void> sendBanMail(String employerEmail) {
+//        try {
+//            String subject = "📬 Đơn ứng tuyển mới - " + jobTitle;
+//
+//            StringBuilder body = new StringBuilder();
+//            body.append("Xin chào ").append(employerName).append(",\n\n");
+//            body.append("🎯 Bạn có một đơn ứng tuyển mới cho vị trí: ").append(jobTitle).append("\n\n");
+//            body.append("👤 Thông tin ứng viên:\n");
+//            body.append("   • Tên: ").append(candidateName).append("\n");
+//            body.append("   • Thời gian nộp: ").append(java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))).append("\n\n");
+//
+//            body.append("📋 Để xem chi tiết và phản hồi:\n");
+//            body.append("   Truy cập: http://localhost:8080/Employer/Applications\n\n");
+//
+//            body.append("⏰ Lời khuyên:\n");
+//            body.append("   • Phản hồi sớm để tăng trải nghiệm ứng viên\n");
+//            body.append("   • Đánh giá hồ sơ một cách khách quan\n");
+//            body.append("   • Liên hệ ứng viên trong vòng 48 giờ\n\n");
+//
+//            body.append("Nếu có thắc mắc, vui lòng liên hệ với chúng tôi.\n\n");
+//            body.append("Trân trọng,\n");
+//            body.append("🏢 Đội ngũ JOB4YOU\n");
+//            body.append("📞 Hotline: 1900-xxxx\n");
+//            body.append("🌐 Website: http://localhost:8080");
+//
+//            // Gửi email trực tiếp
+//            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+//            simpleMailMessage.setTo(employerEmail);
+//            simpleMailMessage.setSubject(subject);
+//            simpleMailMessage.setText(body.toString());
+//            simpleMailMessage.setFrom("viettaifptudn@gmail.com");
+//            mailSender.send(simpleMailMessage);
+//
+//            System.out.println("New application notification email sent to employer: " + employerEmail + " - Thread: " + Thread.currentThread().getName());
+//            return CompletableFuture.completedFuture(null);
+//
+//        } catch (Exception e) {
+//            System.err.println("Failed to send new application notification email to employer: " + employerEmail + " - Error: " + e.getMessage());
+//            return CompletableFuture.failedFuture(e);
+//        }
+        return null;
+    }
 
     /**
      * Gửi email thông báo có đơn ứng tuyển mới cho employer (từ form apply)

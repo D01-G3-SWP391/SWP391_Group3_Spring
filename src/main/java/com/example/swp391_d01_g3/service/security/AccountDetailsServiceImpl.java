@@ -4,6 +4,7 @@ package com.example.swp391_d01_g3.service.security;
 
 import com.example.swp391_d01_g3.model.Account;
 import com.example.swp391_d01_g3.model.Student;
+import com.example.swp391_d01_g3.service.email.EmailService;
 import com.example.swp391_d01_g3.service.student.IStudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.DisabledException;
@@ -25,6 +26,9 @@ public class AccountDetailsServiceImpl implements UserDetailsService {
     
     @Autowired
     private IStudentService iStudentService;
+
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

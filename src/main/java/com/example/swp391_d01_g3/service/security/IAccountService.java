@@ -9,6 +9,8 @@ import java.util.List;
 public interface IAccountService {
     Account findByEmail(String email);
 
+    boolean existsByPhone(String phone);
+
     Account findByRole(Account.Role role);
 
     List<Account> findAll();
