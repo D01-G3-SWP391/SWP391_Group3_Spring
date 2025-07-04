@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${event.eventTitle} + ' - JOB4YOU'">Chi tiết sự kiện - JOB4YOU</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+    
+    <!-- AOS Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/eventPost.css}"/>
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+    <link rel="stylesheet" th:href="@{/css/footer.css}" />
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        /* Hero Section - Glassmorphism effect */
+        .hero-section {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95), rgba(118, 75, 162, 0.9)), 
+                        url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            padding: 100px 0 80px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            z-index: 1;
+        }
+
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, rgba(245, 247, 250, 0.9));
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(45deg, #fff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            max-width: 800px;
+        }
+
+        .hero-meta {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(255, 255, 255, 0.25);
+            padding: 1rem 1.8rem;
+            border-radius: 25px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .meta-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        .meta-item i {
+            font-size: 1.3rem;
+            color: #ffd700;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 1.2rem 3rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.4s ease;
+            border: none;
+            box-shadow: 0 15px 35px rgba(238, 90, 36, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(238, 90, 36, 0.6);
+            color: white;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            position: relative;
+            z-index: 3;
+            box-shadow: 0 -20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Why Join Section */
+        .why-join-section {
+            padding: 120px 0;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #e2e8f0 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .why-join-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.05) 0%, transparent 70%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(135deg, #e91e63, #ad1457);
+            border-radius: 2px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-top: 4rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 3rem;
+            text-align: left;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 25px 25px 0 0;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-12px) rotateX(5deg);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-icon.pink { background: linear-gradient(135deg, #e91e63, #ad1457); }
+        .feature-icon.blue { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .feature-icon.purple { background: linear-gradient(135deg, #764ba2, #667eea); }
+        .feature-icon.orange { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        .feature-icon.green { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .feature-icon.gradient { background: linear-gradient(135deg, #a8edea, #fed6e3); }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            color: #718096;
+            line-height: 1.6;
+        }
+
+        /* Timeline Section */
+        .timeline-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timeline-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .timeline-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            padding-left: 30px;
+        }
+
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, #ffd700, #ff6b6b);
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 3rem;
+            padding-left: 50px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -35px;
+            top: 8px;
+            width: 15px;
+            height: 15px;
+            background: #ffd700;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .timeline-time {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .timeline-content h4 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #ffd700;
+        }
+
+        .timeline-content p {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+        }
+
+        /* Registration Section */
+        .registration-section {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+            padding: 120px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .registration-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+            z-index: 1;
+        }
+
+        .registration-section::after {
+            content: 'REGISTER';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 12rem;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.02);
+            z-index: 1;
+            letter-spacing: 30px;
+        }
+
+        .registration-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .registration-title {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+        }
+
+        .registration-form {
+            max-width: 800px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 1.2rem 1.8rem;
+            color: white;
+            font-size: 1rem;
+            backdrop-filter: blur(15px);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.2), 0 12px 35px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .form-control[readonly] {
+            background: rgba(255, 255, 255, 0.08);
+            cursor: not-allowed;
+            opacity: 0.7;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .register-button {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 1.5rem 4rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            margin-top: 3rem;
+            grid-column: 1 / -1;
+            justify-self: center;
+            box-shadow: 0 15px 35px rgba(238, 90, 36, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .register-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .register-button:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(238, 90, 36, 0.6);
+        }
+
+        .register-button:hover::before {
+            left: 100%;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.5rem; }
+            .section-title { font-size: 2.2rem; }
+            .features-grid { grid-template-columns: 1fr; }
+            .registration-form { grid-template-columns: 1fr; }
+            .hero-meta { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Include Navbar -->
+    <div th:replace="~{navbar/navbarHome}"></div>
+
+    <!-- Carousel Section từ eventPost.html -->
+    <div class="container py-5">
+        <div class="carousel-section">
+            <div id="eventsCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#eventsCarousel" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#eventsCarousel" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#eventsCarousel" data-bs-slide-to="2"></button>
+                </div>
+                <div class="carousel-inner">
+                    <!-- First Slide -->
+                    <div class="carousel-item active" style="background-image: url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=2000&q=80')">
+                        <div class="carousel-overlay">
+                            <div class="carousel-content">
+                                <h2 class="carousel-title">Sự kiện nghề nghiệp</h2>
+                                <p class="carousel-description">Khám phá các sự kiện, hội thảo và cơ hội networking từ các doanh nghiệp hàng đầu</p>
+                                <div class="carousel-meta">
+                                    <div class="carousel-meta-item">
+                                        <i class="bi bi-calendar-event"></i>
+                                        <span>Cập nhật hàng tuần</span>
+                                    </div>
+                                    <div class="carousel-meta-item">
+                                        <i class="bi bi-building"></i>
+                                        <span>Từ các công ty hàng đầu</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Second Slide -->
+                    <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1559223607-a43c990c692c?auto=format&fit=crop&w=2000&q=80')">
+                        <div class="carousel-overlay">
+                            <div class="carousel-content">
+                                <h2 class="carousel-title">Hội thảo chuyên môn</h2>
+                                <p class="carousel-description">Tham gia các buổi hội thảo để nâng cao kiến thức và kỹ năng chuyên môn</p>
+                                <div class="carousel-meta">
+                                    <div class="carousel-meta-item">
+                                        <i class="bi bi-people"></i>
+                                        <span>Chuyên gia hàng đầu</span>
+                                    </div>
+                                    <div class="carousel-meta-item">
+                                        <i class="bi bi-award"></i>
+                                        <span>Chứng chỉ sau khóa học</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Third Slide -->
+                    <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&w=2000&q=80')">
+                        <div class="carousel-overlay">
+                            <div class="carousel-content">
+                                <h2 class="carousel-title">Cơ hội việc làm</h2>
+                                <p class="carousel-description">Kết nối trực tiếp với nhà tuyển dụng thông qua các sự kiện tuyển dụng</p>
+                                <div class="carousel-meta">
+                                    <div class="carousel-meta-item">
+                                        <i class="bi bi-briefcase"></i>
+                                        <span>Phỏng vấn trực tiếp</span>
+                                    </div>
+                                    <div class="carousel-meta-item">
+                                        <i class="bi bi-graph-up"></i>
+                                        <span>Cơ hội thăng tiến</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#eventsCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#eventsCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section - Thông tin sự kiện -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-content" data-aos="fade-up">
+                <h1 class="hero-title" th:text="${event.eventTitle}">Welcome to the Biggest Creative Design Conference</h1>
+                <p class="hero-description" th:text="${event.eventDescription}">
+                    At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.
+                </p>
+                
+                <div class="hero-meta">
+                    <div class="meta-item">
+                        <i class="bi bi-calendar-event"></i>
+                        <span th:text="${#temporals.format(event.eventDate, 'dd/MM/yyyy HH:mm')}">25/12/2024 09:00</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="bi bi-geo-alt"></i>
+                        <span th:text="${event.eventLocation}">TP.HCM</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="bi bi-building"></i>
+                        <span th:text="${event.employer.companyName}">Tech Company</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="bi bi-people"></i>
+                        <span th:text="${event.currentParticipants} + '/' + ${event.maxParticipants != null ? event.maxParticipants : '∞'}">50/100</span>
+                    </div>
+                </div>
+
+                <a href="#register-section" class="cta-button">
+                    <i class="bi bi-calendar-plus me-2"></i>
+                    Đăng ký ngay
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Section -->
+    <div class="content-section">
+        <!-- Why Join Event Section -->
+        <section class="why-join-section">
+            <div class="container">
+                <h2 class="section-title" data-aos="fade-up">Tại sao bạn nên tham gia sự kiện</h2>
+                
+                <div class="features-grid">
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="feature-icon pink">
+                            <i class="fas fa-microphone"></i>
+                        </div>
+                        <h3 class="feature-title">Diễn giả hàng đầu</h3>
+                        <p class="feature-description">Học hỏi từ những chuyên gia hàng đầu trong ngành với kinh nghiệm thực tiễn phong phú và kiến thức chuyên sâu.</p>
+                    </div>
+
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                        <div class="feature-icon blue">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <h3 class="feature-title">Trải nghiệm tuyệt vời</h3>
+                        <p class="feature-description">Tham gia các hoạt động tương tác, workshop thực hành và trải nghiệm công nghệ mới nhất trong ngành.</p>
+                    </div>
+
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="feature-icon purple">
+                            <i class="fas fa-network-wired"></i>
+                        </div>
+                        <h3 class="feature-title">Kết nối mạng lưới</h3>
+                        <p class="feature-description">Gặp gỡ và kết nối với các chuyên gia, đồng nghiệp và đối tác tiềm năng trong cùng lĩnh vực.</p>
+                    </div>
+
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                        <div class="feature-icon orange">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <h3 class="feature-title">Địa điểm hiện đại</h3>
+                        <p class="feature-description">Sự kiện được tổ chức tại những địa điểm hiện đại, trang bị đầy đủ công nghệ và tiện nghi cao cấp.</p>
+                    </div>
+
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+                        <div class="feature-icon green">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="feature-title">Gặp gỡ người mới</h3>
+                        <p class="feature-description">Mở rộng mối quan hệ với những người có cùng đam mê và tạo dựng những mối quan hệ bền vững.</p>
+                    </div>
+
+                    <div class="feature-card" data-aos="fade-up" data-aos-delay="600">
+                        <div class="feature-icon gradient">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3 class="feature-title">Chứng chỉ tham dự</h3>
+                        <p class="feature-description">Nhận chứng chỉ tham dự có giá trị để bổ sung vào hồ sơ nghề nghiệp và phát triển sự nghiệp.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Event Timeline Section -->
+        <section class="timeline-section">
+            <div class="container">
+                <h2 class="section-title" data-aos="fade-up">Lịch trình sự kiện</h2>
+                
+                <div class="timeline-container" data-aos="fade-up" data-aos-delay="200">
+                    <div class="timeline-item">
+                        <div class="timeline-time">08:00 - 08:30</div>
+                        <div class="timeline-content">
+                            <h4>Đăng ký & Check-in</h4>
+                            <p>Nhận tài liệu sự kiện và networking coffee</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-time">08:30 - 09:00</div>
+                        <div class="timeline-content">
+                            <h4>Khai mạc</h4>
+                            <p>Chào mừng và giới thiệu chương trình</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-time">09:00 - 10:30</div>
+                        <div class="timeline-content">
+                            <h4>Phiên thảo luận chính</h4>
+                            <p>Xu hướng công nghệ và cơ hội nghề nghiệp</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-time">10:30 - 11:00</div>
+                        <div class="timeline-content">
+                            <h4>Coffee Break</h4>
+                            <p>Nghỉ giải lao và networking</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-time">11:00 - 12:30</div>
+                        <div class="timeline-content">
+                            <h4>Workshop thực hành</h4>
+                            <p>Kỹ năng phỏng vấn và CV writing</p>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-time">12:30 - 14:00</div>
+                        <div class="timeline-content">
+                            <h4>Networking Lunch</h4>
+                            <p>Gặp gỡ nhà tuyển dụng và trao đổi</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Registration Section -->
+        <section class="registration-section" id="register-section">
+            <div class="container">
+                <div class="registration-content">
+                    <h2 class="registration-title" data-aos="fade-up">Đăng ký ngay</h2>
+                    
+                    <!-- Alert cho Student -->
+                    <div class="alert alert-info text-center" sec:authorize="hasRole('student')" data-aos="fade-up" data-aos-delay="100">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Thông tin cá nhân được lấy từ hồ sơ của bạn. Bạn chỉ cần điền thêm ghi chú nếu muốn.
+                    </div>
+                    
+                    <!-- Alert cho Employer -->
+                    <div class="alert alert-warning text-center" sec:authorize="hasRole('employer')" data-aos="fade-up" data-aos-delay="100">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>Lưu ý:</strong> Chỉ có sinh viên mới có thể đăng ký tham gia sự kiện.
+                    </div>
+
+                    <form class="registration-form" id="registrationForm" data-aos="fade-up" data-aos-delay="200">
+                        <input type="hidden" id="eventId" th:value="${event.eventId}">
+                        
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="fullName" name="fullName" placeholder="Họ và tên" readonly required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Email của bạn" readonly>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="Số điện thoại" readonly required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="organization" name="organization" placeholder="Trường/Tổ chức" readonly required>
+                        </div>
+                        
+                        <div class="form-group full-width">
+                            <textarea class="form-control" id="notes" name="notes" rows="4" 
+                                sec:authorize="hasRole('student')"
+                                placeholder="💡 Ghi chú thêm hoặc yêu cầu đặc biệt...&#10;&#10;Ví dụ:&#10;- Có nhu cầu hỗ trợ đặc biệt&#10;- Câu hỏi muốn được giải đáp&#10;- Mong muốn về nội dung sự kiện"></textarea>
+                            <textarea class="form-control" id="notes-disabled" name="notes" rows="4" 
+                                sec:authorize="hasRole('employer') or hasRole('admin')" disabled
+                                placeholder="⚠️ Chỉ sinh viên mới có thể điền ghi chú khi đăng ký sự kiện"></textarea>
+                        </div>
+                        
+                        <button type="button" class="register-button" id="submitRegistration" 
+                            sec:authorize="hasRole('student')">
+                            <i class="bi bi-check-circle me-2"></i>
+                            Xác nhận đăng ký
+                        </button>
+                        
+                        <div sec:authorize="hasRole('employer')" class="text-center mt-3">
+                            <span class="text-light">
+                                <i class="bi bi-building me-2"></i>
+                                Chỉ sinh viên mới có thể đăng ký sự kiện
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- AOS Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script th:inline="javascript">
+        // Student information for pre-filling form
+        var currentStudentInfo = /*[[${currentStudent}]]*/ null;
+        
+        // Check user role for authorization
+        var isStudent = /*[[${#authorization.expression('hasRole(''student'')')}]]*/ false;
+        var isEmployer = /*[[${#authorization.expression('hasRole(''employer'')')}]]*/ false;
+
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            mirror: false
+        });
+
+        // Function to fill form with student information
+        function fillFormWithStudentInfo() {
+            if (isStudent && currentStudentInfo && currentStudentInfo.account) {
+                document.getElementById('fullName').value = currentStudentInfo.account.fullName || '';
+                document.getElementById('email').value = currentStudentInfo.account.email || '';
+                document.getElementById('phone').value = currentStudentInfo.account.phone || '';
+                document.getElementById('organization').value = currentStudentInfo.university || '';
+            }
+        }
+
+        // Handle registration submission
+        function handleRegistrationSubmit() {
+            if (!isStudent) {
+                alert('Chỉ sinh viên mới có thể đăng ký tham gia sự kiện!');
+                return;
+            }
+
+            const eventId = document.getElementById('eventId').value;
+            const formData = {
+                fullName: document.getElementById('fullName').value,
+                phone: document.getElementById('phone').value,
+                organization: document.getElementById('organization').value,
+                notes: document.getElementById('notes').value
+            };
+            
+            const button = document.getElementById('submitRegistration');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Đang xử lý...';
+            button.disabled = true;
+            
+            fetch(`/Events/${eventId}/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    return response.json().catch(() => response.text()).then(errorBody => {
+                        let error = new Error(`HTTP ${response.status}: ${response.statusText}`);
+                        error.body = errorBody;
+                        error.status = response.status;
+                        throw error;
+                    });
+                }
+            })
+            .then(data => {
+                if (data.startsWith('success:')) {
+                    showToast('Thành công', data.substring(8), 'success');
+                    setTimeout(() => location.reload(), 1500);
+                } else if (data.startsWith('error:')) {
+                    showToast('Lỗi', data.substring(6), 'error');
+                } else {
+                    showToast('Lỗi', 'Phản hồi từ máy chủ không hợp lệ.', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Registration failed:', error);
+                let errorMessage = 'Đã xảy ra lỗi khi đăng ký sự kiện.';
+                if (error.body && typeof error.body === 'string') {
+                    errorMessage = error.body;
+                }
+                showToast('Lỗi', errorMessage, 'error');
+            })
+            .finally(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            });
+        }
+
+        // Toast function
+        function showToast(title, message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-white bg-${type === 'success' ? 'success' : 'danger'} border-0`;
+            toast.setAttribute('role', 'alert');
+            toast.style.position = 'fixed';
+            toast.style.top = '20px';
+            toast.style.right = '20px';
+            toast.style.zIndex = '9999';
+            
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <strong>${title}</strong><br>
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+            
+            document.body.appendChild(toast);
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+            
+            toast.addEventListener('hidden.bs.toast', () => {
+                document.body.removeChild(toast);
+            });
+        }
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            fillFormWithStudentInfo();
+            
+            const submitButton = document.getElementById('submitRegistration');
+            if (submitButton && isStudent) {
+                submitButton.addEventListener('click', handleRegistrationSubmit);
+            }
+        });
+    </script>
+</body>
+</html> 

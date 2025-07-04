@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-      <title>Sửa Hồ Sơ - Employer</title>
+      <title>Edit Profile - Employer</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
   <link rel="stylesheet" th:href="@{/css/navbarEmployer.css}" />
@@ -27,9 +27,9 @@
       <!-- Page Header -->
       <div class="page-header">
         <h2 class="page-title">
-                          <i class="bi bi-pencil-square me-2"></i>Sửa Thông Tin
+                          <i class="bi bi-pencil-square me-2"></i>Edit Information
         </h2>
-                  <p class="page-subtitle">Cập nhật thông tin hồ sơ của bạn</p>
+                  <p class="page-subtitle">Update your profile information</p>
       </div>
 
       <form class="edit-form" method="post" th:action="@{/Employer/EditProfile}" th:object="${employerProfileDTO}" enctype="multipart/form-data">
@@ -208,7 +208,7 @@
                             <label for="companyDescription" class="form-label"
                             >Company Description</label
                             >
-                            <!-- Hidden input để lưu data cho Thymeleaf -->
+                            <!-- Hidden input to store data for Thymeleaf -->
                             <input
                                     type="hidden"
                                     id="companyDescriptionHidden"
@@ -230,10 +230,10 @@
             <!-- Action Buttons -->
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary btn-lg">
-                    <i class="bi bi-check-circle me-2"></i>Cập nhật
+                    <i class="bi bi-check-circle me-2"></i>Update
                 </button>
                 <a th:href="@{/Employer/Profile}" class="btn btn-secondary btn-lg">
-                    <i class="bi bi-x-circle me-2"></i>Hủy
+                    <i class="bi bi-x-circle me-2"></i>Cancel
                 </a>
             </div>
         </form>
@@ -309,12 +309,12 @@
         }, 300);
     }
 
-    // CKEditor và Form submission
+            // CKEditor and Form submission
     document.addEventListener("DOMContentLoaded", function () {
         const form = document.querySelector(".edit-form");
         const submitBtn = document.querySelector(".btn-primary");
 
-        // Khởi tạo CKEditor
+        // Initialize CKEditor
         let editorInstance;
         const hiddenInput = document.getElementById("companyDescriptionHidden");
         const initialContent = hiddenInput.value || "";
@@ -350,7 +350,7 @@
                 // Set initial content
                 editor.setData(initialContent);
 
-                // Sync CKEditor content với hidden input khi có thay đổi
+                // Sync CKEditor content with hidden input when changes occur
                 editor.model.document.on("change:data", () => {
                     hiddenInput.value = editor.getData();
                 });
@@ -364,7 +364,7 @@
         form.addEventListener("submit", function (e) {
             console.log("🔥 Form submit event triggered");
 
-            // Sync CKEditor data với hidden input trước khi submit
+            // Sync CKEditor data with hidden input before submit
             if (editorInstance) {
                 const editorData = editorInstance.getData();
                 hiddenInput.value = editorData;
@@ -373,10 +373,10 @@
                 console.log("📏 Length: " + editorData.length);
             }
 
-            // Không preventDefault(), cho phép form submit bình thường
+            // Don't preventDefault(), allow normal form submission
             submitBtn.classList.add("loading");
             submitBtn.innerHTML =
-                '<i class="bi bi-arrow-clockwise me-2"></i>Đang cập nhật...';
+                '<i class="bi bi-arrow-clockwise me-2"></i>Updating...';
             submitBtn.disabled = true;
         });
 

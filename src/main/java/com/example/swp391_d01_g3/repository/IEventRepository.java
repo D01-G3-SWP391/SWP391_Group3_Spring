@@ -41,6 +41,7 @@ public interface IEventRepository extends JpaRepository<Event, Integer> {
             "ORDER BY e.eventDate ASC")
     List<Event> findRelatedEvents(@Param("eventId") Integer eventId,
                                   @Param("employerId") Integer employerId,
+                                  @Param("location") String location,
                                   @Param("status") Event.ApprovalStatus status,
                                   Pageable pageable);
 
@@ -52,6 +53,7 @@ public interface IEventRepository extends JpaRepository<Event, Integer> {
            "ORDER BY e.eventDate ASC")
     List<Event> findRelatedActiveEvents(@Param("eventId") Integer eventId,
                                         @Param("employerId") Integer employerId,
+                                        @Param("location") String location,
                                         @Param("approvalStatus") Event.ApprovalStatus approvalStatus,
                                         @Param("eventStatus") Event.EventStatus eventStatus,
                                         Pageable pageable);
