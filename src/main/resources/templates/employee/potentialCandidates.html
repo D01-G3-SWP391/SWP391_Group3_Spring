@@ -9,591 +9,9 @@
     <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarEmployer.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarViewJobPost.css}" />
+    <link rel="stylesheet" th:href="@{/css/potentialCandidates.css}"/>
     <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
-    <style>
-    /* Flash message styles */
-    .flash-message {
-        display: flex;
-        align-items: center;
-        background: #e0ffe6;
-        color: #218838;
-        border: 2px solid #34c759;
-        border-radius: 8px;
-        padding: 16px 24px;
-        font-size: 1.15rem;
-        font-weight: 600;
-        margin: 20px auto 0 auto;
-        max-width: 450px;
-        box-shadow: 0 4px 16px rgba(52,199,89,0.12);
-        position: relative;
-        animation: fadeIn 0.7s;
-        z-index: 1000;
-    }
-    .flash-message .icon {
-        font-size: 1.5em;
-        margin-right: 12px;
-    }
-    .flash-message .close-btn {
-        position: absolute;
-        right: 12px;
-        top: 10px;
-        background: none;
-        border: none;
-        font-size: 1.2em;
-        color: #218838;
-        cursor: pointer;
-    }
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-10px);}
-        to { opacity: 1; transform: translateY(0);}
-    }
 
-    /* Page Header */
-    .page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-        padding: 1.5rem 0;
-        border-bottom: 2px solid #f1f5f9;
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
-        border-radius: 12px;
-        padding: 1.5rem 2rem;
-        margin-bottom: 2rem;
-    }
-
-    .page-title-section h1 {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: #1e293b;
-        margin: 0 0 0.5rem 0;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .page-title-section p {
-        color: #64748b;
-        font-size: 1.1rem;
-        margin: 0;
-        font-weight: 500;
-    }
-
-    /* Search Form */
-    .search-form {
-        background: white;
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        margin-bottom: 2rem;
-        border: 1px solid #e2e8f0;
-    }
-
-    .search-form .form-control {
-        border-radius: 8px;
-        border: 1px solid #e2e8f0;
-        padding: 0.75rem 1rem;
-        transition: all 0.3s ease;
-    }
-
-    .search-form .form-control:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    .search-btn {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 0.75rem;
-        height: 42px;
-        width: 42px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 6px rgba(102, 126, 234, 0.2);
-    }
-
-    .search-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(102, 126, 234, 0.3);
-        color: white;
-    }
-
-    .search-btn i {
-        font-size: 1.2rem;
-    }
-
-    /* Statistics cards */
-    .stats-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .stat-card {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        border: 1px solid #e2e8f0;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        transition: all 0.3s ease;
-    }
-
-    .stat-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-    }
-
-    .stat-icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        color: white;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-
-    .stat-info h3 {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #1e293b;
-        margin: 0;
-    }
-
-    .stat-info p {
-        color: #64748b;
-        margin: 0;
-        font-weight: 500;
-    }
-
-    /* Table container */
-    .table-container {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        border: 1px solid #e2e8f0;
-        overflow: hidden;
-        margin-bottom: 2rem;
-    }
-
-    .table-container table {
-        width: 100%;
-        margin: 0;
-        border-collapse: separate;
-        border-spacing: 0;
-    }
-
-    .table-container thead {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-
-    .table-container thead th {
-        color: white;
-        font-weight: 600;
-        padding: 1.25rem 1rem;
-        text-align: left;
-        border: none;
-        font-size: 0.95rem;
-        letter-spacing: 0.5px;
-    }
-
-    .table-container tbody td {
-        padding: 1rem;
-        border-bottom: 1px solid #f1f5f9;
-        vertical-align: middle;
-        color: #374151;
-    }
-
-    .table-container tbody tr:hover {
-        background-color: #f8fafc;
-    }
-
-    .table-container tbody tr:last-child td {
-        border-bottom: none;
-    }
-
-    .student-name {
-        font-weight: 600;
-        color: #1e293b;
-        margin-bottom: 0.25rem;
-    }
-
-    .contact-info {
-        color: #64748b;
-        font-size: 0.9rem;
-        line-height: 1.4;
-    }
-
-    .contact-info span {
-        display: block;
-    }
-
-    .btn-info {
-        background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
-        border: none;
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 6px;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .btn-info:hover {
-        background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
-        color: white;
-        text-decoration: none;
-    }
-
-    /* Empty state */
-    .empty-state {
-        text-align: center;
-        padding: 4rem 2rem;
-        color: #64748b;
-    }
-
-    .empty-state i {
-        font-size: 4rem;
-        color: #cbd5e1;
-        margin-bottom: 1rem;
-    }
-
-    .empty-state h3 {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: #374151;
-        margin-bottom: 0.5rem;
-    }
-
-    .empty-state p {
-        font-size: 1.1rem;
-        margin-bottom: 2rem;
-    }
-
-    /* Pagination */
-    .bottom-pagination {
-        display: flex;
-        justify-content: center;
-        margin-top: 2rem;
-    }
-
-    .pagination-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: white;
-        padding: 1rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        border: 1px solid #e2e8f0;
-    }
-
-    .pagination-btn {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.75rem 1rem;
-        background: white;
-        border: 2px solid #e2e8f0;
-        border-radius: 8px;
-        text-decoration: none;
-        color: #374151;
-        font-weight: 500;
-        transition: all 0.3s ease;
-    }
-
-    .pagination-btn:hover:not(.disabled) {
-        background: #667eea;
-        border-color: #667eea;
-        color: white;
-        text-decoration: none;
-        transform: translateY(-1px);
-    }
-
-    .pagination-btn.disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        background: #f8fafc;
-    }
-
-    .page-numbers {
-        display: flex;
-        gap: 0.25rem;
-        margin: 0 1rem;
-    }
-
-    .page-number {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-        border: 2px solid #e2e8f0;
-        border-radius: 8px;
-        text-decoration: none;
-        color: #374151;
-        font-weight: 500;
-        transition: all 0.3s ease;
-    }
-
-    .page-number:hover {
-        background: #667eea;
-        border-color: #667eea;
-        color: white;
-        text-decoration: none;
-    }
-
-    .page-number.active {
-        background: #667eea;
-        border-color: #667eea;
-        color: white;
-    }
-
-    /* AI Search Results Styles */
-    .ai-results-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
-        padding: 1rem 0;
-    }
-
-    .ai-results-title {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: #374151;
-        margin: 0;
-    }
-
-    .ai-results-title i {
-        color: #667eea;
-        font-size: 1.8rem;
-    }
-
-    .results-count-badge {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 20px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .ai-insight-message {
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
-        border: 1px solid rgba(99, 102, 241, 0.2);
-        border-left: 4px solid #667eea;
-        border-radius: 12px;
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-        color: #374151;
-        font-size: 1rem;
-        line-height: 1.6;
-        position: relative;
-    }
-
-    .ai-insight-message::before {
-        content: "💡";
-        position: absolute;
-        top: 1rem;
-        left: 1rem;
-        font-size: 1.2rem;
-    }
-
-    .ai-insight-message .message-content {
-        margin-left: 2rem;
-    }
-
-    .candidate-cards-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .candidate-card {
-        background: white;
-        border: 1px solid #e5e7eb;
-        border-radius: 16px;
-        padding: 2rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .candidate-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-
-    .candidate-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-        border-color: #667eea;
-    }
-
-    .candidate-name {
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: #1f2937;
-        margin-bottom: 0.5rem;
-    }
-
-    .candidate-email {
-        color: #6b7280;
-        font-size: 0.95rem;
-        margin-bottom: 1.5rem;
-        font-weight: 500;
-    }
-
-    .candidate-details {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .candidate-detail-item {
-        display: flex;
-        align-items: flex-start;
-        gap: 0.75rem;
-        font-size: 0.95rem;
-        line-height: 1.5;
-    }
-
-    .candidate-detail-item i {
-        color: #667eea;
-        font-size: 1.1rem;
-        margin-top: 0.1rem;
-        width: 18px;
-        flex-shrink: 0;
-    }
-
-    .candidate-detail-item .detail-content {
-        color: #374151;
-        flex: 1;
-    }
-
-    .candidate-detail-item .detail-label {
-        font-weight: 600;
-        color: #1f2937;
-    }
-
-    .contact-candidate-btn {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        border-radius: 12px;
-        padding: 0.75rem 1.5rem;
-        font-weight: 600;
-        font-size: 0.95rem;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
-        transition: all 0.3s ease;
-        text-decoration: none;
-    }
-
-    .contact-candidate-btn:hover {
-        background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-        color: white;
-        text-decoration: none;
-    }
-
-    .contact-candidate-btn i {
-        font-size: 1.1rem;
-    }
-
-    /* Responsive design */
-    @media (max-width: 768px) {
-        .page-header {
-            flex-direction: column;
-            gap: 1rem;
-            text-align: center;
-            padding: 1rem;
-        }
-        
-        .page-title-section h1 {
-            font-size: 1.8rem;
-            justify-content: center;
-        }
-        
-        .search-form {
-            padding: 1rem;
-        }
-        
-        .stats-container {
-            grid-template-columns: 1fr;
-        }
-        
-        .table-container {
-            overflow-x: auto;
-        }
-        
-        .pagination-wrapper {
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        .page-numbers {
-            margin: 0;
-        }
-
-        .candidate-cards-container {
-            grid-template-columns: 1fr;
-        }
-
-        .ai-results-header {
-            flex-direction: column;
-            gap: 1rem;
-            text-align: center;
-        }
-
-        .ai-insight-message .message-content {
-            margin-left: 0;
-        }
-
-        .ai-insight-message::before {
-            position: static;
-            margin-right: 0.5rem;
-        }
-    }
-    </style>
 </head>
 <body>
 <div th:replace="~{navbar/navbarEmployee :: navbarEmployee}"></div>
@@ -617,10 +35,10 @@
     <!-- Search Mode Toggle -->
     <div class="search-mode-toggle" style="display: flex; justify-content: center; margin-bottom: 1rem;">
         <div class="btn-group" role="group">
-            <button type="button" class="btn btn-outline-primary active" id="traditional-search-btn" onclick="switchSearchMode('traditional')">
+            <button type="button" class="btn btn-switch" id="traditional-search-btn" onclick="switchSearchMode('traditional')">
                 <i class="bi bi-filter"></i> Traditional Search
             </button>
-            <button type="button" class="btn btn-outline-primary" id="ai-search-btn" onclick="switchSearchMode('ai')">
+            <button type="button" class="btn btn-switch" id="ai-search-btn" onclick="switchSearchMode('ai')">
                 <i class="bi bi-robot"></i> AI Search
             </button>
         </div>
@@ -763,9 +181,23 @@
                 </div>
             </div>
 
-            <!-- Candidate Cards Container -->
-            <div class="candidate-cards-container" id="candidate-cards-container">
-                <!-- Candidate cards will be populated here -->
+            <!-- AI Results Table -->
+            <div class="table-container" id="ai-results-table-container">
+                <table id="ai-results-table">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Candidate Information</th>
+                            <th>Contact</th>
+                            <th>Preferred Address</th>
+                            <th>University</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ai-results-table-body">
+                        <!-- AI search results will be populated here -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -811,9 +243,12 @@
         </div>
     </div>
 </div>
-
+<!-- Add notification bell -->
+<div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
+<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/js/language-dropdown.js}"></script>
+
 <script>
     // Auto hide flash message
     setTimeout(function() {
@@ -889,7 +324,6 @@
             const result = await response.json();
 
             if (result.success) {
-
                 displayAIResults(result.results, result.message);
             } else {
                 showMessage('danger', result.message || 'Có lỗi xảy ra khi tìm kiếm.');
@@ -916,7 +350,7 @@
     function displayAIResults(results, message) {
         const emptyState = document.getElementById('ai-empty-state');
         const resultsContent = document.getElementById('ai-results-content');
-        const candidatesContainer = document.getElementById('candidate-cards-container');
+        const candidatesContainer = document.getElementById('ai-results-table-body');
         const candidatesCountSpan = document.getElementById('candidates-count');
         const aiInsightText = document.getElementById('ai-insight-text');
 
@@ -939,56 +373,37 @@
         // Clear previous results
         candidatesContainer.innerHTML = '';
 
-        // Create candidate cards
-        results.forEach((row) => {
+        // Create table rows
+        results.forEach((row, index) => {
             // Assuming SQL returns: student_id, full_name, email, phone, address, university, experience, profile_description, job_field_name
             const [studentId, fullName, email, phone, address, university, experience, profileDescription, jobFieldName] = row;
             
-            const candidateCard = document.createElement('div');
-            candidateCard.className = 'candidate-card';
-            candidateCard.innerHTML = `
-                <div class="candidate-name">${fullName || 'N/A'}</div>
-                <div class="candidate-email">${email || 'Email not provided'}</div>
-                
-                <div class="candidate-details">
-                    <div class="candidate-detail-item">
-                        <i class="bi bi-geo-alt"></i>
-                        <div class="detail-content">
-                            <span class="detail-label">Address:</span> ${address || 'Not updated'}
-                        </div>
+            const tableRow = document.createElement('tr');
+            tableRow.innerHTML = `
+                <td>${index + 1}</td>
+                <td>
+                    <div class="student-name">${fullName || 'N/A'}</div>
+                    <div class="contact-info">
+                        <span>${jobFieldName ? 'Field: ' + jobFieldName : ''}</span>
                     </div>
-                    
-                    <div class="candidate-detail-item">
-                        <i class="bi bi-mortarboard"></i>
-                        <div class="detail-content">
-                            <span class="detail-label">University:</span> ${university || 'Not updated'}
-                        </div>
+                </td>
+                <td>
+                    <div class="contact-info">
+                        <span>${email || 'N/A'}</span>
+                        <span>${phone || 'N/A'}</span>
                     </div>
-                    
-                    <div class="candidate-detail-item">
-                        <i class="bi bi-briefcase"></i>
-                        <div class="detail-content">
-                            <span class="detail-label">Experience:</span> ${experience || 'Not updated'}
-                        </div>
-                    </div>
-                    
-                    ${profileDescription ? `
-                    <div class="candidate-detail-item">
-                        <i class="bi bi-person-lines-fill"></i>
-                        <div class="detail-content">
-                            <span class="detail-label">Description:</span> ${profileDescription.length > 100 ? profileDescription.substring(0, 100) + '...' : profileDescription}
-                        </div>
-                    </div>
-                    ` : ''}
-                </div>
-                
-                <a href="/Employer/CandidateDetail/${studentId}" class="btn-info">
-                    <i class="bi bi-eye"></i>
-                    View Details
-                </a>
+                </td>
+                <td>${address || 'Not updated'}</td>
+                <td>${university || 'Not updated'}</td>
+                <td>
+                    <a href="/Employer/CandidateDetail/${studentId}" class="btn-info">
+                        <i class="bi bi-eye"></i>
+                        View Details
+                    </a>
+                </td>
             `;
             
-            candidatesContainer.appendChild(candidateCard);
+            candidatesContainer.appendChild(tableRow);
         });
 
         // Show results
@@ -1017,8 +432,6 @@
         }
     }
 
-
-
     // Enable Enter key for AI search
     document.getElementById('ai-search-input').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
@@ -1027,7 +440,6 @@
     });
 </script>
 
-<!-- Add notification bell -->
-<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
+
 </body>
 </html>
