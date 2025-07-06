@@ -1,5 +1,8 @@
 package com.example.swp391_d01_g3.controller.employer;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.example.swp391_d01_g3.dto.EmployerEditDTO;
 import com.example.swp391_d01_g3.dto.PasswordChangeDTO;
 import com.example.swp391_d01_g3.model.*;
@@ -14,12 +17,16 @@ import com.example.swp391_d01_g3.service.security.IAccountServiceImpl;
 import com.example.swp391_d01_g3.service.email.EmailService;
 import com.example.swp391_d01_g3.service.notification.INotificationService;
 import com.example.swp391_d01_g3.service.student.IStudentService;
+import com.example.swp391_d01_g3.service.jobinvitation.IJobInvitationService;
+import com.example.swp391_d01_g3.service.jobpost.IJobpostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -28,6 +35,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 import java.util.List;
@@ -70,6 +78,12 @@ public class EmployerDashboard {
 
     @Autowired
     private IStudentService iStudentService;
+
+    @Autowired
+    private IJobInvitationService jobInvitationService;
+
+    @Autowired
+    private IJobpostService jobPostService;
 
     @GetMapping("")
     public String showEmployeeDashboard(Model model, Principal principal) {
@@ -551,16 +565,275 @@ public class EmployerDashboard {
     */
 
     @GetMapping("/CandidateDetail/{id}")
-    public String candidateDetail(@PathVariable("id") Long studentId, Model model,Principal principal) {
+    public String candidateDetail(@PathVariable("id") Long studentId, Model model, Principal principal) {
         Student student = iStudentService.findById(studentId).orElse(null);
         if (principal != null) {
             model.addAttribute("account", accountService.findByEmail(principal.getName()));
+            
+            // Load job posts of current employer for job invitation
+            String employerEmail = principal.getName();
+            Employer employer = employerService.findByEmail(employerEmail);
+            if (employer != null) {
+                List<JobPost> jobPosts = jobPostService.findJobPostsByEmployerEmail(employerEmail);
+                // Filter only approved and active job posts
+                List<JobPost> activeJobPosts = jobPosts.stream()
+                    .filter(jp -> jp.getApprovalStatus() == JobPost.ApprovalStatus.APPROVED 
+                                && jp.getDisplayStatus() == JobPost.DisplayStatus.ACTIVE)
+                    .toList();
+                model.addAttribute("employerJobPosts", activeJobPosts);
+            }
         }
         if (student == null) {
             return "redirect:/Employer/SearchCandidate";
         }
         model.addAttribute("student", student);
         return "employee/candidateDetail";
+    }
+
+    @PostMapping("/SendJobInvitation")
+    @ResponseBody
+    public ResponseEntity<String> sendJobInvitation(
+            @RequestParam("studentId") Long studentId,
+            @RequestParam("jobPostId") Integer jobPostId,
+            @RequestParam("message") String message,
+            Principal principal) {
+        
+        try {
+            if (principal == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Bạn cần đăng nhập để thực hiện chức năng này");
+            }
+            
+            String employerEmail = principal.getName();
+            Employer employer = employerService.findByEmail(employerEmail);
+            
+            if (employer == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy thông tin nhà tuyển dụng");
+            }
+            
+            Student student = iStudentService.findById(studentId).orElse(null);
+            if (student == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy thông tin ứng viên");
+            }
+            
+            JobPost jobPost = jobPostService.findByJobPostId(jobPostId).orElse(null);
+            if (jobPost == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy tin tuyển dụng");
+            }
+            
+            // Check if job post belongs to the employer
+            if (!jobPost.getEmployer().getEmployerId().equals(employer.getEmployerId())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Bạn không có quyền gửi lời mời cho tin tuyển dụng này");
+            }
+            
+            // Check if invitation already exists
+            if (jobInvitationService.isInvitationExists(employer, student, jobPostId)) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Bạn đã gửi lời mời cho ứng viên này rồi");
+            }
+            
+            // Create and save job invitation
+            JobInvitation invitation = jobInvitationService.createInvitation(jobPost, student, employer, message);
+            
+            // Send notification to student
+            String notificationTitle = "Lời mời việc làm mới";
+            String notificationMessage = "Bạn nhận được lời mời ứng tuyển cho vị trí " + jobPost.getJobTitle() + 
+                                       " tại " + employer.getCompanyName();
+            
+            notificationService.createNotification(
+                student.getAccount(),
+                notificationTitle,
+                notificationMessage,
+                "JOB_INVITATION",
+                invitation.getInvitationId()
+            );
+            
+            return ResponseEntity.ok("Gửi lời mời thành công!");
+            
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi gửi lời mời: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/api/jobposts")
+    @ResponseBody
+    public ResponseEntity<List<JobPost>> getEmployerJobPosts(Principal principal) {
+        try {
+            if (principal == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+            }
+            
+            String employerEmail = principal.getName();
+            List<JobPost> jobPosts = jobPostService.findJobPostsByEmployerEmail(employerEmail);
+            
+            // Filter only approved and active job posts
+            List<JobPost> activeJobPosts = jobPosts.stream()
+                .filter(jp -> jp.getApprovalStatus() == JobPost.ApprovalStatus.APPROVED 
+                            && jp.getDisplayStatus() == JobPost.DisplayStatus.ACTIVE)
+                .toList();
+            
+            return ResponseEntity.ok(activeJobPosts);
+            
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @GetMapping("/JobInvitations")
+    @Transactional
+    public String viewJobInvitations(Model model, Principal principal, HttpServletRequest request) {
+        try {
+            System.out.println("🔍 Loading JobInvitations page...");
+            
+            if (principal == null) {
+                System.err.println("❌ Principal is null - user not authenticated");
+                model.addAttribute("errorMessage", "Bạn cần đăng nhập để xem trang này");
+                return "redirect:/login";
+            }
+            
+            String email = principal.getName();
+            System.out.println("👤 User email: " + email);
+            
+            Account account = accountService.findByEmail(email);
+            if (account == null) {
+                System.err.println("❌ Account not found for email: " + email);
+                model.addAttribute("errorMessage", "Không tìm thấy tài khoản");
+                return "redirect:/login";
+            }
+            
+            System.out.println("✅ Found account: " + account.getUserId());
+            
+            Employer employer = employerService.findByUserId(account.getUserId());
+            if (employer == null) {
+                System.err.println("❌ Employer not found for account: " + account.getUserId());
+                model.addAttribute("errorMessage", "Không tìm thấy thông tin nhà tuyển dụng");
+                return "redirect:/Employer";
+            }
+            
+            System.out.println("✅ Found employer: " + employer.getEmployerId());
+            
+            // Get all job invitations sent by this employer with relationships loaded
+            List<JobInvitation> allInvitations = jobInvitationService.findByEmployerWithRelationships(employer);
+            System.out.println("📨 Found " + allInvitations.size() + " invitations");
+            
+            // Separate invitations by status
+            List<JobInvitation> pendingInvitations = allInvitations.stream()
+                .filter(inv -> inv.getStatus() == JobInvitation.InvitationStatus.PENDING)
+                .toList();
+            
+            List<JobInvitation> acceptedInvitations = allInvitations.stream()
+                .filter(inv -> inv.getStatus() == JobInvitation.InvitationStatus.ACCEPTED)
+                .toList();
+            
+            List<JobInvitation> declinedInvitations = allInvitations.stream()
+                .filter(inv -> inv.getStatus() == JobInvitation.InvitationStatus.DECLINED)
+                .toList();
+            
+            System.out.println("📊 Pending: " + pendingInvitations.size() + 
+                             ", Accepted: " + acceptedInvitations.size() + 
+                             ", Declined: " + declinedInvitations.size());
+            
+            model.addAttribute("pendingInvitations", pendingInvitations);
+            model.addAttribute("acceptedInvitations", acceptedInvitations);
+            model.addAttribute("declinedInvitations", declinedInvitations);
+            model.addAttribute("employer", employer);
+            model.addAttribute("account", account);
+            
+            // Add CSRF token to model
+            org.springframework.security.web.csrf.CsrfToken csrfToken = 
+                (org.springframework.security.web.csrf.CsrfToken) request.getAttribute(org.springframework.security.web.csrf.CsrfToken.class.getName());
+            if (csrfToken != null) {
+                model.addAttribute("_csrf", csrfToken);
+            }
+            
+            System.out.println("✅ Successfully loaded JobInvitations page");
+        } catch (Exception e) {
+            // Log the error for debugging
+            System.err.println("Error in viewJobInvitations: " + e.getMessage());
+            e.printStackTrace();
+            // Add error message to model
+            model.addAttribute("errorMessage", "Có lỗi xảy ra khi tải danh sách lời mời: " + e.getMessage());
+            // Return error page or handle gracefully
+            model.addAttribute("pendingInvitations", List.of());
+            model.addAttribute("acceptedInvitations", List.of());
+            model.addAttribute("declinedInvitations", List.of());
+        }
+        return "employee/jobInvitations";
+    }
+
+    @PostMapping("/JobInvitations/{invitationId}/sendInterview")
+    public String sendInterviewForInvitation(
+            @PathVariable Long invitationId,
+            @RequestParam String interviewTime,
+            @RequestParam String interviewType,
+            @RequestParam(required = false) String meetingLink,
+            @RequestParam(required = false) String note,
+            RedirectAttributes redirectAttributes,
+            Principal principal) {
+        
+        try {
+            if (principal == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Bạn cần đăng nhập để thực hiện chức năng này");
+                return "redirect:/login";
+            }
+            
+            String employerEmail = principal.getName();
+            Employer employer = employerService.findByEmail(employerEmail);
+            
+            // Get job invitation
+            JobInvitation invitation = jobInvitationService.findById(invitationId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy lời mời việc làm"));
+            
+            // Check if invitation belongs to this employer
+            if (!invitation.getEmployer().getEmployerId().equals(employer.getEmployerId())) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Bạn không có quyền thực hiện hành động này");
+                return "redirect:/Employer/JobInvitations";
+            }
+            
+            // Check if invitation is accepted
+            if (invitation.getStatus() != JobInvitation.InvitationStatus.ACCEPTED) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Chỉ có thể gửi lịch phỏng vấn cho lời mời đã được chấp nhận");
+                return "redirect:/Employer/JobInvitations";
+            }
+            
+            // Create interview record
+            Interview interview = new Interview();
+            interview.setJobApplication(null); // For job invitations, we don't have JobApplication
+            interview.setInterviewType(interviewType);
+            interview.setMeetingLink(meetingLink);
+            interview.setNote(note);
+            interview.setInterviewStatus("SCHEDULED");
+            java.time.LocalDateTime interviewDate = java.time.LocalDateTime.parse(interviewTime);
+            interview.setInterviewDate(interviewDate);
+            iInterViewService.save(interview);
+            
+            // Send email to student
+            String candidateEmail = invitation.getStudent().getAccount().getEmail();
+            String candidateName = invitation.getStudent().getAccount().getFullName();
+            String jobTitle = invitation.getJobPost().getJobTitle();
+            
+            emailService.sendInterviewScheduleEmail(candidateEmail, candidateName, jobTitle, interviewTime, interviewType, meetingLink, note);
+            
+            // Create notification for student
+            notificationService.createNotification(
+                invitation.getStudent().getAccount(),
+                "Lịch phỏng vấn mới",
+                "Bạn có lịch phỏng vấn cho vị trí " + jobTitle +
+                        " vào " + interviewTime +
+                        " theo hình thức " + interviewType + "." +
+                        (meetingLink != null ? " Link meeting: " + meetingLink : "") +
+                        (note != null ? " Ghi chú: " + note : ""),
+                "INTERVIEW_SCHEDULED",
+                invitationId
+            );
+            
+            redirectAttributes.addFlashAttribute("successMessage", "Đã gửi lịch phỏng vấn thành công!");
+            
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi gửi lịch phỏng vấn: " + e.getMessage());
+        }
+        
+        return "redirect:/Employer/JobInvitations";
     }
 }
 
