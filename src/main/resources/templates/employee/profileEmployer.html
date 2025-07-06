@@ -39,7 +39,7 @@
               <p class="profile-subtitle" th:text="#{employer.profile.roleLabel}">Employer</p>
               <div class="profile-actions">
                 <a th:href="@{/Employer/EditProfile}" class="btn-edit">
-                  <i class="bi bi-pencil-square"></i> <span th:text="#{employer.editInformation}">Sửa thông tin</span>
+                  <i class="bi bi-pencil-square"></i> <span th:text="#{employer.editInformation}">Edit Information</span>
                 </a>
               </div>
             </div>
@@ -84,7 +84,7 @@
         <!-- Company Description Section -->
         <div class="info-section" th:if="${employer.companyDescription != null and employer.companyDescription != ''}">
           <h3 class="section-title">
-            <i class="bi bi-file-text"></i> <span th:text="#{employer.companyDescriptionLabel}">Mô tả công ty</span>
+            <i class="bi bi-file-text"></i> <span th:text="#{employer.companyDescriptionLabel}">Company Description</span>
           </h3>
           <div class="company-description">
             <div th:utext="${employer.companyDescription}">Company description...</div>
@@ -122,8 +122,8 @@
       <div th:unless="${currentAccount != null and employer != null}" class="profile-card">
         <div class="no-data">
           <i class="bi bi-exclamation-triangle" style="font-size: 48px; color: #ffc107"></i>
-          <h3 th:text="#{employer.noDataFound}">Không tìm thấy thông tin</h3>
-          <p th:text="#{employer.noInfoMessage}">Không thể tải thông tin tài khoản hoặc thông tin công ty. Vui lòng thử lại sau.</p>
+          <h3 th:text="#{employer.noDataFound}">No Information Found</h3>
+          <p th:text="#{employer.noInfoMessage}">Unable to load account information or company information. Please try again later.</p>
         </div>
       </div>
     </div>

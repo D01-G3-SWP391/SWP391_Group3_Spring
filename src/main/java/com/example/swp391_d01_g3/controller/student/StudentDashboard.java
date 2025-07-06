@@ -25,6 +25,7 @@ import java.security.Principal;
 import java.util.List;
 
 // Import the DTO
+import com.example.swp391_d01_g3.dto.PasswordChangeDTO;
 import com.example.swp391_d01_g3.dto.StudentProfileDTO;
 import com.example.swp391_d01_g3.service.cloudinary.CloudinaryService;
 
@@ -209,15 +210,15 @@ public class StudentDashboard {
                 model.addAttribute("currentAccount", currentAccount);
                 model.addAttribute("account", currentAccount);
                 model.addAttribute("student",student);
+                model.addAttribute("passwordChangeDTO", new PasswordChangeDTO());
             }
         }
         return "student/changePassword";
     }
 
     @PostMapping("/ChangePassword")
-    public String changePassword(@RequestParam("currentPassword") String currentPassword,
-                                 @RequestParam("newPassword") String newPassword,
-                                 @RequestParam("confirmPassword") String confirmPassword,
+    public String changePassword(@Valid @ModelAttribute("passwordChangeDTO") PasswordChangeDTO passwordChangeDTO,
+                                 BindingResult bindingResult,
                                  Principal principal,
                                  Model model,
                                  RedirectAttributes redirectAttributes) {
@@ -235,44 +236,37 @@ public class StudentDashboard {
             return "redirect:/Student/Profile";
         }
 
-        // Sử dụng service để kiểm tra mật khẩu hiện tại
-        if (!changePassword.isCurrentPasswordValid(currentPassword, account.getPassword())) {
-            model.addAttribute("error", "Mật khẩu hiện tại không đúng.");
-            model.addAttribute("currentAccount", account);
-            Student student = studentService.findByAccountUserId(account.getUserId());
-            model.addAttribute("student", student);
-            return "student/changePassword";
-        }
+        // Sử dụng validation service mới
+        changePassword.validatePasswordWithOld(
+            passwordChangeDTO.getCurrentPassword(),
+            passwordChangeDTO.getNewPassword(),
+            passwordChangeDTO.getConfirmPassword(),
+            account.getPassword(),
+            bindingResult
+        );
 
-        // Sử dụng service để kiểm tra mật khẩu mới và xác nhận mật khẩu
-        if (!changePassword.isNewPasswordConfirmed(newPassword, confirmPassword)) {
-            model.addAttribute("error", "Mật khẩu mới và xác nhận mật khẩu không khớp.");
+        // Kiểm tra có lỗi validation không
+        if (bindingResult.hasErrors()) {
+            // Log errors for debugging
+            System.out.println("Student change password validation errors found:");
+            bindingResult.getAllErrors().forEach(error -> {
+                System.out.println("- " + error.getDefaultMessage());
+            });
+            
             model.addAttribute("currentAccount", account);
+            model.addAttribute("account", account);
             Student student = studentService.findByAccountUserId(account.getUserId());
             model.addAttribute("student", student);
-            return "student/changePassword";
-        }
-
-        // Sử dụng service để kiểm tra độ dài mật khẩu
-        if (!changePassword.isNewPasswordValidLength(newPassword, 6)) {
-            model.addAttribute("error", "Mật khẩu mới phải có ít nhất 6 ký tự.");
-            model.addAttribute("currentAccount", account);
-            Student student = studentService.findByAccountUserId(account.getUserId());
-            model.addAttribute("student", student);
-            return "student/changePassword";
-        }
-
-        // Sử dụng service để kiểm tra mật khẩu mới không giống mật khẩu cũ
-        if (!changePassword.isNewPasswordDifferent(newPassword, account.getPassword())) {
-            model.addAttribute("error", "Mật khẩu mới phải khác mật khẩu hiện tại.");
-            model.addAttribute("currentAccount", account);
-            Student student = studentService.findByAccountUserId(account.getUserId());
-            model.addAttribute("student", student);
+            model.addAttribute("passwordChangeDTO", passwordChangeDTO);
+            
+            // Hiển thị lỗi đầu tiên
+            String errorMessage = bindingResult.getAllErrors().get(0).getDefaultMessage();
+            model.addAttribute("error", errorMessage);
             return "student/changePassword";
         }
 
         // Cập nhật mật khẩu
-        account.setPassword(passwordEncoder.encode(newPassword));
+        account.setPassword(passwordEncoder.encode(changePassword.normalizePassword(passwordChangeDTO.getNewPassword())));
         iAccountServiceImpl.save(account);
         notificationService.createNotification(
                 account,
@@ -280,9 +274,7 @@ public class StudentDashboard {
                 "Ban da doi mk thanh cong",
                 "CHANGE_PASSWORD",
                 account.getUserId().longValue()
-
         );
-
         redirectAttributes.addFlashAttribute("success", "Đổi mật khẩu thành công!");
         return "redirect:/Student/Profile";
     }

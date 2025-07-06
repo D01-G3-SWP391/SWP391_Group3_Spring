@@ -110,6 +110,23 @@ public class OpenAIService {
         Map.entry("mô tả bản thân", "profile_description"),
         Map.entry("ngành học", "job_field_id"),
 
+        // candidate search specific terms for better matching
+        Map.entry("marketing", "marketing"),
+        Map.entry("kinh doanh", "business"),
+        Map.entry("bán hàng", "sales"),
+        Map.entry("kế toán", "accounting"),
+        Map.entry("nhân sự", "human resources"),
+        Map.entry("quản lý", "management"),
+        Map.entry("thiết kế", "design"),
+        Map.entry("kỹ thuật", "engineering"),
+        Map.entry("y tế", "healthcare"),
+        Map.entry("giáo dục", "education"),
+        Map.entry("tài chính", "finance"),
+        Map.entry("logistics", "logistics"),
+        Map.entry("du lịch", "tourism"),
+        Map.entry("nhà hàng", "restaurant"),
+        Map.entry("khách sạn", "hotel"),
+
         // job_application
         Map.entry("đơn ứng tuyển", "job_application"),
         Map.entry("ứng tuyển", "job_application"),
@@ -727,5 +744,477 @@ public class OpenAIService {
                "• Xu hướng tuyển dụng\n" +
                "• Tư vấn nghề nghiệp\n\n" +
                "Ví dụ: \"Tìm công việc lương cao\" hoặc \"Có bao nhiêu việc làm IT?\"";
+    }
+
+    /**
+     * 🎯 AI-powered candidate search - separate from general chat AI
+     * Converts natural language queries to SQL for finding students/candidates
+     */
+    public String searchCandidatesWithAI(String userQuestion, String schema) throws Exception {
+        if (userQuestion == null || userQuestion.trim().isEmpty()) {
+            throw new IllegalArgumentException("Search query cannot be null or empty");
+        }
+
+        updateRateLimits();
+
+        // Detect language of the query for appropriate response
+        boolean isVietnamese = isVietnameseQuery(userQuestion);
+
+        // Enhanced translation for candidate-specific queries
+        String translatedQuestion = translateCandidateKeywords(userQuestion);
+
+        // Optimize schema for candidate search (focus on student + account tables)
+        String optimizedSchema = optimizeSchemaForCandidates(schema, translatedQuestion);
+
+        // Enhanced prompt specifically for candidate search
+        String prompt = "Bạn là chuyên gia SQL cho hệ thống tuyển dụng. " +
+                       "Database schema:\n" + optimizedSchema +
+                       "\n\nTạo SQL query để tìm ứng viên/sinh viên dựa trên yêu cầu sau:\n" +
+                       translatedQuestion + 
+                       "\n\nYêu cầu QUAN TRỌNG:" +
+                       "\n- LUÔN JOIN: FROM student s JOIN account a ON s.user_id = a.user_id LEFT JOIN job_fields jf ON s.job_field_id = jf.job_field_id" +
+                       "\n- SELECT: s.student_id, a.full_name, a.email, a.phone, s.address, s.university, s.experience, s.profile_description, jf.job_field_name" +
+                       "\n- Tìm kiếm trong experience: Dùng LIKE để tìm cả tiếng Việt và tiếng Anh (VD: experience LIKE '%3 months%' OR experience LIKE '%3 tháng%')" +
+                       "\n- Tìm kiếm trong address: Dùng LIKE không phân biệt hoa thường (VD: LOWER(s.address) LIKE LOWER('%ho chi minh%'))" +
+                       "\n- Tìm kiếm skill/field: Kiểm tra cả experience, profile_description và job_field_name" +
+                       "\n- Kết hợp điều kiện với AND khi có nhiều yêu cầu" +
+                       "\n- CHỈ trả về SQL query, KHÔNG giải thích";
+
+        // Token management for candidate search
+        int estimatedTokens = estimateTokenCount(prompt);
+        if (estimatedTokens > TARGET_MAX_TOKENS) {
+            logger.warn("Candidate search token count exceeds limit. Truncating...");
+            int excessTokens = estimatedTokens - TARGET_MAX_TOKENS;
+            int charsToRemove = excessTokens * CHARS_PER_TOKEN;
+            optimizedSchema = optimizedSchema.substring(0, Math.max(0, optimizedSchema.length() - charsToRemove));
+            prompt = "Database schema:\n" + optimizedSchema +
+                    "\n\nTìm ứng viên: " + translatedQuestion +
+                    "\nSELECT s.student_id, a.full_name, a.email, s.address, s.university, s.experience " +
+                    "FROM student s JOIN account a ON s.user_id = a.user_id WHERE ";
+        }
+
+        logger.info("Processing candidate search query: {}", userQuestion);
+
+        // Call Gemini API for candidate search
+        JSONObject contents = new JSONObject()
+            .put("role", "user")
+            .put("parts", new JSONArray()
+                .put(new JSONObject()
+                    .put("text", prompt)
+                )
+            );
+
+        JSONObject body = new JSONObject()
+            .put("contents", new JSONArray().put(contents))
+            .put("generationConfig", new JSONObject()
+                .put("temperature", 0.1)  // Very low temperature for precise SQL
+                .put("maxOutputTokens", 300)
+            );
+
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(ENDPOINT).newBuilder();
+        urlBuilder.addQueryParameter("key", apiKey);
+
+        Request request = new Request.Builder()
+            .url(urlBuilder.build())
+            .addHeader("Content-Type", "application/json")
+            .post(RequestBody.create(body.toString(), MediaType.parse("application/json")))
+            .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            String responseBody = response.body().string();
+
+            if (!response.isSuccessful()) {
+                logger.error("Gemini API error in candidate search: {} - {}", response.code(), responseBody);
+                throw new RuntimeException("Gemini API error: " + response.code());
+            }
+
+            try {
+                JSONObject json = new JSONObject(responseBody);
+                if (!json.has("candidates") || json.getJSONArray("candidates").length() == 0) {
+                    throw new RuntimeException("No SQL generated for candidate search");
+                }
+                
+                String sql = json.getJSONArray("candidates")
+                          .getJSONObject(0)
+                          .getJSONObject("content")
+                          .getJSONArray("parts")
+                          .getJSONObject(0)
+                          .getString("text")
+                          .trim();
+
+                // Clean SQL
+                sql = sql.replaceAll("(?s)```sql|```", "").trim();
+                
+                return sql;
+                
+            } catch (JSONException e) {
+                logger.error("Failed to parse candidate search response: {}", responseBody, e);
+                throw new RuntimeException("Failed to parse SQL response", e);
+            }
+        }
+    }
+    
+    /**
+     * Enhanced keyword translation specifically for candidate search
+     */
+    private String translateCandidateKeywords(String userQuestion) {
+        String translatedQuestion = translateVietnameseKeywords(userQuestion);
+        
+        // Enhanced time unit translations
+        translatedQuestion = translatedQuestion
+            // Time units with numbers
+            .replaceAll("(?i)\\b(\\d+)\\s*tháng\\b", "$1 months")
+            .replaceAll("(?i)\\b(\\d+)\\s*năm\\b", "$1 years")
+            .replaceAll("(?i)\\b(\\d+)\\s*tuần\\b", "$1 weeks")
+            
+            // Experience patterns
+            .replaceAll("(?i)\\bkinh\\s*nghiệm\\s*(\\d+)\\s*tháng\\b", "experience with $1 months")
+            .replaceAll("(?i)\\bkinh\\s*nghiệm\\s*(\\d+)\\s*năm\\b", "experience with $1 years")
+            .replaceAll("(?i)\\b(\\d+)\\s*tháng\\s*kinh\\s*nghiệm\\b", "$1 months experience")
+            .replaceAll("(?i)\\b(\\d+)\\s*năm\\s*kinh\\s*nghiệm\\b", "$1 years experience")
+            
+            // Vietnamese experience patterns
+            .replaceAll("(?i)\\bcó\\s*kinh\\s*nghiệm\\s*(\\d+)\\s*tháng\\b", "have $1 months experience")
+            .replaceAll("(?i)\\bcó\\s*kinh\\s*nghiệm\\s*(\\d+)\\s*năm\\b", "have $1 years experience")
+            
+            // "về" (about/in) patterns for skills/fields
+            .replaceAll("(?i)\\bvề\\s*(\\w+)", "in $1")
+            .replaceAll("(?i)\\bkinh\\s*nghiệm\\s*về\\s*(\\w+)", "experience in $1")
+            
+            // Location patterns
+            .replaceAll("(?i)\\bở\\s+hồ\\s*chí\\s*minh\\b", "in Ho Chi Minh")
+            .replaceAll("(?i)\\bở\\s+hà\\s*nội\\b", "in Hanoi")
+            .replaceAll("(?i)\\bở\\s+đà\\s*nẵng\\b", "in Da Nang")
+            .replaceAll("(?i)\\btại\\s+hồ\\s*chí\\s*minh\\b", "in Ho Chi Minh")
+            .replaceAll("(?i)\\btại\\s+hà\\s*nội\\b", "in Hanoi")
+            .replaceAll("(?i)\\btại\\s+đà\\s*nẵng\\b", "in Da Nang")
+            
+            // General location patterns
+            .replaceAll("(?i)\\bở\\s+(.+?)\\s*(,|$|\\s+và|\\s+with)", "in $1")
+            .replaceAll("(?i)\\btại\\s+(.+?)\\s*(,|$|\\s+và|\\s+with)", "in $1")
+            
+            // Remove search-specific words
+            .replaceAll("(?i)\\btìm\\s*(ứng\\s*viên|người)\\b", "find candidates")
+            .replaceAll("(?i)\\bmuốn\\s*tìm\\b", "looking for")
+            .replaceAll("(?i)\\btôi\\s*muốn\\b", "I want")
+            
+            // Intern/internship patterns
+            .replaceAll("(?i)\\bthực\\s*tập\\s*sinh\\b", "intern")
+            .replaceAll("(?i)\\bthực\\s*tập\\b", "internship")
+            
+            // Fresh graduate patterns
+            .replaceAll("(?i)\\bmới\\s*ra\\s*trường\\b", "fresh graduate")
+            .replaceAll("(?i)\\bfresh\\s*graduate\\b", "fresh graduate")
+            
+            // Education patterns
+            .replaceAll("(?i)\\bhọc\\s*tại\\s*(.+?)\\s*(,|$|\\s+và)", "studied at $1")
+            .replaceAll("(?i)\\btrường\\s*(.+?)\\s*(,|$|\\s+và)", "university $1");
+             
+        return translatedQuestion;
+    }
+    
+    /**
+     * Optimize schema specifically for candidate search
+     */
+    private String optimizeSchemaForCandidates(String schema, String userQuestion) {
+        // Always include these tables for candidate search
+        Set<String> candidateTables = Set.of("student", "account", "job_fields");
+        
+        Pattern createTablePattern = Pattern.compile("CREATE TABLE ([^(]+)\\([^;]+;", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = createTablePattern.matcher(schema);
+        Map<String, String> tables = new HashMap<>();
+
+        while (matcher.find()) {
+            String fullDefinition = matcher.group(0);
+            String tableName = matcher.group(1).trim().toLowerCase();
+            tables.put(tableName, fullDefinition);
+        }
+
+        StringBuilder optimizedSchema = new StringBuilder();
+        
+        // Add candidate-relevant tables
+        for (String tableName : candidateTables) {
+            if (tables.containsKey(tableName)) {
+                optimizedSchema.append(tables.get(tableName)).append("\n");
+            }
+        }
+        
+        return optimizedSchema.toString();
+    }
+
+    /**
+     * Detect if query is in Vietnamese to generate appropriate response language
+     */
+    private boolean isVietnameseQuery(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return true; // Default to Vietnamese
+        }
+        
+        String lowerQuery = query.toLowerCase();
+        
+        // 1. Check for Vietnamese diacritics - most reliable indicator
+        if (lowerQuery.matches(".*[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ].*")) {
+            return true;
+        }
+        
+        // 2. Check for distinctly Vietnamese words (high confidence)
+        String[] highConfidenceVietnamese = {
+            "tôi", "tìm", "muốn", "cần", "của", "là", "được", "cho", "này", "đó",
+            "ứng viên", "sinh viên", "kinh nghiệm", "thực tập", "hà nội", "hồ chí minh", "đà nẵng"
+        };
+        
+        for (String word : highConfidenceVietnamese) {
+            if (lowerQuery.contains(word)) {
+                return true;
+            }
+        }
+        
+        // 3. Character-based analysis for Vietnamese patterns
+        int vietnameseCharScore = 0;
+        
+        // Common Vietnamese character combinations
+        String[] vietnamesePatterns = {
+            "ng", "ch", "th", "ph", "gh", "kh", "nh", "tr", "qu", "gi"
+        };
+        
+        for (String pattern : vietnamesePatterns) {
+            if (lowerQuery.contains(pattern)) {
+                vietnameseCharScore++;
+            }
+        }
+        
+        // 4. English-specific patterns (if found, likely English)
+        String[] englishPatterns = {
+            " the ", " and ", " with ", " for ", " from ", " that ", " this ",
+            "experience", "developer", "engineer", "manager", "years", "months"
+        };
+        
+        int englishScore = 0;
+        for (String pattern : englishPatterns) {
+            if (lowerQuery.contains(pattern)) {
+                englishScore++;
+            }
+        }
+        
+        // 5. Vietnamese common words (lower confidence but still indicators)
+        String[] commonVietnamese = {
+            "người", "có", "về", "ở", "tại", "làm", "việc", "công ty", 
+            "năm", "tháng", "ngày", "và", "với", "trong", "nào", "gì", "như"
+        };
+        
+        int commonVietnameseCount = 0;
+        for (String word : commonVietnamese) {
+            if (lowerQuery.contains(word)) {
+                commonVietnameseCount++;
+            }
+        }
+        
+        // Decision logic
+        if (englishScore > 0 && commonVietnameseCount == 0 && vietnameseCharScore < 2) {
+            return false; // Likely English
+        }
+        
+        if (commonVietnameseCount > 0 || vietnameseCharScore >= 2) {
+            return true; // Likely Vietnamese
+        }
+        
+        // 6. As a fallback, check word structure
+        // Vietnamese words tend to be shorter and have certain patterns
+        String[] words = lowerQuery.split("\\s+");
+        int shortWordsCount = 0;
+        for (String word : words) {
+            if (word.length() <= 4 && !word.matches("\\d+")) { // Short words, not numbers
+                shortWordsCount++;
+            }
+        }
+        
+        // If most words are short, lean towards Vietnamese
+        if (words.length > 0 && (double) shortWordsCount / words.length > 0.6) {
+            return true;
+        }
+        
+        // Default to Vietnamese for ambiguous cases (since this is primarily a Vietnamese system)
+        return true;
+    }
+
+    /**
+     * Generate natural language response for candidate search results
+     */
+    public String generateCandidateSearchResponse(String originalQuery, List<Object[]> results) {
+        boolean isVietnamese = isVietnameseQuery(originalQuery);
+        int resultCount = results != null ? results.size() : 0;
+
+        if (resultCount == 0) {
+            if (isVietnamese) {
+                return "Không tìm thấy ứng viên phù hợp với yêu cầu của bạn. Hãy thử lại với từ khóa khác hoặc mở rộng tiêu chí tìm kiếm.";
+            } else {
+                return "No candidates found matching your criteria. Try adjusting your search terms or broadening your requirements.";
+            }
+        } else {
+            // Analyze results for insights
+            String insights = generateCandidateInsights(results, isVietnamese);
+            
+            if (resultCount == 1) {
+                if (isVietnamese) {
+                    return "Chào bạn, tôi thấy ứng viên " + getCandidateName(results.get(0)) + 
+                           " phù hợp với yêu cầu tìm kiếm của bạn. " + insights;
+                } else {
+                    return "Hello, I found candidate " + getCandidateName(results.get(0)) + 
+                           " matching your search criteria. " + insights;
+                }
+            } else {
+                if (isVietnamese) {
+                    return "Chào bạn, tôi thấy " + resultCount + " ứng viên phù hợp với yêu cầu của bạn. " + insights;
+                } else {
+                    return "Hello, I found " + resultCount + " candidates matching your requirements. " + insights;
+                }
+            }
+        }
+    }
+
+    /**
+     * Generate insights about the found candidates
+     */
+    private String generateCandidateInsights(List<Object[]> results, boolean isVietnamese) {
+        if (results == null || results.isEmpty()) {
+            return "";
+        }
+
+        try {
+            // Analyze experience levels, locations, universities
+            Map<String, Integer> universities = new HashMap<>();
+            Map<String, Integer> locations = new HashMap<>();
+            int withExperience = 0;
+
+            for (Object[] result : results) {
+                // Assuming: student_id, full_name, email, phone, address, university, experience, profile_description, job_field_name
+                String university = result.length > 5 && result[5] != null ? result[5].toString() : "";
+                String address = result.length > 4 && result[4] != null ? result[4].toString() : "";
+                String experience = result.length > 6 && result[6] != null ? result[6].toString() : "";
+
+                if (!university.isEmpty()) {
+                    universities.put(university, universities.getOrDefault(university, 0) + 1);
+                }
+                
+                if (!address.isEmpty()) {
+                    // Extract city from address
+                    String city = extractCity(address);
+                    if (!city.isEmpty()) {
+                        locations.put(city, locations.getOrDefault(city, 0) + 1);
+                    }
+                }
+                
+                if (!experience.isEmpty() && !experience.toLowerCase().contains("not updated")) {
+                    withExperience++;
+                }
+            }
+
+            // Generate insights
+            StringBuilder insights = new StringBuilder();
+            
+            if (isVietnamese) {
+                if (withExperience > 0) {
+                    insights.append("Có ").append(withExperience).append(" ứng viên có kinh nghiệm thực tế. ");
+                }
+                
+                if (!universities.isEmpty()) {
+                    String topUniversity = universities.entrySet().stream()
+                        .max(Map.Entry.comparingByValue())
+                        .map(Map.Entry::getKey)
+                        .orElse("");
+                    if (!topUniversity.isEmpty()) {
+                        insights.append("Phần lớn từ ").append(topUniversity).append(". ");
+                    }
+                }
+                
+                if (!locations.isEmpty() && locations.size() > 1) {
+                    insights.append("Ứng viên đến từ nhiều địa phương khác nhau. ");
+                }
+                
+                insights.append("Bạn có thể xem chi tiết để đánh giá kỹ hơn!");
+            } else {
+                if (withExperience > 0) {
+                    insights.append(withExperience).append(" candidate(s) have practical experience. ");
+                }
+                
+                if (!universities.isEmpty()) {
+                    String topUniversity = universities.entrySet().stream()
+                        .max(Map.Entry.comparingByValue())
+                        .map(Map.Entry::getKey)
+                        .orElse("");
+                    if (!topUniversity.isEmpty()) {
+                        insights.append("Most are from ").append(topUniversity).append(". ");
+                    }
+                }
+                
+                if (!locations.isEmpty() && locations.size() > 1) {
+                    insights.append("Candidates are from various locations. ");
+                }
+                
+                insights.append("You can view details for further evaluation!");
+            }
+
+            return insights.toString();
+            
+        } catch (Exception e) {
+            // If analysis fails, return simple message
+            if (isVietnamese) {
+                return "Hãy xem chi tiết từng ứng viên để đánh giá phù hợp nhất.";
+            } else {
+                return "Please review each candidate's details for the best match.";
+            }
+        }
+    }
+
+    /**
+     * Extract candidate name from result row
+     */
+    private String getCandidateName(Object[] result) {
+        if (result != null && result.length > 1 && result[1] != null) {
+            return result[1].toString();
+        }
+        return "N/A";
+    }
+
+    /**
+     * Extract city name from address
+     */
+    private String extractCity(String address) {
+        if (address == null || address.isEmpty()) {
+            return "";
+        }
+        
+        String lowerAddress = address.toLowerCase();
+        
+        if (lowerAddress.contains("ho chi minh") || lowerAddress.contains("hcm") || lowerAddress.contains("saigon")) {
+            return "Ho Chi Minh";
+        } else if (lowerAddress.contains("hanoi") || lowerAddress.contains("hà nội")) {
+            return "Hà Nội";
+        } else if (lowerAddress.contains("da nang") || lowerAddress.contains("đà nẵng")) {
+            return "Đà Nẵng";
+        }
+        
+        // Try to extract last part (usually city)
+        String[] parts = address.split(",");
+        if (parts.length > 0) {
+            return parts[parts.length - 1].trim();
+        }
+        
+        return "";
+    }
+
+    /**
+     * Generate error message for candidate search based on query language
+     */
+    public String generateCandidateSearchErrorMessage(String originalQuery) {
+        boolean isVietnamese = isVietnameseQuery(originalQuery);
+        
+        if (isVietnamese) {
+            return "Không thể tìm kiếm ứng viên. Vui lòng thử lại với từ khóa khác.\n" +
+                   "Ví dụ: \"Tìm ứng viên Java có 3 năm kinh nghiệm\" hoặc \"Sinh viên IT ở Hà Nội\"";
+        } else {
+            return "Unable to search for candidates. Please try again with different keywords.\n" +
+                   "Examples: \"Find Java developers with 3 years experience\" or \"Fresh IT graduates in Hanoi\"";
+        }
     }
 }

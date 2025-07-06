@@ -19,6 +19,11 @@ public class IAccountServiceImpl implements IAccountService {
     }
 
     @Override
+    public boolean existsByPhone(String phone) {
+        return accountRepository.existsByPhone(phone);
+    }
+
+    @Override
     public Account findByRole(Account.Role role) {
         return (Account) accountRepository.findByRole(role);
     }

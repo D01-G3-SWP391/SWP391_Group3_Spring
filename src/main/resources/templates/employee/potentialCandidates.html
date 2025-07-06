@@ -1,409 +1,17 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tìm kiếm ứng viên</title>
+    <title>Search Candidates</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
     <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarEmployer.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarViewJobPost.css}" />
+    <link rel="stylesheet" th:href="@{/css/potentialCandidates.css}"/>
     <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
-    <style>
-    /* Flash message styles */
-    .flash-message {
-        display: flex;
-        align-items: center;
-        background: #e0ffe6;
-        color: #218838;
-        border: 2px solid #34c759;
-        border-radius: 8px;
-        padding: 16px 24px;
-        font-size: 1.15rem;
-        font-weight: 600;
-        margin: 20px auto 0 auto;
-        max-width: 450px;
-        box-shadow: 0 4px 16px rgba(52,199,89,0.12);
-        position: relative;
-        animation: fadeIn 0.7s;
-        z-index: 1000;
-    }
-    .flash-message .icon {
-        font-size: 1.5em;
-        margin-right: 12px;
-    }
-    .flash-message .close-btn {
-        position: absolute;
-        right: 12px;
-        top: 10px;
-        background: none;
-        border: none;
-        font-size: 1.2em;
-        color: #218838;
-        cursor: pointer;
-    }
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(-10px);}
-        to { opacity: 1; transform: translateY(0);}
-    }
 
-    /* Page Header */
-    .page-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-        padding: 1.5rem 0;
-        border-bottom: 2px solid #f1f5f9;
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
-        border-radius: 12px;
-        padding: 1.5rem 2rem;
-        margin-bottom: 2rem;
-    }
-
-    .page-title-section h1 {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: #1e293b;
-        margin: 0 0 0.5rem 0;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .page-title-section p {
-        color: #64748b;
-        font-size: 1.1rem;
-        margin: 0;
-        font-weight: 500;
-    }
-
-    /* Search Form */
-    .search-form {
-        background: white;
-        padding: 2rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        margin-bottom: 2rem;
-        border: 1px solid #e2e8f0;
-    }
-
-    .search-form .form-control {
-        border-radius: 8px;
-        border: 1px solid #e2e8f0;
-        padding: 0.75rem 1rem;
-        transition: all 0.3s ease;
-    }
-
-    .search-form .form-control:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    .search-btn {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 0.75rem;
-        height: 42px;
-        width: 42px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 6px rgba(102, 126, 234, 0.2);
-    }
-
-    .search-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(102, 126, 234, 0.3);
-        color: white;
-    }
-
-    .search-btn i {
-        font-size: 1.2rem;
-    }
-
-    /* Statistics cards */
-    .stats-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .stat-card {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        border: 1px solid #e2e8f0;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        transition: all 0.3s ease;
-    }
-
-    .stat-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-    }
-
-    .stat-icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        color: white;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-
-    .stat-info h3 {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #1e293b;
-        margin: 0;
-    }
-
-    .stat-info p {
-        color: #64748b;
-        margin: 0;
-        font-weight: 500;
-    }
-
-    /* Table container */
-    .table-container {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        border: 1px solid #e2e8f0;
-        overflow: hidden;
-        margin-bottom: 2rem;
-    }
-
-    .table-container table {
-        width: 100%;
-        margin: 0;
-        border-collapse: separate;
-        border-spacing: 0;
-    }
-
-    .table-container thead {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-
-    .table-container thead th {
-        color: white;
-        font-weight: 600;
-        padding: 1.25rem 1rem;
-        text-align: left;
-        border: none;
-        font-size: 0.95rem;
-        letter-spacing: 0.5px;
-    }
-
-    .table-container tbody td {
-        padding: 1rem;
-        border-bottom: 1px solid #f1f5f9;
-        vertical-align: middle;
-        color: #374151;
-    }
-
-    .table-container tbody tr:hover {
-        background-color: #f8fafc;
-    }
-
-    .table-container tbody tr:last-child td {
-        border-bottom: none;
-    }
-
-    .student-name {
-        font-weight: 600;
-        color: #1e293b;
-        margin-bottom: 0.25rem;
-    }
-
-    .contact-info {
-        color: #64748b;
-        font-size: 0.9rem;
-        line-height: 1.4;
-    }
-
-    .contact-info span {
-        display: block;
-    }
-
-    .btn-info {
-        background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
-        border: none;
-        color: white;
-        padding: 0.5rem 1rem;
-        border-radius: 6px;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .btn-info:hover {
-        background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
-        color: white;
-        text-decoration: none;
-    }
-
-    /* Empty state */
-    .empty-state {
-        text-align: center;
-        padding: 4rem 2rem;
-        color: #64748b;
-    }
-
-    .empty-state i {
-        font-size: 4rem;
-        color: #cbd5e1;
-        margin-bottom: 1rem;
-    }
-
-    .empty-state h3 {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: #374151;
-        margin-bottom: 0.5rem;
-    }
-
-    .empty-state p {
-        font-size: 1.1rem;
-        margin-bottom: 2rem;
-    }
-
-    /* Pagination */
-    .bottom-pagination {
-        display: flex;
-        justify-content: center;
-        margin-top: 2rem;
-    }
-
-    .pagination-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: white;
-        padding: 1rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        border: 1px solid #e2e8f0;
-    }
-
-    .pagination-btn {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.75rem 1rem;
-        background: white;
-        border: 2px solid #e2e8f0;
-        border-radius: 8px;
-        text-decoration: none;
-        color: #374151;
-        font-weight: 500;
-        transition: all 0.3s ease;
-    }
-
-    .pagination-btn:hover:not(.disabled) {
-        background: #667eea;
-        border-color: #667eea;
-        color: white;
-        text-decoration: none;
-        transform: translateY(-1px);
-    }
-
-    .pagination-btn.disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        background: #f8fafc;
-    }
-
-    .page-numbers {
-        display: flex;
-        gap: 0.25rem;
-        margin: 0 1rem;
-    }
-
-    .page-number {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-        border: 2px solid #e2e8f0;
-        border-radius: 8px;
-        text-decoration: none;
-        color: #374151;
-        font-weight: 500;
-        transition: all 0.3s ease;
-    }
-
-    .page-number:hover {
-        background: #667eea;
-        border-color: #667eea;
-        color: white;
-        text-decoration: none;
-    }
-
-    .page-number.active {
-        background: #667eea;
-        border-color: #667eea;
-        color: white;
-    }
-
-    /* Responsive design */
-    @media (max-width: 768px) {
-        .page-header {
-            flex-direction: column;
-            gap: 1rem;
-            text-align: center;
-            padding: 1rem;
-        }
-        
-        .page-title-section h1 {
-            font-size: 1.8rem;
-            justify-content: center;
-        }
-        
-        .search-form {
-            padding: 1rem;
-        }
-        
-        .stats-container {
-            grid-template-columns: 1fr;
-        }
-        
-        .table-container {
-            overflow-x: auto;
-        }
-        
-        .pagination-wrapper {
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        .page-numbers {
-            margin: 0;
-        }
-    }
-    </style>
 </head>
 <body>
 <div th:replace="~{navbar/navbarEmployee :: navbarEmployee}"></div>
@@ -413,7 +21,7 @@
     <!-- PAGE HEADER -->
     <div class="page-header">
         <div class="page-title-section">
-            <h1>Tìm kiếm ứng viên</h1>
+            <h1>Search Candidates</h1>
         </div>
     </div>
 
@@ -424,24 +32,36 @@
         <button class="close-btn" onclick="document.getElementById('flashMessage').style.display='none'">&times;</button>
     </div>
 
-    <!-- Search Form -->
-    <div class="search-form">
+    <!-- Search Mode Toggle -->
+    <div class="search-mode-toggle" style="display: flex; justify-content: center; margin-bottom: 1rem;">
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-switch" id="traditional-search-btn" onclick="switchSearchMode('traditional')">
+                <i class="bi bi-filter"></i> Traditional Search
+            </button>
+            <button type="button" class="btn btn-switch" id="ai-search-btn" onclick="switchSearchMode('ai')">
+                <i class="bi bi-robot"></i> AI Search
+            </button>
+        </div>
+    </div>
+
+    <!-- Traditional Search Form -->
+    <div class="search-form" id="traditional-search-form">
         <form class="row g-3 align-items-end" method="get" th:action="@{/Employer/SearchCandidate}">
             <div class="col-md-3">
-                <label for="address" class="form-label">Địa chỉ mong muốn</label>
-                <input type="text" class="form-control" id="address" name="address" th:value="${address}" placeholder="Tỉnh/Thành phố">
+                <label for="address" class="form-label">Preferred Address</label>
+                <input type="text" class="form-control" id="address" name="address" th:value="${address}" placeholder="Province/City">
             </div>
             <div class="col-md-3">
-                <label for="university" class="form-label">Trường học</label>
-                <input type="text" class="form-control" id="university" name="university" th:value="${university}" placeholder="Tên trường">
+                <label for="university" class="form-label">University</label>
+                <input type="text" class="form-control" id="university" name="university" th:value="${university}" placeholder="University name">
             </div>
             <div class="col-md-3">
-                <label for="experience" class="form-label">Kinh nghiệm</label>
-                <input type="text" class="form-control" id="experience" name="experience" th:value="${experience}" placeholder="Kinh nghiệm làm việc">
+                <label for="experience" class="form-label">Experience</label>
+                <input type="text" class="form-control" id="experience" name="experience" th:value="${experience}" placeholder="Work experience">
             </div>
             <div class="col-md-2">
-                <label for="jobFieldName" class="form-label">Ngành nghề</label>
-                <input type="text" class="form-control" id="jobFieldName" name="jobFieldName" th:value="${jobFieldName}" placeholder="Ngành nghề quan tâm">
+                <label for="jobFieldName" class="form-label">Field of Work</label>
+                <input type="text" class="form-control" id="jobFieldName" name="jobFieldName" th:value="${jobFieldName}" placeholder="Field of interest">
             </div>
             <div class="col-md-1">
                 <button type="submit" class="btn search-btn">
@@ -451,25 +71,56 @@
         </form>
     </div>
 
+    <!-- AI Search Form -->
+    <div class="search-form" id="ai-search-form" style="display: none;">
+        <div class="ai-search-container">
+            <div class="row">
+                <div class="col-md-10">
+                    <label for="ai-search-input" class="form-label">
+                        <i class="bi bi-robot"></i> AI Search - Describe what kind of candidates you're looking for
+                    </label>
+                    <input type="text" class="form-control" id="ai-search-input" 
+                           placeholder="Example: 'Find Java developers with 3+ years experience in Hanoi' or 'Fresh graduates from IT universities'"
+                           style="font-size: 1.1rem; padding: 0.75rem 1rem; height: 50px;">
+                    <div class="form-text">
+                        <small>💡 Examples: "Ứng viên Java có 3 năm kinh nghiệm ở Hà Nội" • "Sinh viên IT mới ra trường" • "Lập trình viên Python ở TP.HCM"</small>
+                    </div>
+                </div>
+                <div class="col-md-2 d-flex align-items-center" style="padding-top: 10px;">
+                    <button type="button" class="btn search-btn w-100" id="ai-search-button" onclick="performAISearch()" style="height: 50px;">
+                        <i class="bi bi-search"></i>
+                        <span class="spinner-border spinner-border-sm d-none" id="ai-search-spinner"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Search Results Message -->
+    <div id="ai-search-message" class="alert alert-info d-none" style="margin-top: 1rem;">
+        <i class="bi bi-info-circle"></i>
+        <span id="ai-search-message-text"></span>
+    </div>
+
     <!-- Statistics cards -->
 
-    <!-- Table container -->
-    <div class="table-container">
+    <!-- Table container for Traditional Search -->
+    <div class="table-container" id="traditional-results-container">
         <div th:if="${studentsPage == null or studentsPage.content.isEmpty()}" class="empty-state">
             <i class="bi bi-person-x"></i>
-            <h3>Không tìm thấy ứng viên</h3>
-            <p>Không có ứng viên nào phù hợp với tiêu chí tìm kiếm của bạn.</p>
+            <h3>No candidates found</h3>
+            <p>No candidates match your search criteria.</p>
         </div>
 
         <table th:if="${studentsPage != null and !studentsPage.content.isEmpty()}">
             <thead>
             <tr>
-                <th>STT</th>
-                <th>Thông tin ứng viên</th>
-                <th>Liên hệ</th>
-                <th>Địa chỉ mong muốn</th>
-                <th>Trường học</th>
-                <th>Hành động</th>
+                <th>No.</th>
+                <th>Candidate Information</th>
+                <th>Contact</th>
+                <th>Preferred Address</th>
+                <th>University</th>
+                <th>Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -478,7 +129,7 @@
                 <td>
                     <div class="student-name" th:text="${student.account != null ? student.account.fullName : 'N/A'}"></div>
                     <div class="contact-info">
-                        <span th:if="${student.jobField != null}" th:text="'Ngành: ' + ${student.jobField.jobFieldName}"></span>
+                        <span th:if="${student.jobField != null}" th:text="'Field: ' + ${student.jobField.jobFieldName}"></span>
                     </div>
                 </td>
                 <td>
@@ -487,17 +138,68 @@
                         <span th:text="${student.account != null ? student.account.phone : 'N/A'}"></span>
                     </div>
                 </td>
-                <td th:text="${student.preferredJobAddress ?: 'Chưa cập nhật'}"></td>
-                <td th:text="${student.university ?: 'Chưa cập nhật'}"></td>
+                <td th:text="${student.preferredJobAddress ?: 'Not updated'}"></td>
+                <td th:text="${student.university ?: 'Not updated'}"></td>
                 <td>
                     <a th:href="@{'/Employer/CandidateDetail/' + ${student.studentId}}" class="btn-info">
                         <i class="bi bi-eye"></i>
-                        Xem chi tiết
+                        View Details
                     </a>
                 </td>
             </tr>
             </tbody>
         </table>
+    </div>
+
+    <!-- AI Search Results Container -->
+    <div class="d-none" id="ai-results-container">
+        <!-- Empty State -->
+        <div id="ai-empty-state" class="empty-state d-none">
+            <i class="bi bi-robot"></i>
+            <h3>No AI search performed yet</h3>
+            <p>Use the AI search above to find candidates with natural language.</p>
+        </div>
+
+        <!-- AI Results Content -->
+        <div id="ai-results-content" class="d-none">
+            <!-- AI Results Header -->
+            <div class="ai-results-header">
+                <h2 class="ai-results-title">
+                    <i class="bi bi-robot"></i>
+                    AI Search Results
+                </h2>
+                <div class="results-count-badge" id="results-count-badge">
+                    <i class="bi bi-person-check"></i>
+                    <span id="candidates-count">0 candidates found</span>
+                </div>
+            </div>
+
+            <!-- AI Insight Message -->
+            <div class="ai-insight-message" id="ai-insight-message">
+                <div class="message-content" id="ai-insight-text">
+                    AI is analyzing your search...
+                </div>
+            </div>
+
+            <!-- AI Results Table -->
+            <div class="table-container" id="ai-results-table-container">
+                <table id="ai-results-table">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Candidate Information</th>
+                            <th>Contact</th>
+                            <th>Preferred Address</th>
+                            <th>University</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ai-results-table-body">
+                        <!-- AI search results will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <!-- Pagination -->
@@ -508,11 +210,11 @@
                th:href="@{/Employer/SearchCandidate(page=${studentsPage.number - 1}, address=${address}, university=${university}, experience=${experience}, jobFieldName=${jobFieldName})}"
                class="pagination-btn prev-btn">
                 <i class="bi bi-chevron-left"></i>
-                <span>Trang trước</span>
+                <span>Previous Page</span>
             </a>
             <span th:unless="${studentsPage.hasPrevious()}" class="pagination-btn prev-btn disabled">
                 <i class="bi bi-chevron-left"></i>
-                <span>Trang trước</span>
+                <span>Previous Page</span>
             </span>
 
             <div class="page-numbers">
@@ -531,28 +233,213 @@
             <a th:if="${studentsPage.hasNext()}"
                th:href="@{/Employer/SearchCandidate(page=${studentsPage.number + 1}, address=${address}, university=${university}, experience=${experience}, jobFieldName=${jobFieldName})}"
                class="pagination-btn next-btn">
-                <span>Trang sau</span>
+                <span>Next Page</span>
                 <i class="bi bi-chevron-right"></i>
             </a>
             <span th:unless="${studentsPage.hasNext()}" class="pagination-btn next-btn disabled">
-                <span>Trang sau</span>
+                <span>Next Page</span>
                 <i class="bi bi-chevron-right"></i>
             </span>
         </div>
     </div>
 </div>
-
+<!-- Add notification bell -->
+<div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
+<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/js/language-dropdown.js}"></script>
+
 <script>
     // Auto hide flash message
     setTimeout(function() {
         var msg = document.getElementById('flashMessage');
         if(msg) msg.style.display = 'none';
     }, 3000);
+
+    // Switch between Traditional and AI search modes
+    function switchSearchMode(mode) {
+        const traditionalForm = document.getElementById('traditional-search-form');
+        const aiForm = document.getElementById('ai-search-form');
+        const traditionalBtn = document.getElementById('traditional-search-btn');
+        const aiBtn = document.getElementById('ai-search-btn');
+        const traditionalResults = document.getElementById('traditional-results-container');
+        const aiResults = document.getElementById('ai-results-container');
+        const aiMessage = document.getElementById('ai-search-message');
+
+        if (mode === 'traditional') {
+            // Show traditional, hide AI
+            traditionalForm.style.display = 'block';
+            aiForm.style.display = 'none';
+            traditionalBtn.classList.add('active');
+            aiBtn.classList.remove('active');
+            traditionalResults.classList.remove('d-none');
+            aiResults.classList.add('d-none');
+            aiMessage.classList.add('d-none');
+        } else {
+            // Show AI, hide traditional
+            traditionalForm.style.display = 'none';
+            aiForm.style.display = 'block';
+            traditionalBtn.classList.remove('active');
+            aiBtn.classList.add('active');
+            traditionalResults.classList.add('d-none');
+            aiResults.classList.remove('d-none');
+            
+            // Show empty state initially
+            const emptyState = document.getElementById('ai-empty-state');
+            const resultsContent = document.getElementById('ai-results-content');
+            emptyState.classList.remove('d-none');
+            resultsContent.classList.add('d-none');
+        }
+    }
+
+    // Perform AI-powered candidate search
+    async function performAISearch() {
+        const searchInput = document.getElementById('ai-search-input');
+        const searchButton = document.getElementById('ai-search-button');
+        const spinner = document.getElementById('ai-search-spinner');
+        const messageDiv = document.getElementById('ai-search-message');
+        const messageText = document.getElementById('ai-search-message-text');
+
+        const query = searchInput.value.trim();
+        
+        if (!query) {
+            showMessage('warning', 'Vui lòng nhập từ khóa tìm kiếm.');
+            return;
+        }
+
+        // Show loading state
+        searchButton.disabled = true;
+        spinner.classList.remove('d-none');
+        showMessage('info', 'Đang tìm kiếm ứng viên với AI...');
+        
+        try {
+            const response = await fetch('/api/query/search-candidates', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query: query })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                displayAIResults(result.results, result.message);
+            } else {
+                showMessage('danger', result.message || 'Có lỗi xảy ra khi tìm kiếm.');
+                const emptyState = document.getElementById('ai-empty-state');
+                const resultsContent = document.getElementById('ai-results-content');
+                emptyState.classList.remove('d-none');
+                resultsContent.classList.add('d-none');
+            }
+
+        } catch (error) {
+            showMessage('danger', 'Không thể kết nối đến hệ thống AI. Vui lòng thử lại sau.');
+            const emptyState = document.getElementById('ai-empty-state');
+            const resultsContent = document.getElementById('ai-results-content');
+            emptyState.classList.remove('d-none');
+            resultsContent.classList.add('d-none');
+        } finally {
+            // Hide loading state
+            searchButton.disabled = false;
+            spinner.classList.add('d-none');
+        }
+    }
+
+    // Display AI search results
+    function displayAIResults(results, message) {
+        const emptyState = document.getElementById('ai-empty-state');
+        const resultsContent = document.getElementById('ai-results-content');
+        const candidatesContainer = document.getElementById('ai-results-table-body');
+        const candidatesCountSpan = document.getElementById('candidates-count');
+        const aiInsightText = document.getElementById('ai-insight-text');
+
+        if (!results || results.length === 0) {
+            emptyState.querySelector('h3').textContent = 'No candidates found';
+            emptyState.querySelector('p').textContent = 'No candidates match your AI search criteria. Try a different query.';
+            emptyState.classList.remove('d-none');
+            resultsContent.classList.add('d-none');
+            showMessage('warning', 'Không tìm thấy ứng viên phù hợp. Thử lại với từ khóa khác.');
+            return;
+        }
+
+        // Update header
+        const count = results.length;
+        candidatesCountSpan.textContent = `${count} candidate${count > 1 ? 's' : ''} found`;
+        
+        // Set AI insight message
+        aiInsightText.textContent = message || 'AI has found matching candidates for your search.';
+
+        // Clear previous results
+        candidatesContainer.innerHTML = '';
+
+        // Create table rows
+        results.forEach((row, index) => {
+            // Assuming SQL returns: student_id, full_name, email, phone, address, university, experience, profile_description, job_field_name
+            const [studentId, fullName, email, phone, address, university, experience, profileDescription, jobFieldName] = row;
+            
+            const tableRow = document.createElement('tr');
+            tableRow.innerHTML = `
+                <td>${index + 1}</td>
+                <td>
+                    <div class="student-name">${fullName || 'N/A'}</div>
+                    <div class="contact-info">
+                        <span>${jobFieldName ? 'Field: ' + jobFieldName : ''}</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="contact-info">
+                        <span>${email || 'N/A'}</span>
+                        <span>${phone || 'N/A'}</span>
+                    </div>
+                </td>
+                <td>${address || 'Not updated'}</td>
+                <td>${university || 'Not updated'}</td>
+                <td>
+                    <a href="/Employer/CandidateDetail/${studentId}" class="btn-info">
+                        <i class="bi bi-eye"></i>
+                        View Details
+                    </a>
+                </td>
+            `;
+            
+            candidatesContainer.appendChild(tableRow);
+        });
+
+        // Show results
+        emptyState.classList.add('d-none');
+        resultsContent.classList.remove('d-none');
+        
+        // Don't show the separate success message since we have the insight message
+        const messageDiv = document.getElementById('ai-search-message');
+        messageDiv.classList.add('d-none');
+    }
+
+    // Show message function
+    function showMessage(type, text) {
+        const messageDiv = document.getElementById('ai-search-message');
+        const messageText = document.getElementById('ai-search-message-text');
+        
+        messageDiv.className = `alert alert-${type}`;
+        messageText.textContent = text;
+        messageDiv.classList.remove('d-none');
+        
+        // Auto hide after 5 seconds for success/info messages
+        if (type === 'success' || type === 'info') {
+            setTimeout(() => {
+                messageDiv.classList.add('d-none');
+            }, 5000);
+        }
+    }
+
+    // Enable Enter key for AI search
+    document.getElementById('ai-search-input').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            performAISearch();
+        }
+    });
 </script>
 
-<!-- Add notification bell -->
-<div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
-<div th:replace="~{fragments/notification-bell :: notification-bell}"></div></body>
+
+</body>
 </html>

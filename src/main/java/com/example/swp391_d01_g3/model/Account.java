@@ -1,6 +1,7 @@
 package com.example.swp391_d01_g3.model;
 
 import jakarta.persistence.*;
+import net.minidev.json.annotate.JsonIgnore;
 
 @Entity
 @Table(name = "Account")
