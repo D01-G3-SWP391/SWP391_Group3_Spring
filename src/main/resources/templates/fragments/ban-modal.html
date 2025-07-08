@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<!-- 🚫 Ban User Modal -->
+<div th:fragment="ban-modal" id="banModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="banModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="banModalLabel">
+                    <i class="fas fa-ban"></i> Ban User Account
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <form id="banForm">
+                <div class="modal-body">
+                    <!-- User Info Display -->
+                    <div class="alert alert-warning" id="userInfo">
+                        <h6><i class="fas fa-exclamation-triangle"></i> Thông tin người dùng</h6>
+                        <p><strong>Tên:</strong> <span id="userName">-</span></p>
+                        <p><strong>Email:</strong> <span id="userEmail">-</span></p>
+                        <p><strong>Role:</strong> <span id="userRole">-</span></p>
+                    </div>
+                    
+                    <!-- Hidden User ID -->
+                    <input type="hidden" id="banUserId" name="userId">
+                    
+                    <!-- Ban Reason -->
+                    <div class="mb-3">
+                        <label for="banReason" class="form-label">
+                            <i class="fas fa-exclamation-circle text-danger"></i> 
+                            Lý do ban <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select" id="banReason" name="banReason" required>
+                            <option value="">-- Chọn lý do ban --</option>
+                            <option value="SPAM">Spam nội dung</option>
+                            <option value="INAPPROPRIATE_CONTENT">Nội dung không phù hợp</option>
+                            <option value="FAKE_INFORMATION">Thông tin giả mạo</option>
+                            <option value="HARASSMENT">Quấy rối người khác</option>
+                            <option value="FRAUD">Lừa đảo</option>
+                            <option value="MULTIPLE_ACCOUNTS">Tạo nhiều tài khoản</option>
+                            <option value="VIOLATION_TERMS">Vi phạm điều khoản sử dụng</option>
+                            <option value="SYSTEM_ABUSE">Lạm dụng hệ thống</option>
+                            <option value="OTHER">Lý do khác</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Vui lòng chọn lý do ban.
+                        </div>
+                    </div>
+                    
+                    <!-- Ban Description -->
+                    <div class="mb-3">
+                        <label for="banDescription" class="form-label">
+                            <i class="fas fa-edit"></i> 
+                            Mô tả chi tiết (tùy chọn)
+                        </label>
+                        <textarea class="form-control" id="banDescription" name="banDescription" 
+                                  rows="3" maxlength="1000" 
+                                  placeholder="Mô tả chi tiết lý do ban (tối đa 1000 ký tự)..."></textarea>
+                        <div class="form-text">
+                            <span id="descriptionCount">0</span>/1000 ký tự
+                        </div>
+                    </div>
+                    
+                    <!-- Ban Duration Type -->
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-clock text-warning"></i> 
+                            Loại thời gian ban <span class="text-danger">*</span>
+                        </label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="banDurationType" 
+                                           id="temporaryBan" value="TEMPORARY" required>
+                                    <label class="form-check-label" for="temporaryBan">
+                                        <i class="fas fa-calendar-alt"></i> Tạm thời
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="banDurationType" 
+                                           id="permanentBan" value="PERMANENT" required>
+                                    <label class="form-check-label" for="permanentBan">
+                                        <i class="fas fa-ban"></i> Vĩnh viễn
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Ban Duration Days (only for temporary) -->
+                    <div class="mb-3" id="banDurationGroup" style="display: none;">
+                        <label for="banDurationDays" class="form-label">
+                            <i class="fas fa-calendar-day"></i> 
+                            Số ngày ban <span class="text-danger">*</span>
+                        </label>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <input type="number" class="form-control" id="banDurationDays" 
+                                       name="banDurationDays" min="1" max="365" 
+                                       placeholder="Nhập số ngày (1-365)">
+                                <div class="invalid-feedback">
+                                    Vui lòng nhập số ngày từ 1 đến 365.
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select" id="quickDuration">
+                                    <option value="">Chọn nhanh</option>
+                                    <option value="1">1 ngày</option>
+                                    <option value="3">3 ngày</option>
+                                    <option value="7">1 tuần</option>
+                                    <option value="14">2 tuần</option>
+                                    <option value="30">1 tháng</option>
+                                    <option value="90">3 tháng</option>
+                                    <option value="180">6 tháng</option>
+                                    <option value="365">1 năm</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Ban Summary -->
+                    <div class="alert alert-info" id="banSummary" style="display: none;">
+                        <h6><i class="fas fa-info-circle"></i> Tóm tắt thông tin ban</h6>
+                        <p><strong>Lý do:</strong> <span id="summaryReason">-</span></p>
+                        <p><strong>Thời gian:</strong> <span id="summaryDuration">-</span></p>
+                        <p class="mb-0"><strong>Hành động:</strong> User sẽ bị khóa tài khoản và nhận email thông báo</p>
+                    </div>
+                    
+                    <!-- Warning -->
+                    <div class="alert alert-danger">
+                        <h6><i class="fas fa-exclamation-triangle"></i> Cảnh báo</h6>
+                        <ul class="mb-0">
+                            <li>Hành động này sẽ khóa tài khoản người dùng ngay lập tức</li>
+                            <li>User sẽ nhận email thông báo chi tiết về việc bị ban</li>
+                            <li>Đối với ban tạm thời, tài khoản sẽ tự động mở khóa khi hết hạn</li>
+                            <li>Đối với ban vĩnh viễn, chỉ admin có thể mở khóa</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Hủy
+                    </button>
+                    <button type="submit" class="btn btn-danger" id="confirmBanBtn">
+                        <i class="fas fa-ban"></i> Xác nhận Ban User
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 🔓 Unban Confirmation Modal -->
+<div th:fragment="unbanModal" id="unbanModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="unbanModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="unbanModalLabel">
+                    <i class="fas fa-unlock"></i> Unban User Account
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="alert alert-info" id="unbanUserInfo">
+                    <h6><i class="fas fa-user"></i> Thông tin người dùng</h6>
+                    <p><strong>Tên:</strong> <span id="unbanUserName">-</span></p>
+                    <p><strong>Email:</strong> <span id="unbanUserEmail">-</span></p>
+                    <p><strong>Role:</strong> <span id="unbanUserRole">-</span></p>
+                </div>
+                
+                <div class="alert alert-success">
+                    <h6><i class="fas fa-check-circle"></i> Xác nhận unban</h6>
+                    <ul class="mb-0">
+                        <li>Tài khoản người dùng sẽ được kích hoạt lại ngay lập tức</li>
+                        <li>User sẽ nhận email thông báo về việc được mở khóa</li>
+                        <li>User có thể đăng nhập và sử dụng đầy đủ tính năng</li>
+                    </ul>
+                </div>
+                
+                <input type="hidden" id="unbanUserId">
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> Hủy
+                </button>
+                <button type="button" class="btn btn-success" id="confirmUnbanBtn">
+                    <i class="fas fa-unlock"></i> Xác nhận Unban
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Ban Modal JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    const banModal = document.getElementById('banModal');
+    const unbanModal = document.getElementById('unbanModal');
+    const banForm = document.getElementById('banForm');
+    const banDurationGroup = document.getElementById('banDurationGroup');
+    const banSummary = document.getElementById('banSummary');
+    
+    // Event listeners for ban buttons are now handled in individual admin templates
+    // to avoid conflicts and ensure proper data binding
+    
+    // Character counter for description
+    const banDescription = document.getElementById('banDescription');
+    const descriptionCount = document.getElementById('descriptionCount');
+    
+    banDescription?.addEventListener('input', function() {
+        descriptionCount.textContent = this.value.length;
+    });
+    
+    // Duration type change handler
+    const durationRadios = document.querySelectorAll('input[name="banDurationType"]');
+    durationRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === 'TEMPORARY') {
+                banDurationGroup.style.display = 'block';
+                document.getElementById('banDurationDays').required = true;
+            } else {
+                banDurationGroup.style.display = 'none';
+                document.getElementById('banDurationDays').required = false;
+                document.getElementById('banDurationDays').value = '';
+            }
+            updateBanSummary();
+        });
+    });
+    
+    // Quick duration selector
+    const quickDuration = document.getElementById('quickDuration');
+    quickDuration?.addEventListener('change', function() {
+        if (this.value) {
+            document.getElementById('banDurationDays').value = this.value;
+            updateBanSummary();
+        }
+    });
+    
+    // Update ban summary
+    function updateBanSummary() {
+        const reason = document.getElementById('banReason');
+        const durationType = document.querySelector('input[name="banDurationType"]:checked');
+        const durationDays = document.getElementById('banDurationDays');
+        
+        if (reason.value && durationType) {
+            const reasonText = reason.options[reason.selectedIndex].text;
+            let durationText = durationType.value === 'PERMANENT' ? 'Vĩnh viễn' : 
+                              (durationDays.value ? durationDays.value + ' ngày' : 'Chưa xác định');
+            
+            document.getElementById('summaryReason').textContent = reasonText;
+            document.getElementById('summaryDuration').textContent = durationText;
+            banSummary.style.display = 'block';
+        } else {
+            banSummary.style.display = 'none';
+        }
+    }
+    
+    // Form change listeners
+    document.getElementById('banReason')?.addEventListener('change', updateBanSummary);
+    document.getElementById('banDurationDays')?.addEventListener('input', updateBanSummary);
+    
+    // DEBUG: Check if banForm exists
+    console.log('🔍 DEBUG: Looking for banForm...');
+    const banFormCheck = document.getElementById('banForm');
+    console.log('🔍 DEBUG: banForm found:', banFormCheck ? 'YES' : 'NO');
+    
+    // Ban form submission
+    if (banForm) {
+        console.log('🔍 DEBUG: Adding submit event listener to banForm');
+        banForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        console.log('🔍 DEBUG: Form submitted from ban-modal.html!');
+        
+        const formData = new FormData(this);
+        const banRequest = {
+            userId: parseInt(formData.get('userId')) || window.currentBanUserId,
+            banReason: formData.get('banReason'),
+            banDescription: formData.get('banDescription'),
+            banDurationType: formData.get('banDurationType'),
+            banDurationDays: formData.get('banDurationDays') ? parseInt(formData.get('banDurationDays')) : null
+        };
+        
+        console.log('🔍 DEBUG: Ban request data from ban-modal:', banRequest);
+        
+        // Determine endpoint based on user role or use global variables
+        const userRole = document.getElementById('userRole').textContent;
+        const endpoint = (userRole === 'Student' || window.currentBanUserType === 'student') ? 
+                        '/Admin/banStudentWithReason' : '/Admin/banEmployerWithReason';
+        
+        // Disable submit button
+        const submitBtn = document.getElementById('confirmBanBtn');
+        console.log('🔍 DEBUG: Submit button found:', submitBtn ? 'YES' : 'NO');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+        
+        // Submit ban request
+        console.log('Sending ban request:', banRequest);
+        console.log('Endpoint:', endpoint);
+        
+        // Use FormData for form submission (no CSRF token needed)
+        const formDataToSend = new FormData();
+        formDataToSend.append('userId', banRequest.userId);
+        formDataToSend.append('banReason', banRequest.banReason);
+        formDataToSend.append('banDescription', banRequest.banDescription || '');
+        formDataToSend.append('banDurationType', banRequest.banDurationType);
+        if (banRequest.banDurationDays) {
+            formDataToSend.append('banDurationDays', banRequest.banDurationDays);
+        }
+        
+        console.log('🔍 DEBUG: Sending form data:', Object.fromEntries(formDataToSend));
+        
+        fetch(endpoint, {
+            method: 'POST',
+            body: formDataToSend
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Response data:', data);
+            if (data.success) {
+                // Show success message
+                showAlert('success', data.message);
+                
+                // Close modal and refresh page
+                bootstrap.Modal.getInstance(banModal).hide();
+                setTimeout(() => window.location.reload(), 1500);
+            } else {
+                showAlert('danger', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Detailed error:', error);
+            showAlert('danger', `Có lỗi xảy ra: ${error.message}. Vui lòng thử lại.`);
+        })
+        .finally(() => {
+            // Re-enable submit button
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-ban"></i> Xác nhận Ban User';
+        });
+        });
+    } else {
+        console.log('❌ DEBUG: banForm not found! Cannot add event listener.');
+    }
+    
+    // Unban confirmation
+    document.getElementById('confirmUnbanBtn')?.addEventListener('click', function() {
+        const userId = document.getElementById('unbanUserId').value;
+        const userRole = document.getElementById('unbanUserRole').textContent;
+        const endpoint = userRole === 'Student' ? 
+                        `/Admin/unbanStudentWithNotification/${userId}` : 
+                        `/Admin/unbanEmployerWithNotification/${userId}`;
+        
+        // Disable button
+        this.disabled = true;
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+        
+        console.log('🔍 DEBUG: Sending unban request to:', endpoint);
+        
+        fetch(endpoint, { 
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showAlert('success', data.message);
+                bootstrap.Modal.getInstance(unbanModal).hide();
+                setTimeout(() => window.location.reload(), 1500);
+            } else {
+                showAlert('danger', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('danger', 'Có lỗi xảy ra khi unban user. Vui lòng thử lại.');
+        })
+        .finally(() => {
+            this.disabled = false;
+            this.innerHTML = '<i class="fas fa-unlock"></i> Xác nhận Unban';
+        });
+    });
+    
+    // Utility function to show alerts
+    function showAlert(type, message) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+        alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        alertDiv.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        document.body.appendChild(alertDiv);
+        
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.parentNode.removeChild(alertDiv);
+            }
+        }, 5000);
+    }
+});
+
+// Global fallback functions (if not defined in individual admin pages)
+if (typeof openBanModal === 'undefined') {
+    window.openBanModal = function(userId, userName, userEmail, userType) {
+        console.log('🔍 DEBUG: Global openBanModal called with:', {userId, userName, userEmail, userType});
+        
+        // Set global variables
+        window.currentBanUserId = userId;
+        window.currentBanUserName = userName;
+        window.currentBanUserEmail = userEmail;
+        window.currentBanUserType = userType;
+        
+        // Set form values
+        document.getElementById('banUserId').value = userId;
+        document.getElementById('userName').textContent = userName;
+        document.getElementById('userEmail').textContent = userEmail || '-';
+        document.getElementById('userRole').textContent = userType.charAt(0).toUpperCase() + userType.slice(1);
+        
+        // Update modal title with RED color
+        const modalTitle = document.getElementById('banModalLabel');
+        if (modalTitle) {
+            modalTitle.innerHTML = `
+                <i class="fas fa-ban"></i> 
+                <span style="color: #dc3545; font-weight: bold;">
+                    Ban ${userType.charAt(0).toUpperCase() + userType.slice(1)}: ${userName}
+                </span>
+            `;
+        }
+        
+        // Reset form
+        document.getElementById('banForm').reset();
+        document.getElementById('banDurationGroup').style.display = 'none';
+        document.getElementById('banSummary').style.display = 'none';
+        document.getElementById('descriptionCount').textContent = '0';
+        
+        // Show modal
+        new bootstrap.Modal(document.getElementById('banModal')).show();
+    };
+}
+
+function openUnbanModal(userId, userName, userEmail, userRole) {
+    document.getElementById('unbanUserId').value = userId;
+    document.getElementById('unbanUserName').textContent = userName;
+    document.getElementById('unbanUserEmail').textContent = userEmail;
+    document.getElementById('unbanUserRole').textContent = userRole;
+    
+    // Show modal
+    new bootstrap.Modal(document.getElementById('unbanModal')).show();
+}
+</script>
+
+</body>
+</html> 

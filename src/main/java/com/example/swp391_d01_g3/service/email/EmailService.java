@@ -24,13 +24,19 @@ public class EmailService {
     private IAccountRepository accountRepository;
     
     public void sendEmail(String to, String subject, String body) {
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setTo(to);
-        simpleMailMessage.setSubject(subject);
-        simpleMailMessage.setText(body);
-        simpleMailMessage.setFrom("viettaifptudn@gmail.com");
-        mailSender.send(simpleMailMessage);
-        System.out.println("Email sent" + to);
+        try {
+            System.out.println("🔍 DEBUG: Attempting to send email to: " + to);
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            simpleMailMessage.setTo(to);
+            simpleMailMessage.setSubject(subject);
+            simpleMailMessage.setText(body);
+            simpleMailMessage.setFrom("viettaifptudn@gmail.com");
+            mailSender.send(simpleMailMessage);
+            System.out.println("✅ Email sent successfully to: " + to);
+        } catch (Exception e) {
+            System.err.println("❌ Failed to send email to: " + to + " - Error: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
     public void sendForgotPassEmail(String to){
         SimpleMailMessage  simpleMailMessage = new SimpleMailMessage();
@@ -431,6 +437,160 @@ public class EmailService {
 
         } catch (Exception e) {
             System.err.println("Failed to send new application notification email to employer: " + employerEmail + " - Error: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Gửi email thông báo khi user bị ban
+     * @param userEmail Email của user bị ban
+     * @param userName Tên user bị ban
+     * @param banReason Lý do ban
+     * @param banDescription Mô tả chi tiết (có thể null)
+     * @param banDurationType Loại ban (TEMPORARY/PERMANENT)
+     * @param banDurationDays Số ngày ban (null nếu permanent)
+     * @param banExpiresAt Thời gian hết hạn ban (null nếu permanent)
+     */
+    public void sendBanNotificationEmail(String userEmail, String userName, String banReason, 
+                                       String banDescription, String banDurationType, 
+                                       Integer banDurationDays, String banExpiresAt) {
+        try {
+            String subject = "🚫 Thông báo tài khoản bị tạm khóa - JOB4YOU";
+            
+            StringBuilder body = new StringBuilder();
+            body.append("Xin chào ").append(userName).append(",\n\n");
+            body.append("⚠️ Tài khoản của bạn đã bị tạm khóa do vi phạm quy định của JOB4YOU.\n\n");
+            
+            // Thông tin chi tiết về ban
+            body.append("📋 Thông tin chi tiết:\n");
+            body.append("   • Lý do: ").append(banReason).append("\n");
+            
+            if (banDescription != null && !banDescription.trim().isEmpty()) {
+                body.append("   • Mô tả: ").append(banDescription).append("\n");
+            }
+            
+            if ("PERMANENT".equals(banDurationType)) {
+                body.append("   • Thời gian: Vĩnh viễn\n");
+            } else {
+                body.append("   • Thời gian: ").append(banDurationDays).append(" ngày\n");
+                if (banExpiresAt != null) {
+                    body.append("   • Hết hạn vào: ").append(banExpiresAt).append("\n");
+                }
+            }
+            
+            body.append("\n🔒 Trong thời gian bị khóa, bạn không thể:\n");
+            body.append("   • Đăng nhập vào hệ thống\n");
+            body.append("   • Sử dụng các tính năng của website\n");
+            body.append("   • Tham gia các hoạt động trên nền tảng\n\n");
+            
+            if ("TEMPORARY".equals(banDurationType)) {
+                body.append("⏰ Tài khoản sẽ được tự động mở khóa sau khi hết thời gian ban.\n\n");
+            }
+            
+            body.append("📞 Nếu bạn cho rằng việc khóa tài khoản là nhầm lẫn, vui lòng liên hệ:\n");
+            body.append("   • Email hỗ trợ: support@job4you.com\n");
+            body.append("   • Hotline: 1900-xxxx\n");
+            body.append("   • Cung cấp thông tin: Email đăng ký, họ tên, và lý do khiếu nại\n\n");
+            
+            body.append("⚖️ Chúng tôi cam kết xem xét công bằng mọi khiếu nại trong vòng 24-48 giờ.\n\n");
+            body.append("Trân trọng,\n");
+            body.append("🏢 Đội ngũ JOB4YOU\n");
+            body.append("🌐 Website: http://localhost:8080");
+            
+            sendEmail(userEmail, subject, body.toString());
+            System.out.println("🚫 Ban notification email sent to: " + userEmail + " (Duration: " + banDurationType + ")");
+            
+        } catch (Exception e) {
+            System.err.println("Failed to send ban notification email to: " + userEmail + " - Error: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Gửi email thông báo khi user được unban
+     * @param userEmail Email của user được unban
+     * @param userName Tên user được unban
+     * @param originalBanReason Lý do ban ban đầu
+     * @param banDuration Thời gian đã bị ban
+     * @param unbannedByAdmin Tên admin thực hiện unban
+     */
+    public void sendUnbanNotificationEmail(String userEmail, String userName, String originalBanReason, 
+                                         String banDuration, String unbannedByAdmin) {
+        try {
+            String subject = "✅ Thông báo tài khoản đã được mở khóa - JOB4YOU";
+            
+            StringBuilder body = new StringBuilder();
+            body.append("Xin chào ").append(userName).append(",\n\n");
+            body.append("🎉 Chúng tôi vui mừng thông báo tài khoản của bạn đã được mở khóa!\n\n");
+            
+            // Thông tin về ban đã hết
+            body.append("📋 Thông tin:\n");
+            body.append("   • Lý do ban trước đó: ").append(originalBanReason).append("\n");
+            body.append("   • Thời gian đã bị ban: ").append(banDuration).append("\n");
+            if (unbannedByAdmin != null) {
+                body.append("   • Được mở khóa bởi: Admin ").append(unbannedByAdmin).append("\n");
+            }
+            body.append("   • Thời gian mở khóa: ").append(java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))).append("\n\n");
+            
+            body.append("🔓 Bây giờ bạn có thể:\n");
+            body.append("   • Đăng nhập vào hệ thống\n");
+            body.append("   • Sử dụng đầy đủ các tính năng\n");
+            body.append("   • Tham gia các hoạt động trên nền tảng\n\n");
+            
+            body.append("⚠️ Lưu ý quan trọng:\n");
+            body.append("   • Vui lòng tuân thủ nghiêm ngặt quy định của JOB4YOU\n");
+            body.append("   • Tránh các hành vi vi phạm để không bị khóa lại\n");
+            body.append("   • Đọc kỹ điều khoản sử dụng tại: http://localhost:8080/terms\n\n");
+            
+            body.append("🔗 Đăng nhập ngay: http://localhost:8080/login\n\n");
+            
+            body.append("Cảm ơn bạn đã hiểu và hợp tác!\n\n");
+            body.append("Trân trọng,\n");
+            body.append("🏢 Đội ngũ JOB4YOU\n");
+            body.append("📞 Hotline: 1900-xxxx\n");
+            body.append("🌐 Website: http://localhost:8080");
+            
+            sendEmail(userEmail, subject, body.toString());
+            System.out.println("✅ Unban notification email sent to: " + userEmail);
+            
+        } catch (Exception e) {
+            System.err.println("Failed to send unban notification email to: " + userEmail + " - Error: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Gửi email nhắc nhở user khi ban sắp hết hạn
+     * @param userEmail Email của user
+     * @param userName Tên user
+     * @param daysRemaining Số ngày còn lại
+     * @param banExpiresAt Thời gian hết hạn ban
+     */
+    public void sendBanExpiryReminderEmail(String userEmail, String userName, int daysRemaining, String banExpiresAt) {
+        try {
+            String subject = "⏰ Thông báo tài khoản sắp được mở khóa - JOB4YOU";
+            
+            StringBuilder body = new StringBuilder();
+            body.append("Xin chào ").append(userName).append(",\n\n");
+            body.append("📅 Tài khoản của bạn sẽ được mở khóa trong ").append(daysRemaining).append(" ngày nữa.\n\n");
+            
+            body.append("📋 Thông tin:\n");
+            body.append("   • Thời gian mở khóa: ").append(banExpiresAt).append("\n");
+            body.append("   • Số ngày còn lại: ").append(daysRemaining).append(" ngày\n\n");
+            
+            body.append("🔄 Để chuẩn bị cho việc trở lại:\n");
+            body.append("   • Đọc lại quy định và điều khoản sử dụng\n");
+            body.append("   • Chuẩn bị cập nhật thông tin hồ sơ\n");
+            body.append("   • Lưu ý tuân thủ nghiêm ngặt quy định\n\n");
+            
+            body.append("⚠️ Lưu ý: Sau khi được mở khóa, nếu vi phạm lại có thể bị khóa vĩnh viễn.\n\n");
+            
+            body.append("Trân trọng,\n");
+            body.append("🏢 Đội ngũ JOB4YOU\n");
+            body.append("🌐 Website: http://localhost:8080");
+            
+            sendEmail(userEmail, subject, body.toString());
+            System.out.println("⏰ Ban expiry reminder email sent to: " + userEmail + " (" + daysRemaining + " days remaining)");
+            
+        } catch (Exception e) {
+            System.err.println("Failed to send ban expiry reminder email to: " + userEmail + " - Error: " + e.getMessage());
         }
     }
 }

@@ -16,7 +16,7 @@
 1. An employer navigates to their dashboard and clicks on the "Edit Profile" or "Chỉnh sửa hồ sơ" button.
 2. The system displays the company profile edit form with current information pre-filled (company name, description, website, phone, address, logo, etc.).
 3. The employer modifies the desired information in the form fields (company description, contact information, website URL, company address, industry field).
-4. The employer optionally uploads a new company logo image.
+4. The employer optionally uploads a newxcompany logo image.
 5. The employer clicks the "Save Changes" or "Lưu thay đổi" button to submit the updated information.
 6. System validates all input data and file uploads.
 7. System updates the company profile information in the database.

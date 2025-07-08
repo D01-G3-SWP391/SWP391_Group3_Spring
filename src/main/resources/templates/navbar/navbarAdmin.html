@@ -135,12 +135,14 @@
     </div>
 </nav>
 
-<script th:src="@{/js/languageSwitch.js}"></script>
+<!-- <script th:src="@{/js/languageSwitch.js}"></script> - DISABLED to avoid conflict with language-dropdown.js -->
 <script>
 // Toggle Sidebar Function
 function toggleSidebar() {
-    document.body.classList.toggle('sidebar-collapsed');
     const toggleIcon = document.getElementById('toggleIcon');
+    if (!toggleIcon) return; // Exit if element not found
+    
+    document.body.classList.toggle('sidebar-collapsed');
     
     if (document.body.classList.contains('sidebar-collapsed')) {
         toggleIcon.className = 'bi bi-chevron-right';
@@ -154,9 +156,11 @@ function toggleSidebar() {
 // Restore sidebar state from localStorage
 document.addEventListener('DOMContentLoaded', function() {
     const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-    if (sidebarCollapsed) {
+    const toggleIcon = document.getElementById('toggleIcon');
+    
+    if (sidebarCollapsed && toggleIcon) {
         document.body.classList.add('sidebar-collapsed');
-        document.getElementById('toggleIcon').className = 'bi bi-chevron-right';
+        toggleIcon.className = 'bi bi-chevron-right';
     }
 
     // Dynamic Active link highlighting
@@ -206,8 +210,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
+    if (sidebar) {
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+    }
 });
 </script>
 <script th:src="@{/js/language-dropdown.js}"></script>

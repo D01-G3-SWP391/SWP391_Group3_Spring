@@ -1,11 +1,13 @@
 package com.example.swp391_d01_g3.controller.admin;
 
 import com.example.swp391_d01_g3.dto.BlogCreateDTO;
+import com.example.swp391_d01_g3.dto.BanRequestDTO;
 import com.example.swp391_d01_g3.model.*;
 import com.example.swp391_d01_g3.service.admin.IAdminEmployerService;
 import com.example.swp391_d01_g3.service.admin.IAdminStudentService;
 import com.example.swp391_d01_g3.service.blog.IBlogService;
 import com.example.swp391_d01_g3.service.cloudinary.CloudinaryService;
+import com.example.swp391_d01_g3.service.security.IAccountService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,9 +23,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
+import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/Admin")
@@ -32,6 +36,8 @@ public class Dashboard {
     private IAdminStudentService adminStudentService;
     @Autowired
     private IAdminEmployerService adminEmployerService;
+    @Autowired
+    private IAccountService accountService;
     private static final Logger logger = LoggerFactory.getLogger(Dashboard.class);
 
     @Autowired
@@ -351,6 +357,96 @@ public class Dashboard {
             return "redirect:/Admin/ListStudent";
         }
     }
+    
+    /**
+     * Enhanced ban student with reason and email notification (Form-based)
+     */
+    @PostMapping("/banStudentWithReason")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> banStudentWithReason(@RequestParam Integer userId,
+                                                                   @RequestParam String banReason,
+                                                                   @RequestParam(required = false) String banDescription,
+                                                                   @RequestParam String banDurationType,
+                                                                   @RequestParam(required = false) Integer banDurationDays,
+                                                                   Principal principal) {
+        try {
+            // Create BanRequestDTO from form data
+            BanRequestDTO banRequest = new BanRequestDTO();
+            banRequest.setUserId(userId);
+            banRequest.setBanReason(BanRecord.BanReason.valueOf(banReason));
+            banRequest.setBanDescription(banDescription);
+            banRequest.setBanDurationType(BanRecord.BanDurationType.valueOf(banDurationType));
+            banRequest.setBanDurationDays(banDurationDays);
+            
+            logger.info("🔍 DEBUG: Received ban request - userId: {}, reason: {}, durationType: {}, days: {}", 
+                       userId, banReason, banDurationType, banDurationDays);
+            // Get admin user ID
+            Account adminAccount = accountService.findByEmail(principal.getName());
+            if (adminAccount == null) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of("success", false, "message", "Admin account not found"));
+            }
+            
+            // Validate ban request
+            if (!banRequest.isValid()) {
+                logger.error("❌ Ban request validation failed: {}", banRequest);
+                return ResponseEntity.badRequest()
+                    .body(Map.of("success", false, "message", "Dữ liệu ban request không hợp lệ. Vui lòng kiểm tra lại."));
+            }
+            
+            logger.info("✅ Admin {} banning student {} with reason: {}, duration: {} {}", 
+                       adminAccount.getEmail(), banRequest.getUserId(), banRequest.getBanReason(),
+                       banRequest.getBanDurationType(), 
+                       banRequest.getBanDurationDays() != null ? banRequest.getBanDurationDays() + " days" : "");
+            
+            // Ban student with reason and send email
+            adminStudentService.banStudentWithReason(banRequest, adminAccount.getUserId());
+            
+            logger.info("✅ Student {} banned successfully by admin {}", banRequest.getUserId(), adminAccount.getEmail());
+            
+            return ResponseEntity.ok(Map.of(
+                "success", true, 
+                "message", "Sinh viên đã được ban thành công và email thông báo đã được gửi!"
+            ));
+            
+        } catch (Exception e) {
+            logger.error("Error banning student with reason: ", e);
+            return ResponseEntity.badRequest()
+                .body(Map.of("success", false, "message", "Lỗi khi ban sinh viên: " + e.getMessage()));
+        }
+    }
+    
+    /**
+     * Enhanced unban student with notification
+     */
+    @PostMapping("/unbanStudentWithNotification/{id}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> unbanStudentWithNotification(@PathVariable("id") Integer userId, 
+                                                                           Principal principal) {
+        try {
+            // Get admin user ID
+            Account adminAccount = accountService.findByEmail(principal.getName());
+            if (adminAccount == null) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of("success", false, "message", "Admin account not found"));
+            }
+            
+            logger.info("Admin {} unbanning student {}", adminAccount.getEmail(), userId);
+            
+            // Unban student and send email notification
+            adminStudentService.unbanStudentWithNotification(userId, adminAccount.getUserId());
+            
+            return ResponseEntity.ok(Map.of(
+                "success", true, 
+                "message", "Sinh viên đã được unban thành công và email thông báo đã được gửi!"
+            ));
+            
+        } catch (Exception e) {
+            logger.error("Error unbanning student with notification: ", e);
+            return ResponseEntity.badRequest()
+                .body(Map.of("success", false, "message", "Lỗi khi unban sinh viên: " + e.getMessage()));
+        }
+    }
 
     // Employer Ban/Unban Methods
     @PostMapping("/banEmployer/{id}")
@@ -378,6 +474,125 @@ public class Dashboard {
             logger.error("Error unbanning employer: ", e);
             redirectAttributes.addFlashAttribute("error", "Error unbanning employer: " + e.getMessage());
             return "redirect:/Admin/ListEmployer";
+        }
+    }
+    
+    /**
+     * Enhanced ban employer with reason and email notification (Form-based)
+     */
+    @PostMapping("/banEmployerWithReason")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> banEmployerWithReason(@RequestParam Integer userId,
+                                                                    @RequestParam String banReason,
+                                                                    @RequestParam(required = false) String banDescription,
+                                                                    @RequestParam String banDurationType,
+                                                                    @RequestParam(required = false) Integer banDurationDays,
+                                                                    Principal principal) {
+        try {
+            // Create BanRequestDTO from form data
+            BanRequestDTO banRequest = new BanRequestDTO();
+            banRequest.setUserId(userId);
+            banRequest.setBanReason(BanRecord.BanReason.valueOf(banReason));
+            banRequest.setBanDescription(banDescription);
+            banRequest.setBanDurationType(BanRecord.BanDurationType.valueOf(banDurationType));
+            banRequest.setBanDurationDays(banDurationDays);
+            
+            logger.info("🔍 DEBUG: Received employer ban request - userId: {}, reason: {}, durationType: {}, days: {}", 
+                       userId, banReason, banDurationType, banDurationDays);
+            // Get admin user ID
+            Account adminAccount = accountService.findByEmail(principal.getName());
+            if (adminAccount == null) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of("success", false, "message", "Admin account not found"));
+            }
+            
+            // Validate ban request
+            if (!banRequest.isValid()) {
+                logger.error("❌ Employer ban request validation failed: {}", banRequest);
+                return ResponseEntity.badRequest()
+                    .body(Map.of("success", false, "message", "Dữ liệu ban request không hợp lệ. Vui lòng kiểm tra lại."));
+            }
+            
+            logger.info("✅ Admin {} banning employer {} with reason: {}, duration: {} {}", 
+                       adminAccount.getEmail(), banRequest.getUserId(), banRequest.getBanReason(),
+                       banRequest.getBanDurationType(), 
+                       banRequest.getBanDurationDays() != null ? banRequest.getBanDurationDays() + " days" : "");
+            
+            // Ban employer with reason and send email
+            adminEmployerService.banEmployerWithReason(banRequest, adminAccount.getUserId());
+            
+            logger.info("✅ Employer {} banned successfully by admin {}", banRequest.getUserId(), adminAccount.getEmail());
+            
+            return ResponseEntity.ok(Map.of(
+                "success", true, 
+                "message", "Nhà tuyển dụng đã được ban thành công và email thông báo đã được gửi!"
+            ));
+            
+        } catch (Exception e) {
+            logger.error("Error banning employer with reason: ", e);
+            return ResponseEntity.badRequest()
+                .body(Map.of("success", false, "message", "Lỗi khi ban nhà tuyển dụng: " + e.getMessage()));
+        }
+    }
+    
+    /**
+     * Enhanced unban employer with notification
+     */
+    @PostMapping("/unbanEmployerWithNotification/{id}")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> unbanEmployerWithNotification(@PathVariable("id") Integer userId, 
+                                                                            Principal principal) {
+        try {
+            // Get admin user ID
+            Account adminAccount = accountService.findByEmail(principal.getName());
+            if (adminAccount == null) {
+                return ResponseEntity.badRequest()
+                    .body(Map.of("success", false, "message", "Admin account not found"));
+            }
+            
+            logger.info("Admin {} unbanning employer {}", adminAccount.getEmail(), userId);
+            
+            // Unban employer and send email notification
+            adminEmployerService.unbanEmployerWithNotification(userId, adminAccount.getUserId());
+            
+            return ResponseEntity.ok(Map.of(
+                "success", true, 
+                "message", "Nhà tuyển dụng đã được unban thành công và email thông báo đã được gửi!"
+            ));
+            
+        } catch (Exception e) {
+            logger.error("Error unbanning employer with notification: ", e);
+            return ResponseEntity.badRequest()
+                .body(Map.of("success", false, "message", "Lỗi khi unban nhà tuyển dụng: " + e.getMessage()));
+        }
+    }
+    
+    /**
+     * API endpoint to get ban reasons for frontend
+     */
+    @GetMapping("/api/ban-reasons")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> getBanReasons() {
+        try {
+            Map<String, String> banReasons = new java.util.HashMap<>();
+            for (BanRecord.BanReason reason : BanRecord.BanReason.values()) {
+                banReasons.put(reason.name(), reason.getDescription());
+            }
+            
+            Map<String, String> banDurationTypes = new java.util.HashMap<>();
+            for (BanRecord.BanDurationType type : BanRecord.BanDurationType.values()) {
+                banDurationTypes.put(type.name(), type.getDescription());
+            }
+            
+            return ResponseEntity.ok(Map.of(
+                "success", true,
+                "banReasons", banReasons,
+                "banDurationTypes", banDurationTypes
+            ));
+        } catch (Exception e) {
+            logger.error("Error getting ban reasons: ", e);
+            return ResponseEntity.badRequest()
+                .body(Map.of("success", false, "message", "Error getting ban reasons"));
         }
     }
     @GetMapping("/employer/{id}")
