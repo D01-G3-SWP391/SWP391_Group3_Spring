@@ -567,34 +567,7 @@ public class Dashboard {
         }
     }
     
-    /**
-     * API endpoint to get ban reasons for frontend
-     */
-    @GetMapping("/api/ban-reasons")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> getBanReasons() {
-        try {
-            Map<String, String> banReasons = new java.util.HashMap<>();
-            for (BanRecord.BanReason reason : BanRecord.BanReason.values()) {
-                banReasons.put(reason.name(), reason.getDescription());
-            }
-            
-            Map<String, String> banDurationTypes = new java.util.HashMap<>();
-            for (BanRecord.BanDurationType type : BanRecord.BanDurationType.values()) {
-                banDurationTypes.put(type.name(), type.getDescription());
-            }
-            
-            return ResponseEntity.ok(Map.of(
-                "success", true,
-                "banReasons", banReasons,
-                "banDurationTypes", banDurationTypes
-            ));
-        } catch (Exception e) {
-            logger.error("Error getting ban reasons: ", e);
-            return ResponseEntity.badRequest()
-                .body(Map.of("success", false, "message", "Error getting ban reasons"));
-        }
-    }
+    // API endpoint đã được loại bỏ - không cần thiết cho server-side rendering
     @GetMapping("/employer/{id}")
     public String viewEmployerDetails(@PathVariable("id") Integer userId, Model model) {
         try {
