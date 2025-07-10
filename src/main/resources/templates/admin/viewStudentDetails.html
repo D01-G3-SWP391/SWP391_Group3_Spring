@@ -82,8 +82,10 @@
                             <i class="bi bi-shield-check me-2"></i><span th:text="#{admin.student.details.status}">Status</span>
                         </span>
             <span class="info-value">
-                            <span th:class="${student.account.status.name() == 'active' ? 'status-active' : 'status-banned'}"
-                                  th:text="${student.account.status.name() == 'active' ? #{admin.student.details.active} : #{admin.student.details.banned}}"></span>
+                                      <th:block th:with="activeText=#{admin.student.details.active}, bannedText=#{admin.student.details.banned}">
+              <span th:class="${student.account.status.name() == 'active' ? 'status-active' : 'status-banned'}"
+                    th:text="${student.account.status.name() == 'active' ? activeText : bannedText}"></span>
+          </th:block>
                         </span>
           </div>
         </div>

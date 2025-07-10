@@ -99,9 +99,11 @@
                     <td th:text="${student.phone}"></td>
                     <td>
                         <!-- Clickable Status Badges -->
-                        <a th:href="@{/Admin/ListStudent(status=${student.status.name()}, keyword=${keyword})}"
-                           th:class="${student.status.name() == 'active' ? 'clickable-status status-active' : 'clickable-status status-banned'}"
-                           th:text="${student.status.name() == 'active' ? #{admin.list.students.status.active} : #{admin.list.students.status.banned}}"></a>
+                        <th:block th:with="activeText=#{admin.list.students.status.active}, bannedText=#{admin.list.students.status.banned}">
+                            <a th:href="@{/Admin/ListStudent(status=${student.status.name()}, keyword=${keyword})}"
+                               th:class="${student.status.name() == 'active' ? 'clickable-status status-active' : 'clickable-status status-banned'}"
+                               th:text="${student.status.name() == 'active' ? activeText : bannedText}"></a>
+                        </th:block>
                     </td>
                     <td>
                         <div class="action-btns">

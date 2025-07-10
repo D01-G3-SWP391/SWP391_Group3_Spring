@@ -31,8 +31,10 @@
                th:src="${employer.account.avatarUrl != null ? employer.account.avatarUrl : '/images/default-avatar.png'}"
                th:alt="${employer.account.fullName}" />
           <h4 class="mt-3 mb-2" th:text="${employer.account.fullName}"></h4>
-          <span th:class="${employer.account.status.name() == 'active' ? 'status-active' : 'status-banned'}"
-                th:text="${employer.account.status.name() == 'active' ? #{admin.employer.details.active} : #{admin.employer.details.banned}}"></span>
+          <th:block th:with="activeText=#{admin.employer.details.active}, bannedText=#{admin.employer.details.banned}">
+              <span th:class="${employer.account.status.name() == 'active' ? 'status-active' : 'status-banned'}"
+                    th:text="${employer.account.status.name() == 'active' ? activeText : bannedText}"></span>
+          </th:block>
         </div>
         <div class="col-md-8">
           <h5 class="mb-3">
@@ -73,8 +75,10 @@
               <i class="bi bi-shield-check me-2"></i><span th:text="#{admin.employer.details.status}">Status</span>
             </span>
             <span class="info-value">
-              <span th:class="${employer.account.status.name() == 'active' ? 'status-active' : 'status-banned'}"
-                    th:text="${employer.account.status.name() == 'active' ? #{admin.employer.details.active} : #{admin.employer.details.banned}}"></span>
+              <th:block th:with="activeText=#{admin.employer.details.active}, bannedText=#{admin.employer.details.banned}">
+                  <span th:class="${employer.account.status.name() == 'active' ? 'status-active' : 'status-banned'}"
+                        th:text="${employer.account.status.name() == 'active' ? activeText : bannedText}"></span>
+              </th:block>
             </span>
           </div>
         </div>

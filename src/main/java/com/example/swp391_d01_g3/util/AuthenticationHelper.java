@@ -24,7 +24,7 @@ public class AuthenticationHelper {
             } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_student"))) {
                 return "redirect:/Student";
             } else {
-                return "redirect:/HomePage";
+                return "redirect:/";
             }
         }
         return null; // User is not authenticated

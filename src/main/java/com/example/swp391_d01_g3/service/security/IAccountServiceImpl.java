@@ -47,4 +47,9 @@ public class IAccountServiceImpl implements IAccountService {
     public Account findByEmailBan(String email) {
         return accountRepository.findByEmailBan(email);
     }
+    
+    @Override
+    public Account findByEmailAnyStatus(String email) {
+        return accountRepository.findByEmailAnyStatus(email);
+    }
 }
