@@ -52,6 +52,7 @@ public class EventController {
             @RequestParam(value = "size", defaultValue = "6") int size,
             @RequestParam(value = "search", required = false) String search,
             @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "error", required = false) String error,
             Model model,
             Authentication authentication, Principal principal) {
         if (principal != null) {
@@ -102,13 +103,31 @@ public class EventController {
             model.addAttribute("currentPage", page);
             model.addAttribute("totalPages", eventsPage.getTotalPages());
             
-            // Thêm: truyền registeredEventIds nếu đã đăng nhập
+            // Thêm: truyền registeredEventIds và thông tin student nếu đã đăng nhập
             if (authentication != null && authentication.isAuthenticated()) {
                 String email = authentication.getName();
                 Student student = studentService.findByEmail(email);
                 if (student != null) {
                     List<Integer> registeredEventIds = eventService.findRegisteredEventIdsByStudentId(student.getStudentId());
                     model.addAttribute("registeredEventIds", registeredEventIds);
+                    
+                    // Truyền thông tin student để điền sẵn form
+                    model.addAttribute("currentStudent", student);
+                }
+            }
+            
+            // Xử lý error messages
+            if (error != null) {
+                switch (error) {
+                    case "not-found":
+                        model.addAttribute("errorMessage", "Không tìm thấy sự kiện bạn đang tìm kiếm.");
+                        break;
+                    case "server-error":
+                        model.addAttribute("errorMessage", "Đã xảy ra lỗi khi tải chi tiết sự kiện. Vui lòng thử lại sau.");
+                        break;
+                    default:
+                        model.addAttribute("errorMessage", "Đã xảy ra lỗi không xác định.");
+                        break;
                 }
             }
             
@@ -124,12 +143,12 @@ public class EventController {
      * Hiển thị chi tiết event
      */
     @GetMapping("/{eventId}")
-    public String eventDetail(@PathVariable Integer eventId, Model model, Authentication authentication) {
+    public String eventDetail(@PathVariable Integer eventId, Model model, Authentication authentication, Principal principal) {
         try {
             Event event = eventService.findById(eventId);
             if (event == null) {
-                model.addAttribute("error", "Không tìm thấy sự kiện");
-                return "error/404";
+                // Redirect về trang danh sách events với thông báo lỗi
+                return "redirect:/Events?error=not-found";
             }
             
             // Kiểm tra xem user đã đăng ký chưa
@@ -139,6 +158,8 @@ public class EventController {
                 Student student = studentService.findByEmail(email);
                 if (student != null) {
                     isRegistered = eventService.isStudentRegistered(eventId, student.getStudentId());
+                    // Truyền thông tin student để điền sẵn form
+                    model.addAttribute("currentStudent", student);
                 }
             }
             
@@ -148,12 +169,18 @@ public class EventController {
             model.addAttribute("event", event);
             model.addAttribute("isRegistered", isRegistered);
             model.addAttribute("relatedEvents", relatedEvents);
+            if (principal != null) {
+                model.addAttribute("userEmail", principal.getName());
+                Account account = accountService.findByEmail(principal.getName());
+                model.addAttribute("account", account);
+            }
             
             return "events/eventDetail";
             
         } catch (Exception e) {
-            model.addAttribute("error", "Đã xảy ra lỗi khi tải chi tiết sự kiện");
-            return "error/500";
+            e.printStackTrace(); // Log lỗi để debug
+            // Redirect về trang danh sách events với thông báo lỗi
+            return "redirect:/Events?error=server-error";
         }
     }
 
@@ -210,17 +237,23 @@ public class EventController {
                 // Cập nhật thông tin Student nếu cần
                 boolean needUpdate = false;
                 
-                if (!existingStudent.getAccount().getFullName().equals(registrationDTO.getFullName())) {
+                // Kiểm tra và cập nhật fullName với null safety
+                String currentFullName = existingStudent.getAccount().getFullName();
+                if (!java.util.Objects.equals(currentFullName, registrationDTO.getFullName())) {
                     existingStudent.getAccount().setFullName(registrationDTO.getFullName());
                     needUpdate = true;
                 }
                 
-                if (!existingStudent.getAccount().getPhone().equals(registrationDTO.getPhone())) {
+                // Kiểm tra và cập nhật phone với null safety
+                String currentPhone = existingStudent.getAccount().getPhone();
+                if (!java.util.Objects.equals(currentPhone, registrationDTO.getPhone())) {
                     existingStudent.getAccount().setPhone(registrationDTO.getPhone());
                     needUpdate = true;
                 }
                 
-                if (!existingStudent.getUniversity().equals(registrationDTO.getOrganization())) {
+                // Kiểm tra và cập nhật university với null safety
+                String currentUniversity = existingStudent.getUniversity();
+                if (!java.util.Objects.equals(currentUniversity, registrationDTO.getOrganization())) {
                     existingStudent.setUniversity(registrationDTO.getOrganization());
                     needUpdate = true;
                 }

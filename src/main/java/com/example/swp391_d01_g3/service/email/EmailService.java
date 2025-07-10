@@ -5,9 +5,11 @@ import com.example.swp391_d01_g3.model.ForgotPassword;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 import com.example.swp391_d01_g3.model.Account;
 import com.example.swp391_d01_g3.repository.ForgotPasswordRepository;
 import com.example.swp391_d01_g3.repository.IAccountRepository;
@@ -23,90 +25,107 @@ public class EmailService {
     @Autowired
     private IAccountRepository accountRepository;
     
-    public void sendEmail(String to, String subject, String body) {
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setTo(to);
-        simpleMailMessage.setSubject(subject);
-        simpleMailMessage.setText(body);
-        simpleMailMessage.setFrom("viettaifptudn@gmail.com");
-        mailSender.send(simpleMailMessage);
-        System.out.println("Email sent" + to);
+    @Async("emailTaskExecutor")
+    public CompletableFuture<Void> sendEmail(String to, String subject, String body) {
+        try {
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            simpleMailMessage.setTo(to);
+            simpleMailMessage.setSubject(subject);
+            simpleMailMessage.setText(body);
+            simpleMailMessage.setFrom("viettaifptudn@gmail.com");
+            mailSender.send(simpleMailMessage);
+            System.out.println("Email sent to: " + to + " - Thread: " + Thread.currentThread().getName());
+            return CompletableFuture.completedFuture(null);
+        } catch (Exception e) {
+            System.err.println("Failed to send email to: " + to + " - Error: " + e.getMessage());
+            return CompletableFuture.failedFuture(e);
+        }
     }
-    public void sendForgotPassEmail(String to){
-        SimpleMailMessage  simpleMailMessage = new SimpleMailMessage();
-        int otp = otpGenerator();
+    @Async("emailTaskExecutor")
+    public CompletableFuture<Void> sendForgotPassEmail(String to){
+        try {
+            SimpleMailMessage  simpleMailMessage = new SimpleMailMessage();
+            int otp = otpGenerator();
 
-        Account account = accountRepository.findByEmail(to);
-        if (account == null) {
-            System.err.println("Attempted to send forgot password email to non-existent account: " + to);
-            // Optionally, you might want to throw an exception or handle this case differently
-            // rather tha n silently returning, depending on your application's error handling strategy.
-            return; 
-        }
-
-        // Xóa bản ghi ForgotPassword hiện có cho tài khoản này
-        ForgotPassword existingForgotPassword = forgotPasswordRepository.findByAccount(account);
-        if (existingForgotPassword != null) {
-            // Hủy bỏ liên kết trong Tài khoản để ngăn chặn TransientObjectException
-            if (account.getForgotPassword() != null && account.getForgotPassword().equals(existingForgotPassword)) {
-                account.setForgotPassword(null);
-            // Tùy chọn lưu tài khoản nếu cần lưu lại những thay đổi ngay lập tức, mặc dù không nhất thiết phải thực hiện trước khi xóa ForgotPassword            \
+            Account account = accountRepository.findByEmail(to);
+            if (account == null) {
+                System.err.println("Attempted to send forgot password email to non-existent account: " + to);
+                return CompletableFuture.failedFuture(new RuntimeException("Account not found: " + to));
             }
-            forgotPasswordRepository.delete(existingForgotPassword);
+
+            // Xóa bản ghi ForgotPassword hiện có cho tài khoản này
+            ForgotPassword existingForgotPassword = forgotPasswordRepository.findByAccount(account);
+            if (existingForgotPassword != null) {
+                // Hủy bỏ liên kết trong Tài khoản để ngăn chặn TransientObjectException
+                if (account.getForgotPassword() != null && account.getForgotPassword().equals(existingForgotPassword)) {
+                    account.setForgotPassword(null);
+                }
+                forgotPasswordRepository.delete(existingForgotPassword);
+            }
+
+            simpleMailMessage.setTo(to);
+            simpleMailMessage.setText("This is OTP for your Forgot Password request: "+ otp +
+                    " OTP sẽ hết hạn trong 60 giây"
+            );
+            simpleMailMessage.setSubject("OTP for Forgot Password request");
+            simpleMailMessage.setFrom("viettaifptudn@gmail.com");
+
+            ForgotPassword forgotPasswordEntity = ForgotPassword.builder()
+                    .otp(otp)
+                    .expirationTime(new Date(System.currentTimeMillis() + 60 * 1000)) // OTP valid for 60 seconds
+                    .account(account)
+                    .build();
+            forgotPasswordRepository.save(forgotPasswordEntity);
+
+            // Actually send the email
+            mailSender.send(simpleMailMessage);
+            System.out.println("Forgot password Email sent to " + to + " with OTP: " + otp + " - Thread: " + Thread.currentThread().getName());
+            return CompletableFuture.completedFuture(null);
+        } catch (Exception e) {
+            System.err.println("Failed to send forgot password email to: " + to + " - Error: " + e.getMessage());
+            return CompletableFuture.failedFuture(e);
         }
-
-        simpleMailMessage.setTo(to);
-        simpleMailMessage.setText("This is OTP for your Forgot Password request: "+ otp +
-                " OTP sẽ hết hạn trong 60 giây"
-        );
-        simpleMailMessage.setSubject("OTP for Forgot Password request");
-        simpleMailMessage.setFrom("viettaifptudn@gmail.com");
-
-        ForgotPassword forgotPasswordEntity = ForgotPassword.builder()
-                .otp(otp)
-                .expirationTime(new Date(System.currentTimeMillis() + 60 * 1000)) // OTP valid for 5 minutes (70*1000ms is 70 seconds)
-                .account(account)
-                .build();
-        forgotPasswordRepository.save(forgotPasswordEntity);
-
-        // Actually send the email
-        mailSender.send(simpleMailMessage);
-        System.out.println("Forgot password Email sent to " + to + " with OTP: " + otp);
     }
     
     /**
      * Gửi email xác thực với OTP cho người dùng mới đăng ký (không cần account trong DB)
      * @param email Email người nhận
      * @param fullName Tên đầy đủ của người dùng
-     * @return OTP được tạo
+     * @return CompletableFuture với OTP được tạo
      */
-    public Integer sendVerifyMailForRegistration(String email, String fullName) {
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        int otp = otpGenerator();
+    @Async("emailTaskExecutor")
+    public CompletableFuture<Integer> sendVerifyMailForRegistration(String email, String fullName) {
+        try {
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            int otp = otpGenerator();
 
-        // Tạo nội dung email
-        StringBuilder emailBody = new StringBuilder();
-        emailBody.append("Xin chào ").append(fullName).append(",\n\n");
-        emailBody.append("🎉 Chào mừng bạn đến với JOB4YOU!\n\n");
-        emailBody.append("Để hoàn tất quá trình đăng ký tài khoản, vui lòng xác thực email của bạn bằng mã OTP sau:\n\n");
-        emailBody.append("🔐 Mã OTP: ").append(otp).append("\n\n");
-        emailBody.append("⚠️ Mã OTP này sẽ hết hạn trong 10 phút.\n\n");
-        emailBody.append("Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email này.\n\n");
-        emailBody.append("Trân trọng,\n");
-        emailBody.append("🏢 Đội ngũ JOB4YOU\n");
-        emailBody.append("📞 Hotline: 1900-xxxx\n");
-        emailBody.append("🌐 Website: http://localhost:8080");
+            // Tạo nội dung email
+            StringBuilder emailBody = new StringBuilder();
+            emailBody.append("Xin chào ").append(fullName).append(",\n\n");
+            emailBody.append("🎉 Chào mừng bạn đến với JOB4YOU!\n\n");
+            emailBody.append("Để hoàn tất quá trình đăng ký tài khoản, vui lòng xác thực email của bạn bằng mã OTP sau:\n\n");
+            emailBody.append("🔐 Mã OTP: ").append(otp).append("\n\n");
+            emailBody.append("⚠️ Mã OTP này sẽ hết hạn trong 10 phút.\n\n");
+            emailBody.append("Nếu bạn không thực hiện yêu cầu này, vui lòng bỏ qua email này.\n\n");
+            emailBody.append("Trân trọng,\n");
+            emailBody.append("🏢 Đội ngũ JOB4YOU\n");
+            emailBody.append("📞 Hotline: 1900-xxxx\n");
+            emailBody.append("🌐 Website: http://localhost:8080");
 
-        simpleMailMessage.setTo(email);
-        simpleMailMessage.setText(emailBody.toString());
-        simpleMailMessage.setSubject("🔐 Xác thực email đăng ký tài khoản JOB4YOU");
-        simpleMailMessage.setFrom("viettaifptudn@gmail.com");
+            simpleMailMessage.setTo(email);
+            simpleMailMessage.setText(emailBody.toString());
+            simpleMailMessage.setSubject("🔐 Xác thực email đăng ký tài khoản JOB4YOU");
+            simpleMailMessage.setFrom("viettaifptudn@gmail.com");
 
-        // Gửi email
-        mailSender.send(simpleMailMessage);
-        System.out.println("Registration verification email sent to " + email + " with OTP: " + otp);
-        
-        return otp;
+            // Gửi email
+            mailSender.send(simpleMailMessage);
+            System.out.println("Registration verification email sent to " + email + " with OTP: " + otp + " - Thread: " + Thread.currentThread().getName());
+            
+            return CompletableFuture.completedFuture(otp);
+        } catch (Exception e) {
+            System.err.println("Failed to send registration verification email to: " + email + " - Error: " + e.getMessage());
+            return CompletableFuture.failedFuture(e);
+        }
     }
 
     /**
@@ -155,18 +174,28 @@ public class EmailService {
      * @param fullName Tên đầy đủ
      * @param role Vai trò: "Student", "Employer", "Google"
      */
-    public void sendWelcomeEmail(String email, String fullName, String role) {
+    @Async("emailTaskExecutor")
+    public CompletableFuture<Void> sendWelcomeEmail(String email, String fullName, String role) {
         try {
             String subject = "🎉 Chào mừng bạn đến với JOB4YOU!";
             String roleText = getRoleText(role);
             
             String body = buildWelcomeEmailBody(fullName, email, role, roleText);
             
-            sendEmail(email, subject, body);
-            System.out.println(" Welcome email sent to: " + email + " (Role: " + role + ")");
+            // Gửi email trực tiếp thay vì gọi sendEmail async để tránh nested async
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            simpleMailMessage.setTo(email);
+            simpleMailMessage.setSubject(subject);
+            simpleMailMessage.setText(body);
+            simpleMailMessage.setFrom("viettaifptudn@gmail.com");
+            mailSender.send(simpleMailMessage);
+            
+            System.out.println("Welcome email sent to: " + email + " (Role: " + role + ") - Thread: " + Thread.currentThread().getName());
+            return CompletableFuture.completedFuture(null);
             
         } catch (Exception e) {
             System.err.println("Failed to send welcome email to: " + email + " - Error: " + e.getMessage());
+            return CompletableFuture.failedFuture(e);
         }
     }
     
@@ -220,29 +249,47 @@ public class EmailService {
     /**
      * Gửi email lịch phỏng vấn cho ứng viên
      */
-    public void sendInterviewScheduleEmail(String to, String candidateName, String jobTitle, String interviewTime, String interviewType, String meetingLink, String note) {
-        String subject = "Lịch phỏng vấn vị trí " + jobTitle + " tại JOB4YOU";
-        StringBuilder body = new StringBuilder();
-        body.append("Xin chào ").append(candidateName).append(",\n\n");
-        body.append("Chúc mừng bạn đã vượt qua vòng hồ sơ!\n");
-        body.append("Chúng tôi xin mời bạn tham gia phỏng vấn với thông tin sau:\n");
-        body.append("- Thời gian: ").append(interviewTime).append("\n");
-        body.append("- Hình thức: ").append(interviewType).append("\n");
-        if (meetingLink != null && !meetingLink.isEmpty()) {
-            body.append("- Link phỏng vấn: ").append(meetingLink).append("\n");
+    @Async("emailTaskExecutor")
+    public CompletableFuture<Void> sendInterviewScheduleEmail(String to, String candidateName, String jobTitle, String interviewTime, String interviewType, String meetingLink, String note) {
+        try {
+            String subject = "Lịch phỏng vấn vị trí " + jobTitle + " tại JOB4YOU";
+            StringBuilder body = new StringBuilder();
+            body.append("Xin chào ").append(candidateName).append(",\n\n");
+            body.append("Chúc mừng bạn đã vượt qua vòng hồ sơ!\n");
+            body.append("Chúng tôi xin mời bạn tham gia phỏng vấn với thông tin sau:\n");
+            body.append("- Thời gian: ").append(interviewTime).append("\n");
+            body.append("- Hình thức: ").append(interviewType).append("\n");
+            if (meetingLink != null && !meetingLink.isEmpty()) {
+                body.append("- Link phỏng vấn: ").append(meetingLink).append("\n");
+            }
+            if (note != null && !note.isEmpty()) {
+                body.append("- Ghi chú: ").append(note).append("\n");
+            }
+            body.append("\nVui lòng phản hồi email này nếu bạn có thắc mắc.\n");
+            body.append("Trân trọng,\nĐội ngũ JOB4YOU");
+            
+            // Gửi email trực tiếp
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            simpleMailMessage.setTo(to);
+            simpleMailMessage.setSubject(subject);
+            simpleMailMessage.setText(body.toString());
+            simpleMailMessage.setFrom("viettaifptudn@gmail.com");
+            mailSender.send(simpleMailMessage);
+            
+            System.out.println("Interview schedule email sent to: " + to + " - Thread: " + Thread.currentThread().getName());
+            return CompletableFuture.completedFuture(null);
+        } catch (Exception e) {
+            System.err.println("Failed to send interview schedule email to: " + to + " - Error: " + e.getMessage());
+            return CompletableFuture.failedFuture(e);
         }
-        if (note != null && !note.isEmpty()) {
-            body.append("- Ghi chú: ").append(note).append("\n");
-        }
-        body.append("\nVui lòng phản hồi email này nếu bạn có thắc mắc.\n");
-        body.append("Trân trọng,\nĐội ngũ JOB4YOU");
-        sendEmail(to, subject, body.toString());
     }
 
     /**
      * Gửi email thông báo phỏng vấn pass - được nhận vào làm việc
      */
-    public void sendApplicationAcceptedEmail(String to, String candidateName, String jobTitle, String companyName) {
+    @Async("emailTaskExecutor")
+    public CompletableFuture<Void> sendApplicationAcceptedEmail(String to, String candidateName, String jobTitle, String companyName) {
+        try {
         String subject = "🎉 Chúc mừng! Bạn đã phỏng vấn PASS vị trí " + jobTitle + " tại " + companyName;
         StringBuilder body = new StringBuilder();
 
@@ -278,13 +325,28 @@ public class EmailService {
         body.append("📧 Thông qua hệ thống tuyển dụng JOB4YOU\n");
         body.append("🌐 Website: http://localhost:8080");
 
-        sendEmail(to, subject, body.toString());
+        // Gửi email trực tiếp
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setTo(to);
+        simpleMailMessage.setSubject(subject);
+        simpleMailMessage.setText(body.toString());
+        simpleMailMessage.setFrom("viettaifptudn@gmail.com");
+        mailSender.send(simpleMailMessage);
+        
+        System.out.println("Application accepted email sent to: " + to + " - Thread: " + Thread.currentThread().getName());
+        return CompletableFuture.completedFuture(null);
+        } catch (Exception e) {
+            System.err.println("Failed to send application accepted email to: " + to + " - Error: " + e.getMessage());
+            return CompletableFuture.failedFuture(e);
+        }
     }
 
     /**
      * Gửi email thông báo ứng tuyển bị từ chối
      */
-    public void sendApplicationRejectedEmail(String to, String candidateName, String jobTitle, String companyName) {
+    @Async("emailTaskExecutor")
+    public CompletableFuture<Void> sendApplicationRejectedEmail(String to, String candidateName, String jobTitle, String companyName) {
+        try {
         String subject = "Thông báo kết quả ứng tuyển - " + jobTitle;
         StringBuilder body = new StringBuilder();
 
@@ -306,13 +368,27 @@ public class EmailService {
         body.append("🏢 ").append(companyName).append("\n");
         body.append("📧 Thông qua hệ thống JOB4YOU");
 
-        sendEmail(to, subject, body.toString());
+        // Gửi email trực tiếp
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setTo(to);
+        simpleMailMessage.setSubject(subject);
+        simpleMailMessage.setText(body.toString());
+        simpleMailMessage.setFrom("viettaifptudn@gmail.com");
+        mailSender.send(simpleMailMessage);
+        
+        System.out.println("Application rejected email sent to: " + to + " - Thread: " + Thread.currentThread().getName());
+        return CompletableFuture.completedFuture(null);
+        } catch (Exception e) {
+            System.err.println("Failed to send application rejected email to: " + to + " - Error: " + e.getMessage());
+            return CompletableFuture.failedFuture(e);
+        }
     }
 
     /**
      * Gửi email thông báo job application thành công cho student
      */
-    public void sendJobApplicationSuccessEmail(String studentEmail, String studentName, String jobTitle, String companyName, String applicationId) {
+    @Async("emailTaskExecutor")
+    public CompletableFuture<Void> sendJobApplicationSuccessEmail(String studentEmail, String studentName, String jobTitle, String companyName, String applicationId) {
         try {
             String subject = "✅ Đơn ứng tuyển đã được gửi thành công - " + jobTitle;
 
@@ -344,18 +420,28 @@ public class EmailService {
             body.append("📞 Hotline: 1900-xxxx\n");
             body.append("🌐 Website: http://localhost:8080");
 
-            sendEmail(studentEmail, subject, body.toString());
-            System.out.println("Job application success email sent to: " + studentEmail);
+            // Gửi email trực tiếp
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            simpleMailMessage.setTo(studentEmail);
+            simpleMailMessage.setSubject(subject);
+            simpleMailMessage.setText(body.toString());
+            simpleMailMessage.setFrom("viettaifptudn@gmail.com");
+            mailSender.send(simpleMailMessage);
+            
+            System.out.println("Job application success email sent to: " + studentEmail + " - Thread: " + Thread.currentThread().getName());
+            return CompletableFuture.completedFuture(null);
 
         } catch (Exception e) {
             System.err.println("Failed to send job application success email to: " + studentEmail + " - Error: " + e.getMessage());
+            return CompletableFuture.failedFuture(e);
         }
     }
 
     /**
      * Gửi email thông báo có đơn ứng tuyển mới cho employer
      */
-    public void sendNewApplicationNotificationEmail(String employerEmail, String employerName, String jobTitle, String candidateName, String applicationId) {
+    @Async("emailTaskExecutor")
+    public CompletableFuture<Void> sendNewApplicationNotificationEmail(String employerEmail, String employerName, String jobTitle, String candidateName, String applicationId) {
         try {
             String subject = "📬 Đơn ứng tuyển mới - " + jobTitle;
 
@@ -380,19 +466,72 @@ public class EmailService {
             body.append("📞 Hotline: 1900-xxxx\n");
             body.append("🌐 Website: http://localhost:8080");
 
-            sendEmail(employerEmail, subject, body.toString());
-            System.out.println("New application notification email sent to employer: " + employerEmail);
+            // Gửi email trực tiếp
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            simpleMailMessage.setTo(employerEmail);
+            simpleMailMessage.setSubject(subject);
+            simpleMailMessage.setText(body.toString());
+            simpleMailMessage.setFrom("viettaifptudn@gmail.com");
+            mailSender.send(simpleMailMessage);
+            
+            System.out.println("New application notification email sent to employer: " + employerEmail + " - Thread: " + Thread.currentThread().getName());
+            return CompletableFuture.completedFuture(null);
 
         } catch (Exception e) {
             System.err.println("Failed to send new application notification email to employer: " + employerEmail + " - Error: " + e.getMessage());
+            return CompletableFuture.failedFuture(e);
         }
+    }
+    @Async("emailTaskExecutor")
+    public CompletableFuture<Void> sendBanMail(String employerEmail) {
+//        try {
+//            String subject = "📬 Đơn ứng tuyển mới - " + jobTitle;
+//
+//            StringBuilder body = new StringBuilder();
+//            body.append("Xin chào ").append(employerName).append(",\n\n");
+//            body.append("🎯 Bạn có một đơn ứng tuyển mới cho vị trí: ").append(jobTitle).append("\n\n");
+//            body.append("👤 Thông tin ứng viên:\n");
+//            body.append("   • Tên: ").append(candidateName).append("\n");
+//            body.append("   • Thời gian nộp: ").append(java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))).append("\n\n");
+//
+//            body.append("📋 Để xem chi tiết và phản hồi:\n");
+//            body.append("   Truy cập: http://localhost:8080/Employer/Applications\n\n");
+//
+//            body.append("⏰ Lời khuyên:\n");
+//            body.append("   • Phản hồi sớm để tăng trải nghiệm ứng viên\n");
+//            body.append("   • Đánh giá hồ sơ một cách khách quan\n");
+//            body.append("   • Liên hệ ứng viên trong vòng 48 giờ\n\n");
+//
+//            body.append("Nếu có thắc mắc, vui lòng liên hệ với chúng tôi.\n\n");
+//            body.append("Trân trọng,\n");
+//            body.append("🏢 Đội ngũ JOB4YOU\n");
+//            body.append("📞 Hotline: 1900-xxxx\n");
+//            body.append("🌐 Website: http://localhost:8080");
+//
+//            // Gửi email trực tiếp
+//            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+//            simpleMailMessage.setTo(employerEmail);
+//            simpleMailMessage.setSubject(subject);
+//            simpleMailMessage.setText(body.toString());
+//            simpleMailMessage.setFrom("viettaifptudn@gmail.com");
+//            mailSender.send(simpleMailMessage);
+//
+//            System.out.println("New application notification email sent to employer: " + employerEmail + " - Thread: " + Thread.currentThread().getName());
+//            return CompletableFuture.completedFuture(null);
+//
+//        } catch (Exception e) {
+//            System.err.println("Failed to send new application notification email to employer: " + employerEmail + " - Error: " + e.getMessage());
+//            return CompletableFuture.failedFuture(e);
+//        }
+        return null;
     }
 
     /**
      * Gửi email thông báo có đơn ứng tuyển mới cho employer (từ form apply)
      * Sử dụng thông tin từ form thay vì thông tin student đã đăng nhập
      */
-    public void sendNewApplicationNotificationEmailFromForm(String employerEmail, String employerName, String jobTitle,
+    @Async("emailTaskExecutor")
+    public CompletableFuture<Void> sendNewApplicationNotificationEmailFromForm(String employerEmail, String employerName, String jobTitle,
                                                           String candidateName, String candidateEmail, String candidatePhone,
                                                           String applicationId, String description) {
         try {
@@ -426,11 +565,174 @@ public class EmailService {
             body.append("📞 Hotline: 1900-xxxx\n");
             body.append("🌐 Website: http://localhost:8080");
 
-            sendEmail(employerEmail, subject, body.toString());
-            System.out.println("New application notification email sent to employer: " + employerEmail + " (from form data)");
+            // Gửi email trực tiếp
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            simpleMailMessage.setTo(employerEmail);
+            simpleMailMessage.setSubject(subject);
+            simpleMailMessage.setText(body.toString());
+            simpleMailMessage.setFrom("viettaifptudn@gmail.com");
+            mailSender.send(simpleMailMessage);
+            
+            System.out.println("New application notification email sent to employer: " + employerEmail + " (from form data) - Thread: " + Thread.currentThread().getName());
+            return CompletableFuture.completedFuture(null);
 
         } catch (Exception e) {
             System.err.println("Failed to send new application notification email to employer: " + employerEmail + " - Error: " + e.getMessage());
+            return CompletableFuture.failedFuture(e);
+        }
+    }
+
+    /**
+     * Gửi email thông báo khi user bị ban
+     * @param userEmail Email của user bị ban
+     * @param userName Tên user bị ban
+     * @param banReason Lý do ban
+     * @param banDescription Mô tả chi tiết (có thể null)
+     * @param banDurationType Loại ban (TEMPORARY/PERMANENT)
+     * @param banDurationDays Số ngày ban (null nếu permanent)
+     * @param banExpiresAt Thời gian hết hạn ban (null nếu permanent)
+     */
+    public void sendBanNotificationEmail(String userEmail, String userName, String banReason,
+                                       String banDescription, String banDurationType,
+                                       Integer banDurationDays, String banExpiresAt) {
+        try {
+            String subject = "🚫 Thông báo tài khoản bị tạm khóa - JOB4YOU";
+
+            StringBuilder body = new StringBuilder();
+            body.append("Xin chào ").append(userName).append(",\n\n");
+            body.append("⚠️ Tài khoản của bạn đã bị tạm khóa do vi phạm quy định của JOB4YOU.\n\n");
+
+            // Thông tin chi tiết về ban
+            body.append("📋 Thông tin chi tiết:\n");
+            body.append("   • Lý do: ").append(banReason).append("\n");
+
+            if (banDescription != null && !banDescription.trim().isEmpty()) {
+                body.append("   • Mô tả: ").append(banDescription).append("\n");
+            }
+
+            if ("PERMANENT".equals(banDurationType)) {
+                body.append("   • Thời gian: Vĩnh viễn\n");
+            } else {
+                body.append("   • Thời gian: ").append(banDurationDays).append(" ngày\n");
+                if (banExpiresAt != null) {
+                    body.append("   • Hết hạn vào: ").append(banExpiresAt).append("\n");
+                }
+            }
+
+            body.append("\n🔒 Trong thời gian bị khóa, bạn không thể:\n");
+            body.append("   • Đăng nhập vào hệ thống\n");
+            body.append("   • Sử dụng các tính năng của website\n");
+            body.append("   • Tham gia các hoạt động trên nền tảng\n\n");
+
+            if ("TEMPORARY".equals(banDurationType)) {
+                body.append("⏰ Tài khoản sẽ được tự động mở khóa sau khi hết thời gian ban.\n\n");
+            }
+
+            body.append("📞 Nếu bạn cho rằng việc khóa tài khoản là nhầm lẫn, vui lòng liên hệ:\n");
+            body.append("   • Email hỗ trợ: support@job4you.com\n");
+            body.append("   • Hotline: 1900-xxxx\n");
+            body.append("   • Cung cấp thông tin: Email đăng ký, họ tên, và lý do khiếu nại\n\n");
+
+            body.append("⚖️ Chúng tôi cam kết xem xét công bằng mọi khiếu nại trong vòng 24-48 giờ.\n\n");
+            body.append("Trân trọng,\n");
+            body.append("🏢 Đội ngũ JOB4YOU\n");
+            body.append("🌐 Website: http://localhost:8080");
+
+            sendEmail(userEmail, subject, body.toString());
+            System.out.println("🚫 Ban notification email sent to: " + userEmail + " (Duration: " + banDurationType + ")");
+
+        } catch (Exception e) {
+            System.err.println("Failed to send ban notification email to: " + userEmail + " - Error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Gửi email thông báo khi user được unban
+     * @param userEmail Email của user được unban
+     * @param userName Tên user được unban
+     * @param originalBanReason Lý do ban ban đầu
+     * @param banDuration Thời gian đã bị ban
+     * @param unbannedByAdmin Tên admin thực hiện unban
+     */
+    public void sendUnbanNotificationEmail(String userEmail, String userName, String originalBanReason,
+                                         String banDuration, String unbannedByAdmin) {
+        try {
+            String subject = "✅ Thông báo tài khoản đã được mở khóa - JOB4YOU";
+
+            StringBuilder body = new StringBuilder();
+            body.append("Xin chào ").append(userName).append(",\n\n");
+            body.append("🎉 Chúng tôi vui mừng thông báo tài khoản của bạn đã được mở khóa!\n\n");
+
+            // Thông tin về ban đã hết
+            body.append("📋 Thông tin:\n");
+            body.append("   • Lý do ban trước đó: ").append(originalBanReason).append("\n");
+            body.append("   • Thời gian đã bị ban: ").append(banDuration).append("\n");
+            if (unbannedByAdmin != null) {
+                body.append("   • Được mở khóa bởi: Admin ").append(unbannedByAdmin).append("\n");
+            }
+            body.append("   • Thời gian mở khóa: ").append(java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))).append("\n\n");
+
+            body.append("🔓 Bây giờ bạn có thể:\n");
+            body.append("   • Đăng nhập vào hệ thống\n");
+            body.append("   • Sử dụng đầy đủ các tính năng\n");
+            body.append("   • Tham gia các hoạt động trên nền tảng\n\n");
+
+            body.append("⚠️ Lưu ý quan trọng:\n");
+            body.append("   • Vui lòng tuân thủ nghiêm ngặt quy định của JOB4YOU\n");
+            body.append("   • Tránh các hành vi vi phạm để không bị khóa lại\n");
+            body.append("   • Đọc kỹ điều khoản sử dụng tại: http://localhost:8080/terms\n\n");
+
+            body.append("🔗 Đăng nhập ngay: http://localhost:8080/login\n\n");
+
+            body.append("Cảm ơn bạn đã hiểu và hợp tác!\n\n");
+            body.append("Trân trọng,\n");
+            body.append("🏢 Đội ngũ JOB4YOU\n");
+            body.append("📞 Hotline: 1900-xxxx\n");
+            body.append("🌐 Website: http://localhost:8080");
+
+            sendEmail(userEmail, subject, body.toString());
+            System.out.println("✅ Unban notification email sent to: " + userEmail);
+
+        } catch (Exception e) {
+            System.err.println("Failed to send unban notification email to: " + userEmail + " - Error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Gửi email nhắc nhở user khi ban sắp hết hạn
+     * @param userEmail Email của user
+     * @param userName Tên user
+     * @param daysRemaining Số ngày còn lại
+     * @param banExpiresAt Thời gian hết hạn ban
+     */
+    public void sendBanExpiryReminderEmail(String userEmail, String userName, int daysRemaining, String banExpiresAt) {
+        try {
+            String subject = "⏰ Thông báo tài khoản sắp được mở khóa - JOB4YOU";
+
+            StringBuilder body = new StringBuilder();
+            body.append("Xin chào ").append(userName).append(",\n\n");
+            body.append("📅 Tài khoản của bạn sẽ được mở khóa trong ").append(daysRemaining).append(" ngày nữa.\n\n");
+
+            body.append("📋 Thông tin:\n");
+            body.append("   • Thời gian mở khóa: ").append(banExpiresAt).append("\n");
+            body.append("   • Số ngày còn lại: ").append(daysRemaining).append(" ngày\n\n");
+
+            body.append("🔄 Để chuẩn bị cho việc trở lại:\n");
+            body.append("   • Đọc lại quy định và điều khoản sử dụng\n");
+            body.append("   • Chuẩn bị cập nhật thông tin hồ sơ\n");
+            body.append("   • Lưu ý tuân thủ nghiêm ngặt quy định\n\n");
+
+            body.append("⚠️ Lưu ý: Sau khi được mở khóa, nếu vi phạm lại có thể bị khóa vĩnh viễn.\n\n");
+
+            body.append("Trân trọng,\n");
+            body.append("🏢 Đội ngũ JOB4YOU\n");
+            body.append("🌐 Website: http://localhost:8080");
+
+            sendEmail(userEmail, subject, body.toString());
+            System.out.println("⏰ Ban expiry reminder email sent to: " + userEmail + " (" + daysRemaining + " days remaining)");
+
+        } catch (Exception e) {
+            System.err.println("Failed to send ban expiry reminder email to: " + userEmail + " - Error: " + e.getMessage());
         }
     }
 }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Details - Admin</title>
+  <title th:text="#{admin.student.details.title} + ' - Admin'">Student Details - Admin</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
@@ -17,9 +17,9 @@
 <div class="main-content">
   <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2>Student Details</h2>
+      <h2 th:text="#{admin.student.details.title}">Student Details</h2>
       <a th:href="@{/Admin/ListStudent}" class="btn btn-secondary">
-        <i class="bi bi-arrow-left me-2"></i>Back to List
+        <i class="bi bi-arrow-left me-2"></i><span th:text="#{admin.student.details.back}">Back to List</span>
       </a>
     </div>
 
@@ -36,54 +36,56 @@
         </div>
         <div class="col-md-8">
           <h5 class="mb-3">
-            <i class="bi bi-person-circle me-2"></i>Personal Information
+            <i class="bi bi-person-circle me-2"></i><span th:text="#{admin.student.details.personal.info}">Personal Information</span>
           </h5>
 
 
           <div class="info-row">
                         <span class="info-label">
-                            <i class="bi bi-person me-2"></i>Full Name
+                            <i class="bi bi-person me-2"></i><span th:text="#{admin.student.details.full.name}">Full Name</span>
                         </span>
             <span class="info-value" th:text="${student.account.fullName}"></span>
           </div>
 
           <div class="info-row">
                         <span class="info-label">
-                            <i class="bi bi-envelope me-2"></i>Email
+                            <i class="bi bi-envelope me-2"></i><span th:text="#{admin.student.details.email}">Email</span>
                         </span>
             <span class="info-value" th:text="${student.account.email}"></span>
           </div>
 
           <div class="info-row">
                         <span class="info-label">
-                            <i class="bi bi-telephone me-2"></i>Phone
+                            <i class="bi bi-telephone me-2"></i><span th:text="#{admin.student.details.phone}">Phone</span>
                         </span>
-            <span class="info-value" th:text="${student.account.phone ?: 'Not provided'}"></span>
+            <span class="info-value" th:text="${student.account.phone ?: #{admin.student.details.not.provided}}"></span>
           </div>
 
           <div class="info-row">
                         <span class="info-label">
-                            <i class="bi bi-geo-alt me-2"></i>Address
+                            <i class="bi bi-geo-alt me-2"></i><span th:text="#{admin.student.details.address}">Address</span>
                         </span>
-            <span class="info-value" th:text="${student.address ?: 'Not provided'}"></span>
+            <span class="info-value" th:text="${student.address ?: #{admin.student.details.not.provided}}"></span>
           </div>
 
           <div class="info-row">
                         <span class="info-label">
-                            <i class="bi bi-mortarboard me-2"></i>Role
+                            <i class="bi bi-mortarboard me-2"></i><span th:text="#{admin.student.details.role}">Role</span>
                         </span>
             <span class="info-value">
-                            <span class="badge bg-success">Student</span>
+                            <span class="badge bg-success" th:text="#{admin.student.details.role.student}">Student</span>
                         </span>
           </div>
 
           <div class="info-row">
                         <span class="info-label">
-                            <i class="bi bi-shield-check me-2"></i>Status
+                            <i class="bi bi-shield-check me-2"></i><span th:text="#{admin.student.details.status}">Status</span>
                         </span>
             <span class="info-value">
-                            <span th:class="${student.account.status.name() == 'active' ? 'status-active' : 'status-banned'}"
-                                  th:text="${student.account.status.name() == 'active' ? 'Active' : 'Banned'}"></span>
+                                      <th:block th:with="activeText=#{admin.student.details.active}, bannedText=#{admin.student.details.banned}">
+              <span th:class="${student.account.status.name() == 'active' ? 'status-active' : 'status-banned'}"
+                    th:text="${student.account.status.name() == 'active' ? activeText : bannedText}"></span>
+          </th:block>
                         </span>
           </div>
         </div>
@@ -93,30 +95,30 @@
     <!-- Academic Information Card -->
     <div class="detail-card">
       <h5 class="mb-3">
-        <i class="bi bi-book me-2"></i>Academic Information
+        <i class="bi bi-book me-2"></i><span th:text="#{admin.student.details.academic.info}">Academic Information</span>
       </h5>
       <div class="row">
         <div class="col-md-6">
           <div class="info-row">
                         <span class="info-label">
-                            <i class="bi bi-building me-2"></i>University
+                            <i class="bi bi-building me-2"></i><span th:text="#{admin.student.details.university}">University</span>
                         </span>
-            <span class="info-value" th:text="${student.university ?: 'Not specified'}"></span>
+            <span class="info-value" th:text="${student.university ?: #{admin.student.details.not.specified}}"></span>
           </div>
 
           <div class="info-row">
                         <span class="info-label">
-                            <i class="bi bi-tag me-2"></i>Job Field Interest
+                            <i class="bi bi-tag me-2"></i><span th:text="#{admin.student.details.job.field}">Job Field Interest</span>
                         </span>
-            <span class="info-value" th:text="${student.jobField != null ? student.jobField.jobFieldName : 'Not specified'}"></span>
+            <span class="info-value" th:text="${student.jobField != null ? student.jobField.jobFieldName : #{admin.student.details.not.specified}}"></span>
           </div>
         </div>
         <div class="col-md-6">
           <div class="info-row">
                         <span class="info-label">
-                            <i class="bi bi-geo-alt me-2"></i>Preferred Job Location :
+                            <i class="bi bi-geo-alt me-2"></i><span th:text="#{admin.student.details.preferred.location}">Preferred Job Location :</span>
                         </span>
-            <span class="info-value" th:text="${student.preferredJobAddress ?: 'Not specified'}"></span>
+            <span class="info-value" th:text="${student.preferredJobAddress ?: #{admin.student.details.not.specified}}"></span>
           </div>
         </div>
       </div>
@@ -125,7 +127,7 @@
     <!-- Profile Description Card -->
     <div class="detail-card" th:if="${student.profileDescription}">
       <h5 class="mb-3">
-        <i class="bi bi-file-text me-2"></i>Profile Description
+        <i class="bi bi-file-text me-2"></i><span th:text="#{admin.student.details.profile.desc}">Profile Description</span>
       </h5>
       <div class="profile-description">
         <p th:utext="${student.profileDescription}"></p>
@@ -135,7 +137,7 @@
     <!-- Experience Card -->
     <div class="detail-card" th:if="${student.experience}">
       <h5 class="mb-3">
-        <i class="bi bi-briefcase me-2"></i>Experience
+        <i class="bi bi-briefcase me-2"></i><span th:text="#{admin.student.details.experience}">Experience</span>
       </h5>
       <div class="experience-section">
         <p th:utext="${student.experience}"></p>
@@ -145,14 +147,14 @@
     <!-- Action Buttons -->
     <div class="detail-card">
       <h5 class="mb-3">
-        <i class="bi bi-gear me-2"></i>Actions
+        <i class="bi bi-gear me-2"></i><span th:text="#{admin.student.details.actions}">Actions</span>
       </h5>
       <div class="d-flex gap-3">
         <form th:if="${student.account.status.name() == 'active'}"
               th:action="@{/Admin/banStudent/{id}(id=${student.account.userId})}"
               method="post">
           <button type="submit" class="btn btn-danger">
-            <i class="bi bi-person-x me-2"></i>Ban Student
+            <i class="bi bi-person-x me-2"></i><span th:text="#{admin.student.details.ban}">Ban Student</span>
           </button>
         </form>
 
@@ -160,12 +162,12 @@
               th:action="@{/Admin/unbanStudent/{id}(id=${student.account.userId})}"
               method="post">
           <button type="submit" class="btn btn-success">
-            <i class="bi bi-person-check me-2"></i>Unban Student
+            <i class="bi bi-person-check me-2"></i><span th:text="#{admin.student.details.unban}">Unban Student</span>
           </button>
         </form>
 
         <button class="btn btn-info">
-          <i class="bi bi-envelope me-2"></i>Send Message
+          <i class="bi bi-envelope me-2"></i><span th:text="#{admin.student.details.send.message}">Send Message</span>
         </button>
       </div>
     </div>

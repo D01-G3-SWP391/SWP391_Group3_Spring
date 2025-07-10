@@ -114,10 +114,10 @@
                                 </a>
                             </div>
                             <div sec:authorize="isAuthenticated() and !hasRole('student')">
-                                <a readonly="" class="btn-primary-large">
-                                    <i class="fas fa-sign-in-alt"></i>
-                                    <span>Ko co quyen ung tuyen</span>
-                                </a>
+<!--                                <a readonly="" class="btn-primary-large">-->
+<!--                                    <i class="fas fa-sign-in-alt"></i>-->
+<!--                                    <span>Ko co quyen ung tuyen</span>-->
+<!--                                </a>-->
                             </div>
                             <!-- Hiển thị nút ứng tuyển cho người dùng đã xác thực -->
                             <div sec:authorize="isAuthenticated() and hasRole('student')">
@@ -760,8 +760,9 @@
     <script th:src="@{/js/validation.js}"></script>
 
 <!-- Add notification bell -->
+<div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
+
 <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
-<div th:replace="~{fragments/report-button :: report-button}"></div>
     <script th:src="@{/js/languageSwitch.js}"></script>
 </body>
 </html>

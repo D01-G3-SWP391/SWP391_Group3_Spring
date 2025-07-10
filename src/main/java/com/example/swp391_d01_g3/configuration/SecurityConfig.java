@@ -2,7 +2,9 @@ package com.example.swp391_d01_g3.configuration;
 
 
 import com.example.swp391_d01_g3.common.CustomAuthenticationEntryPoint;
+import com.example.swp391_d01_g3.common.CustomAuthenticationFailureHandler;
 import com.example.swp391_d01_g3.common.CustomAuthenticationSuccessHandler;
+import com.example.swp391_d01_g3.service.security.CustomOAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,10 +29,16 @@ public class SecurityConfig {
     private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
     @Autowired
+    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+
+    @Autowired
     private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public static PasswordEncoder passwordEncoder() {
@@ -72,13 +80,14 @@ public class SecurityConfig {
                         .usernameParameter("email")
                         .passwordParameter("password")
                         .successHandler(customAuthenticationSuccessHandler)
-                        .failureUrl("/Login?error")
+                        .failureHandler(customAuthenticationFailureHandler)
                         .permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/Login")
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .successHandler(customAuthenticationSuccessHandler)
-                        .failureUrl("/Login?error")
+                        .failureHandler(customAuthenticationFailureHandler)
                         .permitAll()
                 )
                 .logout(logout -> logout

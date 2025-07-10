@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Management - Admin</title>
+    <meta name="_csrf" th:content="${_csrf?.token}" th:if="${_csrf}"/>
+    <meta name="_csrf_header" th:content="${_csrf?.headerName}" th:if="${_csrf}"/>
+    <title th:text="#{admin.list.students.title}">Student Management - Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
     <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
     <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
@@ -16,7 +19,7 @@
 
 <div class="main-content">
     <div class="container-fluid">
-        <h2>Student Management</h2>
+        <h2 th:text="#{admin.list.students.title}">Student Management</h2>
 
         <!-- Success/Error Messages -->
         <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -37,21 +40,21 @@
             <div class="col-md-6">
                 <input class="form-control" name="keyword"
                        th:value="${keyword}"
-                       placeholder="Search by name, email or phone..." />
+                       th:placeholder="#{admin.list.students.search.placeholder}" />
             </div>
             <div class="col-md-3">
                 <select class="form-control" name="status">
-                    <option value="">All Status</option>
-                    <option value="active" th:selected="${selectedStatus == 'active'}">Active</option>
-                    <option value="inactive" th:selected="${selectedStatus == 'inactive'}">Banned</option>
+                    <option value="" th:text="#{admin.list.students.status.all}">All Status</option>
+                    <option value="active" th:selected="${selectedStatus == 'active'}" th:text="#{admin.list.students.status.active}">Active</option>
+                    <option value="inactive" th:selected="${selectedStatus == 'inactive'}" th:text="#{admin.list.students.status.banned}">Banned</option>
                 </select>
             </div>
             <div class="col-auto d-flex gap-2">
                 <button class="btn-equal" type="submit">
-                    <i class="bi bi-search me-2"></i>Search
+                    <i class="bi bi-search me-2"></i><span th:text="#{admin.list.students.search.button}">Search</span>
                 </button>
                 <a th:href="@{/Admin/ListStudent}" class="btn-equal">
-                    <i class="bi bi-arrow-clockwise me-2"></i>Reset
+                    <i class="bi bi-arrow-clockwise me-2"></i><span th:text="#{admin.list.students.reset.button}">Reset</span>
                 </a>
             </div>
         </form>
@@ -60,14 +63,14 @@
         <!-- Results Info -->
         <div class="d-flex justify-content-between align-items-center mb-3">
             <span class="text-muted">
-                Showing <strong th:text="${currentPage * 6 + 1}"></strong> to
+                <span th:text="#{admin.list.students.showing}">Showing</span> <strong th:text="${currentPage * 6 + 1}"></strong> <span th:text="#{admin.list.students.to}">to</span>
                 <strong th:text="${currentPage * 6 + #lists.size(studentList)}"></strong>
-                of <strong th:text="${totalItems}"></strong> students
+                <span th:text="#{admin.list.students.of}">of</span> <strong th:text="${totalItems}"></strong> <span th:text="#{admin.list.students.students}">students</span>
                 <span th:if="${selectedStatus != null and selectedStatus != ''}"
                       th:text="'(' + ${selectedStatus} + ')'" class="text-primary"></span>
             </span>
             <span class="text-muted" th:if="${totalPages > 1}">
-                Page <strong th:text="${currentPage + 1}"></strong> of <strong th:text="${totalPages}"></strong>
+                <span th:text="#{admin.list.students.page}">Page</span> <strong th:text="${currentPage + 1}"></strong> <span th:text="#{admin.list.students.of}">of</span> <strong th:text="${totalPages}"></strong>
             </span>
         </div>
 
@@ -76,12 +79,12 @@
             <table class="table table-hover admin-table">
                 <thead>
                 <tr>
-                    <th><i class="bi bi-person-circle me-2"></i>Avatar</th>
-                    <th><i class="bi bi-person me-2"></i>Name</th>
-                    <th><i class="bi bi-envelope me-2"></i>Email</th>
-                    <th><i class="bi bi-telephone me-2"></i>Phone</th>
-                    <th><i class="bi bi-shield-check me-2"></i>Status</th>
-                    <th><i class="bi bi-gear me-2"></i>Actions</th>
+                    <th><i class="bi bi-person-circle me-2"></i><span th:text="#{admin.list.students.avatar}">Avatar</span></th>
+                    <th><i class="bi bi-person me-2"></i><span th:text="#{admin.list.students.name}">Name</span></th>
+                    <th><i class="bi bi-envelope me-2"></i><span th:text="#{admin.list.students.email}">Email</span></th>
+                    <th><i class="bi bi-telephone me-2"></i><span th:text="#{admin.list.students.phone}">Phone</span></th>
+                    <th><i class="bi bi-shield-check me-2"></i><span th:text="#{admin.list.students.status}">Status</span></th>
+                    <th><i class="bi bi-gear me-2"></i><span th:text="#{admin.list.students.actions}">Actions</span></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -98,32 +101,32 @@
                     <td th:text="${student.phone}"></td>
                     <td>
                         <!-- Clickable Status Badges -->
-                        <a th:href="@{/Admin/ListStudent(status=${student.status.name()}, keyword=${keyword})}"
-                           th:class="${student.status.name() == 'active' ? 'clickable-status status-active' : 'clickable-status status-banned'}"
-                           th:text="${student.status.name() == 'active' ? 'Active' : 'Banned'}"></a>
+                        <th:block th:with="activeText=#{admin.list.students.status.active}, bannedText=#{admin.list.students.status.banned}">
+                            <a th:href="@{/Admin/ListStudent(status=${student.status.name()}, keyword=${keyword})}"
+                               th:class="${student.status.name() == 'active' ? 'clickable-status status-active' : 'clickable-status status-banned'}"
+                               th:text="${student.status.name() == 'active' ? activeText : bannedText}"></a>
+                        </th:block>
                     </td>
                     <td>
                         <div class="action-btns">
                             <div class="action-btns-top">
                                 <a th:href="@{/Admin/student/{id}(id=${student.userId})}"
                                    class="btn btn-sm btn-primary">
-                                    <i class="bi bi-eye"></i> View
+                                    <i class="bi bi-eye"></i> <span th:text="#{admin.list.students.view}">View</span>
                                 </a>
 
-                                <form th:if="${student.status.name() == 'active'}"
-                                      th:action="@{/Admin/banStudent/{id}(id=${student.userId})}"
-                                      method="post" style="display: inline;"
-                                      onsubmit="return confirm('Are you sure you want to ban this student?')">
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i class="bi bi-person-x"></i> Ban
-                                    </button>
-                                </form>
+                                <a th:if="${student.status.name() == 'active'}"
+                                   th:href="@{/Admin/banUser(userId=${student.userId}, userType=student, userName=${student.fullName}, userEmail=${student.email})}"
+                                   class="btn btn-sm btn-danger">
+                                    <i class="bi bi-person-x"></i> Ban
+                                </a>
 
                                 <form th:if="${student.status.name() == 'inactive'}"
-                                      th:action="@{/Admin/unbanStudent/{id}(id=${student.userId})}"
-                                      method="post" style="display: inline;"
-                                      onsubmit="return confirm('Are you sure you want to unban this student?')">
-                                    <button type="submit" class="btn btn-sm btn-success">
+                                      th:action="@{/Admin/processUnban}" method="post" style="display: inline;">
+                                    <input type="hidden" name="userId" th:value="${student.userId}">
+                                    <input type="hidden" name="userType" value="student">
+                                    <button type="submit" class="btn btn-sm btn-success"
+                                            onclick="return confirm('Are you sure you want to unban this student?')">
                                         <i class="bi bi-person-check"></i> Unban
                                     </button>
                                 </form>
@@ -138,15 +141,15 @@
         <!-- No Results Message -->
         <div th:if="${#lists.isEmpty(studentList)}" class="text-center py-5">
             <i class="bi bi-search display-1 text-muted"></i>
-            <h4 class="text-muted mt-3">No students found</h4>
-            <p class="text-muted">Try adjusting your search criteria</p>
+            <h4 class="text-muted mt-3" th:text="#{admin.list.students.no.results}">No students found</h4>
+            <p class="text-muted" th:text="#{admin.list.students.no.results.text}">Try adjusting your search criteria</p>
         </div>
 
         <!-- Pagination Info -->
         <div th:if="${totalItems > 0}" class="pagination-info">
-            Showing <strong th:text="${currentPage * 6 + 1}"></strong> to
+            <span th:text="#{admin.list.students.showing}">Showing</span> <strong th:text="${currentPage * 6 + 1}"></strong> <span th:text="#{admin.list.students.to}">to</span>
             <strong th:text="${currentPage * 6 + #lists.size(studentList)}"></strong>
-            of <strong th:text="${totalItems}"></strong> students
+            <span th:text="#{admin.list.students.of}">of</span> <strong th:text="${totalItems}"></strong> <span th:text="#{admin.list.students.students}">students</span>
         </div>
 
         <!-- Pagination -->
@@ -158,11 +161,11 @@
                        th:href="@{/Admin/ListStudent(page=${currentPage - 1}, keyword=${keyword}, status=${selectedStatus})}"
                        class="pagination-btn prev-btn">
                         <i class="bi bi-chevron-left"></i>
-                        <span>Previous</span>
+                        <span th:text="#{admin.list.students.previous}">Previous</span>
                     </a>
                     <span th:unless="${hasPrevious}" class="pagination-btn prev-btn disabled">
                         <i class="bi bi-chevron-left"></i>
-                        <span>Previous</span>
+                        <span th:text="#{admin.list.students.previous}">Previous</span>
                     </span>
 
                     <div class="page-numbers">
@@ -180,11 +183,11 @@
                     <a th:if="${hasNext}"
                        th:href="@{/Admin/ListStudent(page=${currentPage + 1}, keyword=${keyword}, status=${selectedStatus})}"
                        class="pagination-btn next-btn">
-                        <span>Next</span>
+                        <span th:text="#{admin.list.students.next}">Next</span>
                         <i class="bi bi-chevron-right"></i>
                     </a>
                     <span th:unless="${hasNext}" class="pagination-btn next-btn disabled">
-                        <span>Next</span>
+                        <span th:text="#{admin.list.students.next}">Next</span>
                         <i class="bi bi-chevron-right"></i>
                     </span>
                 </div>
@@ -196,6 +199,7 @@
 <script th:src="@{/js/navbarAdmin.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/js/language-dropdown.js}"></script>
+<script th:src="@{/js/languageSwitch.js}"></script>
 
 </body>
 </html>

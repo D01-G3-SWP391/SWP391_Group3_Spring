@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<!-- Flash Messages Fragment -->
+<div th:fragment="flash-messages">
+    <!-- Success Message -->
+    <div th:if="${successMessage or #request.getAttribute('org.springframework.web.servlet.support.RequestContext').getRequestScope().get('success')}"
+         class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle"></i>
+        <span th:text="${successMessage ?: #request.getAttribute('org.springframework.web.servlet.support.RequestContext').getFlashMap().get('success')}">Success message</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    
+    <!-- Error Message -->
+    <div th:if="${errorMessage or #request.getAttribute('org.springframework.web.servlet.support.RequestContext').getRequestScope().get('error')}"
+         class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span th:text="${errorMessage ?: #request.getAttribute('org.springframework.web.servlet.support.RequestContext').getFlashMap().get('error')}">Error message</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    
+    <!-- Info Message -->
+    <div th:if="${infoMessage or #request.getAttribute('org.springframework.web.servlet.support.RequestContext').getRequestScope().get('info')}"
+         class="alert alert-info alert-dismissible fade show" role="alert">
+        <i class="fas fa-info-circle"></i>
+        <span th:text="${infoMessage ?: #request.getAttribute('org.springframework.web.servlet.support.RequestContext').getFlashMap().get('info')}">Info message</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    
+    <!-- Warning Message -->
+    <div th:if="${warningMessage or #request.getAttribute('org.springframework.web.servlet.support.RequestContext').getRequestScope().get('warning')}"
+         class="alert alert-warning alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span th:text="${warningMessage ?: #request.getAttribute('org.springframework.web.servlet.support.RequestContext').getFlashMap().get('warning')}">Warning message</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+
+<!-- Simplified Flash Messages (easier to use) -->
+<div th:fragment="simple-flash-messages">
+    <!-- Success Message -->
+    <div th:if="${#flashAttr['success']}" 
+         class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle"></i>
+        <span th:text="${#flashAttr['success']}">Success message</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    
+    <!-- Error Message -->
+    <div th:if="${#flashAttr['error']}" 
+         class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span th:text="${#flashAttr['error']}">Error message</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    
+    <!-- Info Message -->
+    <div th:if="${#flashAttr['info']}" 
+         class="alert alert-info alert-dismissible fade show" role="alert">
+        <i class="fas fa-info-circle"></i>
+        <span th:text="${#flashAttr['info']}">Info message</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    
+    <!-- Warning Message -->
+    <div th:if="${#flashAttr['warning']}" 
+         class="alert alert-warning alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span th:text="${#flashAttr['warning']}">Warning message</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+
+</body>
+</html> 

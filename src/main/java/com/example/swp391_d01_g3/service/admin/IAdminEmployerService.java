@@ -26,6 +26,10 @@ public interface IAdminEmployerService {
 
     // Unban nhà tuyển dụng (thay đổi trạng thái thành ACTIVE)
     void unbanEmployer(Integer userId);
+    
+    // Enhanced ban methods with reason and email notification
+    void banEmployerWithReason(com.example.swp391_d01_g3.dto.BanRequestDTO banRequest, Integer adminId);
+    void unbanEmployerWithNotification(Integer userId, Integer adminId);
 
     Account getEmployerById(Integer userId);
 

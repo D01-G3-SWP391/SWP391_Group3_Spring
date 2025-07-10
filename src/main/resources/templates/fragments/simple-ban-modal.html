@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<!-- 🚫 Simple Ban Modal - No Complex JavaScript -->
+<div th:fragment="ban-modal" id="simpleBanModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-ban"></i> Ban User Account
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            
+            <!-- Simple Form - No JavaScript Validation -->
+            <form th:action="@{/Admin/processBan}" method="post">
+                <div class="modal-body">
+                    <!-- User Info -->
+                    <div class="alert alert-warning">
+                        <h6><i class="fas fa-exclamation-triangle"></i> Thông tin người dùng</h6>
+                        <p><strong>Tên:</strong> <span id="displayUserName">-</span></p>
+                        <p><strong>Email:</strong> <span id="displayUserEmail">-</span></p>
+                        <p><strong>Role:</strong> <span id="displayUserRole">-</span></p>
+                    </div>
+                    
+                    <!-- Hidden Fields -->
+                    <input type="hidden" name="userId" id="formUserId">
+                    <input type="hidden" name="userType" id="formUserType">
+                    
+                    <!-- Ban Reason -->
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-exclamation-circle text-danger"></i> 
+                            Lý do ban <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select" name="banReason" required>
+                            <option value="">-- Chọn lý do ban --</option>
+                            <!-- Ban reasons được hard-code - không cần API -->
+                            <option value="SPAM">Spam nội dung</option>
+                            <option value="INAPPROPRIATE_CONTENT">Nội dung không phù hợp</option>
+                            <option value="FAKE_INFORMATION">Thông tin giả mạo</option>
+                            <option value="HARASSMENT">Quấy rối người khác</option>
+                            <option value="FRAUD">Lừa đảo</option>
+                            <option value="MULTIPLE_ACCOUNTS">Tạo nhiều tài khoản</option>
+                            <option value="VIOLATION_TERMS">Vi phạm điều khoản sử dụng</option>
+                            <option value="SYSTEM_ABUSE">Lạm dụng hệ thống</option>
+                            <option value="OTHER">Lý do khác</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Ban Description -->
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-edit"></i> Mô tả chi tiết (tùy chọn)
+                        </label>
+                        <textarea class="form-control" name="banDescription" rows="3" 
+                                  maxlength="1000" placeholder="Mô tả chi tiết lý do ban..."></textarea>
+                    </div>
+                    
+                    <!-- Ban Duration Type -->
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-clock text-warning"></i> 
+                            Loại thời gian ban <span class="text-danger">*</span>
+                        </label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="banDurationType" 
+                                           value="TEMPORARY" required>
+                                    <label class="form-check-label">
+                                        <i class="fas fa-calendar-alt"></i> Tạm thời
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="banDurationType" 
+                                           value="PERMANENT" required>
+                                    <label class="form-check-label">
+                                        <i class="fas fa-ban"></i> Vĩnh viễn
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Ban Duration Days -->
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-calendar-day"></i> 
+                            Số ngày ban (chỉ cho ban tạm thời)
+                        </label>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <input type="number" class="form-control" name="banDurationDays" 
+                                       min="1" max="365" placeholder="Nhập số ngày (1-365)">
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select" onchange="setDays(this.value)">
+                                    <option value="">Chọn nhanh</option>
+                                    <option value="1">1 ngày</option>
+                                    <option value="3">3 ngày</option>
+                                    <option value="7">1 tuần</option>
+                                    <option value="14">2 tuần</option>
+                                    <option value="30">1 tháng</option>
+                                    <option value="90">3 tháng</option>
+                                    <option value="180">6 tháng</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Warning -->
+                    <div class="alert alert-danger">
+                        <h6><i class="fas fa-exclamation-triangle"></i> Cảnh báo</h6>
+                        <ul class="mb-0">
+                            <li>Hành động này sẽ khóa tài khoản người dùng ngay lập tức</li>
+                            <li>User sẽ nhận email thông báo chi tiết về việc bị ban</li>
+                            <li>Thao tác này không thể hoàn tác</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Hủy
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-ban"></i> Xác nhận Ban User
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 🔓 Simple Unban Modal -->
+<div th:fragment="simple-unban-modal" id="simpleUnbanModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-unlock"></i> Unban User Account
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            
+            <form th:action="@{/Admin/processUnban}" method="post">
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-user"></i> Thông tin người dùng</h6>
+                        <p><strong>Tên:</strong> <span id="unbanDisplayUserName">-</span></p>
+                        <p><strong>Email:</strong> <span id="unbanDisplayUserEmail">-</span></p>
+                        <p><strong>Role:</strong> <span id="unbanDisplayUserRole">-</span></p>
+                    </div>
+                    
+                    <input type="hidden" name="userId" id="unbanFormUserId">
+                    <input type="hidden" name="userType" id="unbanFormUserType">
+                    
+                    <div class="alert alert-success">
+                        <h6><i class="fas fa-check-circle"></i> Xác nhận unban</h6>
+                        <p class="mb-0">Tài khoản người dùng sẽ được kích hoạt lại và nhận email thông báo.</p>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i> Hủy
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-unlock"></i> Xác nhận Unban
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Minimal JavaScript - Only for UI helpers -->
+<script>
+// Simple helper functions - No complex validation
+function openSimpleBanModal(userId, userName, userEmail, userType) {
+    document.getElementById('formUserId').value = userId;
+    document.getElementById('formUserType').value = userType;
+    document.getElementById('displayUserName').textContent = userName;
+    document.getElementById('displayUserEmail').textContent = userEmail || '-';
+    document.getElementById('displayUserRole').textContent = userType.charAt(0).toUpperCase() + userType.slice(1);
+    
+    new bootstrap.Modal(document.getElementById('simpleBanModal')).show();
+}
+
+function openSimpleUnbanModal(userId, userName, userEmail, userType) {
+    document.getElementById('unbanFormUserId').value = userId;
+    document.getElementById('unbanFormUserType').value = userType;
+    document.getElementById('unbanDisplayUserName').textContent = userName;
+    document.getElementById('unbanDisplayUserEmail').textContent = userEmail || '-';
+    document.getElementById('unbanDisplayUserRole').textContent = userType.charAt(0).toUpperCase() + userType.slice(1);
+    
+    new bootstrap.Modal(document.getElementById('simpleUnbanModal')).show();
+}
+
+function setDays(value) {
+    if (value) {
+        document.querySelector('input[name="banDurationDays"]').value = value;
+    }
+}
+</script>
+
+</body>
+</html> 

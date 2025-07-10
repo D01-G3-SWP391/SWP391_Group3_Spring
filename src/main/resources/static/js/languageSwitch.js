@@ -1,45 +1,49 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Language switcher functionality - Enhanced version
+    // Language switcher functionality - Enhanced version with null checks
     const languageOptions = document.querySelectorAll('.language-option');
-    languageOptions.forEach(option => {
-        option.addEventListener('click', function(event) {
-            event.preventDefault();
-            const lang = this.getAttribute('href').split('=')[1];
-            const currentUrl = new URL(window.location.href);
-            
-            // Preserve all existing parameters and add/update language
-            currentUrl.searchParams.set('lang', lang);
-            
-            // Redirect to the same page with language parameter
-            window.location.href = currentUrl.toString();
+    if (languageOptions.length > 0) {
+        languageOptions.forEach(option => {
+            option.addEventListener('click', function(event) {
+                event.preventDefault();
+                const lang = this.getAttribute('href').split('=')[1];
+                const currentUrl = new URL(window.location.href);
+                
+                // Preserve all existing parameters and add/update language
+                currentUrl.searchParams.set('lang', lang);
+                
+                // Redirect to the same page with language parameter
+                window.location.href = currentUrl.toString();
+            });
         });
-    });
+    }
 
-    // Handle both .language-switcher and .sidebar-lang-btn
+    // Handle both .language-switcher and .sidebar-lang-btn with null checks
     const languageButtons = document.querySelectorAll('.language-switcher, .sidebar-lang-btn');
     const languageDropdowns = document.querySelectorAll('.language-dropdown');
     const languageContainers = document.querySelectorAll('.language-switcher-container');
     
-    languageButtons.forEach((button, index) => {
-        const dropdown = languageDropdowns[index] || document.querySelector('.language-dropdown');
-        const container = languageContainers[index] || document.querySelector('.language-switcher-container');
-        
-        if (button && dropdown) {
-            button.addEventListener('click', function(event) {
-                event.stopPropagation();
-                
-                // Close all other dropdowns first
-                languageDropdowns.forEach(dd => dd.classList.remove('active'));
-                languageContainers.forEach(lc => lc.classList.remove('active'));
-                
-                // Toggle current dropdown
-                dropdown.classList.toggle('active');
-                if (container) {
-                    container.classList.toggle('active');
-                }
-            });
-        }
-    });
+    if (languageButtons.length > 0) {
+        languageButtons.forEach((button, index) => {
+            const dropdown = languageDropdowns[index] || document.querySelector('.language-dropdown');
+            const container = languageContainers[index] || document.querySelector('.language-switcher-container');
+            
+            if (button && dropdown) {
+                button.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                    
+                    // Close all other dropdowns first
+                    languageDropdowns.forEach(dd => dd.classList.remove('active'));
+                    languageContainers.forEach(lc => lc.classList.remove('active'));
+                    
+                    // Toggle current dropdown
+                    dropdown.classList.toggle('active');
+                    if (container) {
+                        container.classList.toggle('active');
+                    }
+                });
+            }
+        });
+    }
 
     // Close dropdowns when clicking outside
     document.addEventListener('click', function(event) {
@@ -66,14 +70,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Booking modal functionality
+    // Booking modal functionality with null checks
     const openBtnNavbar = document.getElementById('openBookingModalNavbar');
     const modal = document.getElementById('bookingModal');
     const modalContent = document.querySelector('.booking-modal-content-popover');
     const closeBtn = document.getElementById('closeBookingModal');
 
     function hideModal() {
-        modal.style.display = 'none';
+        if (modal) {
+            modal.style.display = 'none';
+        }
     }
 
     if (openBtnNavbar && modal && closeBtn && modalContent) {

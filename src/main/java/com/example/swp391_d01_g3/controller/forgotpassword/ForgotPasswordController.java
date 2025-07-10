@@ -1,5 +1,6 @@
 package com.example.swp391_d01_g3.controller.forgotpassword;
 
+import com.example.swp391_d01_g3.dto.ForgotPasswordDTO;
 import com.example.swp391_d01_g3.model.Account;
 import com.example.swp391_d01_g3.model.ForgotPassword;
 import com.example.swp391_d01_g3.model.Student;
@@ -8,11 +9,13 @@ import com.example.swp391_d01_g3.repository.IAccountRepository;
 import com.example.swp391_d01_g3.service.changePassword.ChangePassword;
 import com.example.swp391_d01_g3.service.email.EmailService;
 import com.example.swp391_d01_g3.service.security.IAccountServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -68,6 +71,7 @@ public class ForgotPasswordController {
             }
             model.addAttribute("otpSuccess", "OTP đã xác thực thành công");
             model.addAttribute("accountEmail", fp.getAccount().getEmail());
+            model.addAttribute("forgotPasswordDTO", new ForgotPasswordDTO());
             return "forgotPassword/enterNewPassword";
         } catch (RuntimeException e) {
             model.addAttribute("message", e.getMessage());
@@ -77,33 +81,59 @@ public class ForgotPasswordController {
 
     @PostMapping("/ChangePassword")
     public String changePassword(@RequestParam String email,
-                                 @RequestParam("newPassword") String newPassword,
-                                 @RequestParam("confirmPassword") String confirmPassword,
+                                 @Valid @ModelAttribute ForgotPasswordDTO forgotPasswordDTO,
+                                 BindingResult bindingResult,
                                  Model model) {
+        
+        // Chuẩn hóa dữ liệu đầu vào
+        if (forgotPasswordDTO.getNewPassword() != null) {
+            forgotPasswordDTO.setNewPassword(forgotPasswordDTO.getNewPassword().trim());
+        }
+        if (forgotPasswordDTO.getConfirmPassword() != null) {
+            forgotPasswordDTO.setConfirmPassword(forgotPasswordDTO.getConfirmPassword().trim());
+        }
+        
+        // Set email vào DTO
+        forgotPasswordDTO.setEmail(email);
+        
         Account account = iAccountService.findByEmail(email);
         if (account == null) {
             model.addAttribute("message", "Email không tồn tại. Vui lòng xác thực lại email và OTP.");
             return "login/loginPage";
         }
-        if (!changePassword.isNewPasswordConfirmed(newPassword, confirmPassword)) {
-            model.addAttribute("error", "Mật khẩu mới và xác nhận mật khẩu không khớp.");
+
+        // Sử dụng validation service mới
+        changePassword.validateNewPasswordOnly(
+            forgotPasswordDTO.getNewPassword(), 
+            forgotPasswordDTO.getConfirmPassword(), 
+            bindingResult
+        );
+
+        // Kiểm tra mật khẩu mới không giống mật khẩu cũ
+        if (forgotPasswordDTO.getNewPassword() != null && 
+            !changePassword.isNewPasswordDifferent(forgotPasswordDTO.getNewPassword(), account.getPassword())) {
+            bindingResult.rejectValue("newPassword", "password.sameAsOld", "Mật khẩu mới phải khác mật khẩu hiện tại.");
+        }
+
+        // Kiểm tra có lỗi validation không
+        if (bindingResult.hasErrors()) {
+            // Log errors for debugging
+            System.out.println("Forgot password validation errors found:");
+            bindingResult.getAllErrors().forEach(error -> {
+                System.out.println("- " + error.getDefaultMessage());
+            });
+            
+            model.addAttribute("forgotPasswordDTO", forgotPasswordDTO);
+            model.addAttribute("accountEmail", email);
+            
+            // Hiển thị lỗi đầu tiên
+            String errorMessage = bindingResult.getAllErrors().get(0).getDefaultMessage();
+            model.addAttribute("error", errorMessage);
             return "forgotPassword/enterNewPassword";
         }
 
-        // Sử dụng service để kiểm tra độ dài mật khẩu
-        if (!changePassword.isNewPasswordValidLength(newPassword, 6)) {
-            model.addAttribute("error", "Mật khẩu mới phải có ít nhất 6 ký tự.");
-            return "forgotPassword/enterNewPassword";
-        }
-
-        // Sử dụng service để kiểm tra mật khẩu mới không giống mật khẩu cũ
-        if (!changePassword.isNewPasswordDifferent(newPassword, account.getPassword())) {
-            model.addAttribute("error", "Mật khẩu mới phải khác mật khẩu hiện tại.");
-
-            return "forgotPassword/enterNewPassword";
-        }
-
-        account.setPassword(passwordEncoder.encode(newPassword));
+        // Cập nhật mật khẩu
+        account.setPassword(passwordEncoder.encode(changePassword.normalizePassword(forgotPasswordDTO.getNewPassword())));
         iAccountService.save(account);
         model.addAttribute("changePass", "Đổi mật khẩu thành công.");
         return "login/loginPage";

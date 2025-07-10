@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${event.eventTitle} + ' - JOB4YOU'"></title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+    
+    <!-- AOS Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}"/>
+    <link rel="stylesheet" th:href="@{/css/eventPost.css}"/>
+    <link rel="stylesheet" th:href="@{/css/footer.css}" />
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        /* Hero Section - Glassmorphism effect */
+        .hero-section {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95), rgba(118, 75, 162, 0.9)), 
+                        url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            padding: 100px 0 80px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            z-index: 1;
+        }
+
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 100px;
+            background: linear-gradient(to bottom, transparent, rgba(245, 247, 250, 0.9));
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(45deg, #fff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            max-width: 800px;
+        }
+
+        .hero-meta {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(255, 255, 255, 0.25);
+            padding: 1rem 1.8rem;
+            border-radius: 25px;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .meta-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        .meta-item i {
+            font-size: 1.3rem;
+            color: #ffd700;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 1.2rem 3rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.4s ease;
+            border: none;
+            box-shadow: 0 15px 35px rgba(238, 90, 36, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(238, 90, 36, 0.6);
+            color: white;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        /* Content Sections */
+        .content-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            position: relative;
+            z-index: 3;
+            box-shadow: 0 -20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Why Join Section */
+        .why-join-section {
+            padding: 120px 0;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #e2e8f0 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .why-join-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.05) 0%, transparent 70%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(135deg, #e91e63, #ad1457);
+            border-radius: 2px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-top: 4rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 3rem;
+            text-align: left;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px) rotate(-1deg);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-card:hover::before {
+            left: 100%;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            background: -webkit-linear-gradient(135deg, #e91e63, #ad1457);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1a202c;
+        }
+
+        .feature-description {
+            font-size: 1rem;
+            color: #4a5568;
+        }
+
+        /* Event Details Section */
+        .event-details-section {
+            padding: 80px 0;
+            background: #fff;
+            margin-top: -1px; /* Overlap with hero */
+        }
+        
+        .main-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+        
+        .nav-tabs {
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: #495057;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            padding: 1rem 1.5rem;
+        }
+        
+        .nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+            color: #667eea;
+            border-color: #667eea;
+            background: transparent;
+        }
+        
+        .tab-content {
+            padding-top: 2rem;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            position: sticky;
+            top: 100px;
+        }
+        
+        .sidebar-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+        
+        .sidebar-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 1rem;
+        }
+
+        .share-links a {
+            font-size: 1.5rem;
+            color: #a0aec0;
+            margin-right: 1rem;
+            transition: color 0.3s;
+        }
+
+        .share-links a:hover {
+            color: #667eea;
+        }
+
+        /* Footer */
+        .footer {
+            background: #2d3748;
+            color: #a0aec0;
+            padding: 50px 0;
+        }
+        
+        .footer h5 {
+            color: white;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Include Navbar -->
+    <div th:replace="~{navbar/navbarHome}"></div>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container hero-content text-center">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center" style="background: rgba(255,255,255,0.1); padding: 0.5rem 1rem; border-radius: 15px;">
+                    <li class="breadcrumb-item"><a th:href="@{/}" class="text-white" th:text="#{event.detail.breadcrumb.home}">Home</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/Events}" class="text-white" th:text="#{event.detail.breadcrumb.events}">Events</a></li>
+                    <li class="breadcrumb-item active text-white" aria-current="page" th:text="#{event.detail.breadcrumb.detail}">Event Details</li>
+                </ol>
+            </nav>
+            <h1 class="hero-title" th:text="${event.eventTitle}"></h1>
+            <p class="hero-description" th:text="${event.eventDescription}"></p>
+            
+            <div class="hero-meta justify-content-center">
+                <div class="meta-item"><i class="bi bi-calendar-event"></i> <span th:text="#{event.detail.meta.date}">Date</span>: <span th:text="${#temporals.format(event.eventDate, 'dd/MM/yyyy')}"></span></div>
+                <div class="meta-item"><i class="bi bi-geo-alt-fill"></i> <span th:text="#{event.detail.meta.location}">Location</span>: <span th:text="${event.eventLocation}"></span></div>
+                <div class="meta-item"><i class="bi bi-building"></i> <span th:text="#{event.detail.meta.company}">Company</span>: <span th:text="${event.employer.companyName}"></span></div>
+                <div class="meta-item"><i class="bi bi-people-fill"></i> <span th:text="#{event.detail.meta.participants}">Participants</span>: <span th:text="${event.currentParticipants} + '/' + ${event.maxParticipants}"></span></div>
+            </div>
+            
+            <!-- Nút đăng ký cho Student đã đăng ký -->
+            <button sec:authorize="hasRole('student')"
+                    th:if="${isRegistered}"
+                    class="btn btn-success cta-button" disabled>
+                <i class="bi bi-check-circle-fill me-2"></i> <span th:text="#{event.detail.already.registered}">Already Registered</span>
+            </button>
+            
+            <!-- Nút đăng nhập cho user chưa xác thực -->
+            <a th:href="@{/Login}" sec:authorize="!isAuthenticated()" class="btn btn-primary cta-button">
+                <i class="fas fa-sign-in-alt me-2"></i> <span th:text="#{event.detail.login.to.join}">Login to Join</span>
+            </a>
+            
+            <!-- Nút đăng ký chỉ cho Student -->
+            <button sec:authorize="hasRole('student')"
+                    th:unless="${isRegistered}"
+                    th:onclick="'registerEvent(' + ${event.eventId} + ')'"
+                    class="btn btn-primary cta-button">
+                <i class="bi bi-calendar-check-fill me-2"></i> <span th:text="#{event.detail.register.now}">Register Now</span>
+            </button>
+            
+            <!-- Thông báo cho Employer -->
+            <div sec:authorize="hasRole('employer')" class="mt-3">
+                <span class="text-white small">
+                    <i class="bi bi-info-circle"></i>
+                    <span th:text="#{event.detail.only.students.can.register}">Only students can register</span>
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Why Join Section -->
+    <div class="why-join-section">
+        <div class="container">
+            <h2 class="section-title" th:text="#{event.detail.why.join.title}">Why Join This Event?</h2>
+            <div class="features-grid">
+                <!-- Feature 1 -->
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon"><i class="bi bi-people-fill"></i></div>
+                    <h3 class="feature-title" th:text="#{event.detail.feature1.title}">Expand Your Network</h3>
+                    <p class="feature-description" th:text="#{event.detail.feature1.desc}">Connect with industry leaders, experienced professionals, and talented peers.</p>
+                </div>
+                <!-- Feature 2 -->
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon"><i class="bi bi-lightbulb-fill"></i></div>
+                    <h3 class="feature-title" th:text="#{event.detail.feature2.title}">Gain In-depth Knowledge</h3>
+                    <p class="feature-description" th:text="#{event.detail.feature2.desc}">Deepen your understanding of specialized topics through expert sharing sessions.</p>
+                </div>
+                <!-- Feature 3 -->
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon"><i class="bi bi-briefcase-fill"></i></div>
+                    <h3 class="feature-title" th:text="#{event.detail.feature3.title}">Discover Opportunities</h3>
+                    <p class="feature-description" th:text="#{event.detail.feature3.desc}">Explore career paths and job opportunities directly from leading employers.</p>
+                </div>
+                <!-- Feature 4 -->
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-icon"><i class="bi bi-tools"></i></div>
+                    <h3 class="feature-title" th:text="#{event.detail.feature4.title}">Enhance Your Skills</h3>
+                    <p class="feature-description" th:text="#{event.detail.feature4.desc}">Participate in workshops and practice sessions to improve your professional skills.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Details Section -->
+    <div class="content-section event-details-section">
+        <div class="container">
+            <div class="row">
+                <!-- Main Content -->
+                <div class="col-lg-8">
+                    <div class="main-content">
+                        <h2 class="section-title text-start" style="font-size: 2.5rem;" th:text="#{event.detail.content.title}">Event Content</h2>
+                        
+                        <!-- Tabs -->
+                        <ul class="nav nav-tabs" id="eventTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab" aria-controls="description" aria-selected="true" th:text="#{event.detail.tabs.description}">Description</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="agenda-tab" data-bs-toggle="tab" data-bs-target="#agenda" type="button" role="tab" aria-controls="agenda" aria-selected="false" th:text="#{event.detail.tabs.agenda}">Agenda</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="speakers-tab" data-bs-toggle="tab" data-bs-target="#speakers" type="button" role="tab" aria-controls="speakers" aria-selected="false" th:text="#{event.detail.tabs.speakers}">Speakers</button>
+                            </li>
+                        </ul>
+                        
+                        <!-- Tab Content -->
+                        <div class="tab-content" id="eventTabContent">
+                            <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
+                                <p th:utext="${event.eventDescription}">
+                                    Join us for an exciting event...
+                                </p>
+                            </div>
+                            <div class="tab-pane fade" id="agenda" role="tabpanel" aria-labelledby="agenda-tab">
+                                <!-- Agenda content here -->
+                                <p th:text="#{event.detail.tabs.agenda.coming.soon}">Agenda details will be updated soon.</p>
+                            </div>
+                            <div class="tab-pane fade" id="speakers" role="tabpanel" aria-labelledby="speakers-tab">
+                                <!-- Speakers content here -->
+                                <p th:text="#{event.detail.tabs.speakers.coming.soon}">Speaker information will be updated soon.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <div class="sidebar">
+                        <div class="sidebar-card">
+                            <h3 class="sidebar-title" th:text="#{event.detail.sidebar.title}">Event Information</h3>
+                            
+                            <!-- Nút đăng ký cho Student đã đăng ký -->
+                            <button sec:authorize="hasRole('student')"
+                                    th:if="${isRegistered}"
+                                    class="btn btn-success w-100 mb-3" disabled>
+                                <i class="bi bi-check-circle-fill me-2"></i> <span th:text="#{event.detail.already.registered}">Already Registered</span>
+                            </button>
+                            
+                            <!-- Nút đăng nhập cho user chưa xác thực -->
+                            <a th:href="@{/Login}" sec:authorize="!isAuthenticated()" class="btn btn-primary w-100 mb-3">
+                                <i class="fas fa-sign-in-alt me-2"></i> <span th:text="#{event.detail.login.to.join}">Login to Join</span>
+                            </a>
+                            
+                            <!-- Nút đăng ký chỉ cho Student -->
+                            <button sec:authorize="hasRole('student')"
+                                    th:unless="${isRegistered}"
+                                    th:onclick="'registerEvent(' + ${event.eventId} + ')'"
+                                    class="btn btn-primary w-100 mb-3">
+                                <i class="bi bi-calendar-check-fill me-2"></i> <span th:text="#{event.detail.sidebar.register.button}">Register Now</span>
+                            </button>
+                            
+                            <hr>
+                            
+                            <h4 class="sidebar-title mt-4" th:text="#{event.detail.sidebar.share.title}">Share this event</h4>
+                            <div class="share-links">
+                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Include Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    
+    <!-- Registration Modal -->
+    <div class="modal fade" id="registrationModal" tabindex="-1" aria-labelledby="registrationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registrationModalLabel" th:text="#{events.modal.title}"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info" sec:authorize="hasRole('student')" style="font-size: 0.9rem;">
+                        <i class="bi bi-info-circle"></i>
+                        <span th:text="#{events.modal.student.info}"></span>
+                    </div>
+                    <form id="registrationForm" class="needs-validation" novalidate>
+                        <input type="hidden" id="eventId" name="eventId">
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label" th:text="#{events.modal.label.fullname}"></label>
+                            <input type="text" class="form-control" id="fullName" name="fullName" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label" th:text="#{events.modal.label.phone}"></label>
+                            <input type="tel" class="form-control" id="phone" name="phone" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="organization" class="form-label" th:text="#{events.modal.label.organization}"></label>
+                            <input type="text" class="form-control" id="organization" name="organization" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="notes" class="form-label" th:text="#{events.modal.label.notes}"></label>
+                            <textarea class="form-control" id="notes" name="notes" rows="3" th:placeholder="#{events.modal.notes.placeholder}"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{events.modal.cancel.button}"></button>
+                    <button type="button" class="btn btn-primary" id="submitRegistration">
+                        <i class="bi bi-check-circle"></i> <span th:text="#{events.modal.submit.button}"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+    </script>
+    <script th:src="@{/js/languageSwitch.js}"></script>
+    <script th:inline="javascript">
+        const i18n = {
+            studentOnlyWarning: /*[[#{events.js.student.only.warning}]]*/ '',
+            processing: /*[[#{events.js.processing}]]*/ '',
+            success: /*[[#{events.js.success}]]*/ '',
+            error: /*[[#{events.js.error}]]*/ '',
+            invalidResponse: /*[[#{events.js.invalid.response}]]*/ '',
+            registrationError: /*[[#{events.js.registration.error}]]*/ '',
+            connectionError: /*[[#{events.js.connection.error}]]*/ '',
+            unknownError: /*[[#{events.js.unknown.error}]]*/ '',
+            confirmRegistration: /*[[#{events.modal.submit.button}]]*/ ''
+        };
+
+        var currentStudentInfo = /*[[${currentStudent}]]*/ null;
+        var isStudent = /*[[${#authorization.expression('hasRole(''student'')')}]]*/ false;
+        
+        function fillFormWithStudentInfo() {
+            if (isStudent && currentStudentInfo && currentStudentInfo.account) {
+                document.getElementById('fullName').value = currentStudentInfo.account.fullName || '';
+                document.getElementById('phone').value = currentStudentInfo.account.phone || '';
+                document.getElementById('organization').value = currentStudentInfo.university || '';
+            }
+        }
+
+        window.registerEvent = function(eventId) {
+            if (!isStudent) {
+                alert(i18n.studentOnlyWarning);
+                return;
+            }
+            document.getElementById('eventId').value = eventId;
+            fillFormWithStudentInfo();
+            var registrationModal = new bootstrap.Modal(document.getElementById('registrationModal'));
+            registrationModal.show();
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const submitButton = document.getElementById('submitRegistration');
+            if (submitButton) {
+                submitButton.addEventListener('click', function() {
+                    const form = document.getElementById('registrationForm');
+                    if (!form.checkValidity()) {
+                        form.classList.add('was-validated');
+                        return;
+                    }
+
+                    const eventId = document.getElementById('eventId').value;
+                    const formData = {
+                        fullName: document.getElementById('fullName').value,
+                        phone: document.getElementById('phone').value,
+                        organization: document.getElementById('organization').value,
+                        notes: document.getElementById('notes').value
+                    };
+
+                    const button = this;
+                    const originalText = button.innerHTML;
+                    button.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${i18n.processing}`;
+                    button.disabled = true;
+
+                    fetch(`/Events/${eventId}/register`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(response => response.ok ? response.text() : response.json().then(err => Promise.reject(err)))
+                    .then(data => {
+                        if (data.startsWith('success:')) {
+                            bootstrap.Modal.getInstance(document.getElementById('registrationModal')).hide();
+                            // You might want a more sophisticated notification system like a toast
+                            alert(data.substring(8)); 
+                            location.reload();
+                        } else {
+                            alert(data.substring(6));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Registration failed:', error);
+                        let errorMessage = error.message || i18n.registrationError;
+                        if(error.errors) {
+                            errorMessage = error.errors.map(e => e.defaultMessage).join('\n');
+                        }
+                        alert(errorMessage);
+                    })
+                    .finally(() => {
+                        button.innerHTML = originalText;
+                        button.disabled = false;
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

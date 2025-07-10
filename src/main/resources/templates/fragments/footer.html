@@ -11,8 +11,8 @@
 <footer class="footer">
   <div class="footer-content">
     <div class="footer-section">
-      <h3>Job4You</h3>
-      <p>Nền tảng tìm việc làm hàng đầu Việt Nam</p>
+      <h3 th:text="#{footer.title}">Job4You</h3>
+      <p th:text="#{footer.description}">Vietnam's leading job search platform</p>
       <div class="social-links">
         <a href="#"><i class="fab fa-facebook"></i></a>
         <a href="#"><i class="fab fa-linkedin"></i></a>
@@ -20,30 +20,30 @@
       </div>
     </div>
     <div class="footer-section">
-      <h4>Dành cho ứng viên</h4>
+      <h4 th:text="#{footer.for.candidates}">For candidates</h4>
       <ul>
-        <li><a th:href="@{/top-jobs}">Tìm việc làm</a></li>
-        <li><a th:href="@{/Blog}">Hướng dẫn nghề nghiệp</a></li>
+        <li><a th:href="@{/top-jobs}" th:text="#{footer.find.jobs}">Find jobs</a></li>
+        <li><a th:href="@{/Blog}" th:text="#{footer.career.guide}">Career guide</a></li>
       </ul>
     </div>
     <div class="footer-section">
-      <h4>Dành cho nhà tuyển dụng</h4>
+      <h4 th:text="#{footer.for.employers}">For employers</h4>
       <ul>
-        <li><a th:href="@{/Employer/CreateJobPost}">Đăng tin tuyển dụng</a></li>
-        <li><a href="#">Tìm ứng viên</a></li>
+        <li><a th:href="@{/Employer/CreateJobPost}" th:text="#{footer.post.jobs}">Post jobs</a></li>
+        <li><a href="#" th:text="#{footer.find.candidates}">Find candidates</a></li>
       </ul>
     </div>
     <div class="footer-section">
-      <h4>Hỗ trợ</h4>
+      <h4 th:text="#{footer.support}">Support</h4>
       <ul>
-        <li><a href="#">Liên hệ</a></li>
-        <li><a th:href="@{/Report/CreateReport}">Báo cáo</a></li>
-        <li><a href="#">Chính sách bảo mật</a></li>
+        <li><a href="#" th:text="#{footer.contact}">Contact</a></li>
+        <li><a th:href="@{/Report/CreateReport}" th:text="#{footer.report}">Report</a></li>
+        <li><a href="#" th:text="#{footer.privacy.policy}">Privacy policy</a></li>
       </ul>
     </div>
   </div>
   <div class="footer-bottom">
-    <p>&copy; 2025 Job4You. All rights reserved.</p>
+    <p>&copy; 2025 <span th:text="#{footer.title}">Job4You</span>. <span th:text="#{footer.all.rights.reserved}">All rights reserved</span>.</p>
   </div>
 </footer>
   </div>
