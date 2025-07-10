@@ -39,4 +39,30 @@ public class AuthenticationHelper {
         return authentication != null && authentication.isAuthenticated() && 
                !(authentication instanceof AnonymousAuthenticationToken);
     }
+    
+    /**
+     * Get current authenticated user email
+     * @return user email if authenticated, null otherwise
+     */
+    public static String getCurrentUserEmail() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && 
+            !(authentication instanceof AnonymousAuthenticationToken)) {
+            return authentication.getName(); // Returns email
+        }
+        return null;
+    }
+    
+    /**
+     * Check if current user has admin role
+     * @return true if user is admin, false otherwise
+     */
+    public static boolean isCurrentUserAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && 
+            !(authentication instanceof AnonymousAuthenticationToken)) {
+            return authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_admin"));
+        }
+        return false;
+    }
 } 

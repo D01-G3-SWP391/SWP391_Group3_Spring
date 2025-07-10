@@ -24,6 +24,10 @@ public interface IAdminStudentService {
     // Ban/Unban methods
     void banStudent(Integer userId);
     void unbanStudent(Integer userId);
+    
+    // Enhanced ban methods with reason and email notification
+    void banStudentWithReason(com.example.swp391_d01_g3.dto.BanRequestDTO banRequest, Integer adminId);
+    void unbanStudentWithNotification(Integer userId, Integer adminId);
 
     // Get student info
     Account getStudentById(Integer userId);

@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf?.token}" th:if="${_csrf}"/>
+    <meta name="_csrf_header" th:content="${_csrf?.headerName}" th:if="${_csrf}"/>
     <title th:text="#{admin.list.students.title}">Student Management - Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
@@ -113,21 +115,19 @@
                                     <i class="bi bi-eye"></i> <span th:text="#{admin.list.students.view}">View</span>
                                 </a>
 
-                                <form th:if="${student.status.name() == 'active'}"
-                                      th:action="@{/Admin/banStudent/{id}(id=${student.userId})}"
-                                      method="post" style="display: inline;"
-                                      th:onsubmit="'return confirm(\''+#{admin.list.students.ban.confirm}+'\')'">
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i class="bi bi-person-x"></i> <span th:text="#{admin.list.students.ban}">Ban</span>
-                                    </button>
-                                </form>
+                                <a th:if="${student.status.name() == 'active'}"
+                                   th:href="@{/Admin/banUser(userId=${student.userId}, userType=student, userName=${student.fullName}, userEmail=${student.email})}"
+                                   class="btn btn-sm btn-danger">
+                                    <i class="bi bi-person-x"></i> Ban
+                                </a>
 
                                 <form th:if="${student.status.name() == 'inactive'}"
-                                      th:action="@{/Admin/unbanStudent/{id}(id=${student.userId})}"
-                                      method="post" style="display: inline;"
-                                      th:onsubmit="'return confirm(\''+#{admin.list.students.unban.confirm}+'\')'">
-                                    <button type="submit" class="btn btn-sm btn-success">
-                                        <i class="bi bi-person-check"></i> <span th:text="#{admin.list.students.unban}">Unban</span>
+                                      th:action="@{/Admin/processUnban}" method="post" style="display: inline;">
+                                    <input type="hidden" name="userId" th:value="${student.userId}">
+                                    <input type="hidden" name="userType" value="student">
+                                    <button type="submit" class="btn btn-sm btn-success"
+                                            onclick="return confirm('Are you sure you want to unban this student?')">
+                                        <i class="bi bi-person-check"></i> Unban
                                     </button>
                                 </form>
                             </div>
