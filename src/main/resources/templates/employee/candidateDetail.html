@@ -9,10 +9,10 @@
     <link rel="stylesheet" th:href="@{/css/candidateDetail.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarEmployer.css}" />
     <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
+    <link rel="stylesheet" th:href="@{/css/jobInvitation.css}" />
 </head>
 <body>
 <div th:replace="~{navbar/navbarEmployee :: navbarEmployee}"></div>
-
 <div class="container">
     <!-- Header row (title + back button) matching viewListApplications -->
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -128,10 +128,227 @@
             </div>
         </div>
     </div>
+
+    <!-- Contact Actions -->
+    <div class="card">
+        <div class="section-header">
+            <i class="bi bi-envelope-plus"></i>
+            Contact Actions
+        </div>
+        <div class="section-content">
+            <div class="contact-actions">
+                <button class="btn btn-primary me-2" onclick="openJobInvitationModal()">
+                    <i class="bi bi-briefcase-fill"></i> Gửi lời mời việc làm
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Job Invitation Modal -->
+<div class="modal fade" id="jobInvitationModal" tabindex="-1" aria-labelledby="jobInvitationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="jobInvitationModalLabel">
+                    <i class="bi bi-briefcase-fill"></i> Gửi lời mời việc làm
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="jobInvitationForm">
+                    <div class="mb-3">
+                        <label for="candidateInfo" class="form-label">
+                            <i class="bi bi-person"></i> Ứng viên
+                        </label>
+                        <div class="candidate-info-display">
+                            <div class="candidate-avatar">
+                                <span th:if="${student.account.avatarUrl == null}" th:text="${student.account.fullName.substring(0,1)}">N</span>
+                                <img th:if="${student.account.avatarUrl != null}" th:src="${student.account.avatarUrl}" alt="avatar"/>
+                            </div>
+                            <div class="candidate-details">
+                                <h6 th:text="${student.account.fullName}">Candidate Name</h6>
+                                <p th:text="${student.account.email}">candidate@email.com</p>
+                                <span class="badge bg-secondary" th:text="${student.jobField != null ? student.jobField.jobFieldName : 'N/A'}">Field</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="jobPostSelect" class="form-label">
+                            <i class="bi bi-briefcase"></i> Chọn vị trí công việc
+                        </label>
+                        <select class="form-select" id="jobPostSelect" name="jobPostId" required>
+                            <option value="">-- Chọn vị trí công việc --</option>
+                            <option th:each="job : ${employerJobPosts}" 
+                                    th:value="${job.jobPostId}" 
+                                    th:text="${job.jobTitle} + ' - ' + ${job.jobLocation}">
+                                Job Title - Location
+                            </option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Vui lòng chọn vị trí công việc.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="invitationMessage" class="form-label">
+                            <i class="bi bi-chat-text"></i> Lời nhắn cá nhân
+                        </label>
+                        <textarea class="form-control" id="invitationMessage" name="message" rows="4" 
+                                  placeholder="Viết lời nhắn cá nhân cho ứng viên...">Chúng tôi rất ấn tượng với profile của bạn và muốn mời bạn ứng tuyển vào vị trí này tại công ty chúng tôi. Chúng tôi tin rằng bạn sẽ là một ứng viên tiềm năng cho vị trí này.</textarea>
+                    </div>
+                    
+                    <input type="hidden" id="studentId" name="studentId" th:value="${student.studentId}">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle"></i> Hủy
+                </button>
+                <button type="button" class="btn btn-primary" onclick="sendJobInvitation()" id="sendInvitationBtn">
+                    <i class="bi bi-send"></i> Gửi lời mời
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
 <script th:src="@{/js/language-dropdown.js}"></script>
 
-</html> 
+<script>
+// Job Invitation Modal JavaScript
+let jobInvitationModal;
+
+document.addEventListener('DOMContentLoaded', function() {
+    jobInvitationModal = new bootstrap.Modal(document.getElementById('jobInvitationModal'));
+});
+
+function openJobInvitationModal() {
+    // Reset form
+    document.getElementById('jobInvitationForm').reset();
+    
+    // Reset validation classes
+    resetValidation();
+    
+    // Show modal
+    jobInvitationModal.show();
+}
+
+function resetValidation() {
+    const form = document.getElementById('jobInvitationForm');
+    const inputs = form.querySelectorAll('.form-control, .form-select');
+    
+    inputs.forEach(input => {
+        input.classList.remove('is-invalid');
+    });
+    
+    // Hide any existing alert messages
+    const existingAlerts = document.querySelectorAll('.alert');
+    existingAlerts.forEach(alert => alert.remove());
+}
+
+function validateForm() {
+    const jobPostSelect = document.getElementById('jobPostSelect');
+    const invitationMessage = document.getElementById('invitationMessage');
+    
+    let isValid = true;
+    
+    // Reset validation
+    resetValidation();
+    
+    // Validate job post selection
+    if (!jobPostSelect.value) {
+        jobPostSelect.classList.add('is-invalid');
+        isValid = false;
+    }
+    
+    // Validate message (optional but should have some content)
+    if (!invitationMessage.value.trim()) {
+        invitationMessage.classList.add('is-invalid');
+        isValid = false;
+    }
+    
+    return isValid;
+}
+
+function showAlert(message, type = 'success') {
+    const alertHtml = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            <i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    `;
+    
+    const modalBody = document.querySelector('#jobInvitationModal .modal-body');
+    modalBody.insertAdjacentHTML('afterbegin', alertHtml);
+}
+
+function sendJobInvitation() {
+    if (!validateForm()) {
+        return;
+    }
+    
+    const sendBtn = document.getElementById('sendInvitationBtn');
+    const originalText = sendBtn.innerHTML;
+    
+    // Show loading state
+    sendBtn.classList.add('loading');
+    sendBtn.disabled = true;
+    sendBtn.innerHTML = '<span>Đang gửi...</span>';
+    
+    // Get form data
+    const formData = new FormData();
+    formData.append('studentId', document.getElementById('studentId').value);
+    formData.append('jobPostId', document.getElementById('jobPostSelect').value);
+    formData.append('message', document.getElementById('invitationMessage').value);
+    
+    // Send request
+    fetch('/Employer/SendJobInvitation', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                throw new Error(text);
+            });
+        }
+        return response.text();
+    })
+    .then(data => {
+        // Success
+        showAlert(data, 'success');
+        
+        // Reset form
+        document.getElementById('jobInvitationForm').reset();
+        
+        // Auto close modal after 2 seconds
+        setTimeout(() => {
+            jobInvitationModal.hide();
+        }, 2000);
+    })
+    .catch(error => {
+        // Error
+        showAlert(error.message || 'Có lỗi xảy ra khi gửi lời mời', 'danger');
+    })
+    .finally(() => {
+        // Reset button state
+        sendBtn.classList.remove('loading');
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = originalText;
+    });
+}
+
+// Handle modal close event
+document.getElementById('jobInvitationModal').addEventListener('hidden.bs.modal', function () {
+    // Reset form when modal is closed
+    document.getElementById('jobInvitationForm').reset();
+    resetValidation();
+});
+</script>
+
+</body>
+</html>

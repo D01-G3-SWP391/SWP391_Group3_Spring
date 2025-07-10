@@ -120,13 +120,12 @@ public class Register {
             return "register/registerStudentPage";
         }
         
-        // Kiểm tra số điện thoại đã tồn tại chưa (nếu cần)
-        // Account existingPhoneAccount = iAccountService.findByPhone(accountDTO.getPhone());
-        // if (existingPhoneAccount != null) {
-        //     bindingResult.rejectValue("phone", "error.phone", "Số điện thoại này đã được sử dụng. Vui lòng chọn số khác.");
-        //     model.addAttribute("accountDTO", accountDTO);
-        //     return "register/registerStudentPage";
-        // }
+        // Kiểm tra số điện thoại đã tồn tại chưa
+        if (iAccountService.existsByPhone(accountDTO.getPhone())) {
+            bindingResult.rejectValue("phone", "error.phone", "Số điện thoại này đã được sử dụng. Vui lòng chọn số khác.");
+            model.addAttribute("accountDTO", accountDTO);
+            return "register/registerStudentPage";
+        }
         
         try {
             // Tạo DTO để lưu trong session
@@ -215,6 +214,14 @@ public class Register {
         Account existingAccount = iAccountService.findByEmail(employerDTO.getEmail());
         if (existingAccount != null) {
             bindingResult.rejectValue("email", "error.email", "Email này đã được sử dụng. Vui lòng chọn email khác.");
+            model.addAttribute("accountEmployerDTO", employerDTO);
+            model.addAttribute("jobFields", iJobfieldService.findAll());
+            return "register/registerEmployerPage";
+        }
+        
+        // Kiểm tra số điện thoại đã tồn tại chưa
+        if (iAccountService.existsByPhone(employerDTO.getPhone())) {
+            bindingResult.rejectValue("phone", "error.phone", "Số điện thoại này đã được sử dụng. Vui lòng chọn số khác.");
             model.addAttribute("accountEmployerDTO", employerDTO);
             model.addAttribute("jobFields", iJobfieldService.findAll());
             return "register/registerEmployerPage";

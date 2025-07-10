@@ -27,6 +27,11 @@ public class HomePageFeatures {
     @Autowired
     private IAccountService accountService;
 
+    @GetMapping("")
+    public String redirectToHomePage() {
+        return "redirect:/";
+    }
+
     @PostMapping("/search")
     public String searchJobs(
             @RequestParam(required = false) String keyword,

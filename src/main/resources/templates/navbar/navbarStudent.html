@@ -67,6 +67,13 @@
                     <span>My Applications</span>
                 </a>
             </div>
+            <div class="nav-item">
+                <a th:href="@{/Student/JobInvitations}" class="nav-link" data-path="/Student/JobInvitations">
+                    <i class="bi bi-envelope-heart nav-icon"></i>
+                    <span>Job Invitations</span>
+                    <span class="badge bg-primary ms-2 invitation-count-badge" id="invitationBadge" style="display: none;">0</span>
+                </a>
+            </div>
 <!--            <div class="nav-item">-->
 <!--                <a th:href="@{/jobs}" class="nav-link" data-path="/jobs">-->
 <!--                    <i class="bi bi-search nav-icon"></i>-->
@@ -192,6 +199,9 @@ document.addEventListener('DOMContentLoaded', function() {
         activeLink.classList.add('active');
     }
 
+    // Load job invitations count
+    loadJobInvitationsCount();
+
     // Mobile responsive
     const sidebar = document.getElementById('studentSidebar');
     
@@ -205,6 +215,25 @@ document.addEventListener('DOMContentLoaded', function() {
     checkMobile();
     window.addEventListener('resize', checkMobile);
 });
+
+// Load job invitations count for badge
+function loadJobInvitationsCount() {
+    fetch('/Student/api/pending-invitations-count')
+        .then(response => response.json())
+        .then(count => {
+            const badge = document.getElementById('invitationBadge');
+            if (badge) {
+                badge.textContent = count;
+                badge.style.display = count > 0 ? 'inline' : 'none';
+            }
+        })
+        .catch(error => {
+            console.error('Error loading invitations count:', error);
+        });
+}
+
+// Refresh invitations count periodically
+setInterval(loadJobInvitationsCount, 60000); // Refresh every minute
 </script>
 <script th:src="@{/js/language-dropdown.js}"></script>
 </body>

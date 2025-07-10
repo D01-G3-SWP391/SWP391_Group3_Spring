@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Edit Profile - Student</title>
+  <title th:text="#{student.edit.title}">Edit Profile - Student</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
   <link rel="stylesheet" th:href="@{/css/navbarStudent.css}"/>
   <link rel="stylesheet" th:href="@{/css/editStudent.css}"/>
   <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
@@ -24,9 +25,9 @@
       <!-- Page Header -->
       <div class="page-header">
         <h2 class="page-title">
-          <i class="bi bi-pencil-square me-2"></i>Edit Information
+          <i class="bi bi-pencil-square me-2"></i><span th:text="#{student.edit.heading}">Edit Information</span>
         </h2>
-        <p class="page-subtitle">Update your profile information</p>
+        <p class="page-subtitle" th:text="#{student.edit.update.info}">Update your profile information</p>
       </div>
       <form class="edit-form" method="post" th:action="@{/Student/EditProfile}" th:object="${studentProfileDTO}" enctype="multipart/form-data">
         <div class="main-form-grid">
@@ -35,28 +36,28 @@
             <!-- Avatar Upload Section -->
             <div class="info-section logo-section">
               <h3 class="section-title">
-                <i class="bi bi-image"></i> Profile Picture
+                <i class="bi bi-image"></i> <span th:text="#{student.edit.profile.picture}">Profile Picture</span>
               </h3>
               <div class="logo-upload-container">
                 <!-- Current avatar preview -->
                 <div class="current-logo" th:if="${studentProfileDTO.avatarUrl != null and studentProfileDTO.avatarUrl != ''}">
                   <img th:src="${studentProfileDTO.avatarUrl}" alt="Current Avatar" class="logo-preview-current"/>
-                  <p class="text-muted">Current Avatar</p>
+                  <p class="text-muted" th:text="#{student.edit.current.avatar}">Current Avatar</p>
                 </div>
                 <!-- File input -->
                 <div class="file-input-container">
                   <input type="file" id="avatarFile" name="avatarFile" class="form-control" accept="image/*" onchange="previewLogo(this)"/>
                   <div class="file-input-help">
                     <i class="bi bi-cloud-upload"></i>
-                    <span>Choose image from computer (JPG, PNG, GIF)</span>
+                    <span th:text="#{student.edit.choose.image}">Choose image from computer (JPG, PNG, GIF)</span>
                   </div>
                 </div>
                 <!-- New avatar preview -->
                 <div class="new-logo-preview" id="newLogoPreview" style="display: none">
                   <img id="logoPreviewImage" alt="Avatar Preview" class="logo-preview-new"/>
-                  <p class="text-success">New avatar will be updated</p>
+                  <p class="text-success" th:text="#{student.edit.new.avatar}">New avatar will be updated</p>
                   <button type="button" class="btn btn-sm btn-outline-secondary" onclick="clearLogoPreview()">
-                    <i class="bi bi-x"></i> Remove
+                    <i class="bi bi-x"></i> <span th:text="#{student.edit.remove}">Remove</span>
                   </button>
                 </div>
                 <!-- Hidden field to keep current avatar URL -->
@@ -66,22 +67,22 @@
             <!-- Personal Information Section -->
             <div class="info-section">
               <h3 class="section-title">
-                <i class="bi bi-person"></i> Personal Information
+                <i class="bi bi-person"></i> <span th:text="#{student.edit.personal.info}">Personal Information</span>
               </h3>
               <div class="form-group">
-                <label for="fullName" class="form-label">Full Name</label>
-                <input type="text" id="fullName" class="form-control" th:field="*{fullName}" placeholder="Enter full name" required/>
+                <label for="fullName" class="form-label" th:text="#{student.edit.full.name}">Full Name</label>
+                <input type="text" id="fullName" class="form-control" th:field="*{fullName}" th:placeholder="#{student.edit.enter.full.name}" required/>
               </div>
               <div class="form-group">
-                <label for="phone" class="form-label">Phone Number</label>
-                <input type="text" id="phone" class="form-control" th:field="*{phone}" placeholder="Enter phone number" required/>
+                <label for="phone" class="form-label" th:text="#{student.edit.phone.number}">Phone Number</label>
+                <input type="text" id="phone" class="form-control" th:field="*{phone}" th:placeholder="#{student.edit.enter.phone}" required/>
               </div>
               <div class="form-group">
-                <label for="email" class="form-label">Email</label>
+                <label for="email" class="form-label" th:text="#{student.edit.email}">Email</label>
                 <div class="form-control" style="background:#f8fafc; color:#6c757d; cursor:not-allowed;">
                   <span th:text="${email}"></span>
                 </div>
-                <small class="form-text text-muted">Email cannot be changed</small>
+                <small class="form-text text-muted" th:text="#{student.edit.email.cannot.change}">Email cannot be changed</small>
               </div>
             </div>
           </div>
@@ -89,27 +90,27 @@
           <div class="right-column">
             <div class="info-section">
               <h3 class="section-title">
-                <i class="bi bi-mortarboard"></i> Academic & Profile Information
+                <i class="bi bi-mortarboard"></i> <span th:text="#{student.edit.academic.info}">Academic & Profile Information</span>
               </h3>
               <div class="form-group">
-                <label for="university" class="form-label">University</label>
-                <input type="text" id="university" class="form-control" th:field="*{university}" placeholder="Enter university name"/>
+                <label for="university" class="form-label" th:text="#{student.edit.university}">University</label>
+                <input type="text" id="university" class="form-control" th:field="*{university}" th:placeholder="#{student.edit.enter.university}"/>
               </div>
               <div class="form-group">
-                <label for="address" class="form-label">Current Address</label>
-                <input type="text" id="address" class="form-control" th:field="*{address}" placeholder="Enter your current address"/>
+                <label for="address" class="form-label" th:text="#{student.edit.current.address}">Current Address</label>
+                <input type="text" id="address" class="form-control" th:field="*{address}" th:placeholder="#{student.edit.enter.current.address}"/>
               </div>
               <div class="form-group">
-                <label for="preferredJobAddress" class="form-label">Preferred Job Location</label>
-                <input type="text" id="preferredJobAddress" class="form-control" th:field="*{preferredJobAddress}" placeholder="Enter preferred job location"/>
+                <label for="preferredJobAddress" class="form-label" th:text="#{student.edit.preferred.job.location}">Preferred Job Location</label>
+                <input type="text" id="preferredJobAddress" class="form-control" th:field="*{preferredJobAddress}" th:placeholder="#{student.edit.enter.preferred.location}"/>
               </div>
               <div class="form-group">
-                <label for="profileDescription" class="form-label">Introduction</label>
+                <label for="profileDescription" class="form-label" th:text="#{student.edit.introduction}">Introduction</label>
                 <input type="hidden" id="profileDescriptionHidden" name="profileDescription" th:field="*{profileDescription}"/>
                 <div id="profileDescriptionEditor"></div>
               </div>
               <div class="form-group">
-                <label for="experience" class="form-label">Experience</label>
+                <label for="experience" class="form-label" th:text="#{student.edit.experience}">Experience</label>
                 <input type="hidden" id="experienceHidden" name="experience" th:field="*{experience}"/>
                 <div id="experienceEditor"></div>
               </div>
@@ -119,10 +120,10 @@
         <!-- Action Buttons -->
         <div class="form-actions">
           <button type="submit" class="btn btn-primary btn-lg">
-            <i class="bi bi-check-circle me-2"></i>Update Information
+            <i class="bi bi-check-circle me-2"></i><span th:text="#{student.edit.update.information}">Update Information</span>
           </button>
           <a th:href="@{/Student/Profile}" class="btn btn-secondary btn-lg">
-            <i class="bi bi-x-circle me-2"></i>Cancel
+            <i class="bi bi-x-circle me-2"></i><span th:text="#{student.edit.cancel}">Cancel</span>
           </a>
         </div>
       </form>
@@ -187,7 +188,7 @@
       const introInitialContent = introHiddenInput.value || '';
       ClassicEditor.create(document.querySelector('#profileDescriptionEditor'), {
         toolbar: ['heading', '|', 'bold', 'italic', 'underline', '|', 'bulletedList', 'numberedList', '|', 'outdent', 'indent', '|', 'blockQuote', 'insertTable', '|', 'undo', 'redo'],
-        placeholder: 'Enter your introduction...'
+        placeholder: /*[[#{student.edit.enter.introduction}]]*/ 'Enter your introduction...'
       })
       .then(editor => {
         introEditor = editor;
@@ -205,7 +206,7 @@
       const expInitialContent = expHiddenInput.value || '';
       ClassicEditor.create(document.querySelector('#experienceEditor'), {
         toolbar: ['heading', '|', 'bold', 'italic', 'underline', '|', 'bulletedList', 'numberedList', '|', 'outdent', 'indent', '|', 'blockQuote', 'insertTable', '|', 'undo', 'redo'],
-        placeholder: 'Enter your experience...'
+        placeholder: /*[[#{student.edit.enter.experience}]]*/ 'Enter your experience...'
       })
       .then(editor => {
         expEditor = editor;
@@ -233,6 +234,7 @@
   <div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
   <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
   <script th:src="@{/js/language-dropdown.js}"></script>
+  <script th:src="@{/js/languageSwitch.js}"></script>
 
 </body>
 </html>

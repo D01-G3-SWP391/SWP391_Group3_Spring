@@ -18,6 +18,12 @@ public interface IAccountRepository extends JpaRepository<Account,Integer> {
     @Query("SELECT a FROM Account a WHERE a.email = :email AND a.status = 'inactive'")
     Account findByEmailBan(@Param("email") String email);
 
+    @Query("SELECT a FROM Account a WHERE a.email = :email")
+    Account findByEmailAnyStatus(@Param("email") String email);
+
+    @Query("SELECT CASE WHEN COUNT(a) > 0 THEN true ELSE false END FROM Account a WHERE a.phone = :phone AND a.status = 'active'")
+    boolean existsByPhone(@Param("phone") String phone);
+
     List<Account> findByRole(Account.Role role);
     List<Account> findAll();
 }
