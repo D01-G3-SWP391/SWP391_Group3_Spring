@@ -745,7 +745,7 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{events.modal.cancel.button}">Hủy</button>
                     
                     <!-- Nút đăng ký chỉ cho Student -->
-                    <button sec:authorize="hasRole('student')" type="button" class="btn btn-primary" id="submitRegistration">
+                    <button sec:authorize="hasRole('student')" type="button" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;  color: white; padding: 6px 20px; border-radius: 5px; border: none"  id="submitRegistration">
                         <i class="bi bi-check-circle"></i>
                         <span th:text="#{events.modal.submit.button}">Xác nhận đăng ký</span>
                     </button>

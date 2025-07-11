@@ -266,11 +266,7 @@
                     <p>Theo dõi trạng thái các đơn ứng tuyển</p>
                 </div>
             </div>
-            <!-- 💬 Chat Rooms Button -->
-            <button class="btn btn-primary" onclick="showAllChatRooms()" title="Xem tất cả cuộc trò chuyện" style="display: flex; align-items: center; gap: 8px;">
-                <i class="bi bi-chat-text"></i>
-                <span>Tin nhắn</span>
-            </button>
+        
         </div>
     </div>
 
@@ -1314,12 +1310,12 @@
         if (detailsRow.classList.contains('show')) {
             detailsRow.classList.remove('show');
             icon.className = 'bi bi-chevron-down';
-            text.textContent = 'View Details';
+            text.textContent = 'Xem chi tiết';
             button.classList.remove('expanded');
         } else {
             detailsRow.classList.add('show');
             icon.className = 'bi bi-chevron-up';
-            text.textContent = 'Hide Details';
+            text.textContent = 'Ẩn chi tiết';
             button.classList.add('expanded');
         }
     }
