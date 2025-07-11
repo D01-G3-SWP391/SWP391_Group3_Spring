@@ -335,7 +335,7 @@
                     </td>
                     <td>
                         <div class="date-info">
-                            <span th:text="${jobPost.createdAt}"></span>
+                            <span th:text="${#temporals.format(jobPost.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></span>
                         </div>
                     </td>
                     <td>
