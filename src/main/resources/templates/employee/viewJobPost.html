@@ -141,6 +141,107 @@
         font-size: 0.9rem;
     }
 
+    /* Table container */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: 2rem;
+}
+
+.table-container table {
+    width: 100%;
+    min-width: 1000px; /* Ensures table maintains minimum width */
+}
+
+/* Ensure action buttons stay on one line */
+.action-buttons {
+    white-space: nowrap;
+}
+
+/* Style for the buttons in the action column */
+.action-buttons .btn {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.action-buttons .btn i {
+    font-size: 1rem;
+}
+
+.action-buttons .btn-primary {
+    background: #6366f1;
+    color: white;
+    border: none;
+}
+
+.action-buttons .btn-danger {
+    background: #ef4444;
+    color: white;
+    border: none;
+}
+
+.action-buttons .btn-info {
+    background: #3b82f6;
+    color: white;
+    border: none;
+}
+
+.action-buttons .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Status badge styling */
+.status-badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: capitalize;
+    background: #e2e8f0;
+    color: #475569;
+}
+
+/* Job type badge styling */
+.job-type-badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background: #f0f9ff;
+    color: #0369a1;
+}
+
+/* Responsive table scrollbar styling */
+.table-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: #94a3b8;
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+@media (max-width: 1024px) {
+    .table-container {
+        margin: 0 -1rem;
+        padding: 0 1rem;
+    }
+}
     
     </style>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />

@@ -7,24 +7,25 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
     <link rel="stylesheet" th:href="@{/css/navbar.css}" />
-    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarEmployer.css}" />
-    <link rel="stylesheet" th:href="@{/css/viewListApplication.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarViewJobPost.css}" />
     <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
     <style>
         /* Fix dropdown overflow issues */
         .table-container {
             overflow: visible !important;
+            border-radius: 20px;  !important;
         }
 
         table {
             overflow: visible !important;
+            border-radius: 20px !important;
         }
 
         tbody {
             overflow: visible !important;
         }
+
 
         tbody tr {
             position: relative;
@@ -684,10 +685,7 @@
         </a>
     </div>
 
-    <!-- Floating action button -->
-    <a th:href="@{/Employer/JobPosts}" class="fab">
-        <i class="bi bi-arrow-left"></i>
-    </a>
+
 </div>
 
 <!-- Chat Off-canvas -->

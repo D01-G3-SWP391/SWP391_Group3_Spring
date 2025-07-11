@@ -94,7 +94,7 @@
 }
 
 .search-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
     color: white;
     border: none;
     border-radius: 8px;
@@ -155,7 +155,7 @@
 }
 
 .table-container thead {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
 }
 
 .table-container thead th {
@@ -346,14 +346,14 @@ a.btn-info:focus {
 }
 
 .page-number:hover {
-    background: #667eea;
+    background: linear-gradient(135deg, #3b82f6, #1e40af);
     border-color: #667eea;
     color: white;
     text-decoration: none;
 }
 
 .page-number.active {
-    background: #667eea;
+    background: linear-gradient(135deg, #3b82f6, #1e40af);
     border-color: #667eea;
     color: white;
 }
