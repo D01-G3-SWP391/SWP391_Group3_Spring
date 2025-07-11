@@ -162,7 +162,7 @@ body.sidebar-collapsed .container {
 
 .nav-tabs .nav-link.active {
     color: white;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
     border-bottom: 2px solid #667eea;
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
