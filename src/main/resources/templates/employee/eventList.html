@@ -623,7 +623,7 @@
                     <td th:text="${event.maxParticipants}"></td>
                     <td th:text="${event.currentParticipants != null ? event.currentParticipants : 0}"></td>
                     <td>
-                        <span class="status-badge" th:attr="data-status=${event.eventStatus.name()}" th:text="${event.eventStatus}"></span>
+                        <span class="status-badge" th:attr="data-status=${event.approvalStatus.name()}" th:text="${event.approvalStatus}"></span>
                     </td>
                     <td>
                         <div class="action-buttons">
