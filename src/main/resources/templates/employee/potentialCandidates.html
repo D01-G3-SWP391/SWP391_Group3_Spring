@@ -49,7 +49,9 @@
         <form class="row g-3 align-items-end" method="get" th:action="@{/Employer/SearchCandidate}">
             <div class="col-md-3">
                 <label for="address" class="form-label">Preferred Address</label>
-                <input type="text" class="form-control" id="address" name="address" th:value="${address}" placeholder="Province/City">
+                <select class="form-select" id="address" name="address">
+                    <option value="">Chọn Tỉnh/Thành phố</option>
+                </select>
             </div>
             <div class="col-md-3">
                 <label for="university" class="form-label">University</label>
@@ -438,6 +440,27 @@
             performAISearch();
         }
     });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const addressSelect = document.getElementById('address');
+    // Lấy giá trị đã chọn từ Thymeleaf (nếu có)
+    const selectedValue = /*[[${address}]]*/ '';
+
+    fetch('https://provinces.open-api.vn/api/p/')
+        .then(res => res.json())
+        .then(provinces => {
+            provinces.sort((a, b) => new Intl.Collator('vi').compare(a.name, b.name));
+            provinces.forEach(p => {
+                const option = document.createElement('option');
+                option.value = p.name;
+                option.textContent = p.name;
+                if (selectedValue && selectedValue === p.name) {
+                    option.selected = true;
+                }
+                addressSelect.appendChild(option);
+            });
+        });
+});
 </script>
 
 

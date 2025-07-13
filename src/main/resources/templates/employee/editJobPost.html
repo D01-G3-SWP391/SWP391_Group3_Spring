@@ -103,12 +103,13 @@
                             <div class="row g-2">
                                 <div class="col-md-6">
                                     <label for="jobLocation" class="form-label">Khu vực *</label>
-                                    <input type="text"
-                                           th:field="*{jobLocation}"
-                                           class="form-control form-control-sm"
-                                           id="jobLocation"
-                                           placeholder="Nhập khu vực/địa điểm"
-                                           required />
+                                    <input type="text" th:field="*{jobLocation}"
+                                            class="form-select"
+                                            id="jobLocation"
+                                            >
+                                    <div th:if="${#fields.hasErrors('jobLocation')}"
+                                         th:errors="*{jobLocation}"
+                                         class="text-danger"></div>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="jobSalary" class="form-label">Lương thỏa thuận</label>
@@ -277,6 +278,8 @@
             section.style.transition = 'all 0.6s ease';
             observer.observe(section);
         });
+
+
     });
 
     window.addEventListener('beforeunload', function() {
@@ -285,6 +288,40 @@
         }
         if (descriptionEditor) {
             descriptionEditor.destroy();
+        }
+    });
+
+    // Định dạng lương ở frontend
+    document.addEventListener('DOMContentLoaded', function() {
+        const salaryInput = document.getElementById('jobSalary');
+        if (salaryInput) {
+            // Định dạng khi load
+            if (salaryInput.value && !isNaN(salaryInput.value)) {
+                const number = Number(salaryInput.value);
+                if (!isNaN(number)) {
+                    salaryInput.value = number.toLocaleString('vi-VN');
+                }
+            }
+            // Định dạng khi mất focus
+            salaryInput.addEventListener('blur', function() {
+                const raw = salaryInput.value.replace(/[^0-9]/g, '');
+                if (raw) {
+                    salaryInput.value = Number(raw).toLocaleString('vi-VN');
+                }
+            });
+            // Cho phép nhập lại số bình thường khi focus
+            salaryInput.addEventListener('focus', function() {
+                salaryInput.value = salaryInput.value.replace(/[^0-9]/g, '');
+            });
+        }
+        // Xử lý lương về dạng số khi submit form (chỉ giữ lại số)
+        const form = salaryInput?.form;
+        if (form) {
+            form.addEventListener('submit', function() {
+                if (salaryInput) {
+                    salaryInput.value = salaryInput.value.replace(/[^0-9]/g, '');
+                }
+            });
         }
     });
 </script>
