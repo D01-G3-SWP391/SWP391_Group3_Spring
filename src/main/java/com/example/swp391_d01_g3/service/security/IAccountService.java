@@ -20,4 +20,6 @@ public interface IAccountService {
     Account updateAccount(Account account);
 
     Account findByEmailBan(String email);
+    
+    Account findByEmailAnyStatus(String email);
 }

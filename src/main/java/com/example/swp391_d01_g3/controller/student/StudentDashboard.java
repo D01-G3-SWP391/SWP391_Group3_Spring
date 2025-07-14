@@ -3,9 +3,11 @@ package com.example.swp391_d01_g3.controller.student;
 import com.example.swp391_d01_g3.model.Account;
 import com.example.swp391_d01_g3.model.Employer;
 import com.example.swp391_d01_g3.model.JobApplication;
+import com.example.swp391_d01_g3.model.JobInvitation;
 import com.example.swp391_d01_g3.model.Student;
 import com.example.swp391_d01_g3.service.changePassword.ChangePassword;
 import com.example.swp391_d01_g3.service.jobapplication.IJobApplicationService;
+import com.example.swp391_d01_g3.service.jobinvitation.IJobInvitationService;
 import com.example.swp391_d01_g3.service.notification.INotificationService;
 import com.example.swp391_d01_g3.service.security.IAccountService;
 import com.example.swp391_d01_g3.service.security.IAccountServiceImpl;
@@ -13,6 +15,8 @@ import com.example.swp391_d01_g3.service.student.IStudentService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -56,6 +60,9 @@ public class StudentDashboard {
 
     @Autowired
     private CloudinaryService cloudinaryService;
+
+    @Autowired
+    private IJobInvitationService jobInvitationService;
 
     @GetMapping("")
     public String showStudentDashboard(Model model, Principal principal) {
@@ -277,6 +284,148 @@ public class StudentDashboard {
         );
         redirectAttributes.addFlashAttribute("success", "Đổi mật khẩu thành công!");
         return "redirect:/Student/Profile";
+    }
+
+    @GetMapping("/JobInvitations")
+    public String viewJobInvitations(Model model, Principal principal) {
+        if (principal != null) {
+            String email = principal.getName();
+            Account account = IAccountService.findByEmail(email);
+            if (account != null) {
+                Student student = studentService.findByAccountUserId(account.getUserId());
+                if (student != null) {
+                    // Get all job invitations for this student
+                    List<JobInvitation> allInvitations = jobInvitationService.findByStudent(student);
+                    
+                    // Separate invitations by status
+                    List<JobInvitation> pendingInvitations = allInvitations.stream()
+                        .filter(inv -> inv.getStatus() == JobInvitation.InvitationStatus.PENDING)
+                        .toList();
+                    
+                    List<JobInvitation> respondedInvitations = allInvitations.stream()
+                        .filter(inv -> inv.getStatus() != JobInvitation.InvitationStatus.PENDING)
+                        .toList();
+                    
+                    model.addAttribute("pendingInvitations", pendingInvitations);
+                    model.addAttribute("respondedInvitations", respondedInvitations);
+                    model.addAttribute("student", student);
+                    model.addAttribute("account", account);
+                    
+                    // Count for badge
+                    long pendingCount = jobInvitationService.countPendingInvitationsByStudent(student);
+                    model.addAttribute("pendingCount", pendingCount);
+                }
+            }
+        }
+        return "student/jobInvitations";
+    }
+
+    @PostMapping("/JobInvitations/{invitationId}/respond")
+    public String respondToJobInvitation(
+            @PathVariable("invitationId") Long invitationId,
+            @RequestParam("action") String action,
+            @RequestParam(value = "responseMessage", required = false) String responseMessage,
+            RedirectAttributes redirectAttributes,
+            Principal principal) {
+        
+        try {
+            if (principal == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Bạn cần đăng nhập để thực hiện chức năng này");
+                return "redirect:/login";
+            }
+            
+            String email = principal.getName();
+            Account account = IAccountService.findByEmail(email);
+            Student student = studentService.findByAccountUserId(account.getUserId());
+            
+            if (student == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy thông tin sinh viên");
+                return "redirect:/Student/JobInvitations";
+            }
+            
+            JobInvitation invitation = jobInvitationService.findById(invitationId).orElse(null);
+            if (invitation == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Không tìm thấy lời mời việc làm");
+                return "redirect:/Student/JobInvitations";
+            }
+            
+            // Check if invitation belongs to this student
+            if (!invitation.getStudent().getStudentId().equals(student.getStudentId())) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Bạn không có quyền thao tác lời mời này");
+                return "redirect:/Student/JobInvitations";
+            }
+            
+            // Check if invitation is still pending
+            if (invitation.getStatus() != JobInvitation.InvitationStatus.PENDING) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Lời mời này đã được phản hồi rồi");
+                return "redirect:/Student/JobInvitations";
+            }
+            
+            // Update invitation status
+            JobInvitation.InvitationStatus newStatus;
+            if ("accept".equals(action)) {
+                newStatus = JobInvitation.InvitationStatus.ACCEPTED;
+            } else if ("decline".equals(action)) {
+                newStatus = JobInvitation.InvitationStatus.DECLINED;
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "Hành động không hợp lệ");
+                return "redirect:/Student/JobInvitations";
+            }
+            
+            jobInvitationService.updateInvitationStatus(invitationId, newStatus, responseMessage);
+            
+            // Send notification to employer
+            String notificationTitle = "Phản hồi lời mời việc làm";
+            String notificationMessage = String.format(
+                "Ứng viên %s đã %s lời mời việc làm cho vị trí %s",
+                student.getAccount().getFullName(),
+                newStatus == JobInvitation.InvitationStatus.ACCEPTED ? "chấp nhận" : "từ chối",
+                invitation.getJobPost().getJobTitle()
+            );
+            
+            notificationService.createNotification(
+                invitation.getEmployer().getAccount(),
+                notificationTitle,
+                notificationMessage,
+                "JOB_INVITATION_RESPONSE",
+                invitationId
+            );
+            
+            String successMessage = newStatus == JobInvitation.InvitationStatus.ACCEPTED 
+                ? "Đã chấp nhận lời mời việc làm thành công!" 
+                : "Đã từ chối lời mời việc làm!";
+                
+            redirectAttributes.addFlashAttribute("successMessage", successMessage);
+            
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Có lỗi xảy ra khi xử lý phản hồi: " + e.getMessage());
+        }
+        
+        return "redirect:/Student/JobInvitations";
+    }
+
+    @GetMapping("/api/pending-invitations-count")
+    @ResponseBody
+    public ResponseEntity<Long> getPendingInvitationsCount(Principal principal) {
+        try {
+            if (principal == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(0L);
+            }
+            
+            String email = principal.getName();
+            Account account = IAccountService.findByEmail(email);
+            Student student = studentService.findByAccountUserId(account.getUserId());
+            
+            if (student == null) {
+                return ResponseEntity.ok(0L);
+            }
+            
+            Long count = jobInvitationService.countPendingInvitationsByStudent(student);
+            return ResponseEntity.ok(count);
+            
+        } catch (Exception e) {
+            return ResponseEntity.ok(0L);
+        }
     }
 
 }

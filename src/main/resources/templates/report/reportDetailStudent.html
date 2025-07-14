@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi tiết báo cáo</title>
+    <title th:text="#{report.detail.title}">Report Details</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}"/>
     <link rel="stylesheet" th:href="@{/css/navbarStudent_Employer.css}"/>
     <link rel="stylesheet" th:href="@{/css/reportDetail.css}"/>
     <link rel="stylesheet" th:href="@{/css/navbarStudent.css}" />
@@ -19,25 +23,25 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2><i class="bi bi-flag-fill text-danger"></i> Chi tiết báo cáo</h2>
+            <h2><i class="bi bi-flag-fill text-danger"></i> <span th:text="#{report.detail.heading}">Report Details</span></h2>
         </div>
         <div class="btn-group">
             <a th:href="@{/Report/ShowReport}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Quay lại
+                <i class="bi bi-arrow-left"></i> <span th:text="#{report.detail.back.to.list}">Back to List</span>
             </a>
             <!-- ✅ THÊM MỚI: Nút xóa chỉ hiện với báo cáo PENDING -->
             <button th:if="${report.status.toString() == 'PENDING'}"
                     type="button"
                     class="btn btn-outline-danger"
                     th:onclick="'deleteReport(' + ${report.reportId} + ')'">
-                <i class="bi bi-trash"></i> Xóa báo cáo
+                <i class="bi bi-trash"></i> <span th:text="#{report.detail.delete}">Delete</span>
             </button>
         </div>
     </div>
 
     <!-- ✅ THÊM MỚI: Thông báo có thể xóa -->
     <div th:if="${report.status.toString() == 'PENDING'}" class="alert alert-warning">
-        <i class="bi bi-info-circle"></i> Báo cáo này đang chờ xử lý và có thể được xóa.
+        <i class="bi bi-info-circle"></i> <span th:text="#{report.detail.pending.notice}">This report is pending and can be deleted.</span>
     </div>
 
     <!-- Report Information Card -->
@@ -47,7 +51,7 @@
             <div>
                 <span class="status-badge"
                       th:classappend="${report.status.toString().toLowerCase()}"
-                      th:text="${report.status}"></span>
+                      th:text="#{${'report.status.' + report.status.toString().toLowerCase()}}"></span>
                 <span class="priority-badge ms-2"
                       th:classappend="${report.priority.toString().toLowerCase()}"
                       th:text="${report.priority}"></span>
@@ -57,14 +61,14 @@
         <!-- Report Details -->
         <div class="info-row">
             <span class="info-label">
-                <i class="bi bi-person-circle"></i> Người báo cáo:
+                <i class="bi bi-person-circle"></i> <span th:text="#{report.detail.reporter}">Reporter</span>:
             </span>
             <span class="info-value" th:text="${report.reporterEmail}"></span>
         </div>
 
         <div class="info-row">
             <span class="info-label">
-                <i class="bi bi-tag"></i> Loại báo cáo:
+                <i class="bi bi-tag"></i> <span th:text="#{report.detail.type}">Type</span>:
             </span>
             <span class="info-value">
                 <span class="badge bg-secondary" th:text="${report.reportType}"></span>
@@ -73,7 +77,7 @@
 
         <div class="info-row" th:if="${report.reportedEntityType != null}">
             <span class="info-label">
-                <i class="bi bi-target"></i> Đối tượng báo cáo:
+                <i class="bi bi-target"></i> <span th:text="#{report.detail.target}">Target</span>:
             </span>
             <span class="info-value">
                 <span th:text="${report.reportedEntityType}"></span>
@@ -84,21 +88,21 @@
 
         <div class="info-row">
             <span class="info-label">
-                <i class="bi bi-calendar"></i> Ngày tạo:
+                <i class="bi bi-calendar"></i> <span th:text="#{report.detail.created.date}">Created Date</span>:
             </span>
             <span class="info-value" th:text="${#temporals.format(report.createdAt, 'dd/MM/yyyy HH:mm')}"></span>
         </div>
 
         <div class="info-row" th:if="${report.updatedAt != null}">
             <span class="info-label">
-                <i class="bi bi-clock-history"></i> Cập nhật lần cuối:
+                <i class="bi bi-clock-history"></i> <span th:text="#{report.detail.updated.date}">Updated Date</span>:
             </span>
             <span class="info-value" th:text="${#temporals.format(report.updatedAt, 'dd/MM/yyyy HH:mm')}"></span>
         </div>
 
         <div class="info-row" th:if="${report.resolvedAt != null}">
             <span class="info-label">
-                <i class="bi bi-check-circle"></i> Ngày giải quyết:
+                <i class="bi bi-check-circle"></i> <span th:text="#{report.detail.resolved.date}">Resolved Date</span>:
             </span>
             <span class="info-value" th:text="${#temporals.format(report.resolvedAt, 'dd/MM/yyyy HH:mm')}"></span>
         </div>
@@ -106,7 +110,7 @@
 
     <!-- Description -->
     <div class="report-card">
-        <h5><i class="bi bi-file-text"></i> Mô tả vấn đề</h5>
+        <h5><i class="bi bi-file-text"></i> <span th:text="#{report.detail.description.label}">Description</span></h5>
         <div class="description-box">
             <p th:text="${report.description}" class="mb-0"></p>
         </div>
@@ -114,7 +118,7 @@
 
     <!-- Admin Response -->
     <div class="report-card" th:if="${report.adminResponse != null and !report.adminResponse.isEmpty()}">
-        <h5><i class="bi bi-reply-fill text-success"></i> Phản hồi từ quản trị viên</h5>
+        <h5><i class="bi bi-reply-fill text-success"></i> <span th:text="#{report.detail.admin.response}">Admin Response</span></h5>
         <div class="response-box">
             <p th:text="${report.adminResponse}" class="mb-0"></p>
         </div>
@@ -122,14 +126,14 @@
 
     <!-- Timeline -->
     <div class="report-card">
-        <h5><i class="bi bi-clock-history"></i> Lịch sử xử lý</h5>
+        <h5><i class="bi bi-clock-history"></i> <span th:text="#{report.detail.timeline}">Timeline</span></h5>
 
         <div class="timeline-item">
             <div class="timeline-icon created">
                 <i class="bi bi-plus"></i>
             </div>
             <div>
-                <strong>Báo cáo được tạo</strong>
+                <strong th:text="#{report.detail.timeline.created}">Report Created</strong>
                 <br>
                 <small class="text-muted" th:text="${#temporals.format(report.createdAt, 'dd/MM/yyyy HH:mm')}"></small>
             </div>
@@ -140,7 +144,7 @@
                 <i class="bi bi-pencil"></i>
             </div>
             <div>
-                <strong>Báo cáo được cập nhật</strong>
+                <strong th:text="#{report.detail.timeline.updated}">Report Updated</strong>
                 <br>
                 <small class="text-muted" th:text="${#temporals.format(report.updatedAt, 'dd/MM/yyyy HH:mm')}"></small>
             </div>
@@ -151,7 +155,7 @@
                 <i class="bi bi-check"></i>
             </div>
             <div>
-                <strong>Báo cáo được giải quyết</strong>
+                <strong th:text="#{report.detail.timeline.resolved}">Report Resolved</strong>
                 <br>
                 <small class="text-muted" th:text="${#temporals.format(report.resolvedAt, 'dd/MM/yyyy HH:mm')}"></small>
             </div>
@@ -160,36 +164,31 @@
 
     <!-- ✅ THÊM MỚI: Khu vực xóa báo cáo (chỉ hiện với PENDING) -->
     <div th:if="${report.status.toString() == 'PENDING'}" class="report-card border-danger">
-        <h6 class="text-danger"><i class="bi bi-exclamation-triangle"></i> Khu vực nguy hiểm</h6>
-        <p class="text-muted">Báo cáo này đang chờ xử lý và có thể được xóa. Hành động này không thể hoàn tác.</p>
+        <h6 class="text-danger"><i class="bi bi-exclamation-triangle"></i> <span th:text="#{report.detail.danger.zone}">Danger Zone</span></h6>
+        <p class="text-muted" th:text="#{report.detail.danger.warning}">This report is pending and can be deleted. This action cannot be undone.</p>
         <button type="button"
                 class="btn btn-danger"
                 th:onclick="'deleteReport(' + ${report.reportId} + ')'">
-            <i class="bi bi-trash"></i> Xóa báo cáo vĩnh viễn
+            <i class="bi bi-trash"></i> <span th:text="#{report.detail.delete.permanent}">Delete Permanently</span>
         </button>
     </div>
 
     <!-- Action Buttons -->
     <div class="text-center">
         <a th:href="@{/Report/ShowReport}" class="btn btn-secondary me-2">
-            <i class="bi bi-list-ul"></i> Xem tất cả báo cáo
+            <i class="bi bi-list-ul"></i> <span th:text="#{report.detail.back.to.list}">Back to List</span>
         </a>
         <a th:href="@{/Report/CreateReport}" class="btn btn-danger">
-            <i class="bi bi-plus-circle"></i> Tạo báo cáo mới
+            <i class="bi bi-plus-circle"></i> <span th:text="#{report.list.create.new}">Create New Report</span>
         </a>
     </div>
 </div>
 
 <!-- ✅ THÊM MỚI: JavaScript cho chức năng xóa -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
+<script th:inline="javascript">
     function deleteReport(reportId) {
-        if (confirm('⚠️ CẢNH BÁO: Bạn có chắc chắn muốn xóa báo cáo này?\n\n' +
-            'Hành động này sẽ:\n' +
-            '• Xóa vĩnh viễn báo cáo\n' +
-            '• Không thể hoàn tác\n' +
-            '• Mất tất cả dữ liệu liên quan\n\n' +
-            'Nhấn OK để tiếp tục xóa.')) {
+        if (confirm(/*[[#{report.detail.delete.confirm}]]*/ 'Are you sure you want to delete this report?')) {
 
             const form = document.createElement('form');
             form.method = 'POST';
@@ -200,6 +199,7 @@
     }
 </script>
 <script th:src="@{/js/language-dropdown.js}"></script>
+<script th:src="@{/js/languageSwitch.js}"></script>
 
 </body>
 </html>

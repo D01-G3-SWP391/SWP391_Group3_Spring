@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lời mời việc làm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/navbarStudent.css}" />
+    <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
+    <link rel="stylesheet" th:href="@{/css/jobInvitations.css}" />
+</head>
+<body>
+<div th:replace="~{navbar/navbarStudent :: navbarStudent}"></div>
+
+<div class="container">
+    <!-- Flash Messages -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- Header -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1><i class="bi bi-briefcase-fill text-primary"></i> Lời mời việc làm</h1>
+                <p class="text-muted">Quản lý các lời mời việc làm từ nhà tuyển dụng</p>
+            </div>
+            <div class="stats-cards">
+                <div class="stat-card pending">
+                    <div class="stat-number" th:text="${pendingInvitations.size()}">0</div>
+                    <div class="stat-label">Chờ phản hồi</div>
+                </div>
+                <div class="stat-card responded">
+                    <div class="stat-number" th:text="${respondedInvitations.size()}">0</div>
+                    <div class="stat-label">Đã phản hồi</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-tabs mb-4" id="invitationTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button" role="tab">
+                <i class="bi bi-clock"></i> Chờ phản hồi 
+                <span class="badge bg-primary ms-1" th:text="${pendingInvitations.size()}">0</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="responded-tab" data-bs-toggle="tab" data-bs-target="#responded" type="button" role="tab">
+                <i class="bi bi-check-circle"></i> Đã phản hồi
+                <span class="badge bg-secondary ms-1" th:text="${respondedInvitations.size()}">0</span>
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="invitationTabContent">
+        <!-- Pending Invitations Tab -->
+        <div class="tab-pane fade show active" id="pending" role="tabpanel">
+            <div th:if="${pendingInvitations.isEmpty()}" class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <h3>Không có lời mời nào đang chờ phản hồi</h3>
+                <p>Các lời mời việc làm từ nhà tuyển dụng sẽ hiển thị tại đây.</p>
+            </div>
+            
+            <div th:if="${!pendingInvitations.isEmpty()}" class="invitations-grid">
+                <div th:each="invitation : ${pendingInvitations}" class="invitation-card pending-card">
+                    <div class="card-header">
+                        <div class="company-info">
+                            <div class="company-avatar">
+                                <img th:if="${invitation.employer.account.avatarUrl != null}" 
+                                     th:src="${invitation.employer.account.avatarUrl}" 
+                                     alt="Company Logo" />
+                                <span th:if="${invitation.employer.account.avatarUrl == null}" 
+                                      th:text="${invitation.employer.companyName.substring(0,1)}">C</span>
+                            </div>
+                            <div class="company-details">
+                                <h5 th:text="${invitation.employer.companyName}">Company Name</h5>
+                                <p th:text="${invitation.employer.companyAddress}">Company Address</p>
+                            </div>
+                        </div>
+                        <div class="invitation-status">
+                            <span class="badge bg-warning">Chờ phản hồi</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="job-info">
+                            <h4 th:text="${invitation.jobPost.jobTitle}">Job Title</h4>
+                            <div class="job-details">
+                                <span class="detail-item">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <span th:text="${invitation.jobPost.jobLocation}">Location</span>
+                                </span>
+                                <span class="detail-item">
+                                    <i class="bi bi-currency-dollar"></i>
+                                    <span th:if="${invitation.jobPost.jobSalary != null}" 
+                                          th:text="${#numbers.formatInteger(invitation.jobPost.jobSalary, 1, 'COMMA') + ' VND'}">Salary</span>
+                                    <span th:if="${invitation.jobPost.jobSalary == null}">Thỏa thuận</span>
+                                </span>
+                                <span class="detail-item">
+                                    <i class="bi bi-clock"></i>
+                                    <span th:text="${invitation.jobPost.jobType}">Job Type</span>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="invitation-message">
+                            <h6><i class="bi bi-chat-quote"></i> Lời nhắn từ nhà tuyển dụng:</h6>
+                            <p th:text="${invitation.message}">Invitation message from employer...</p>
+                        </div>
+                        
+                        <div class="invitation-meta">
+                            <small class="text-muted">
+                                <i class="bi bi-calendar"></i>
+                                Gửi lúc: <span th:text="${#temporals.format(invitation.sentAt, 'dd/MM/yyyy HH:mm')}">Date</span>
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <div class="action-buttons">
+                            <form method="post" th:action="@{/Student/JobInvitations/{id}/respond(id=${invitation.invitationId})}" style="display: inline;">
+                                <input type="hidden" name="action" value="accept" />
+                                <button type="submit" class="btn btn-success" onclick="return confirm('Bạn có chắc chắn muốn chấp nhận lời mời này?')">
+                                    <i class="bi bi-check-circle"></i> Chấp nhận
+                                </button>
+                            </form>
+                            <button class="btn btn-outline-danger" onclick="showDeclineModal(this)" 
+                                    th:data-id="${invitation.invitationId}">
+                                <i class="bi bi-x-circle"></i> Từ chối
+                            </button>
+                            <button class="btn btn-outline-primary" onclick="viewJobDetails(this)" 
+                                    th:data-job-id="${invitation.jobPost.jobPostId}">
+                                <i class="bi bi-eye"></i> Xem chi tiết
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Responded Invitations Tab -->
+        <div class="tab-pane fade" id="responded" role="tabpanel">
+            <div th:if="${respondedInvitations.isEmpty()}" class="empty-state">
+                <i class="bi bi-check-circle"></i>
+                <h3>Chưa có lời mời nào được phản hồi</h3>
+                <p>Lịch sử phản hồi lời mời việc làm sẽ hiển thị tại đây.</p>
+            </div>
+            
+            <div th:if="${!respondedInvitations.isEmpty()}" class="invitations-grid">
+                <div th:each="invitation : ${respondedInvitations}" class="invitation-card responded-card">
+                    <div class="card-header">
+                        <div class="company-info">
+                            <div class="company-avatar">
+                                <img th:if="${invitation.employer.account.avatarUrl != null}" 
+                                     th:src="${invitation.employer.account.avatarUrl}" 
+                                     alt="Company Logo" />
+                                <span th:if="${invitation.employer.account.avatarUrl == null}" 
+                                      th:text="${invitation.employer.companyName.substring(0,1)}">C</span>
+                            </div>
+                            <div class="company-details">
+                                <h5 th:text="${invitation.employer.companyName}">Company Name</h5>
+                                <p th:text="${invitation.employer.companyAddress}">Company Address</p>
+                            </div>
+                        </div>
+                        <div class="invitation-status">
+                            <span th:class="'badge ' + (${invitation.status.name() == 'ACCEPTED'} ? 'bg-success' : 'bg-danger')"
+                                  th:text="${invitation.status.name() == 'ACCEPTED' ? 'Đã chấp nhận' : 'Đã từ chối'}">Status</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="job-info">
+                            <h4 th:text="${invitation.jobPost.jobTitle}">Job Title</h4>
+                            <div class="job-details">
+                                <span class="detail-item">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <span th:text="${invitation.jobPost.jobLocation}">Location</span>
+                                </span>
+                                <span class="detail-item">
+                                    <i class="bi bi-currency-dollar"></i>
+                                    <span th:if="${invitation.jobPost.jobSalary != null}" 
+                                          th:text="${#numbers.formatInteger(invitation.jobPost.jobSalary, 1, 'COMMA') + ' VND'}">Salary</span>
+                                    <span th:if="${invitation.jobPost.jobSalary == null}">Thỏa thuận</span>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="response-info" th:if="${invitation.responseMessage != null}">
+                            <h6><i class="bi bi-chat-square-text"></i> Phản hồi của bạn:</h6>
+                            <p th:text="${invitation.responseMessage}">Your response message...</p>
+                        </div>
+                        
+                        <div class="invitation-meta">
+                            <small class="text-muted">
+                                <i class="bi bi-calendar"></i>
+                                Phản hồi lúc: <span th:text="${#temporals.format(invitation.respondedAt, 'dd/MM/yyyy HH:mm')}">Date</span>
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <button class="btn btn-outline-primary" onclick="viewJobDetails(this)" 
+                                th:data-job-id="${invitation.jobPost.jobPostId}">
+                            <i class="bi bi-eye"></i> Xem chi tiết công việc
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Decline Modal -->
+<div class="modal fade" id="declineModal" tabindex="-1" aria-labelledby="declineModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="declineModalLabel">
+                    <i class="bi bi-x-circle text-danger"></i> Từ chối lời mời việc làm
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="declineForm" method="post">
+                <div class="modal-body">
+                    <p>Bạn có chắc chắn muốn từ chối lời mời việc làm này?</p>
+                    <div class="mb-3">
+                        <label for="declineMessage" class="form-label">Lý do từ chối (tùy chọn):</label>
+                        <textarea class="form-control" name="responseMessage" id="declineMessage" rows="3" 
+                                  placeholder="Chia sẻ lý do từ chối để nhà tuyển dụng hiểu rõ hơn..."></textarea>
+                    </div>
+                    <input type="hidden" name="action" value="decline" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-x-circle"></i> Từ chối
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/language-dropdown.js}"></script>
+<!-- Simple JavaScript inline -->
+<script>
+// Global variable to store current invitation ID for decline
+let currentDeclineInvitationId = null;
+
+// Show decline modal
+function showDeclineModal(button) {
+    currentDeclineInvitationId = button.getAttribute('data-id');
+    document.getElementById('declineForm').action = `/Student/JobInvitations/${currentDeclineInvitationId}/respond`;
+    document.getElementById('declineMessage').value = '';
+    new bootstrap.Modal(document.getElementById('declineModal')).show();
+}
+
+// View job details
+function viewJobDetails(button) {
+    const jobId = button.getAttribute('data-job-id');
+    window.open(`/JobDescription/JobPost?id=${jobId}`, '_blank');
+}
+
+// Update pending count in navbar
+function updatePendingCount() {
+    fetch('/Student/api/pending-invitations-count')
+        .then(response => response.json())
+        .then(count => {
+            const badge = document.querySelector('.nav-item .badge');
+            if (badge) {
+                badge.textContent = count;
+                badge.style.display = count > 0 ? 'inline' : 'none';
+            }
+        })
+        .catch(error => console.log('Could not update pending count'));
+}
+
+// Update count when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    updatePendingCount();
+    
+    // Update count every 30 seconds
+    setInterval(updatePendingCount, 30000);
+});
+</script>
+
+</body>
+</html> 

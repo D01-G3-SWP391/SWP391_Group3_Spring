@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chỉnh sửa báo cáo</title>
+    <title th:text="#{admin.reports.edit.title} + ' - Admin'">Edit Report - Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
     <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
     <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
@@ -45,10 +46,10 @@
 
 <div class="main-content">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-pencil-square text-primary"></i> Chỉnh sửa báo cáo #<span th:text="${report.reportId}"></span></h2>
+        <h2><i class="bi bi-pencil-square text-primary"></i> <span th:text="#{admin.reports.edit.title}">Edit Report</span> #<span th:text="${report.reportId}"></span></h2>
         <div class="btn-group">
             <a th:href="@{/Admin/List}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Quay lại
+                <i class="bi bi-arrow-left"></i> <span th:text="#{admin.reports.edit.back}">Back to List</span>
             </a>
             <!-- ✅ THÊM MỚI: Nút xóa báo cáo -->
             <button th:if="${canDelete}"

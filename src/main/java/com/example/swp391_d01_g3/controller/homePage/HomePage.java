@@ -56,6 +56,17 @@ public class HomePage {
         if (principal != null) {
             model.addAttribute("userEmail", principal.getName());
             Account account = accountService.findByEmail(principal.getName());
+            
+            // Kiểm tra nếu account không tồn tại hoặc bị ban
+            if (account == null) {
+                // Account có thể bị ban hoặc không tồn tại, check với findByEmailAnyStatus
+                Account anyStatusAccount = accountService.findByEmailAnyStatus(principal.getName());
+                if (anyStatusAccount != null && anyStatusAccount.getStatus() == Account.Status.inactive) {
+                    // Account bị ban, logout và redirect về login
+                    return "redirect:/logout";
+                }
+            }
+            
             model.addAttribute("account", account);
         }
         return "homePage/homePage";

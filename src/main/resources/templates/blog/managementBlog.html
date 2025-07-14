@@ -2,12 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Blog Management</title>
+    <title th:text="#{blog.admin.management.title}">Admin Blog Management</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap & Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}"/>
     <link rel="stylesheet" th:href="@{/css/managementBlog.css}">
     <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
     <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
@@ -24,11 +28,11 @@
         <!-- Header Section -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h2 class="mb-1">Blog Management</h2>
+                <h2 class="mb-1" th:text="#{blog.admin.management.title}">Blog Management</h2>
             </div>
             <div class="d-flex gap-2">
                 <a th:href="@{/Admin/blogs/create}" class="btn btn-success">
-                    <i class="bi bi-plus-circle me-2"></i>Create New Blog
+                    <i class="bi bi-plus-circle me-2"></i><span th:text="#{blog.admin.management.create.new}">Create New Blog</span>
                 </a>
             </div>
         </div>
@@ -50,22 +54,22 @@
             <div class="col-md-6">
                 <input class="form-control" name="keyword"
                        th:value="${keyword}"
-                       placeholder="Search by blog title..." />
+                       th:placeholder="#{blog.admin.management.search.placeholder}" />
             </div>
             <div class="col-md-3">
                 <select class="form-control" name="status">
-                    <option value="">All Status</option>
-                    <option value="DRAFT" th:selected="${selectedStatus == 'DRAFT'}">Draft</option>
-                    <option value="PUBLISHED" th:selected="${selectedStatus == 'PUBLISHED'}">Published</option>
-                    <option value="ARCHIVED" th:selected="${selectedStatus == 'ARCHIVED'}">Archived</option>
+                    <option value="" th:text="#{blog.admin.management.all.status}">All Status</option>
+                    <option value="DRAFT" th:selected="${selectedStatus == 'DRAFT'}" th:text="#{blog.admin.management.draft}">Draft</option>
+                    <option value="PUBLISHED" th:selected="${selectedStatus == 'PUBLISHED'}" th:text="#{blog.admin.management.published}">Published</option>
+                    <option value="ARCHIVED" th:selected="${selectedStatus == 'ARCHIVED'}" th:text="#{blog.admin.management.archived}">Archived</option>
                 </select>
             </div>
             <div class="col-auto d-flex gap-2">
                 <button class="btn-equal" type="submit">
-                    <i class="bi bi-search me-2"></i>Search
+                    <i class="bi bi-search me-2"></i><span th:text="#{blog.admin.management.search}">Search</span>
                 </button>
                 <a th:href="@{/Admin/blogs}" class="btn-equal">
-                    <i class="bi bi-arrow-clockwise me-2"></i>Reset
+                    <i class="bi bi-arrow-clockwise me-2"></i><span th:text="#{blog.admin.management.reset}">Reset</span>
                 </a>
             </div>
         </form>
@@ -74,14 +78,14 @@
         <!-- Results Info -->
         <div class="d-flex justify-content-between align-items-center mb-3">
             <span class="text-muted">
-                Showing <strong th:text="${currentPage * 10 + 1}"></strong> to
+                <span th:text="#{blog.admin.management.showing}">Showing</span> <strong th:text="${currentPage * 10 + 1}"></strong> <span th:text="#{blog.admin.management.to}">to</span>
                 <strong th:text="${currentPage * 10 + #lists.size(blogs)}"></strong>
-                of <strong th:text="${totalItems}"></strong> blog posts
+                <span th:text="#{blog.admin.management.of}">of</span> <strong th:text="${totalItems}"></strong> <span th:text="#{blog.admin.management.blog.posts}">blog posts</span>
                 <span th:if="${selectedStatus != null and selectedStatus != ''}"
                       th:text="'(' + ${selectedStatus} + ')'" class="text-primary"></span>
             </span>
             <span class="text-muted" th:if="${totalPages > 1}">
-                Page <strong th:text="${currentPage + 1}"></strong> of <strong th:text="${totalPages}"></strong>
+                <span th:text="#{blog.admin.management.page}">Page</span> <strong th:text="${currentPage + 1}"></strong> <span th:text="#{blog.admin.management.of}">of</span> <strong th:text="${totalPages}"></strong>
             </span>
         </div>
 
@@ -90,11 +94,11 @@
             <table class="table table-hover align-middle mb-0">
                 <thead>
                 <tr>
-                    <th><i class="bi bi-file-earmark-text"></i> Title</th>
-                    <th><i class="bi bi-link-45deg"></i> Resource Type</th>
-                    <th><i class="bi bi-info-circle"></i> Status</th>
-                    <th><i class="bi bi-calendar"></i> Created At</th>
-                    <th><i class="bi bi-eye"></i> Actions</th>
+                    <th><i class="bi bi-file-earmark-text"></i> <span th:text="#{blog.admin.management.table.title}">Title</span></th>
+                    <th><i class="bi bi-link-45deg"></i> <span th:text="#{blog.admin.management.table.resource.type}">Resource Type</span></th>
+                    <th><i class="bi bi-info-circle"></i> <span th:text="#{blog.admin.management.table.status}">Status</span></th>
+                    <th><i class="bi bi-calendar"></i> <span th:text="#{blog.admin.management.table.created.at}">Created At</span></th>
+                    <th><i class="bi bi-eye"></i> <span th:text="#{blog.admin.management.table.actions}">Actions</span></th>
                 </tr>
                 </thead>
                 <tbody id="blog-table-body">
@@ -112,12 +116,12 @@
                     <td>
                         <span th:if="${blog.resource != null}" class="resource-badge">
                             <i class="bi bi-link-45deg"></i>
-                            <span th:text="${blog.resource.resourceType.name() == 'interview_guide'} ? 'Hướng dẫn phỏng vấn' : 
-                                           (${blog.resource.resourceType.name() == 'application_tips'} ? 'Mẹo ứng tuyển' : 
-                                           (${blog.resource.resourceType.name() == 'quotes'} ? 'Câu nói hay' : ${blog.resource.resourceType.name()}))"></span>
+                            <span th:text="${blog.resource.resourceType.name() == 'interview_guide'} ? #{blog.admin.resource.type.interview_guide} : 
+                                           (${blog.resource.resourceType.name() == 'application_tips'} ? #{blog.admin.resource.type.application_tips} : 
+                                           (${blog.resource.resourceType.name() == 'quotes'} ? #{blog.admin.resource.type.quotes} : ${blog.resource.resourceType.name()}))"></span>
                         </span>
                         <span th:if="${blog.resource == null}" class="text-muted">
-                            <i class="bi bi-x-circle"></i> Không có tài nguyên
+                            <i class="bi bi-x-circle"></i> <span th:text="#{blog.admin.management.no.resource}">Không có tài nguyên</span>
                         </span>
                     </td>
                     <td>
@@ -134,10 +138,10 @@
                     <td>
                         <div class="action-btns">
                             <a th:href="@{/Admin/blogs/{id}(id=${blog.blogPostId})}" class="btn btn-equal">
-                                <i class="bi bi-eye"></i> View
+                                <i class="bi bi-eye"></i> <span th:text="#{blog.admin.management.view}">View</span>
                             </a>
                             <a th:href="@{/Admin/blogs/{id}/edit(id=${blog.blogPostId})}" class="btn btn-equal">
-                                <i class="bi bi-pencil-square"></i> Edit
+                                <i class="bi bi-pencil-square"></i> <span th:text="#{blog.admin.management.edit}">Edit</span>
                             </a>
                         </div>
                     </td>
@@ -149,15 +153,15 @@
         <!-- No Results Message -->
         <div th:if="${#lists.isEmpty(blogs)}" class="text-center py-5">
             <i class="bi bi-journal-text display-1 text-muted"></i>
-            <h4 class="text-muted mt-3">No blog posts found</h4>
-            <p class="text-muted">Try adjusting your search criteria or create a new blog post</p>
+            <h4 class="text-muted mt-3" th:text="#{blog.admin.management.no.posts.found}">No blog posts found</h4>
+            <p class="text-muted" th:text="#{blog.admin.management.no.posts.message}">Try adjusting your search criteria or create a new blog post</p>
         </div>
 
         <!-- Pagination Info -->
         <div th:if="${totalItems != null and totalItems > 0}" class="pagination-info">
-            Showing <strong th:text="${currentPage * 10 + 1}"></strong> to
+            <span th:text="#{blog.admin.management.showing}">Showing</span> <strong th:text="${currentPage * 10 + 1}"></strong> <span th:text="#{blog.admin.management.to}">to</span>
             <strong th:text="${currentPage * 10 + #lists.size(blogs)}"></strong>
-            of <strong th:text="${totalItems}"></strong> blog posts
+            <span th:text="#{blog.admin.management.of}">of</span> <strong th:text="${totalItems}"></strong> <span th:text="#{blog.admin.management.blog.posts}">blog posts</span>
         </div>
 
         <!-- Pagination -->
@@ -169,11 +173,11 @@
                        th:href="@{/Admin/blogs(page=${currentPage - 1}, keyword=${keyword}, status=${selectedStatus})}"
                        class="pagination-btn prev-btn">
                         <i class="bi bi-chevron-left"></i>
-                        <span>Previous</span>
+                        <span th:text="#{blog.admin.management.previous}">Previous</span>
                     </a>
                     <span th:unless="${hasPrevious}" class="pagination-btn prev-btn disabled">
                         <i class="bi bi-chevron-left"></i>
-                        <span>Previous</span>
+                        <span th:text="#{blog.admin.management.previous}">Previous</span>
                     </span>
 
                     <div class="page-numbers">
@@ -191,11 +195,11 @@
                     <a th:if="${hasNext}"
                        th:href="@{/Admin/blogs(page=${currentPage + 1}, keyword=${keyword}, status=${selectedStatus})}"
                        class="pagination-btn next-btn">
-                        <span>Next</span>
+                        <span th:text="#{blog.admin.management.next}">Next</span>
                         <i class="bi bi-chevron-right"></i>
                     </a>
                     <span th:unless="${hasNext}" class="pagination-btn next-btn disabled">
-                        <span>Next</span>
+                        <span th:text="#{blog.admin.management.next}">Next</span>
                         <i class="bi bi-chevron-right"></i>
                     </span>
                 </div>
@@ -209,7 +213,7 @@
         const oldValue = selectElem.getAttribute('data-old-value');
         const newValue = selectElem.value;
         if (oldValue === newValue) return;
-        if (confirm("Bạn có chắc chắn muốn thay đổi trạng thái?")) {
+        if (confirm("[[#{blog.admin.confirm.status.change}]]")) {
             selectElem.form.submit();
         } else {
             selectElem.value = oldValue;

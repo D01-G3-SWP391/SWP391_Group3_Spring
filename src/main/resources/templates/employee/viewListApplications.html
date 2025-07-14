@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Danh Sách Ứng Viên</title>
+    <title th:text="#{employer.applications.title}">Danh Sách Ứng Viên</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
     <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
@@ -400,9 +400,9 @@
 
 <div class="main-content">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Danh Sách Ứng Viên</h1>
-        <button class="btn btn-primary" onclick="showAllChatRooms()" title="Xem tất cả cuộc trò chuyện">
-            <i class="bi bi-chat-text"></i> Danh sách Chat
+        <h1 th:text="#{employer.applications.list.header}">Danh Sách Ứng Viên</h1>
+        <button class="btn btn-primary" onclick="showAllChatRooms()" th:title="#{employer.applications.view.all.chats}">
+            <i class="bi bi-chat-text"></i> <span th:text="#{employer.applications.list.chat}">Danh sách Chat</span>
         </button>
     </div>
 

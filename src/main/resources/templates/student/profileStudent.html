@@ -31,7 +31,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label" th:text="#{profile.address} + ': '">Address: </label>
-                    <span th:text="${studentDetails != null and studentDetails.address != null and studentDetails.address != ''} ? ${studentDetails.address} : #{profile.notUpdated}" class="form-value"></span>
+                    <span style="margin-left: 22px !important;" th:text="${studentDetails != null and studentDetails.address != null and studentDetails.address != ''} ? ${studentDetails.address} : #{profile.notUpdated}" class="form-value"></span>
                 </div>
                 <div class="form-group">
                     <label class="form-label" th:text="#{profile.university} + ': '">University: </label>

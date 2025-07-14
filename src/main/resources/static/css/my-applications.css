@@ -69,20 +69,21 @@ body.sidebar-active .main-content {
 
 /* Applications Container - ĐÃ SỬA ĐỂ CĂN GIỮA */
 .applications-container {
-    padding: 30px;
-    max-width: 1200px;
-    margin: 0 auto;
+    margin-top: 10px;
+    padding: 0;
     width: 100%;
+    max-width: 1200px;
+    /*margin: 0 auto;*/
     box-sizing: border-box;
 }
 
 /* Table Header */
 .table-header {
     display: grid;
-    grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1fr;
-    gap: 15px;
+    grid-template-columns: minmax(250px, 2fr) minmax(200px, 1.5fr) minmax(150px, 1fr) minmax(150px, 1fr) minmax(150px, 1fr) minmax(150px, 1fr);
+    gap: 20px;
     background: white;
-    padding: 20px 25px;
+    padding: 20px 30px;
     border-radius: 12px 12px 0 0;
     border: 1px solid #e2e8f0;
     border-bottom: none;
@@ -92,6 +93,8 @@ body.sidebar-active .main-content {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .header-cell {
@@ -127,21 +130,37 @@ body.sidebar-active .main-content {
 /* Basic Row */
 .basic-row {
     display: grid;
-    grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1fr;
-    gap: 15px;
-    padding: 20px 25px;
+    grid-template-columns: minmax(250px, 2fr) minmax(200px, 1.5fr) minmax(150px, 1fr) minmax(150px, 1fr) minmax(150px, 1fr) minmax(150px, 1fr);
+    gap: 20px;
+    padding: 20px 30px;
     align-items: center;
     border-bottom: 1px solid #f1f5f9;
+    width: 100%;
+    box-sizing: border-box;
+    background: white;
 }
 
+/* Cell Content with Icons */
 .cell {
     display: flex;
     align-items: center;
     font-size: 0.95rem;
     color: #374151;
+    min-width: 0;
+    overflow: hidden;
+    padding-right: 10px;
 }
 
-/* Cell Content with Icons */
+/* Thêm ellipsis cho text overflow */
+.job-title, 
+.company-info span, 
+.location-info span, 
+.date-info span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .job-info-cell {
     display: flex;
     align-items: center;
@@ -255,6 +274,7 @@ body.sidebar-active .main-content {
     gap: 6px;
     white-space: nowrap;
     box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+    min-width: fit-content;
 }
 
 .view-details-btn:hover {
@@ -550,6 +570,55 @@ body.sidebar-active .main-content {
     line-height: 1.6;
 }
 
+/* Action column styling */
+.action-col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.action-col > div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+/* Button styling */
+.chat-employer-btn,
+.view-details-btn {
+    width: 100%;
+    padding: 8px 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.chat-employer-btn:hover,
+.view-details-btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Specific button colors */
+.chat-employer-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+}
+
+.view-details-btn {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+    border: none;
+}
+
 /* Responsive Design - ĐÃ SỬA ĐỂ CĂN GIỮA */
 @media (max-width: 1200px) {
     .main-content {
@@ -567,6 +636,15 @@ body.sidebar-active .main-content {
     .page-header {
         max-width: 95%;
         padding: 20px 15px;
+    }
+
+    .applications-container {
+        padding: 20px;
+    }
+    
+    .table-header,
+    .basic-row {
+        padding: 15px 20px;
     }
 }
 
@@ -622,5 +700,24 @@ body.sidebar-active .main-content {
 
     .page-header {
         padding: 30px 20px;
+    }
+
+    .applications-container {
+        padding: 10px;
+    }
+    
+    .table-header,
+    .basic-row {
+        padding: 10px 15px;
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .cell {
+        justify-content: flex-start;
+    }
+    
+    .action-col {
+        justify-content: flex-start;
     }
 }

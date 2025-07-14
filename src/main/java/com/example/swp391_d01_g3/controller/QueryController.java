@@ -82,4 +82,66 @@ public class QueryController {
             ));
         }
     }
+
+    /**
+     * 🎯 New endpoint specifically for AI-powered candidate search
+     * Separate from general chat AI to avoid conflicts
+     */
+    @PostMapping("/search-candidates")
+    public ResponseEntity<?> searchCandidates(@RequestBody Map<String, String> request) {
+        String searchQuery = null;
+        try {
+            searchQuery = request.get("query");
+            System.out.println("🔍 AI Search Request: " + searchQuery);
+
+            // Validate input
+            if (searchQuery == null || searchQuery.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of(
+                        "error", "Search query is required",
+                        "message", "Vui lòng nhập từ khóa tìm kiếm ứng viên."
+                ));
+            }
+
+            // Get database schema
+            String schema = schemaService.getAllDatabaseSchema();
+            System.out.println("📊 Schema length: " + schema.length() + " characters");
+
+            // Use AI to convert natural language to SQL for candidate search
+            String sql = openAIService.searchCandidatesWithAI(searchQuery, schema);
+            System.out.println("🤖 Generated SQL: " + sql);
+
+            // Clean SQL
+            sql = sql.replaceAll("(?s)```sql|```", "").trim();
+            System.out.println("✨ Cleaned SQL: " + sql);
+
+            // Execute SQL query
+            List<Object[]> results = queryService.executeQuery(sql);
+            System.out.println("📋 Query results count: " + results.size());
+
+            // Generate appropriate response message based on query language
+            String responseMessage = openAIService.generateCandidateSearchResponse(searchQuery, results);
+            System.out.println("💬 Response message: " + responseMessage);
+
+            // Return results in format expected by frontend
+            return ResponseEntity.ok(Map.of(
+                    "success", true,
+                    "results", results,
+                    "totalResults", results.size(),
+                    "message", responseMessage
+            ));
+
+        } catch (Exception e) {
+            System.out.println("❌ Error in candidate search: " + e.getMessage());
+            e.printStackTrace();
+            
+            // Generate error message based on query language
+            String errorMessage = openAIService.generateCandidateSearchErrorMessage(searchQuery);
+
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "error", e.getMessage(),
+                    "message", errorMessage
+            ));
+        }
+    }
 } 

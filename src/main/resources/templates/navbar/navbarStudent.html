@@ -64,7 +64,14 @@
             <div class="nav-item">
                 <a th:href="@{/Student/applications}" class="nav-link" data-path="/Student/applications">
                     <i class="bi bi-briefcase nav-icon"></i>
-                    <span>My Applications</span>
+                    <span th:text="#{nav.my.applications}">My Applications</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a th:href="@{/Student/JobInvitations}" class="nav-link" data-path="/Student/JobInvitations">
+                    <i class="bi bi-envelope-heart nav-icon"></i>
+                    <span th:text="#{nav.job.invitations}">Job Invitations</span>
+                    <span class="badge bg-primary ms-2 invitation-count-badge" id="invitationBadge" style="display: none;">0</span>
                 </a>
             </div>
 <!--            <div class="nav-item">-->
@@ -110,7 +117,7 @@
             <div class="nav-item">
                 <a th:href="@{/Report/CreateReport}" class="nav-link" data-path="/Admin/Reports">
                     <i class="bi bi-graph-up nav-icon"></i>
-                    <span>Reports</span>
+                    <span th:text="#{nav.reports}">Reports</span>
                 </a>
             </div>
             <div class="nav-item">
@@ -192,6 +199,9 @@ document.addEventListener('DOMContentLoaded', function() {
         activeLink.classList.add('active');
     }
 
+    // Load job invitations count
+    loadJobInvitationsCount();
+
     // Mobile responsive
     const sidebar = document.getElementById('studentSidebar');
     
@@ -205,6 +215,25 @@ document.addEventListener('DOMContentLoaded', function() {
     checkMobile();
     window.addEventListener('resize', checkMobile);
 });
+
+// Load job invitations count for badge
+function loadJobInvitationsCount() {
+    fetch('/Student/api/pending-invitations-count')
+        .then(response => response.json())
+        .then(count => {
+            const badge = document.getElementById('invitationBadge');
+            if (badge) {
+                badge.textContent = count;
+                badge.style.display = count > 0 ? 'inline' : 'none';
+            }
+        })
+        .catch(error => {
+            console.error('Error loading invitations count:', error);
+        });
+}
+
+// Refresh invitations count periodically
+setInterval(loadJobInvitationsCount, 60000); // Refresh every minute
 </script>
 <script th:src="@{/js/language-dropdown.js}"></script>
 </body>

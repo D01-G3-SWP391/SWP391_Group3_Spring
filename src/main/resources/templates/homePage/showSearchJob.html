@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Kết quả tìm kiếm - Job4You</title>
+    <title th:text="#{search.results.title}">Kết quả tìm kiếm - Job4You</title>
     <!-- Bootstrap CSS -->
     <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
@@ -36,12 +36,14 @@
     <section class="search-header-section">
         <div class="container">
             <div class="search-header-content">
-                <h1>Kết quả tìm kiếm việc làm</h1>
+                <h1 th:text="#{search.results.header}">Kết quả tìm kiếm việc làm</h1>
                 <p class="search-results-info">
-                    <span th:if="${searchJob != null and !#lists.isEmpty(searchJob)}">
+                    <span th:if="${searchJob != null and !#lists.isEmpty(searchJob)}" 
+                          th:with="jobCount=${#lists.size(searchJob)}"
+                          th:utext="#{search.results.found(${jobCount})}">
                         Tìm thấy <strong th:text="${#lists.size(searchJob)}">0</strong> việc làm phù hợp với yêu cầu của bạn
                     </span>
-                    <span th:unless="${searchJob != null and !#lists.isEmpty(searchJob)}">
+                    <span th:unless="${searchJob != null and !#lists.isEmpty(searchJob)}" th:text="#{search.results.notFound}">
                         Không tìm thấy việc làm nào phù hợp với tiêu chí tìm kiếm
                     </span>
                 </p>
@@ -49,10 +51,10 @@
                 <!-- Refined Search Form -->
                 <div class="refined-search-container">
                     <div class="search-tabs">
-                        <button type="button" class="search-tab active" onclick="switchTab('job')" id="jobTab">
+                        <button type="button" class="search-tab active" onclick="switchTab('job')" id="jobTab" th:text="#{search.form.findJob}">
                             Tìm việc làm
                         </button>
-                        <button type="button" class="search-tab" onclick="switchTab('candidate')" id="candidateTab">
+                        <button type="button" class="search-tab" onclick="switchTab('candidate')" id="candidateTab" th:text="#{search.form.findCandidate}">
                             Tìm ứng viên
                         </button>
                     </div>
@@ -74,7 +76,7 @@
                                 <div class="search-field">
                                     <i class="fas fa-list field-icon"></i>
                                     <select name="fieldId" class="search-select">
-                                        <option value="">Category</option>
+                                        <option value="" th:text="#{search.form.category}">Category</option>
                                         <option th:each="field : ${jobField}"
                                                 th:value="${field.jobFieldId}"
                                                 th:selected="${param.fieldId != null and param.fieldId[0] == field.jobFieldId.toString()}"
@@ -84,49 +86,45 @@
                                 </div>
 
                                 <div class="search-field">
-                                    <input
-                                        type="text"
-                                        name="location"
-                                        th:value="${param.location}"
-                                        placeholder="Location"
-                                        class="search-input"
-                                    />
+                                    <i class="fas fa-map-marker-alt field-icon"></i>
+                                    <select name="location" class="search-select" id="locationSelect">
+                                        <option value="" selected disabled th:text="#{search.form.location.placeholder}">Chọn tỉnh/thành phố</option>
+                                    </select>
                                 </div>
                                 
-                                <button type="submit" class="search-button">
+                                <button type="submit" class="search-button" th:text="#{search.results.searchAgain}">
                                     Tìm lại
                                 </button>
                             </div>
                         </form>
 
                         <!-- Candidate Search Form -->
-                        <!-- Candidate Search Form -->
                         <form th:action="@{/HomePage/search}" method="post" class="search-form" id="candidateForm">
                             <div class="search-fields">
                                 <div class="search-field">
                                     <i class="fas fa-money-bill-wave field-icon"></i>
                                     <select name="salaryRange" class="search-select">
-                                        <option value="">Tất cả mức lương</option>
-                                        <option value="0-2000000" th:selected="${searchSalary == '0-2000000'}">Dưới 2,000,000</option>
-                                        <option value="2000000-3000000" th:selected="${searchSalary == '2000000-3000000'}">2,000,000 - 3,000,000</option>
-                                        <option value="3000000-5000000" th:selected="${searchSalary == '3000000-5000000'}">3,000,000 - 5,000,000</option>
-                                        <option value="5000000-7000000" th:selected="${searchSalary == '5000000-7000000'}">5,000,000 - 7,000,000</option>
-                                        <option value="7000000-10000000" th:selected="${searchSalary == '7000000-10000000'}">7,000,000 - 10,000,000</option>
-                                        <option value="10000000-15000000" th:selected="${searchSalary == '10000000-15000000'}">10,000,000 - 15,000,000</option>
-                                        <option value="15000000-20000000" th:selected="${searchSalary == '15000000-20000000'}">15,000,000 - 20,000,000</option>
-                                        <option value="20000000-30000000" th:selected="${searchSalary == '20000000-30000000'}">20,000,000 - 30,000,000</option>
-                                        <option value="30000000-40000000" th:selected="${searchSalary == '30000000-40000000'}">30,000,000 - 40,000,000</option>
-                                        <option value="40000000-50000000" th:selected="${searchSalary == '40000000-50000000'}">40,000,000 - 50,000,000</option>
-                                        <option value=">50000000" th:selected="${searchSalary == '>50000000'}">Trên 50,000,000</option>
+                                        <option value="" th:text="#{search.form.allSalary}">Tất cả mức lương</option>
+                                        <option value="0-2000000" th:selected="${searchSalary == '0-2000000'}" th:text="#{search.form.salary.under2m}">Dưới 2,000,000</option>
+                                        <option value="2000000-3000000" th:selected="${searchSalary == '2000000-3000000'}" th:text="#{search.form.salary.2to3m}">2,000,000 - 3,000,000</option>
+                                        <option value="3000000-5000000" th:selected="${searchSalary == '3000000-5000000'}" th:text="#{search.form.salary.3to5m}">3,000,000 - 5,000,000</option>
+                                        <option value="5000000-7000000" th:selected="${searchSalary == '5000000-7000000'}" th:text="#{search.form.salary.5to7m}">5,000,000 - 7,000,000</option>
+                                        <option value="7000000-10000000" th:selected="${searchSalary == '7000000-10000000'}" th:text="#{search.form.salary.7to10m}">7,000,000 - 10,000,000</option>
+                                        <option value="10000000-15000000" th:selected="${searchSalary == '10000000-15000000'}" th:text="#{search.form.salary.10to15m}">10,000,000 - 15,000,000</option>
+                                        <option value="15000000-20000000" th:selected="${searchSalary == '15000000-20000000'}" th:text="#{search.form.salary.15to20m}">15,000,000 - 20,000,000</option>
+                                        <option value="20000000-30000000" th:selected="${searchSalary == '20000000-30000000'}" th:text="#{search.form.salary.20to30m}">20,000,000 - 30,000,000</option>
+                                        <option value="30000000-40000000" th:selected="${searchSalary == '30000000-40000000'}" th:text="#{search.form.salary.30to40m}">30,000,000 - 40,000,000</option>
+                                        <option value="40000000-50000000" th:selected="${searchSalary == '40000000-50000000'}" th:text="#{search.form.salary.40to50m}">40,000,000 - 50,000,000</option>
+                                        <option value=">50000000" th:selected="${searchSalary == '>50000000'}" th:text="#{search.form.salary.over50m}">Trên 50,000,000</option>
                                     </select>
                                 </div>
                                 
                                 <div class="search-field">
                                     <i class="fas fa-briefcase field-icon"></i>
                                     <select name="jobType" class="search-select">
-                                        <option value="">Tất cả loại việc</option>
-                                        <option value="FULL_TIME" th:selected="${searchJobType == 'FULL_TIME'}">Full Time</option>
-                                        <option value="PART_TIME" th:selected="${searchJobType == 'PART_TIME'}">Part Time</option>
+                                        <option value="" th:text="#{search.form.allJobTypes}">Tất cả loại việc</option>
+                                        <option value="FULL_TIME" th:selected="${searchJobType == 'FULL_TIME'}" th:text="#{job.common.fullTime}">Full Time</option>
+                                        <option value="PART_TIME" th:selected="${searchJobType == 'PART_TIME'}" th:text="#{job.common.partTime}">Part Time</option>
                                     </select>
                                 </div>
                                 
@@ -134,13 +132,13 @@
                                     <input
                                             type="text"
                                             name="companyName"
-                                            placeholder="Tên công ty..."
+                                            th:placeholder="#{search.form.companyName.placeholder}"
                                             class="search-input"
                                             th:value="${searchCompanyName}"
                                     />
                                 </div>
                                 
-                                <button type="submit" class="search-button">
+                                <button type="submit" class="search-button" th:text="#{search.results.searchAgain}">
                                     Tìm lại
                                 </button>
                             </div>
@@ -159,10 +157,10 @@
                 <!-- Results Header -->
                 <div class="results-header">
                     <div class="results-info">
-                        <h2>Kết quả tìm kiếm</h2>
+                        <h2 th:text="#{search.results.header}">Kết quả tìm kiếm</h2>
                         <div class="results-actions">
                             <a href="/" class="btn-back">
-                                <i class="fas fa-arrow-left"></i> Quay lại trang chủ
+                                <i class="fas fa-arrow-left"></i> <span th:text="#{search.results.backHome}">Quay lại trang chủ</span>
                             </a>
                         </div>
                     </div>
@@ -173,15 +171,15 @@
                     <div class="no-results-icon">
                         <i class="fas fa-search"></i>
                     </div>
-                    <h3>Không tìm thấy việc làm phù hợp</h3>
-                    <p>Hãy thử điều chỉnh tiêu chí tìm kiếm hoặc tìm kiếm với từ khóa khác</p>
+                    <h3 th:text="#{search.results.notFound}">Không tìm thấy việc làm phù hợp</h3>
+                    <p th:text="#{search.results.tryAdjust}">Hãy thử điều chỉnh tiêu chí tìm kiếm hoặc tìm kiếm với từ khóa khác</p>
                     <div class="suggestions">
-                        <h4>Gợi ý cho bạn:</h4>
+                        <h4 th:text="#{search.results.suggestions}">Gợi ý cho bạn:</h4>
                         <ul>
-                            <li>Sử dụng từ khóa đơn giản hơn</li>
-                            <li>Mở rộng phạm vi địa điểm</li>
-                            <li>Thử loại hình công việc khác</li>
-                            <li>Kiểm tra lại chính tả</li>
+                            <li th:text="#{search.results.suggestion1}">Sử dụng từ khóa đơn giản hơn</li>
+                            <li th:text="#{search.results.suggestion2}">Mở rộng phạm vi địa điểm</li>
+                            <li th:text="#{search.results.suggestion3}">Thử loại hình công việc khác</li>
+                            <li th:text="#{search.results.suggestion4}">Kiểm tra lại chính tả</li>
                         </ul>
                     </div>
                 </div>
@@ -192,7 +190,7 @@
                             <div class="job-card-header">
                                 <div class="company-logo">
                                     <img
-                                                                                                        th:src="${job.employer.account.avatarUrl}"
+                                        th:src="${job.employer.account.avatarUrl}"
                                         th:alt="${job.employer.companyName}"
                                         onerror="this.style.display='none'; this.parentElement.classList.add('default-logo'); this.parentElement.innerHTML='<span>' + this.alt.charAt(0).toUpperCase() + '</span>';"
                                     />
@@ -207,9 +205,16 @@
                                 </div>
                                 <div class="job-type">
                                     <span
-                                        class="job-type-badge"
-                                        th:classappend="${job.jobType?.name() == 'FULL_TIME' ? 'full-time' : 'part-time'}"
-                                        th:text="${job.jobType?.name() == 'FULL_TIME' ? 'Toàn thời gian' : 'Bán thời gian'}"
+                                        class="job-type-badge full-time"
+                                        th:if="${job.jobType?.name() == 'FULL_TIME'}"
+                                        th:text="#{job.common.fullTime}"
+                                    >
+                                        Loại việc làm
+                                    </span>
+                                    <span
+                                        class="job-type-badge part-time"
+                                        th:unless="${job.jobType?.name() == 'FULL_TIME'}"
+                                        th:text="#{job.common.partTime}"
                                     >
                                         Loại việc làm
                                     </span>
@@ -221,14 +226,14 @@
                                     <div class="job-detail-item">
                                         <i class="fas fa-map-marker-alt"></i>
                                         <span th:text="${job.jobLocation}">Địa điểm</span>
-                                    </div>                        <div class="job-detail-item">
-                                    <i class="fas fa-money-bill-wave"></i>
-                                    <span th:if="${job.jobSalary != null}">
-                                        <span th:text="${#numbers.formatInteger(job.jobSalary, 1, 'COMMA') + ' VND'}"></span>
-                                    </span>
-                                    <span th:if="${job.jobSalary == null}">Thỏa thuận</span>
-                                </div>
-
+                                    </div>
+                                    <div class="job-detail-item">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                        <span th:if="${job.jobSalary != null}">
+                                            <span th:text="${#numbers.formatInteger(job.jobSalary, 1, 'COMMA') + ' VND'}"></span>
+                                        </span>
+                                        <span th:if="${job.jobSalary == null}" th:text="#{job.common.negotiable}">Thỏa thuận</span>
+                                    </div>
 
                                     <div class="job-detail-item">
                                         <i class="fas fa-clock"></i>
@@ -244,7 +249,7 @@
                                     <input type="hidden" name="id" th:value="${job.jobPostId}">
                                     <button class="apply-btn">
                                         <i class="fas fa-paper-plane"></i>
-                                        Xem chi tiết
+                                        <span th:text="#{job.common.viewDetails}">Xem chi tiết</span>
                                     </button>
                                 </form>
                                 <button class="save-btn">
@@ -271,7 +276,40 @@
     <!-- Template Javascript -->
     <script th:src="@{/js/main.js}"></script>
 
-    <script>
+    <script th:inline="javascript">
+        $(document).ready(function() {
+            const locationSelect = $('#locationSelect');
+            const selectedLocation = '[[${param.location}]]'; // Lấy giá trị location đã chọn
+            
+            locationSelect.prop('disabled', true);
+            locationSelect.append(new Option(/*[[#{js.loading}]]*/ 'Đang tải...', ''));
+
+            // Fetch provinces from API
+            fetch('https://provinces.open-api.vn/api/p/')
+                .then(response => response.json())
+                .then(data => {
+                    locationSelect.empty(); // Clear loading option
+                    locationSelect.append(new Option(/*[[#{js.selectLocation}]]*/ 'Chọn tỉnh/thành phố', '')); // Add default option
+                    
+                    // Sort provinces alphabetically
+                    data.sort((a, b) => a.name.localeCompare(b.name, 'vi'));
+                    
+                    data.forEach(province => {
+                        const option = new Option(province.name, province.name);
+                        if(province.name === selectedLocation) {
+                            option.selected = true;
+                        }
+                        locationSelect.append(option);
+                    });
+                    locationSelect.prop('disabled', false);
+                })
+                .catch(error => {
+                    console.error('Error fetching provinces:', error);
+                    locationSelect.empty();
+                    locationSelect.append(new Option(/*[[#{js.errorLoading}]]*/ 'Lỗi tải dữ liệu', ''));
+                });
+        });
+
         // Function to switch between search tabs
         function switchTab(tabType) {
             // Remove active class from all tabs and forms

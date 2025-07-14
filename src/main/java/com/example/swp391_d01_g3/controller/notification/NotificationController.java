@@ -11,7 +11,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
+import java.security.Principal;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +31,9 @@ public class NotificationController {
 
     @Autowired
     private IAccountService accountService;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     @GetMapping("")
     public String showNotifications(Model model, Authentication authentication, RedirectAttributes redirectAttributes) {
@@ -168,5 +175,186 @@ public class NotificationController {
             response.put("error", "Failed to delete all notifications");
         }
         return response;
+    }
+    
+    // ========== WEBSOCKET MESSAGE HANDLERS ==========
+    
+    /**
+     * 🔔 Subscribe to personal notifications via WebSocket
+     */
+    @MessageMapping("/notifications.subscribe")
+    public void subscribeToNotifications(Principal principal) {
+        try {
+            String email = principal.getName();
+            Account account = accountService.findByEmail(email);
+            
+            if (account != null) {
+                // Send latest notifications to the user
+                List<NotificationDTO> notifications = notificationService.getLatestUserNotifications(account.getUserId(), 10)
+                        .stream()
+                        .map(NotificationDTO::fromEntity)
+                        .collect(Collectors.toList());
+                
+                messagingTemplate.convertAndSendToUser(
+                    email,
+                    "/queue/notifications",
+                    Map.of("type", "initial_load", "notifications", notifications)
+                );
+                
+                // Send unread count
+                int unreadCount = notificationService.getUnreadNotificationCount(account.getUserId());
+                messagingTemplate.convertAndSendToUser(
+                    email,
+                    "/queue/notifications",
+                    Map.of("type", "unread_count", "count", unreadCount)
+                );
+            }
+        } catch (Exception e) {
+            System.err.println("Error subscribing to notifications: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * ✅ Mark notification as read via WebSocket
+     */
+    @MessageMapping("/notifications.markAsRead")
+    public void markAsReadViaWebSocket(@Payload Map<String, Object> payload, Principal principal) {
+        try {
+            Long notificationId = Long.parseLong(payload.get("notificationId").toString());
+            String email = principal.getName();
+            Account account = accountService.findByEmail(email);
+            
+            if (account != null) {
+                notificationService.markAsRead(notificationId);
+                
+                // Send updated unread count
+                int unreadCount = notificationService.getUnreadNotificationCount(account.getUserId());
+                messagingTemplate.convertAndSendToUser(
+                    email,
+                    "/queue/notifications",
+                    Map.of("type", "unread_count", "count", unreadCount)
+                );
+                
+                // Send success response
+                messagingTemplate.convertAndSendToUser(
+                    email,
+                    "/queue/notifications",
+                    Map.of("type", "mark_read_success", "notificationId", notificationId)
+                );
+            }
+        } catch (Exception e) {
+            messagingTemplate.convertAndSendToUser(
+                principal.getName(),
+                "/queue/notifications",
+                Map.of("type", "error", "message", "Failed to mark notification as read")
+            );
+        }
+    }
+    
+    /**
+     * 🗑️ Delete notification via WebSocket
+     */
+    @MessageMapping("/notifications.delete")
+    public void deleteNotificationViaWebSocket(@Payload Map<String, Object> payload, Principal principal) {
+        try {
+            Long notificationId = Long.parseLong(payload.get("notificationId").toString());
+            String email = principal.getName();
+            Account account = accountService.findByEmail(email);
+            
+            if (account != null) {
+                notificationService.deleteNotification(notificationId);
+                
+                // Send updated unread count
+                int unreadCount = notificationService.getUnreadNotificationCount(account.getUserId());
+                messagingTemplate.convertAndSendToUser(
+                    email,
+                    "/queue/notifications",
+                    Map.of("type", "unread_count", "count", unreadCount)
+                );
+                
+                // Send success response
+                messagingTemplate.convertAndSendToUser(
+                    email,
+                    "/queue/notifications",
+                    Map.of("type", "delete_success", "notificationId", notificationId)
+                );
+            }
+        } catch (Exception e) {
+            messagingTemplate.convertAndSendToUser(
+                principal.getName(),
+                "/queue/notifications",
+                Map.of("type", "error", "message", "Failed to delete notification")
+            );
+        }
+    }
+    
+    /**
+     * ✅ Mark all notifications as read via WebSocket
+     */
+    @MessageMapping("/notifications.markAllAsRead")
+    public void markAllAsReadViaWebSocket(Principal principal) {
+        try {
+            String email = principal.getName();
+            Account account = accountService.findByEmail(email);
+            
+            if (account != null) {
+                notificationService.markAllAsRead(account.getUserId());
+                
+                // Send success response
+                messagingTemplate.convertAndSendToUser(
+                    email,
+                    "/queue/notifications",
+                    Map.of("type", "mark_all_read_success")
+                );
+                
+                // Send updated unread count (should be 0)
+                messagingTemplate.convertAndSendToUser(
+                    email,
+                    "/queue/notifications",
+                    Map.of("type", "unread_count", "count", 0)
+                );
+            }
+        } catch (Exception e) {
+            messagingTemplate.convertAndSendToUser(
+                principal.getName(),
+                "/queue/notifications",
+                Map.of("type", "error", "message", "Failed to mark all notifications as read")
+            );
+        }
+    }
+    
+    /**
+     * 🗑️ Delete all notifications via WebSocket
+     */
+    @MessageMapping("/notifications.deleteAll")
+    public void deleteAllNotificationsViaWebSocket(Principal principal) {
+        try {
+            String email = principal.getName();
+            Account account = accountService.findByEmail(email);
+            
+            if (account != null) {
+                notificationService.deleteAllNotifications(account.getUserId());
+                
+                // Send success response
+                messagingTemplate.convertAndSendToUser(
+                    email,
+                    "/queue/notifications",
+                    Map.of("type", "delete_all_success")
+                );
+                
+                // Send updated unread count (should be 0)
+                messagingTemplate.convertAndSendToUser(
+                    email,
+                    "/queue/notifications",
+                    Map.of("type", "unread_count", "count", 0)
+                );
+            }
+        } catch (Exception e) {
+            messagingTemplate.convertAndSendToUser(
+                principal.getName(),
+                "/queue/notifications",
+                Map.of("type", "error", "message", "Failed to delete all notifications")
+            );
+        }
     }
 } 

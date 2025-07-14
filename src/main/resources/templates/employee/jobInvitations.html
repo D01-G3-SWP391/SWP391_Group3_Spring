@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSRF token meta tags -->
+    <meta name="_csrf" th:content="${_csrf?.token ?: ''}"/>
+    <meta name="_csrf_header" th:content="${_csrf?.headerName ?: 'X-CSRF-TOKEN'}"/>
+    <title th:text="#{employer.invitations.title}">Quản lý lời mời việc làm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbar.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarEmployer.css}" />
+    <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
+    <link rel="stylesheet" th:href="@{/css/employerJobInvitations.css}" />
+</head>
+<body>
+
+
+<div th:replace="~{navbar/navbarEmployee :: navbarEmployee}"></div>
+
+<div class="container">
+    <!-- Flash Messages -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill"></i>
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- Header -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1><i class="bi bi-send-fill text-primary"></i> <span th:text="#{employer.invitations.header}">Quản Lý Lời Mời Việc Làm</span></h1>
+                <p class="text-muted" th:text="#{employer.invitations.description}">Theo dõi và quản lý các lời mời việc làm đã gửi</p>
+            </div>
+            <div class="stats-cards">
+                <div class="stat-card pending">
+                    <div class="stat-number" th:text="${pendingInvitations.size()}">0</div>
+                    <div class="stat-label" th:text="#{employer.invitations.stats.pending}">Chờ phản hồi</div>
+                </div>
+                <div class="stat-card accepted">
+                    <div class="stat-number" th:text="${acceptedInvitations.size()}">0</div>
+                    <div class="stat-label" th:text="#{employer.invitations.stats.accepted}">Đã chấp nhận</div>
+                </div>
+                <div class="stat-card declined">
+                    <div class="stat-number" th:text="${declinedInvitations.size()}">0</div>
+                    <div class="stat-label" th:text="#{employer.invitations.stats.declined}">Đã từ chối</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-tabs mb-4" id="invitationTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button" role="tab">
+                <i class="bi bi-clock"></i> <span th:text="#{employer.invitations.tab.pending}">Chờ phản hồi</span>
+                <span class="badge bg-warning ms-1" th:text="${pendingInvitations.size()}">0</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="accepted-tab" data-bs-toggle="tab" data-bs-target="#accepted" type="button" role="tab">
+                <i class="bi bi-check-circle"></i> <span th:text="#{employer.invitations.tab.accepted}">Đã chấp nhận</span>
+                <span class="badge bg-success ms-1" th:text="${acceptedInvitations.size()}">0</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="declined-tab" data-bs-toggle="tab" data-bs-target="#declined" type="button" role="tab">
+                <i class="bi bi-x-circle"></i> <span th:text="#{employer.invitations.tab.declined}">Đã từ chối</span>
+                <span class="badge bg-danger ms-1" th:text="${declinedInvitations.size()}">0</span>
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="invitationTabContent">
+        <!-- Pending Invitations Tab -->
+        <div class="tab-pane fade show active" id="pending" role="tabpanel">
+            <div th:if="${pendingInvitations.isEmpty()}" class="empty-state">
+                <i class="bi bi-clock-history"></i>
+                <h3 th:text="#{employer.invitations.empty.pending.title}">Không có lời mời nào đang chờ phản hồi</h3>
+                <p th:text="#{employer.invitations.empty.pending.message}">Các lời mời việc làm đang chờ phản hồi từ ứng viên sẽ hiển thị tại đây.</p>
+            </div>
+            
+            <div th:if="${!pendingInvitations.isEmpty()}" class="invitations-grid">
+                <div th:each="invitation : ${pendingInvitations}" class="invitation-card pending-card">
+                    <div class="card-header">
+                        <div class="candidate-info">
+                            <div class="candidate-avatar">
+                                <img th:if="${invitation.student.account.avatarUrl != null}" 
+                                     th:src="${invitation.student.account.avatarUrl}" 
+                                     alt="Avatar" />
+                                <span th:if="${invitation.student.account.avatarUrl == null}" 
+                                      th:text="${invitation.student.account.fullName.substring(0,1)}">A</span>
+                            </div>
+                            <div class="candidate-details">
+                                <h5 th:text="${invitation.student.account.fullName}">Candidate Name</h5>
+                                <p th:text="${invitation.student.account.email}">candidate@email.com</p>
+                            </div>
+                        </div>
+                        <div class="invitation-status">
+                            <span class="badge bg-warning" th:text="#{employer.invitations.status.pending}">Chờ phản hồi</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="job-info">
+                            <h4 th:text="${invitation.jobPost.jobTitle}">Job Title</h4>
+                            <div class="job-details">
+                                <span class="detail-item">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <span th:text="${invitation.jobPost.jobLocation}">Location</span>
+                                </span>
+                                <span class="detail-item">
+                                    <i class="bi bi-currency-dollar"></i>
+                                    <span th:if="${invitation.jobPost.jobSalary != null}" 
+                                          th:text="${#numbers.formatInteger(invitation.jobPost.jobSalary, 1, 'COMMA') + ' VND'}">Salary</span>
+                                    <span th:if="${invitation.jobPost.jobSalary == null}" th:text="#{employer.invitations.salary.negotiable}">Thỏa thuận</span>
+                                </span>
+                                <span class="detail-item">
+                                    <i class="bi bi-clock"></i>
+                                    <span th:text="${invitation.jobPost.jobType}">Job Type</span>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="invitation-message">
+                            <h6><i class="bi bi-chat-quote"></i> <span th:text="#{employer.invitations.message.sent}">Lời nhắn đã gửi:</span></h6>
+                            <p th:text="${invitation.message}">Your invitation message...</p>
+                        </div>
+                        
+                        <div class="invitation-meta">
+                            <small class="text-muted">
+                                <i class="bi bi-calendar"></i>
+                                <span th:text="#{employer.invitations.sent.at}">Gửi lúc:</span> <span th:text="${#temporals.format(invitation.sentAt, 'dd/MM/yyyy HH:mm')}">Date</span>
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <div class="action-buttons">
+                            <button class="btn btn-outline-primary" 
+                                    th:data-student-id="${invitation.student.studentId}"
+                                    onclick="viewCandidateFromData(this)">
+                                <i class="bi bi-person"></i> <span th:text="#{employer.invitations.view.profile}">Xem hồ sơ</span>
+                            </button>
+                            <button class="btn btn-outline-info" 
+                                    th:data-job-id="${invitation.jobPost.jobPostId}"
+                                    onclick="viewJobDetailsFromData(this)">
+                                <i class="bi bi-eye"></i> <span th:text="#{employer.invitations.view.job}">Xem công việc</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Accepted Invitations Tab -->
+        <div class="tab-pane fade" id="accepted" role="tabpanel">
+            <div th:if="${acceptedInvitations.isEmpty()}" class="empty-state">
+                <i class="bi bi-check-circle"></i>
+                <h3 th:text="#{employer.invitations.empty.accepted.title}">Chưa có lời mời nào được chấp nhận</h3>
+                <p th:text="#{employer.invitations.empty.accepted.message}">Các lời mời việc làm đã được chấp nhận sẽ hiển thị tại đây.</p>
+            </div>
+            
+            <div th:if="${!acceptedInvitations.isEmpty()}" class="invitations-grid">
+                <div th:each="invitation : ${acceptedInvitations}" class="invitation-card accepted-card">
+                    <div class="card-header">
+                        <div class="candidate-info">
+                            <div class="candidate-avatar">
+                                <img th:if="${invitation.student.account.avatarUrl != null}" 
+                                     th:src="${invitation.student.account.avatarUrl}" 
+                                     alt="Avatar" />
+                                <span th:if="${invitation.student.account.avatarUrl == null}" 
+                                      th:text="${invitation.student.account.fullName.substring(0,1)}">A</span>
+                            </div>
+                            <div class="candidate-details">
+                                <h5 th:text="${invitation.student.account.fullName}">Candidate Name</h5>
+                                <p th:text="${invitation.student.account.email}">candidate@email.com</p>
+                            </div>
+                        </div>
+                        <div class="invitation-status">
+                            <span class="badge bg-success" th:text="#{employer.invitations.status.accepted}">Đã chấp nhận</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="job-info">
+                            <h4 th:text="${invitation.jobPost.jobTitle}">Job Title</h4>
+                            <div class="job-details">
+                                <span class="detail-item">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <span th:text="${invitation.jobPost.jobLocation}">Location</span>
+                                </span>
+                                <span class="detail-item">
+                                    <i class="bi bi-currency-dollar"></i>
+                                    <span th:if="${invitation.jobPost.jobSalary != null}" 
+                                          th:text="${#numbers.formatInteger(invitation.jobPost.jobSalary, 1, 'COMMA') + ' VND'}">Salary</span>
+                                    <span th:if="${invitation.jobPost.jobSalary == null}" th:text="#{employer.invitations.salary.negotiable}">Thỏa thuận</span>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="response-info" th:if="${invitation.responseMessage != null}">
+                            <h6><i class="bi bi-chat-square-text"></i> <span th:text="#{employer.invitations.candidate.response}">Phản hồi của ứng viên:</span></h6>
+                            <p th:text="${invitation.responseMessage}">Candidate response message...</p>
+                        </div>
+                        
+                        <div class="invitation-meta">
+                            <small class="text-muted">
+                                <i class="bi bi-calendar"></i>
+                                <span th:text="#{employer.invitations.accepted.at}">Chấp nhận lúc:</span> <span th:text="${#temporals.format(invitation.respondedAt, 'dd/MM/yyyy HH:mm')}">Date</span>
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" 
+                                    th:data-invitation-id="${invitation.invitationId}"
+                                    th:data-candidate-name="${invitation.student.account.fullName}"
+                                    th:data-job-title="${invitation.jobPost.jobTitle}"
+                                    onclick="showInterviewModalFromData(this)">
+                                <i class="bi bi-calendar-check"></i> <span th:text="#{employer.invitations.send.interview}">Gửi lịch phỏng vấn</span>
+                            </button>
+                            <button class="btn btn-outline-primary" 
+                                    th:data-student-id="${invitation.student.studentId}"
+                                    onclick="viewCandidateFromData(this)">
+                                <i class="bi bi-person"></i> <span th:text="#{employer.invitations.view.profile}">Xem hồ sơ</span>
+                            </button>
+                            <button class="btn btn-outline-info" 
+                                    th:data-job-id="${invitation.jobPost.jobPostId}"
+                                    onclick="viewJobDetailsFromData(this)">
+                                <i class="bi bi-eye"></i> <span th:text="#{employer.invitations.view.job}">Xem công việc</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Declined Invitations Tab -->
+        <div class="tab-pane fade" id="declined" role="tabpanel">
+            <div th:if="${declinedInvitations.isEmpty()}" class="empty-state">
+                <i class="bi bi-x-circle"></i>
+                <h3 th:text="#{employer.invitations.empty.declined.title}">Chưa có lời mời nào bị từ chối</h3>
+                <p th:text="#{employer.invitations.empty.declined.message}">Các lời mời việc làm đã bị từ chối sẽ hiển thị tại đây.</p>
+            </div>
+            
+            <div th:if="${!declinedInvitations.isEmpty()}" class="invitations-grid">
+                <div th:each="invitation : ${declinedInvitations}" class="invitation-card declined-card">
+                    <div class="card-header">
+                        <div class="candidate-info">
+                            <div class="candidate-avatar">
+                                <img th:if="${invitation.student.account.avatarUrl != null}" 
+                                     th:src="${invitation.student.account.avatarUrl}" 
+                                     alt="Avatar" />
+                                <span th:if="${invitation.student.account.avatarUrl == null}" 
+                                      th:text="${invitation.student.account.fullName.substring(0,1)}">A</span>
+                            </div>
+                            <div class="candidate-details">
+                                <h5 th:text="${invitation.student.account.fullName}">Candidate Name</h5>
+                                <p th:text="${invitation.student.account.email}">candidate@email.com</p>
+                            </div>
+                        </div>
+                        <div class="invitation-status">
+                            <span class="badge bg-danger" th:text="#{employer.invitations.status.declined}">Đã từ chối</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="job-info">
+                            <h4 th:text="${invitation.jobPost.jobTitle}">Job Title</h4>
+                            <div class="job-details">
+                                <span class="detail-item">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <span th:text="${invitation.jobPost.jobLocation}">Location</span>
+                                </span>
+                                <span class="detail-item">
+                                    <i class="bi bi-currency-dollar"></i>
+                                    <span th:if="${invitation.jobPost.jobSalary != null}" 
+                                          th:text="${#numbers.formatInteger(invitation.jobPost.jobSalary, 1, 'COMMA') + ' VND'}">Salary</span>
+                                    <span th:if="${invitation.jobPost.jobSalary == null}" th:text="#{employer.invitations.salary.negotiable}">Thỏa thuận</span>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="response-info" th:if="${invitation.responseMessage != null}">
+                            <h6><i class="bi bi-chat-square-text"></i> <span th:text="#{employer.invitations.decline.reason}">Lý do từ chối:</span></h6>
+                            <p th:text="${invitation.responseMessage}">Decline reason...</p>
+                        </div>
+                        
+                        <div class="invitation-meta">
+                            <small class="text-muted">
+                                <i class="bi bi-calendar"></i>
+                                <span th:text="#{employer.invitations.declined.at}">Từ chối lúc:</span> <span th:text="${#temporals.format(invitation.respondedAt, 'dd/MM/yyyy HH:mm')}">Date</span>
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer">
+                        <div class="action-buttons">
+                            <button class="btn btn-outline-primary" 
+                                    th:data-student-id="${invitation.student.studentId}"
+                                    onclick="viewCandidateFromData(this)">
+                                <i class="bi bi-person"></i> <span th:text="#{employer.invitations.view.profile}">Xem hồ sơ</span>
+                            </button>
+                            <button class="btn btn-outline-info" 
+                                    th:data-job-id="${invitation.jobPost.jobPostId}"
+                                    onclick="viewJobDetailsFromData(this)">
+                                <i class="bi bi-eye"></i> <span th:text="#{employer.invitations.view.job}">Xem công việc</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Interview Modal -->
+<div class="modal fade" id="interviewModal" tabindex="-1" aria-labelledby="interviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="interviewModalLabel">
+                    <i class="bi bi-calendar-check text-primary"></i> <span th:text="#{employer.invitations.interview.modal.title}">Gửi lịch phỏng vấn</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="candidate-summary mb-4">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-person-circle text-primary me-2"></i>
+                        <div>
+                            <h6 class="mb-0"><span th:text="#{employer.invitations.interview.candidate}">Ứng viên:</span> <span id="candidateName"></span></h6>
+                            <small class="text-muted"><span th:text="#{employer.invitations.interview.position}">Vị trí:</span> <span id="jobTitle"></span></small>
+                        </div>
+                    </div>
+                </div>
+                
+                                        <form id="interviewForm" method="post">
+                    <div class="mb-3">
+                        <label for="interviewTime" class="form-label"><span th:text="#{employer.invitations.interview.time}">Thời gian phỏng vấn</span> <span class="text-danger">*</span></label>
+                        <input type="datetime-local" class="form-control" name="interviewTime" id="interviewTime" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="interviewType" class="form-label"><span th:text="#{employer.invitations.interview.type}">Hình thức phỏng vấn</span> <span class="text-danger">*</span></label>
+                        <select class="form-select" name="interviewType" id="interviewType" required>
+                            <option value="" th:text="#{employer.invitations.interview.type.select}">Chọn hình thức phỏng vấn</option>
+                            <option value="Online" th:text="#{employer.invitations.interview.type.online}">Trực tuyến</option>
+                            <option value="Offline" th:text="#{employer.invitations.interview.type.offline}">Tại văn phòng</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="meetingLink" class="form-label" th:text="#{employer.invitations.interview.link}">Link meeting (tùy chọn)</label>
+                        <input type="text" class="form-control" name="meetingLink" id="meetingLink" 
+                               th:placeholder="#{employer.invitations.interview.link.placeholder}">
+                        <div class="form-text">
+                            <i class="bi bi-info-circle"></i> 
+                            <span th:text="#{employer.invitations.interview.link.help}">Có thể bỏ trống nếu phỏng vấn offline hoặc sẽ liên hệ riêng</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="note" class="form-label" th:text="#{employer.invitations.interview.note}">Ghi chú</label>
+                        <textarea class="form-control" name="note" id="note" rows="3" 
+                                  th:placeholder="#{employer.invitations.interview.note.placeholder}"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" th:text="#{employer.invitations.interview.cancel}">Hủy</button>
+                <button type="submit" form="interviewForm" class="btn btn-primary" id="sendInterviewBtn">
+                    <i class="bi bi-send"></i> <span th:text="#{employer.invitations.interview.send}">Gửi lịch phỏng vấn</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/language-dropdown.js}"></script>
+<!-- Simple JavaScript inline -->
+<script>
+// Simple modal handling
+function showInterviewModalFromData(button) {
+    const invitationId = button.getAttribute('data-invitation-id');
+    const candidateName = button.getAttribute('data-candidate-name');
+    const jobTitle = button.getAttribute('data-job-title');
+    
+    // Set form action
+    document.getElementById('interviewForm').action = `/Employer/JobInvitations/${invitationId}/sendInterview`;
+    
+    // Update modal content
+    document.getElementById('candidateName').textContent = candidateName;
+    document.getElementById('jobTitle').textContent = jobTitle;
+    
+    // Reset form
+    document.getElementById('interviewForm').reset();
+    
+    // Show modal
+    new bootstrap.Modal(document.getElementById('interviewModal')).show();
+}
+
+// Simple view functions
+function viewCandidateFromData(button) {
+    const studentId = button.getAttribute('data-student-id');
+    window.open(`/Employer/CandidateDetail/${studentId}`, '_blank');
+}
+
+function viewJobDetailsFromData(button) {
+    const jobId = button.getAttribute('data-job-id');
+    window.open(`/JobDescription/JobPost?id=${jobId}`, '_blank');
+}
+
+// Update meeting link placeholder based on interview type
+document.addEventListener('DOMContentLoaded', function() {
+    const interviewType = document.getElementById('interviewType');
+    const meetingLink = document.getElementById('meetingLink');
+    
+    if (interviewType && meetingLink) {
+        interviewType.addEventListener('change', function() {
+            if (this.value === 'Online') {
+                meetingLink.placeholder = /*[[#{employer.invitations.interview.link.placeholder}]]*/ 'VD: https://meet.google.com/xxx hoặc https://zoom.us/j/xxx';
+            } else if (this.value === 'Offline') {
+                meetingLink.placeholder = /*[[#{employer.invitations.interview.offline.placeholder}]]*/ 'Không cần thiết cho phỏng vấn trực tiếp';
+            } else {
+                meetingLink.placeholder = /*[[#{employer.invitations.interview.link.placeholder}]]*/ 'VD: https://meet.google.com/xxx hoặc https://zoom.us/j/xxx';
+            }
+        });
+    }
+});
+</script>
+
+</body>
+</html> 

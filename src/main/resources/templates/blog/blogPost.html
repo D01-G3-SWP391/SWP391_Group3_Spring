@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cẩm nang nghề nghiệp - JOB4YOU</title>
+    <title th:text="#{blog.title}">Cẩm nang nghề nghiệp - JOB4YOU</title>
     <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
             rel="stylesheet"
     />
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarHome.css}"/>
     <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}"/>
     <link rel="stylesheet" th:href="@{/css/blog.css}"/>
-    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
     <link rel="stylesheet" th:href="@{/css/footer.css}" />
     <link
             rel="stylesheet"
@@ -27,31 +28,31 @@
     <div class="carousel-container">
         <div class="carousel-slide active">
             <div class="carousel-content">
-                <h1>🚀 Cẩm nang nghề nghiệp</h1>
-                <p>Khám phá kiến thức, kỹ năng và bí quyết thành công trong sự nghiệp từ các chuyên gia hàng đầu</p>
+                <h1>🚀 <span th:text="#{blog.career.guide}">Cẩm nang nghề nghiệp</span></h1>
+                <p th:text="#{blog.discover.knowledge}">Khám phá kiến thức, kỹ năng và bí quyết thành công trong sự nghiệp từ các chuyên gia hàng đầu</p>
                 <a href="#featured" class="carousel-cta">
                     <i class="bi bi-arrow-down"></i>
-                    Khám phá ngay
+                    <span th:text="#{blog.explore.now}">Khám phá ngay</span>
                 </a>
             </div>
         </div>
         <div class="carousel-slide">
             <div class="carousel-content">
-                <h1>💼 Kỹ năng ứng tuyển</h1>
-                <p>Học cách viết CV ấn tượng, thư xin việc chuyên nghiệp và chinh phục nhà tuyển dụng</p>
+                <h1>💼 <span th:text="#{blog.application.skills}">Kỹ năng ứng tuyển</span></h1>
+                <p th:text="#{blog.learn.how.to}">Học cách viết CV ấn tượng, thư xin việc chuyên nghiệp và chinh phục nhà tuyển dụng</p>
                 <a href="#featured" class="carousel-cta">
                     <i class="bi bi-briefcase"></i>
-                    Tìm hiểu thêm
+                    <span th:text="#{blog.learn.more}">Tìm hiểu thêm</span>
                 </a>
             </div>
         </div>
         <div class="carousel-slide">
             <div class="carousel-content">
-                <h1>🎯 Phỏng vấn thành công</h1>
-                <p>Bí quyết trả lời câu hỏi phỏng vấn, tạo ấn tượng tốt và nhận được offer mơ ước</p>
+                <h1>🎯 <span th:text="#{blog.interview.success}">Phỏng vấn thành công</span></h1>
+                <p th:text="#{blog.interview.tips}">Bí quyết trả lời câu hỏi phỏng vấn, tạo ấn tượng tốt và nhận được offer mơ ước</p>
                 <a href="#featured" class="carousel-cta">
                     <i class="bi bi-target"></i>
-                    Xem hướng dẫn
+                    <span th:text="#{blog.view.guide}">Xem hướng dẫn</span>
                 </a>
             </div>
         </div>
@@ -81,9 +82,9 @@
                    class="search-input"
                    name="search"
                    th:value="${searchKeyword}"
-                   placeholder="🔍 Tìm kiếm bài viết, chủ đề, kỹ năng...">
+                   th:placeholder="#{blog.search.placeholder}">
             <button type="submit" class="search-button">
-                <i class="bi bi-search"></i> Tìm kiếm
+                <i class="bi bi-search"></i> <span th:text="#{blog.search.button}">Tìm kiếm</span>
             </button>
         </form>
 
@@ -91,15 +92,18 @@
             <a href="/Blog"
                class="category-btn"
                th:classappend="${selectedCategory == null} ? 'active' : ''">
-                📚 Tất cả
+                📚 <span th:text="#{blog.all.categories}">Tất cả</span>
             </a>
             <a th:each="category : ${categories}"
                th:href="@{/Blog(category=${category})}"
                class="category-btn"
-               th:classappend="${selectedCategory == category} ? 'active' : ''"
-               th:text="${category == 'application_tips' ? '💼 Ứng tuyển' :
-                             category == 'interview_guide' ? '🎯 Phỏng vấn' :
-                             category == 'quotes' ? '✨ Động lực' : category}">
+               th:classappend="${selectedCategory == category} ? 'active' : ''">
+                <span th:switch="${category}">
+                    <span th:case="'application_tips'">💼 <span th:text="#{blog.application.tips}">Ứng tuyển</span></span>
+                    <span th:case="'interview_guide'">🎯 <span th:text="#{blog.interview.guide}">Phỏng vấn</span></span>
+                    <span th:case="'motivation'">✨ <span th:text="#{blog.motivation}">Động lực</span></span>
+                    <span th:case="*" th:text="${category}"></span>
+                </span>
             </a>
         </div>
     </section>
@@ -108,8 +112,8 @@
 <!-- Main Content Layout -->
 <div class="container py-5">
     <div class="section-title">
-        <h2>📖 Tất cả bài viết</h2>
-        <p>Khám phá kho tàng kiến thức đa dạng về nghề nghiệp</p>
+        <h2>📖 <span th:text="#{blog.all.posts}">Tất cả bài viết</span></h2>
+        <p th:text="#{blog.diverse.knowledge}">Khám phá kho tàng kiến thức đa dạng về nghề nghiệp</p>
     </div>
     <div class="row align-items-stretch">
         <!-- Main Blog Posts - Left Side -->
@@ -124,9 +128,9 @@
                              class="blog-image">
                         <div class="blog-content-card">
                             <span class="blog-category" th:switch="${post.resource.resourceType}">
-                                <span th:case="'application_tips'">💼 Ứng tuyển</span>
-                                <span th:case="'interview_guide'">🎯 Phỏng vấn</span>
-                                <span th:case="'quotes'">✨ Động lực</span>
+                                <span th:case="'application_tips'">💼 <span th:text="#{blog.application.tips}">Ứng tuyển</span></span>
+                                <span th:case="'interview_guide'">🎯 <span th:text="#{blog.interview.guide}">Phỏng vấn</span></span>
+                                <span th:case="'quotes'">✨ <span th:text="#{blog.motivation}">Động lực</span></span>
                                 <span th:case="*" th:text="${post.resource.resourceType}"></span>
                             </span>
                             <h3 class="blog-title">
@@ -139,7 +143,7 @@
                                     <span th:text="${#temporals.format(post.createdAt, 'dd/MM/yyyy')}"></span>
                                 </span>
                                 <a th:href="@{/Blog/{id}(id=${post.blogPostId})}" class="read-more-btn">
-                                    Đọc tiếp <i class="bi bi-arrow-right"></i>
+                                    <span th:text="#{blog.read.more}">Đọc tiếp</span> <i class="bi bi-arrow-right"></i>
                                 </a>
                             </div>
                         </div>
@@ -149,10 +153,10 @@
                 <!-- Empty State -->
                 <div th:if="${#lists.isEmpty(blogPosts.content)}" class="empty-state">
                     <i class="bi bi-search"></i>
-                    <h3>Không tìm thấy bài viết nào</h3>
-                    <p>Hãy thử từ khóa khác hoặc chọn danh mục khác</p>
+                    <h3 th:text="#{blog.no.posts}">Không tìm thấy bài viết nào</h3>
+                    <p th:text="#{blog.no.posts.text}">Hãy thử từ khóa khác hoặc chọn danh mục khác</p>
                     <a href="/Blog" class="read-more-btn">
-                        <i class="bi bi-arrow-left"></i> Về trang chủ blog
+                        <i class="bi bi-arrow-left"></i> <span th:text="#{blog.back.to.home}">Về trang chủ blog</span>
                     </a>
                 </div>
 
@@ -166,7 +170,7 @@
                 <div class="sidebar-section">
                     <h4 class="sidebar-title">
                         <i class="fas fa-star"></i>
-                        Bài viết nổi bật
+                        <span th:text="#{blog.featured.posts}">Bài viết nổi bật</span>
                     </h4>
                     
                     <!-- Main Featured Post -->
@@ -182,7 +186,7 @@
                             </div>
                             <p th:text="${mainPost.summary}"></p>
                             <a th:href="@{/Blog/{id}(id=${mainPost.blogPostId})}" class="main-readmore-sidebar">
-                                Đọc tiếp <i class="bi bi-arrow-right"></i>
+                                <span th:text="#{blog.read.more}">Đọc tiếp</span> <i class="bi bi-arrow-right"></i>
                             </a>
                         </div>
                     </div>

@@ -122,7 +122,7 @@
         form.addEventListener('submit', function(e) {
             // Show loading state
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner"></span>Đăng nhập...';
+            submitBtn.innerHTML = '<span class="spinner"></span>' + /*[[#{login.loading}]]*/ 'Logging in...';
             form.classList.add('loading');
         });
     });

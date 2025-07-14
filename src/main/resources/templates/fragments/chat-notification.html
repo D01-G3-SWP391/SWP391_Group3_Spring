@@ -21,7 +21,7 @@
                 <div class="chat-notification-header">
                     <h6 class="mb-0">
                         <i class="bi bi-chat-dots-fill text-dark"></i>
-                        <span>Tin nhắn</span>
+                        <span th:text="#{chat.notification.title}">Tin nhắn</span>
                     </h6>
 
                 </div>
@@ -31,7 +31,7 @@
                         <div class="spinner-border spinner-border-sm" role="status">
                             <span class="visually-hidden">Loading...</span>
                         </div>
-                        <span class="ms-2">Đang tải cuộc trò chuyện...</span>
+                        <span class="ms-2" th:text="#{chat.notification.loading}">Đang tải cuộc trò chuyện...</span>
                     </div>
                 </div>
 
@@ -59,8 +59,8 @@
             <!-- Chat Messages -->
             <div class="chat-messages" id="chatMessages">
                 <div style="text-align: center; padding: 20px; color: #666;">
-                    <h5>💬 Tin nhắn</h5>
-                    <p>Chọn cuộc trò chuyện để bắt đầu nhắn tin</p>
+                    <h5>💬 <span th:text="#{chat.notification.title}">Tin nhắn</span></h5>
+                    <p th:text="#{chat.notification.select.to.start}">Chọn cuộc trò chuyện để bắt đầu nhắn tin</p>
                 </div>
             </div>
 
@@ -68,7 +68,7 @@
             <div class="chat-input">
                 <form id="messageForm" onsubmit="sendMessage(event)">
                     <div class="chat-input-form">
-                        <input type="text" id="messageInput" placeholder="Chọn cuộc trò chuyện để nhắn tin..." disabled>
+                        <input type="text" id="messageInput" th:placeholder="#{chat.notification.select.to.type}" disabled>
                         <button type="submit" disabled>
                             <i class="bi bi-send"></i>
                         </button>

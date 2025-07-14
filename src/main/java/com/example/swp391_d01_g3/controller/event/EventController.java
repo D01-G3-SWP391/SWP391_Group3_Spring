@@ -143,7 +143,7 @@ public class EventController {
      * Hiển thị chi tiết event
      */
     @GetMapping("/{eventId}")
-    public String eventDetail(@PathVariable Integer eventId, Model model, Authentication authentication) {
+    public String eventDetail(@PathVariable Integer eventId, Model model, Authentication authentication, Principal principal) {
         try {
             Event event = eventService.findById(eventId);
             if (event == null) {
@@ -169,6 +169,11 @@ public class EventController {
             model.addAttribute("event", event);
             model.addAttribute("isRegistered", isRegistered);
             model.addAttribute("relatedEvents", relatedEvents);
+            if (principal != null) {
+                model.addAttribute("userEmail", principal.getName());
+                Account account = accountService.findByEmail(principal.getName());
+                model.addAttribute("account", account);
+            }
             
             return "events/eventDetail";
             
@@ -214,8 +219,12 @@ public class EventController {
 //            System.out.println("Max participants: " + event.getMaxParticipants());
             
             if (!event.canRegister()) {
-                System.out.println("Event cannot be registered");
-                return "error:Sự kiện này không thể đăng ký";
+                System.out.println("Event cannot be registered. Details:");
+                System.out.println("- Approval Status: " + event.getApprovalStatus());
+                System.out.println("- Event Status: " + event.getEventStatus());
+                System.out.println("- Current/Max Participants: " + event.getCurrentParticipants() + "/" + event.getMaxParticipants());
+                System.out.println("- Registration Deadline: " + event.getRegistrationDeadline());
+                return "error:Sự kiện này không thể đăng ký. Vui lòng liên hệ admin.";
             }
 
             // Kiểm tra email đã đăng ký chưa

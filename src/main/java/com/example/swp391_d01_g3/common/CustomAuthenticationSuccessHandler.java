@@ -61,25 +61,34 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             String email = (String) attributes.get("email");
             String fullName = (String) attributes.get("name");
 
-
-            // Kiểm tra user có tồn tại chưa để biết có phải tài khoản mới
-            boolean isNewUser = accountService.findByEmail(email) == null;
-            
-            accountDetailsService.saveOAuthUser(attributes);
-            UserDetails userDetails = accountDetailsService.loadUserByUsername(email);
-            
-            // CHỈ gửi email cho tài khoản MỚI
-            if (isNewUser) {
-                emailService.sendWelcomeEmail(email, fullName, "Google");
+            try {
+                // Kiểm tra user có tồn tại chưa để biết có phải tài khoản mới
+                boolean isNewUser = accountService.findByEmailAnyStatus(email) == null;
+                
+                accountDetailsService.saveOAuthUser(attributes);
+                UserDetails userDetails = accountDetailsService.loadUserByUsername(email);
+                
+                // CHỈ gửi email cho tài khoản MỚI
+                if (isNewUser) {
+                    emailService.sendWelcomeEmail(email, fullName, "Google");
+                }
+                
+                // Tạo Authentication object đúng cách
+                authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                );
+               SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (org.springframework.security.authentication.DisabledException e) {
+                // Account bị ban - redirect về login với error message
+                response.sendRedirect("/Login?error=banned");
+                return;
+            } catch (Exception e) {
+                // Các lỗi khác - redirect về login với error chung
+                response.sendRedirect("/Login?error=credentials");
+                return;
             }
-            
-            // Tạo Authentication object đúng cách
-            authentication = new UsernamePasswordAuthenticationToken(
-                    userDetails,
-                    null,
-                    userDetails.getAuthorities()
-            );
-           SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         // Đã TẮT email notification cho login thường xuyên bằng Email/Password
         
@@ -94,7 +103,7 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_student"))) {
                 targetUrl = "/";
             } else {
-                targetUrl = "/HomePage";
+                targetUrl = "/";
             }
         }
         clearAuthenticationAttributes(request);

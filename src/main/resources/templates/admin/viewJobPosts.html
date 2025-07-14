@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirm Job Posts - Admin</title>
+    <title th:text="#{admin.job.posts.title} + ' - Admin'">Confirm Job Posts - Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
     <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
     <link rel="stylesheet" th:href="@{/css/pagination.css}">
@@ -16,7 +17,7 @@
 
 <div class="main-content">
     <div class="container-fluid">
-        <h2>Confirm Job Posts</h2>
+        <h2 th:text="#{admin.job.posts.title}">Confirm Job Posts</h2>
 
         <!-- Success/Error Messages -->
         <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -38,14 +39,14 @@
             <div class="col-md-6">
                 <input class="form-control" name="keyword"
                        th:value="${keyword}"
-                       placeholder="Search by job title, company or location..." />
+                       th:placeholder="#{admin.job.posts.search.placeholder}" />
             </div>
             <div class="col-auto d-flex gap-2">
                 <button class="btn-equal" type="submit">
-                    <i class="bi bi-search me-2"></i>Search
+                    <i class="bi bi-search me-2"></i><span th:text="#{admin.job.posts.search.button}">Search</span>
                 </button>
                 <a th:href="@{/Admin/JobPosts}" class="btn-equal">
-                    <i class="bi bi-arrow-clockwise me-2"></i>Reset
+                    <i class="bi bi-arrow-clockwise me-2"></i><span th:text="#{admin.job.posts.reset.button}">Reset</span>
                 </a>
             </div>
         </form>
@@ -53,12 +54,12 @@
         <!-- Results Info -->
         <div class="d-flex justify-content-between align-items-center mb-3">
             <span class="text-muted">
-                Showing <strong th:text="${currentPage * 6 + 1}"></strong> to
+                <span th:text="#{admin.job.posts.showing}">Showing</span> <strong th:text="${currentPage * 6 + 1}"></strong> <span th:text="#{admin.job.posts.to}">to</span>
                 <strong th:text="${currentPage * 6 + #lists.size(jobPostList)}"></strong>
-                of <strong th:text="${totalItems}"></strong> job posts awaiting confirmation
+                <span th:text="#{admin.job.posts.of}">of</span> <strong th:text="${totalItems}"></strong> <span th:text="#{admin.job.posts.awaiting.confirmation}">job posts awaiting confirmation</span>
             </span>
             <span class="text-muted" th:if="${totalPages > 1}">
-                Page <strong th:text="${currentPage + 1}"></strong> of <strong th:text="${totalPages}"></strong>
+                <span th:text="#{admin.job.posts.page}">Page</span> <strong th:text="${currentPage + 1}"></strong> <span th:text="#{admin.job.posts.of}">of</span> <strong th:text="${totalPages}"></strong>
             </span>
         </div>
 
@@ -67,14 +68,14 @@
             <table class="table table-hover admin-table">
                 <thead>
                 <tr>
-                    <th><i class="bi bi-briefcase me-2"></i>Job Title</th>
-                    <th><i class="bi bi-building me-2"></i>Company</th>
-                    <th><i class="bi bi-geo-alt me-2"></i>Location</th>
-                    <th><i class="bi bi-cash me-2"></i>Salary</th>
-                    <th><i class="bi bi-clock me-2"></i>Type</th>
-                    <th><i class="bi bi-shield-check me-2"></i>Status</th>
-                    <th><i class="bi bi-calendar me-2"></i>Created</th>
-                    <th><i class="bi bi-gear me-2"></i>Actions</th>
+                    <th><i class="bi bi-briefcase me-2"></i><span th:text="#{admin.job.posts.job.title}">Job Title</span></th>
+                    <th><i class="bi bi-building me-2"></i><span th:text="#{admin.job.posts.company}">Company</span></th>
+                    <th><i class="bi bi-geo-alt me-2"></i><span th:text="#{admin.job.posts.location}">Location</span></th>
+                    <th><i class="bi bi-cash me-2"></i><span th:text="#{admin.job.posts.salary}">Salary</span></th>
+                    <th><i class="bi bi-clock me-2"></i><span th:text="#{admin.job.posts.type}">Type</span></th>
+                    <th><i class="bi bi-shield-check me-2"></i><span th:text="#{admin.job.posts.status}">Status</span></th>
+                    <th><i class="bi bi-calendar me-2"></i><span th:text="#{admin.job.posts.created}">Created</span></th>
+                    <th><i class="bi bi-gear me-2"></i><span th:text="#{admin.job.posts.actions}">Actions</span></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -88,7 +89,7 @@
                         <span th:if="${jobPost.jobSalary != null}">
                           <span th:text="${#numbers.formatInteger(jobPost.jobSalary, 1, 'COMMA') + ' VND'}"></span>
                         </span>
-                        <span th:if="${jobPost.jobSalary == null}">Thỏa thuận</span>
+                        <span th:if="${jobPost.jobSalary == null}" th:text="#{admin.job.posts.salary.negotiable}"></span>
                     </td>
                     <td>
                         <span class="badge bg-info" th:text="${jobPost.jobType}"></span>
@@ -105,24 +106,24 @@
                         <div class="action-btns">
                             <a th:href="@{/Admin/JobPost/{id}(id=${jobPost.jobPostId})}"
                                class="btn btn-sm btn-primary">
-                                <i class="bi bi-eye"></i> View
+                                <i class="bi bi-eye"></i> <span th:text="#{admin.job.posts.view}">View</span>
                             </a>
 
                             <form th:if="${jobPost.approvalStatus.name() == 'PENDING'}"
                                   th:action="@{/Admin/ApproveJobPost/{id}(id=${jobPost.jobPostId})}"
                                   method="post" style="display: inline;"
-                                  onsubmit="return confirm('Are you sure you want to approve this job post?')">
+                                  th:onsubmit="'return confirm(\'' + #{admin.job.posts.approve.confirm} + '\')'">
                                 <button type="submit" class="btn btn-sm btn-success">
-                                    <i class="bi bi-check-circle"></i> Approve
+                                    <i class="bi bi-check-circle"></i> <span th:text="#{admin.job.posts.approve}">Approve</span>
                                 </button>
                             </form>
 
                             <form th:if="${jobPost.approvalStatus.name() == 'PENDING'}"
                                   th:action="@{/Admin/RejectJobPost/{id}(id=${jobPost.jobPostId})}"
                                   method="post" style="display: inline;"
-                                  onsubmit="return confirm('Are you sure you want to reject this job post?')">
+                                  th:onsubmit="'return confirm(\'' + #{admin.job.posts.reject.confirm} + '\')'">
                                 <button type="submit" class="btn btn-sm btn-danger">
-                                    <i class="bi bi-x-circle"></i> Reject
+                                    <i class="bi bi-x-circle"></i> <span th:text="#{admin.job.posts.reject}">Reject</span>
                                 </button>
                             </form>
                         </div>
@@ -135,8 +136,8 @@
         <!-- No Results Message -->
         <div th:if="${#lists.isEmpty(jobPostList)}" class="text-center py-5">
             <i class="bi bi-briefcase-check display-1 text-muted"></i>
-            <h4 class="text-muted mt-3">No pending job posts</h4>
-            <p class="text-muted">All job posts have been reviewed</p>
+            <h4 class="text-muted mt-3" th:text="#{admin.job.posts.no.results}">No pending job posts</h4>
+            <p class="text-muted" th:text="#{admin.job.posts.no.results.text}">All job posts have been reviewed</p>
         </div>
 
         <!-- Pagination -->
@@ -146,7 +147,7 @@
                 <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
                     <a class="page-link"
                        th:href="@{/Admin/JobPosts(page=${currentPage - 1}, keyword=${keyword}, status=${selectedStatus})}">
-                        <i class="bi bi-chevron-left"></i> Previous
+                        <i class="bi bi-chevron-left"></i> <span th:text="#{admin.job.posts.previous}">Previous</span>
                     </a>
                 </li>
 
@@ -163,7 +164,7 @@
                 <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
                     <a class="page-link"
                        th:href="@{/Admin/JobPosts(page=${currentPage + 1}, keyword=${keyword}, status=${selectedStatus})}">
-                        Next <i class="bi bi-chevron-right"></i>
+                        <span th:text="#{admin.job.posts.next}">Next</span> <i class="bi bi-chevron-right"></i>
                     </a>
                 </li>
             </ul>

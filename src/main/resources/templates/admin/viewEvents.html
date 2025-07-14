@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>All Events - Admin</title>
+  <title th:text="#{admin.events.title} + ' - Admin'">All Events - Admin</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
   <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
   <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
   <link rel="stylesheet" th:href="@{/css/pagination.css}">
@@ -16,7 +17,7 @@
 
 <div class="main-content">
   <div class="container-fluid">
-    <h2>All Career Events</h2>
+    <h2 th:text="#{admin.events.title}">All Career Events</h2>
 
     <!-- Success/Error Messages -->
     <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -35,22 +36,22 @@
       <div class="col-md-6">
         <input class="form-control" name="keyword"
                th:value="${keyword}"
-               placeholder="Search events by title, description or location..." />
+               th:placeholder="#{admin.events.search.placeholder}" />
       </div>
       <div class="col-md-3">
         <select class="form-control" name="status">
-          <option value="">All Status</option>
-          <option value="PENDING" th:selected="${selectedStatus == 'PENDING'}">Pending</option>
-          <option value="APPROVED" th:selected="${selectedStatus == 'APPROVED'}">Approved</option>
-          <option value="REJECTED" th:selected="${selectedStatus == 'REJECTED'}">Rejected</option>
+          <option value="" th:text="#{admin.events.status.all}">All Status</option>
+          <option value="PENDING" th:selected="${selectedStatus == 'PENDING'}" th:text="#{admin.events.status.pending}">Pending</option>
+          <option value="APPROVED" th:selected="${selectedStatus == 'APPROVED'}" th:text="#{admin.events.status.approved}">Approved</option>
+          <option value="REJECTED" th:selected="${selectedStatus == 'REJECTED'}" th:text="#{admin.events.status.rejected}">Rejected</option>
         </select>
       </div>
       <div class="col-auto d-flex gap-2">
         <button class="btn-equal" type="submit">
-          <i class="bi bi-search me-2"></i>Search
+          <i class="bi bi-search me-2"></i><span th:text="#{admin.events.search.button}">Search</span>
         </button>
         <a th:href="@{/Admin/Events}" class="btn-equal">
-          <i class="bi bi-arrow-clockwise me-2"></i>Reset
+          <i class="bi bi-arrow-clockwise me-2"></i><span th:text="#{admin.events.reset.button}">Reset</span>
         </a>
       </div>
     </form>
@@ -58,14 +59,14 @@
     <!-- Results Info -->
     <div class="d-flex justify-content-between align-items-center mb-3">
       <span class="text-muted">
-        Showing <strong th:text="${currentPage * 10 + 1}"></strong> to
+        <span th:text="#{admin.events.showing}">Showing</span> <strong th:text="${currentPage * 10 + 1}"></strong> <span th:text="#{admin.events.to}">to</span>
         <strong th:text="${currentPage * 10 + #lists.size(eventList)}"></strong>
-        of <strong th:text="${totalItems}"></strong> events
+        <span th:text="#{admin.events.of}">of</span> <strong th:text="${totalItems}"></strong> <span th:text="#{admin.events.events}">events</span>
         <span th:if="${selectedStatus != null and selectedStatus != ''}"
               th:text="'(' + ${selectedStatus} + ')'" class="text-primary"></span>
       </span>
       <span class="text-muted" th:if="${totalPages > 1}">
-        Page <strong th:text="${currentPage + 1}"></strong> of <strong th:text="${totalPages}"></strong>
+        <span th:text="#{admin.events.page}">Page</span> <strong th:text="${currentPage + 1}"></strong> <span th:text="#{admin.events.of}">of</span> <strong th:text="${totalPages}"></strong>
       </span>
     </div>
 
@@ -74,13 +75,13 @@
       <table class="table table-hover admin-table">
         <thead>
         <tr>
-          <th><i class="bi bi-calendar-event me-2"></i>Event Title</th>
-          <th><i class="bi bi-geo-alt me-2"></i>Location</th>
-          <th><i class="bi bi-calendar me-2"></i>Event Date</th>
-          <th><i class="bi bi-people me-2"></i>Participants</th>
-          <th><i class="bi bi-building me-2"></i>Employer</th>
-          <th><i class="bi bi-shield-check me-2"></i>Status</th>
-          <th><i class="bi bi-gear me-2"></i>Actions</th>
+          <th><i class="bi bi-calendar-event me-2"></i><span th:text="#{admin.events.event.title}">Event Title</span></th>
+          <th><i class="bi bi-geo-alt me-2"></i><span th:text="#{admin.events.location}">Location</span></th>
+          <th><i class="bi bi-calendar me-2"></i><span th:text="#{admin.events.date}">Event Date</span></th>
+          <th><i class="bi bi-people me-2"></i><span th:text="#{admin.events.participants}">Participants</span></th>
+          <th><i class="bi bi-building me-2"></i><span th:text="#{admin.events.employer}">Employer</span></th>
+          <th><i class="bi bi-shield-check me-2"></i><span th:text="#{admin.events.status}">Status</span></th>
+          <th><i class="bi bi-gear me-2"></i><span th:text="#{admin.events.actions}">Actions</span></th>
         </tr>
         </thead>
         <tbody>
@@ -95,9 +96,9 @@
             <span th:if="${event.maxParticipants != null}">
               / <span th:text="${event.maxParticipants}"></span>
             </span>
-            <span th:if="${event.maxParticipants == null}"> (Unlimited)</span>
+            <span th:if="${event.maxParticipants == null}" th:text="' (' + #{admin.events.unlimited} + ')'"> (Unlimited)</span>
           </td>
-          <td th:text="${event.employer != null ? event.employer.companyName : 'N/A'}"></td>
+          <td th:text="${event.employer?.companyName} ?: #{admin.events.not.applicable}"></td>
           <td>
             <!-- THÊM: Clickable Status Badges -->
             <a th:href="@{/Admin/Events(status=${event.approvalStatus.name()}, keyword=${keyword})}"
@@ -112,7 +113,7 @@
               <div class="action-btns-top">
                 <a th:href="@{/Admin/Event/{id}(id=${event.eventId})}"
                    class="btn btn-sm btn-primary">
-                  <i class="bi bi-eye"></i> View
+                  <i class="bi bi-eye"></i> <span th:text="#{admin.events.view}">View</span>
                 </a>
 
                 <!-- Change Status Dropdown -->
@@ -120,19 +121,19 @@
                   <button class="btn btn-sm btn-warning dropdown-toggle"
                           type="button"
                           data-bs-toggle="dropdown">
-                    <i class="bi bi-arrow-repeat"></i> Status
+                    <i class="bi bi-arrow-repeat"></i> <span th:text="#{admin.events.change.status}">Status</span>
                   </button>
                   <ul class="dropdown-menu">
                     <!-- Approval Status Options -->
-                    <li><h6 class="dropdown-header">Approval Status</h6></li>
+                    <li><h6 class="dropdown-header" th:text="#{admin.events.approval.status}">Approval Status</h6></li>
                     <li>
                       <form th:action="@{/Admin/ToggleApprovalStatus/{id}(id=${event.eventId})}"
                             method="post" style="display: inline;">
                         <input type="hidden" name="newApprovalStatus" value="APPROVED">
                         <button type="submit" class="dropdown-item text-success"
                                 th:disabled="${event.approvalStatus.name() == 'APPROVED'}"
-                                onclick="return confirm('Approve this event?')">
-                          <i class="bi bi-check-square me-2"></i>Approve
+                                th:onclick="'return confirm(\'' + #{admin.events.approve.confirm} + '\')'">
+                          <i class="bi bi-check-square me-2"></i><span th:text="#{admin.events.approve}">Approve</span>
                         </button>
                       </form>
                     </li>
@@ -142,8 +143,8 @@
                         <input type="hidden" name="newApprovalStatus" value="REJECTED">
                         <button type="submit" class="dropdown-item text-danger"
                                 th:disabled="${event.approvalStatus.name() == 'REJECTED'}"
-                                onclick="return confirm('Reject this event?')">
-                          <i class="bi bi-x-square me-2"></i>Reject
+                                th:onclick="'return confirm(\'' + #{admin.events.reject.confirm} + '\')'">
+                          <i class="bi bi-x-square me-2"></i><span th:text="#{admin.events.reject}">Reject</span>
                         </button>
                       </form>
                     </li>
@@ -153,8 +154,8 @@
                         <input type="hidden" name="newApprovalStatus" value="PENDING">
                         <button type="submit" class="dropdown-item text-warning"
                                 th:disabled="${event.approvalStatus.name() == 'PENDING'}"
-                                onclick="return confirm('Set to PENDING status?')">
-                          <i class="bi bi-clock me-2"></i>Set Pending
+                                th:onclick="'return confirm(\'' + #{admin.events.set.pending.confirm} + '\')'">
+                          <i class="bi bi-clock me-2"></i><span th:text="#{admin.events.set.pending}">Set Pending</span>
                         </button>
                       </form>
                     </li>
@@ -172,15 +173,15 @@
     <!-- No Results Message -->
     <div th:if="${eventList == null or #lists.isEmpty(eventList)}" class="text-center py-5">
       <i class="bi bi-calendar-event display-1 text-muted"></i>
-      <h4 class="text-muted mt-3">No events found</h4>
-      <p class="text-muted">Try adjusting your search criteria</p>
+      <h4 class="text-muted mt-3" th:text="#{admin.events.no.results}">No events found</h4>
+      <p class="text-muted" th:text="#{admin.events.no.results.text}">Try adjusting your search criteria</p>
     </div>
 
     <!-- Pagination Info -->
     <div th:if="${totalItems > 0}" class="pagination-info">
-      Showing <strong th:text="${currentPage * 10 + 1}"></strong> to
+      <span th:text="#{admin.events.showing}">Showing</span> <strong th:text="${currentPage * 10 + 1}"></strong> <span th:text="#{admin.events.to}">to</span>
       <strong th:text="${currentPage * 10 + #lists.size(eventList)}"></strong>
-      of <strong th:text="${totalItems}"></strong> events
+      <span th:text="#{admin.events.of}">of</span> <strong th:text="${totalItems}"></strong> <span th:text="#{admin.events.events}">events</span>
     </div>
 
     <!-- Pagination -->
@@ -192,11 +193,11 @@
              th:href="@{/Admin/Events(page=${currentPage - 1}, keyword=${keyword}, status=${selectedStatus})}"
              class="pagination-btn prev-btn">
             <i class="bi bi-chevron-left"></i>
-            <span>Previous</span>
+            <span th:text="#{admin.events.previous}">Previous</span>
           </a>
           <span th:unless="${hasPrevious}" class="pagination-btn prev-btn disabled">
             <i class="bi bi-chevron-left"></i>
-            <span>Previous</span>
+            <span th:text="#{admin.events.previous}">Previous</span>
           </span>
 
           <div class="page-numbers">
@@ -214,11 +215,11 @@
           <a th:if="${hasNext}"
              th:href="@{/Admin/Events(page=${currentPage + 1}, keyword=${keyword}, status=${selectedStatus})}"
              class="pagination-btn next-btn">
-            <span>Next</span>
+            <span th:text="#{admin.events.next}">Next</span>
             <i class="bi bi-chevron-right"></i>
           </a>
           <span th:unless="${hasNext}" class="pagination-btn next-btn disabled">
-            <span>Next</span>
+            <span th:text="#{admin.events.next}">Next</span>
             <i class="bi bi-chevron-right"></i>
           </span>
         </div>

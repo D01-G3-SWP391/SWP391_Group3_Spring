@@ -215,18 +215,18 @@
                         if (data.response) {
                             addMessageToChat('ai', data.response);
                         } else {
-                            addMessageToChat('ai', 'Tôi đã xử lý yêu cầu của bạn thành công.');
+                            addMessageToChat('ai', /*[[#{ai.chat.success.default}]]*/ 'Tôi đã xử lý yêu cầu của bạn thành công.');
                         }
                     } else {
                         if (data.response) {
                             addMessageToChat('ai', data.response);
                         } else {
-                            addMessageToChat('ai', `Xin lỗi, tôi không thể hiểu câu hỏi của bạn. Hãy thử hỏi một cách khác.`);
+                            addMessageToChat('ai', /*[[#{ai.chat.error.understand}]]*/ 'Xin lỗi, tôi không thể hiểu câu hỏi của bạn. Hãy thử hỏi một cách khác.');
                         }
                     }
                 } catch (error) {
                     console.error('Error:', error);
-                    addMessageToChat('ai', '**Lỗi:** Không thể kết nối đến AI service.');
+                    addMessageToChat('ai', /*[[#{ai.chat.error.connection}]]*/ '**Lỗi:** Không thể kết nối đến AI service.');
                 } finally {
                     showLoading(false);
                 }
@@ -296,7 +296,8 @@
                     html += '</tbody></table>';
                     
                     if (results.length > 10) {
-                        html += `<p class="ai-results-more">... và ${results.length - 10} dòng khác</p>`;
+                        const remainingRows = results.length - 10;
+                        html += `<p class="ai-results-more">... và ${remainingRows} dòng khác</p>`;
                     }
                 } else {
                     // Simple list format
