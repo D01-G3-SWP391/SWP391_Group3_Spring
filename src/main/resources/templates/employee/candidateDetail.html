@@ -353,7 +353,13 @@ document.getElementById('jobInvitationModal').addEventListener('hidden.bs.modal'
     document.getElementById('jobInvitationForm').reset();
     resetValidation();
 });
-</script>
+    </script>
+
+    <!-- AI Chatbox Fragment -->
+    <div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
+    
+    <!-- Chat Notification Fragment -->
+    <div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
 
 </body>
 </html>

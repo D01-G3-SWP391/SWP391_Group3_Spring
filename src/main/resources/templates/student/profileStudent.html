@@ -62,6 +62,9 @@
     <p th:text="${successMessage}"></p>
     <p th:text="${errorMessage}"></p>
 </div>
+<!-- AI Chatbox Fragment -->
+<div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
+
 <div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
 <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
 </body>

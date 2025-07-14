@@ -118,11 +118,14 @@ function toggleChatNotifications(event) {
     const isVisible = dropdown.style.display === 'block';
     
     if (!isVisible) {
-        // Close other dropdowns if open
+        // Close other dropdowns first, then show this one
         closeOtherDropdowns();
         
-        dropdown.style.display = 'block';
-        updateChatRooms(); // Refresh data when opening
+        // Use setTimeout to ensure other dropdowns are closed first
+        setTimeout(() => {
+            dropdown.style.display = 'block';
+            updateChatRooms(); // Refresh data when opening
+        }, 50);
     } else {
         dropdown.style.display = 'none';
     }
@@ -145,10 +148,15 @@ function closeOtherDropdowns() {
         notificationDropdown.style.display = 'none';
     }
     
-    // Close AI chat if open
-    const aiChatModal = document.getElementById('aiChatModal');
-    if (aiChatModal && aiChatModal.style.display === 'block') {
-        aiChatModal.style.display = 'none';
+    // Close AI chatbox if open using global function
+    if (window.closeAIChatbox) {
+        window.closeAIChatbox();
+    } else {
+        // Fallback to direct DOM manipulation
+        const aiChatModal = document.getElementById('aiChatModal');
+        if (aiChatModal && aiChatModal.style.display === 'block') {
+            aiChatModal.style.display = 'none';
+        }
     }
 }
 
@@ -302,6 +310,11 @@ function openChatModal(chatRoomId, userType, userId) {
     const chatOffcanvas = document.getElementById('chatOffcanvas');
     
     if (chatOverlay && chatOffcanvas) {
+        // Close AI chatbox before opening chat modal
+        if (window.closeAIChatbox) {
+            window.closeAIChatbox();
+        }
+        
         // Show modal
         chatOverlay.classList.add('show');
         chatOffcanvas.classList.add('show');

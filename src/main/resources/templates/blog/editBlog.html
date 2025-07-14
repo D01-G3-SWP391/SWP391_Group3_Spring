@@ -12,18 +12,15 @@
     <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
     <!-- Navbar & Common CSS -->
     <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
-    <link rel="stylesheet" th:href="@{/css/navbarHome.css}"/>
-    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
-    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}"/>
     <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
     <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
     <!-- Custom Edit Blog CSS -->
     <link rel="stylesheet" th:href="@{/css/editBlog.css}">
     <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
 </head>
-<body class="edit-blog-bg">
+<body>
 <div th:replace="~{navbar/navbarAdmin :: navbarAdmin}"></div>
-<div class="main-content d-flex flex-column align-items-center justify-content-center min-vh-100">
+<div class="main-content">
     <div class="edit-blog-title text-center mb-4 mt-4">
         <h2><i class="bi bi-pencil-square"></i> <span th:text="#{blog.admin.edit.title}">Sửa Blog</span></h2>
     </div>
@@ -64,7 +61,14 @@
             console.error(error);
         });
 </script>
-</body>
-<script th:src="@{/js/language-dropdown.js}"></script>
 
+<!-- AI Chatbox Fragment -->
+<div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
+
+<!-- Chat Notification Fragment -->
+<div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
+
+<script th:src="@{/js/navbarAdmin.js}"></script>
+<script th:src="@{/js/languageSwitch.js}"></script>
+</body>
 </html>
