@@ -24,9 +24,11 @@ public class DatabaseSchemaService {
         
         try (Connection conn = dataSource.getConnection()) {
             String currentDB = conn.getCatalog();
-            if (currentDB == null || !currentDB.equalsIgnoreCase("SWP391")) {
-                logger.error("Not connected to SWP391 database. Current database: {}", currentDB);
-                throw new RuntimeException("Must be connected to SWP391 database");
+            // Accept both local (SWP391) and Railway (railway) database names
+            if (currentDB == null || 
+                (!currentDB.equalsIgnoreCase("SWP391") && !currentDB.equalsIgnoreCase("railway"))) {
+                logger.error("Not connected to SWP391 or Railway database. Current database: {}", currentDB);
+                throw new RuntimeException("Must be connected to SWP391 or Railway database");
             }
             
             logger.info("Getting schema for database: {}", currentDB);
