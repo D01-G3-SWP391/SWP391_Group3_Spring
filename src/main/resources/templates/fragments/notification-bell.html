@@ -197,7 +197,7 @@
             // Delete single notification via WebSocket
             function deleteNotification(event, id) {
                 event.stopPropagation(); // Prevent triggering markAsRead
-                if (confirm('[[#{notifications.confirmDelete}]]')) {
+                if (confirm(/*[[#{notifications.confirmDelete}]]*/ 'Are you sure you want to delete this notification?')) {
                     if (window.notificationWebSocketClient && window.notificationWebSocketClient.isConnected) {
                         window.notificationWebSocketClient.deleteNotification(id);
                     } else {

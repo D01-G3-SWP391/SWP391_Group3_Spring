@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý xóa báo cáo</title>
+    <title th:text="#{admin.reports.deletable.title} + ' - Admin'">Manage Report Deletion</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
     <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
     <!-- ✅ THÊM CSS RIÊNG -->
@@ -22,11 +23,11 @@
     <div class="page-header">
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                <h2><i class="bi bi-trash text-danger me-2"></i> Quản lý xóa báo cáo</h2>
-                <p class="text-muted mb-0">Xóa các báo cáo đã được giải quyết hoặc đóng</p>
+                <h2><i class="bi bi-trash text-danger me-2"></i> <span th:text="#{admin.reports.deletable.title}">Manage Report Deletion</span></h2>
+                <p class="text-muted mb-0" th:text="#{admin.reports.deletable.subtitle}">Delete resolved or closed reports</p>
             </div>
             <a th:href="@{/Admin/List}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left me-1"></i> Quay lại danh sách
+                <i class="bi bi-arrow-left me-1"></i> <span th:text="#{admin.reports.deletable.back}">Back to List</span>
             </a>
         </div>
     </div>
@@ -45,7 +46,7 @@
     <div class="reports-card">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h5><i class="bi bi-list-check me-2"></i>Báo cáo có thể xóa
-                <span class="stats-badge" th:text="${deletableCount ?: 0}">0</span>
+                <span class="stats-badge" th:text="${deletableCount} ?: 0">0</span>
             </h5>
         </div>
 

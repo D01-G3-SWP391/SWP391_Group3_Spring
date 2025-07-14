@@ -57,13 +57,13 @@
             <div class="nav-item">
                 <a th:href="@{/Admin/ListStudent}" class="nav-link" data-path="/Admin/ListStudent">
                     <i class="bi bi-people nav-icon"></i>
-                    <span>Students</span>
+                    <span th:text="#{nav.students}">Students</span>
                 </a>
             </div>
             <div class="nav-item">
                 <a th:href="@{/Admin/ListEmployer}" class="nav-link" data-path="/Admin/ListEmployer">
                     <i class="bi bi-building nav-icon"></i>
-                    <span>Employers</span>
+                    <span th:text="#{nav.employers}">Employers</span>
                 </a>
             </div>
         </div>
@@ -74,13 +74,13 @@
             <div class="nav-item">
                 <a th:href="@{/Admin/JobPosts}" class="nav-link" data-path="/Admin/JobPosts">
                     <i class="bi bi-briefcase nav-icon"></i>
-                    <span>Pending Posts</span>
+                    <span th:text="#{nav.pending.posts}">Pending Posts</span>
                 </a>
             </div>
             <div class="nav-item">
                 <a th:href="@{/Admin/AllJobPosts}" class="nav-link" data-path="/Admin/AllJobPosts">
                     <i class="bi bi-list-ul nav-icon"></i>
-                    <span>All Job Posts</span>
+                    <span th:text="#{nav.all.job.posts}">All Job Posts</span>
                 </a>
             </div>
         </div>
@@ -91,13 +91,13 @@
             <div class="nav-item">
                 <a th:href="@{/Admin/PendingEvents}" class="nav-link" data-path="/Admin/PendingEvents">
                     <i class="bi bi-calendar-check nav-icon"></i>
-                    <span>Confirm Events</span>
+                    <span th:text="#{nav.confirm.events}">Confirm Events</span>
                 </a>
             </div>
             <div class="nav-item">
                 <a th:href="@{/Admin/Events}" class="nav-link" data-path="/Admin/Events">
                     <i class="bi bi-calendar-event nav-icon"></i>
-                    <span>All Events</span>
+                    <span th:text="#{nav.all.events}">All Events</span>
                 </a>
             </div>
         </div>
@@ -108,13 +108,13 @@
             <div class="nav-item">
                 <a th:href="@{/Admin/blogs}" class="nav-link" data-path="/Admin/blogs">
                     <i class="bi bi-journal-text nav-icon"></i>
-                    <span>Blogs</span>
+                    <span th:text="#{nav.blogs.admin}">Blogs</span>
                 </a>
             </div>
             <div class="nav-item">
                 <a th:href="@{/Admin/List}" class="nav-link" data-path="/Admin/Reports">
                     <i class="bi bi-graph-up nav-icon"></i>
-                    <span>Reports</span>
+                    <span th:text="#{nav.reports}">Reports</span>
                 </a>
             </div>
         </div>

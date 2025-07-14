@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const submitBtn = verifyForm.querySelector('button[type="submit"]');
         verifyForm.addEventListener('submit', function(e) {
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner"></span>Đang xác thực...';
+            submitBtn.innerHTML = '<span class="spinner"></span>' + /*[[#{verify.js.verifying}]]*/ 'Verifying...';
             this.classList.add('loading');
         });
     }
@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Show loading state
             resendBtn.disabled = true;
-            resendBtn.innerHTML = '<span class="spinner"></span>Đang gửi lại...';
+            resendBtn.innerHTML = '<span class="spinner"></span>' + /*[[#{verify.js.resending}]]*/ 'Resending...';
             
             // Get email from hidden input
             const emailInput = this.querySelector('input[name="email"]');
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => {
                 if (response.ok) {
                     // Show success feedback briefly
-                    resendBtn.innerHTML = '<i class="bi bi-check"></i><span style="margin-left: 5px;">Đã gửi lại</span>';
+                    resendBtn.innerHTML = '<i class="bi bi-check"></i><span style="margin-left: 5px;">' + /*[[#{verify.js.sent}]]*/ 'Sent' + '</span>';
                     resendBtn.style.background = '#28a745';
                     
                     setTimeout(() => {
@@ -232,10 +232,10 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 // Show error feedback
-                resendBtn.innerHTML = '<i class="bi bi-x"></i><span style="margin-left: 5px;">Lỗi</span>';
+                resendBtn.innerHTML = '<i class="bi bi-x"></i><span style="margin-left: 5px;">' + /*[[#{verify.js.error}]]*/ 'Error' + '</span>';
                 resendBtn.style.background = '#dc3545';
                 setTimeout(() => {
-                    resendBtn.innerHTML = '<i class="bi bi-arrow-clockwise"></i><span th:text="#{verify.resendButton}">Gửi lại mã OTP</span>';
+                    resendBtn.innerHTML = '<i class="bi bi-arrow-clockwise"></i><span style="margin-left: 5px;">' + /*[[#{verify.js.resendOtp}]]*/ 'Resend OTP' + '</span>';
                     resendBtn.style.background = '#6c757d';
                     resendBtn.disabled = false;
                 }, 2000);
@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (countdown < 0) {
                 clearInterval(countdownInterval);
-                button.innerHTML = '<i class="bi bi-arrow-clockwise"></i><span style="margin-left: 5px;">Gửi lại mã OTP</span>';
+                button.innerHTML = '<i class="bi bi-arrow-clockwise"></i><span style="margin-left: 5px;">' + /*[[#{verify.js.resendOtp}]]*/ 'Resend OTP' + '</span>';
                 button.style.background = '#6c757d';
                 button.disabled = false;
                 localStorage.removeItem('registerOtpResendTime');

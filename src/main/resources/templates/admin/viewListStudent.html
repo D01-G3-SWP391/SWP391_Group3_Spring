@@ -91,7 +91,7 @@
                 <tr th:each="student : ${studentList}">
                     <td>
                         <img class="avatar"
-                             th:src="${student.avatarUrl}"
+                             th:src="${student != null and student.avatarUrl != null and student.avatarUrl != '' ? student.avatarUrl : '/images/student.jpeg'}"
                              th:alt="${student.fullName}" />
                     </td>
                     <td>

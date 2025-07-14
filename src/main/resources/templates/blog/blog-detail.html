@@ -36,9 +36,9 @@
         <!-- Article Header -->
         <header class="article-header">
             <span class="article-category" 
-                  th:text="${blogPost.resource.resourceType == 'application_tips' ? '💼 Ứng tuyển' : 
-                            blogPost.resource.resourceType == 'interview_guide' ? '🎯 Phỏng vấn' : 
-                            blogPost.resource.resourceType == 'quotes' ? '✨ Động lực' : blogPost.resource.resourceType}">
+                  th:text="${blogPost.resource.resourceType == 'application_tips'} ? #{blog.detail.category.application_tips} : 
+                            (${blogPost.resource.resourceType == 'interview_guide'} ? #{blog.detail.category.interview_guide} : 
+                            (${blogPost.resource.resourceType == 'quotes'} ? #{blog.detail.category.quotes} : ${blogPost.resource.resourceType}))">
             </span>
             <h1 class="article-title" th:text="${blogPost.title}"></h1>
             <p class="article-summary" th:text="${blogPost.summary}"></p>
@@ -54,11 +54,11 @@
                 </div>
                 <div class="meta-item">
                     <i class="bi bi-eye"></i>
-                    <span>Lượt xem: <span id="view-count">0</span></span>
+                    <span><span th:text="#{blog.detail.views}">Lượt xem:</span> <span id="view-count">0</span></span>
                 </div>
                 <div class="meta-item">
                     <i class="bi bi-stopwatch"></i>
-                    <span id="reading-time">5 phút đọc</span>
+                    <span id="reading-time">5 <span th:text="#{blog.detail.reading.time}">phút đọc</span></span>
                 </div>
             </div>
         </header>
@@ -77,19 +77,19 @@
         
         <!-- Social Share -->
         <section class="social-share">
-            <h3>📤 Chia sẻ bài viết</h3>
+            <h3 th:text="#{blog.detail.share.title}">📤 Chia sẻ bài viết</h3>
             <div class="share-buttons">
                 <a href="#" class="share-btn facebook" onclick="shareOnFacebook()">
-                    <i class="bi bi-facebook"></i> Facebook
+                    <i class="bi bi-facebook"></i> <span th:text="#{blog.detail.share.facebook}">Facebook</span>
                 </a>
                 <a href="#" class="share-btn twitter" onclick="shareOnTwitter()">
-                    <i class="bi bi-twitter"></i> Twitter
+                    <i class="bi bi-twitter"></i> <span th:text="#{blog.detail.share.twitter}">Twitter</span>
                 </a>
                 <a href="#" class="share-btn linkedin" onclick="shareOnLinkedIn()">
-                    <i class="bi bi-linkedin"></i> LinkedIn
+                    <i class="bi bi-linkedin"></i> <span th:text="#{blog.detail.share.linkedin}">LinkedIn</span>
                 </a>
                 <a href="#" class="share-btn copy" onclick="copyLink()">
-                    <i class="bi bi-link-45deg"></i> Sao chép link
+                    <i class="bi bi-link-45deg"></i> <span th:text="#{blog.detail.share.copy}">Sao chép link</span>
                 </a>
             </div>
         </section>

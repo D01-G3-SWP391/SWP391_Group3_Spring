@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Các Công Việc Của Bạn</title>
+    <title th:text="#{employer.jobpost.list.title}">Các Công Việc Của Bạn</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
     <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarEmployer.css}" />
@@ -254,11 +254,11 @@
     <!-- PAGE HEADER WITH CREATE JOB BUTTON -->
     <div class="page-header">
         <div class="page-title-section">
-            <h1>Các Công Việc Của Bạn</h1>
+            <h1 th:text="#{employer.jobpost.list.header}">Các Công Việc Của Bạn</h1>
         </div>
         <a th:href="@{/Employer/CreateJobPost}" class="create-job-header-btn">
             <i class="bi bi-plus-circle"></i>
-            <span>Tạo Công Việc Mới</span>
+            <span th:text="#{employer.jobpost.list.create.new}">Tạo Công Việc Mới</span>
         </a>
     </div>
 
@@ -277,7 +277,7 @@
             </div>
             <div class="stat-info">
                 <h3 th:text="${jobPostPage != null ? jobPostPage.totalElements : 0}">0</h3>
-                <p>Tổng số công việc</p>
+                <p th:text="#{employer.jobpost.list.total.jobs}">Tổng số công việc</p>
             </div>
         </div>
         <div class="stat-card">
@@ -286,7 +286,7 @@
             </div>
             <div class="stat-info">
                 <h3 th:text="${pendingJobs != null ? pendingJobs : 0}">0</h3>
-                <p>Chờ phê duyệt</p>
+                <p th:text="#{employer.jobpost.list.pending.approval}">Chờ phê duyệt</p>
             </div>
         </div>
     </div>
@@ -295,24 +295,24 @@
     <div class="table-container">
         <div th:if="${jobPostPage == null or jobPostPage.content.isEmpty()}" class="empty-state">
             <i class="bi bi-briefcase"></i>
-            <h3>Chưa có công việc nào</h3>
-            <p>Bạn chưa tạo công việc nào. Hãy bắt đầu tạo công việc đầu tiên!</p>
+                          <h3 th:text="#{employer.jobpost.list.no.jobs.header}">Chưa có công việc nào</h3>
+                            <p th:text="#{employer.jobpost.list.no.jobs}">Bạn chưa tạo công việc nào. Hãy bắt đầu tạo công việc đầu tiên!</p>
             <a th:href="@{/Employer/CreateJobPost}" class="btn btn-primary">
                 <i class="bi bi-plus-circle"></i>
-                Tạo công việc mới
+                <span th:text="#{employer.jobpost.list.create.first}">Tạo công việc mới</span>
             </a>
         </div>
 
         <table th:if="${jobPostPage != null and !jobPostPage.content.isEmpty()}">
             <thead>
             <tr>
-                <th>STT</th>
-                <th>Tên Công Việc</th>
-                <th>Loại Công Việc</th>
-                <th>Trạng Thái</th>
-                <th>Số Ứng Viên</th>
-                <th>Ngày Tạo</th>
-                <th>Hành Động</th>
+                <th th:text="#{employer.jobpost.list.table.no}">STT</th>
+                <th th:text="#{employer.jobpost.list.table.title}">Tên Công Việc</th>
+                <th th:text="#{employer.jobpost.list.table.type}">Loại Công Việc</th>
+                <th th:text="#{employer.jobpost.list.table.status}">Trạng Thái</th>
+                <th th:text="#{employer.jobpost.list.table.applications}">Số Ứng Viên</th>
+                <th th:text="#{employer.jobpost.list.table.created}">Ngày Tạo</th>
+                <th th:text="#{employer.jobpost.list.table.actions}">Hành Động</th>
             </tr>
             </thead>
             <tbody>
@@ -343,21 +343,21 @@
                             <a th:href="@{/Employer/EditJobPost/{jobPostId}(jobPostId=${jobPost.jobPostId})}"
                                class="btn btn-primary">
                                 <i class="bi bi-pencil-square"></i>
-                                Sửa
+                                <span th:text="#{employer.jobpost.list.edit}">Sửa</span>
                             </a>
 
                             <form th:action="@{/Employer/DeleteJobPost/{jobPostId}(jobPostId=${jobPost.jobPostId})}"
                                   method="post"
                                   class="delete-form"
-                                  onsubmit="return confirm('Bạn có chắc chắn muốn xóa công việc này?')">
+                                  th:onsubmit="'return confirm(\\'' + #{employer.jobpost.list.delete.confirm} + '\\')'">
                                 <button type="submit" class="btn btn-danger">
                                     <i class="bi bi-trash"></i>
-                                    Xóa
+                                    <span th:text="#{employer.jobpost.list.delete}">Xóa</span>
                                 </button>
                             </form>
 
                             <a th:href="@{/Employer/JobPosts/{jobPostId}/applications(jobPostId=${jobPost.jobPostId})}" class="btn btn-info">
-                                <i class="bi bi-people"></i> Xem ứng viên
+                                <i class="bi bi-people"></i> <span th:text="#{employer.jobpost.list.view.applicants}">Xem ứng viên</span>
                             </a>
                         </div>
                     </td>
@@ -374,11 +374,11 @@
                th:href="@{/Employer/JobPosts(page=${jobPostPage.number - 1})}"
                class="pagination-btn prev-btn">
                 <i class="bi bi-chevron-left"></i>
-                <span>Trang trước</span>
+                <span th:text="#{employer.jobpost.list.pagination.previous}">Trang trước</span>
             </a>
             <span th:unless="${jobPostPage.hasPrevious()}" class="pagination-btn prev-btn disabled">
                 <i class="bi bi-chevron-left"></i>
-                <span>Trang trước</span>
+                <span th:text="#{employer.jobpost.list.pagination.previous}">Trang trước</span>
             </span>
 
             <div class="page-numbers">
@@ -396,11 +396,11 @@
             <a th:if="${jobPostPage.hasNext()}"
                th:href="@{/Employer/JobPosts(page=${jobPostPage.number + 1})}"
                class="pagination-btn next-btn">
-                <span>Trang sau</span>
+                <span th:text="#{employer.jobpost.list.pagination.next}">Trang sau</span>
                 <i class="bi bi-chevron-right"></i>
             </a>
             <span th:unless="${jobPostPage.hasNext()}" class="pagination-btn next-btn disabled">
-                <span>Trang sau</span>
+                <span th:text="#{employer.jobpost.list.pagination.next}">Trang sau</span>
                 <i class="bi bi-chevron-right"></i>
             </span>
         </div>
