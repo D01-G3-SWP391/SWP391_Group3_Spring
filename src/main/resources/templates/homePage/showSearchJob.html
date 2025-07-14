@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -27,10 +27,28 @@
             href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
             rel="stylesheet"
     />
+    <!-- Favorite Heart CSS -->
+    <link rel="stylesheet" th:href="@{/css/favoriteHeart.css}"/>
+    <!-- Favorite Jobs Dropdown CSS -->
+    <link rel="stylesheet" th:href="@{/css/favoriteJobsDropdown.css}"/>
 </head>
 <body>
     <!-- Navbar -->
     <div th:replace="~{navbar/navbarHome}"></div>
+
+    <!-- Flash Messages -->
+    <div class="container mt-3">
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    </div>
 
     <!-- Search Header Section -->
     <section class="search-header-section">
@@ -247,9 +265,35 @@
                                         Xem chi tiết
                                     </button>
                                 </form>
-                                <button class="save-btn">
-                                    <i class="far fa-heart"></i>
-                                </button>
+                                
+                                <!-- Favorite Heart Form - Chỉ cho Student -->
+                                <div sec:authorize="isAuthenticated() and hasRole('student')">
+                                    <form method="get" th:action="@{/favorites/toggle-form}" style="display: inline;">
+                                        <input type="hidden" name="jobPostId" th:value="${job.jobPostId}">
+                                        <input type="hidden" name="redirectUrl" th:value="@{/HomePage/search(keyword=${searchKeyword}, location=${searchLocation}, jobType=${searchJobType}, fieldId=${searchFieldId}, salaryRange=${searchSalary}, companyName=${searchCompanyName})}">
+                                        <button type="submit" class="favorite-heart-btn save-btn"
+                                                th:classappend="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'favorited' : ''">
+                                            <i th:class="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'fas fa-heart' : 'far fa-heart'"
+                                               th:style="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'color: #ff6987;' : 'color: #6c757d;'"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                
+                                <!-- Thông báo cho Guest -->
+                                <div sec:authorize="!isAuthenticated()">
+                                    <a href="/Login" class="favorite-heart-btn save-btn" style="text-decoration: none; color: #6c757d;" 
+                                       title="Đăng nhập để sử dụng tính năng yêu thích">
+                                        <i class="far fa-heart"></i>
+                                    </a>
+                                </div>
+                                
+                                <!-- Thông báo cho Admin/Employer -->
+                                <div sec:authorize="isAuthenticated() and (hasRole('admin') or hasRole('employer'))">
+                                    <button type="button" class="favorite-heart-btn save-btn" disabled 
+                                            style="opacity: 0.5;" title="Tính năng yêu thích chỉ dành cho sinh viên">
+                                        <i class="far fa-heart" style="color: #ccc;"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                 </div>
@@ -288,15 +332,19 @@
                 document.getElementById('jobForm').classList.add('active');
             } else if (tabType === 'candidate') {
                 document.getElementById('candidateTab').classList.add('active');
-                document.getElementById('candidateForm').classList.add('active');
-            }
+                            document.getElementById('candidateForm').classList.add('active');
         }
+    }
+
+
     </script>
 
 <!-- Add notification bell -->
     <div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
 
     <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
+    
+    
 </body>
 <script th:src="@{/js/languageSwitch.js}"></script>
 

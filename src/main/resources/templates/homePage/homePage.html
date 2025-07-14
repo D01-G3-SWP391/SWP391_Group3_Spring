@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -26,11 +26,30 @@
             th:href="@{/css/owlcarousel/assets/owl.carousel.min.css}"
     />
     <link rel="stylesheet" th:href="@{/css/animate/animate.min.css}"/>
+    <!-- Favorite Heart CSS -->
+    <link rel="stylesheet" th:href="@{/css/favoriteHeart.css}"/>
+    <!-- Favorite Jobs Dropdown CSS -->
+    <link rel="stylesheet" th:href="@{/css/favoriteJobsDropdown.css}"/>
 
 </head>
 <body>
 <!-- Navbar -->
 <div th:replace="~{navbar/navbarHome}"></div>
+
+<!-- Flash Messages -->
+<div class="container mt-3">
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+
 <!--Carousel-->
 <div class="container-fluid p-0">
     <div class="owl-carousel header-carousel position-relative">
@@ -215,10 +234,8 @@
             <p th:text="#{home.featuredJobs.subtitle}">Những cơ hội việc làm tốt nhất dành cho bạn</p>
         </div>
 
-        <!-- Job Listings -->
-        <div class="jobs-container">
-            <p th:text="${error}"></p>
-            <p th:text="${success}"></p>
+            <!-- Job Listings -->
+    <div class="jobs-container">
             <div th:each="job : ${jobPostsPage}" class="job-card">
                 <div class="job-card-header">
                     <div class="company-logo">
@@ -288,9 +305,35 @@
                             <span th:text="#{home.viewDetails}">Xem chi tiết</span>
                         </button>
                     </form>
-                    <button class="save-btn">
-                        <i class="far fa-heart"></i>
-                    </button>
+                    
+                    <!-- Favorite Heart Form - Chỉ cho Student -->
+                    <div sec:authorize="isAuthenticated() and hasRole('student')">
+                        <form method="post" th:action="@{/favorites/toggle-form}" style="display: inline;">
+                            <input type="hidden" name="jobPostId" th:value="${job.jobPostId}">
+                            <input type="hidden" name="redirectUrl" th:value="@{/}">
+                            <button type="submit" class="favorite-heart-btn save-btn" 
+                                    th:classappend="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'favorited' : ''">
+                                <i th:class="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'fas fa-heart' : 'far fa-heart'"
+                                   th:style="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'color: #ff6987;' : 'color: #6c757d;'"></i>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Thông báo cho Guest -->
+                    <div sec:authorize="!isAuthenticated()">
+                        <a href="/Login" class="favorite-heart-btn save-btn" style="text-decoration: none; color: #6c757d;"
+                           title="Đăng nhập để sử dụng tính năng yêu thích">
+                            <i class="far fa-heart"></i>
+                        </a>
+                    </div>
+
+                    <!-- Thông báo cho Admin/Employer -->
+                    <div sec:authorize="isAuthenticated() and (hasRole('admin') or hasRole('employer'))">
+                        <button type="button" class="favorite-heart-btn save-btn" disabled
+                                style="opacity: 0.5;" title="Tính năng yêu thích chỉ dành cho sinh viên">
+                            <i class="far fa-heart" style="color: #ccc;"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -401,7 +444,11 @@
             document.getElementById('candidateForm').classList.add('active');
         }
     }
+
+
 </script>
+
+
 
 </body>
 </html>

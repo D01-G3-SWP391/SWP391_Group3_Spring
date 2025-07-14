@@ -3,9 +3,12 @@ package com.example.swp391_d01_g3.controller.homePage;
 import com.example.swp391_d01_g3.model.Account;
 import com.example.swp391_d01_g3.model.JobField;
 import com.example.swp391_d01_g3.model.JobPost;
+import com.example.swp391_d01_g3.model.Student;
+import com.example.swp391_d01_g3.service.favorite.IFavoriteJobService;
 import com.example.swp391_d01_g3.service.jobfield.IJobfieldService;
 import com.example.swp391_d01_g3.service.jobpost.IJobpostService;
 import com.example.swp391_d01_g3.service.security.IAccountService;
+import com.example.swp391_d01_g3.service.student.IStudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +29,12 @@ public class HomePageFeatures {
     
     @Autowired
     private IAccountService accountService;
+    
+    @Autowired
+    private IFavoriteJobService favoriteJobService;
+    
+    @Autowired
+    private IStudentService studentService;
 
     @GetMapping("")
     public String redirectToHomePage() {
@@ -62,6 +71,16 @@ public class HomePageFeatures {
                     model.addAttribute("userEmail", principal.getName());
                     Account account = accountService.findByEmail(principal.getName());
                     model.addAttribute("account", account);
+                    
+                    // Add favorite job checking for students
+                    if (account != null && account.getRole() == Account.Role.student) {
+                        Student student = studentService.findByAccountUserId(account.getUserId());
+                        if (student != null) {
+                            model.addAttribute("studentId", student.getStudentId());
+                            // Add a utility object to check favorites in templates
+                            model.addAttribute("favoriteChecker", new FavoriteChecker(favoriteJobService, student.getStudentId()));
+                        }
+                    }
                 }
                 return "homePage/showSearchJob";
             }
@@ -91,6 +110,20 @@ public class HomePageFeatures {
                 model.addAttribute("userEmail", principal.getName());
                 Account account = accountService.findByEmail(principal.getName());
                 model.addAttribute("account", account);
+                
+                // Add favorite job checking for students
+                if (account != null && account.getRole() == Account.Role.student) {
+                    Student student = studentService.findByAccountUserId(account.getUserId());
+                    if (student != null) {
+                        model.addAttribute("studentId", student.getStudentId());
+                        // Add a utility object to check favorites in templates
+                        model.addAttribute("favoriteChecker", new FavoriteChecker(favoriteJobService, student.getStudentId()));
+                        // Add favorite jobs list for navbar dropdown
+                        List<JobPost> favoriteJobs = favoriteJobService.getFavoriteJobPostsByStudent(student.getStudentId());
+                        model.addAttribute("favoriteJobs", favoriteJobs);
+                        model.addAttribute("favoriteCount", favoriteJobs.size());
+                    }
+                }
             }
 
             if (jobPosts != null && !jobPosts.isEmpty()) {
@@ -106,10 +139,38 @@ public class HomePageFeatures {
                 model.addAttribute("userEmail", principal.getName());
                 Account account = accountService.findByEmail(principal.getName());
                 model.addAttribute("account", account);
+                
+                // Add favorite job checking for students
+                if (account != null && account.getRole() == Account.Role.student) {
+                    Student student = studentService.findByAccountUserId(account.getUserId());
+                    if (student != null) {
+                        model.addAttribute("studentId", student.getStudentId());
+                        // Add a utility object to check favorites in templates
+                        model.addAttribute("favoriteChecker", new FavoriteChecker(favoriteJobService, student.getStudentId()));
+                        // Add favorite jobs list for navbar dropdown
+                        List<JobPost> favoriteJobs = favoriteJobService.getFavoriteJobPostsByStudent(student.getStudentId());
+                        model.addAttribute("favoriteJobs", favoriteJobs);
+                        model.addAttribute("favoriteCount", favoriteJobs.size());
+                    }
+                }
             }
         }
 
         return "homePage/showSearchJob";
     }
-}
-
+    
+    // Helper class for checking favorites in templates
+    public static class FavoriteChecker {
+        private final IFavoriteJobService favoriteJobService;
+        private final Integer studentId;
+        
+        public FavoriteChecker(IFavoriteJobService favoriteJobService, Integer studentId) {
+            this.favoriteJobService = favoriteJobService;
+            this.studentId = studentId;
+        }
+        
+        public boolean isFavorited(Integer jobPostId) {
+            return favoriteJobService.isFavorited(studentId, jobPostId);
+        }
+    }
+} 

@@ -97,6 +97,10 @@ public interface IJobPostRepository extends JpaRepository<JobPost, Integer> {
     @Query("SELECT jp FROM JobPost jp JOIN FETCH jp.employer e ORDER BY jp.createdAt DESC")
     Page<JobPost> findAllWithEmployerDetails(Pageable pageable);
 
+    // Get job posts with employer details by IDs (for favorite jobs)
+    @Query("SELECT jp FROM JobPost jp JOIN FETCH jp.employer e WHERE jp.jobPostId IN :ids ORDER BY jp.createdAt DESC")
+    List<JobPost> findByJobPostIdInWithEmployer(@Param("ids") List<Integer> ids);
+
     // Count job posts by status
     long countByApprovalStatus(JobPost.ApprovalStatus status);
 

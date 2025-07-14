@@ -16,6 +16,10 @@
     <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}"/>
     <link rel="stylesheet" th:href="@{/css/topJobs.css}">
     <link rel="stylesheet" th:href="@{/css/footer.css}" />
+    <!-- Favorite Heart CSS -->
+    <link rel="stylesheet" th:href="@{/css/favoriteHeart.css}"/>
+    <!-- Favorite Jobs Dropdown CSS -->
+    <link rel="stylesheet" th:href="@{/css/favoriteJobsDropdown.css}"/>
     <style>
         .pagination {
             display: flex;
@@ -48,6 +52,20 @@
 <body>
 <!-- Navigation -->
 <div th:replace="~{navbar/navbarHome}"></div>
+
+<!-- Flash Messages -->
+<div class="container mt-3">
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
 
 <div class="container my-5">
     <!-- Header -->
@@ -114,9 +132,19 @@
                     <a th:href="@{/JobDescription/JobPost(id=${job.jobPostId})}" class="btn btn-primary btn-sm flex-grow-1">
                         <i class="fas fa-eye me-1"></i> Xem chi tiết
                     </a>
-                    <button class="btn btn-outline-secondary btn-sm" title="Lưu việc làm">
-                        <i class="far fa-heart"></i>
-                    </button>
+                    
+                    <!-- Favorite Heart Form - Chỉ cho Student -->
+                    <div sec:authorize="isAuthenticated() and hasRole('student')">
+                        <form method="post" th:action="@{/favorites/toggle-form}" style="display: inline;">
+                            <input type="hidden" name="jobPostId" th:value="${job.jobPostId}">
+                            <input type="hidden" name="redirectUrl" th:value="@{/top-jobs}">
+                            <button type="submit" class="favorite-heart-btn btn-sm" 
+                                    th:classappend="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'favorited' : ''">
+                                <i th:class="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'fas fa-heart' : 'far fa-heart'"
+                                   th:style="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'color: #ff6987;' : 'color: #6c757d;'"></i>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -172,5 +200,8 @@
 <!-- Libs JS -->
 <script th:src="@{/js/main.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
 </body>
 </html>
