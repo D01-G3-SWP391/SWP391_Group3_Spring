@@ -10,8 +10,12 @@
     <link rel="stylesheet" th:href="@{/css/index.css}"/>
     <link rel="stylesheet" th:href="@{/css/job-des.css}"/>
     <link rel="stylesheet" th:href="@{/css/apply-form.css}"/>
-    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
-    <link rel="stylesheet" th:href="@{/css/footer.css}" />
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}"/>
+    <link rel="stylesheet" th:href="@{/css/footer.css}"/>
+    <!-- Favorite Heart CSS -->
+    <link rel="stylesheet" th:href="@{/css/favoriteHeart.css}"/>
+    <!-- Favorite Jobs Dropdown CSS -->
+    <link rel="stylesheet" th:href="@{/css/favoriteJobsDropdown.css}"/>
 
     <link
             href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
@@ -30,9 +34,9 @@
             width: 100% !important;
             z-index: 1000 !important;
             background-color: #fff !important;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
         }
-        
+
         /* Ensure body has proper padding */
         body {
             padding-top: 80px !important;
@@ -54,8 +58,12 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .submit-btn:disabled {
@@ -67,39 +75,53 @@
 <body>
 <div th:replace="~{navbar/navbarHome}"></div>
 
-    <!-- Header Section -->
-    <section class="job-detail-header">
-        <div class="container">
-            <div class="header-content" th:each="job : ${jobPosts}">
-                <div class="breadcrumb">
-                    <a href="/" class="breadcrumb-link">
-                        <i class="fas fa-home"></i> <span th:text="#{job.description.breadcrumb.home}">Trang chủ</span>
-                    </a>
-                    <span class="breadcrumb-separator">/</span>
-                    <span class="breadcrumb-current" th:text="#{job.description.breadcrumb.current}">Chi tiết công việc</span>
-                </div>
+<!-- Flash Messages -->
+<div class="container mt-3">
 
-                <div class="job-hero">
-                    <div class="job-hero-left">
-                        <div class="company-logo-large">
-                            <img
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+
+<!-- Header Section -->
+<section class="job-detail-header">
+    <div class="container">
+        <div class="header-content" th:each="job : ${jobPosts}">
+            <div class="breadcrumb">
+                <a href="/" class="breadcrumb-link">
+                    <i class="fas fa-home"></i> <span th:text="#{job.description.breadcrumb.home}">Trang chủ</span>
+                </a>
+                <span class="breadcrumb-separator">/</span>
+                <span class="breadcrumb-current"
+                      th:text="#{job.description.breadcrumb.current}">Chi tiết công việc</span>
+            </div>
+
+            <div class="job-hero">
+                <div class="job-hero-left">
+                    <div class="company-logo-large">
+                        <img
                                 th:src="${job.employer.account.avatarUrl}"
                                 th:alt="${job.employer.companyName}"
                                 onerror="this.style.display='none'; this.parentElement.classList.add('default-logo'); this.parentElement.innerHTML='<span>' + this.alt.charAt(0).toUpperCase() + '</span>';"
-                            />
-                        </div>
-                        <div class="job-hero-info">
-                            <h1 class="job-title-large" th:text="${job.jobTitle}">Tiêu đề công việc</h1>
-                            <p class="company-name-large" th:text="${job.employer.companyName}">Tên công ty</p>
-                            <div class="job-quick-info">
+                        />
+                    </div>
+                    <div class="job-hero-info">
+                        <h1 class="job-title-large" th:text="${job.jobTitle}">Tiêu đề công việc</h1>
+                        <p class="company-name-large" th:text="${job.employer.companyName}">Tên công ty</p>
+                        <div class="job-quick-info">
                                 <span class="job-type-badge-large"
                                       th:classappend="${job.jobType?.name() == 'FULL_TIME' ? 'full-time' : 'part-time'}">
-                                    <span th:if="${job.jobType?.name() == 'FULL_TIME'}" th:text="#{job.description.fullTime}">Toàn thời gian</span>
-                                    <span th:if="${job.jobType?.name() == 'PART_TIME'}" th:text="#{job.description.partTime}">Bán thời gian</span>
+                                    <span th:if="${job.jobType?.name() == 'FULL_TIME'}"
+                                          th:text="#{job.description.fullTime}">Toàn thời gian</span>
+                                    <span th:if="${job.jobType?.name() == 'PART_TIME'}"
+                                          th:text="#{job.description.partTime}">Bán thời gian</span>
                                 </span>
-                                <span class="job-posted-date">
+                            <span class="job-posted-date">
                                     <i class="fas fa-clock"></i>
-                                    <span th:text="#{job.description.postedOn}">Đăng ngày</span> <span th:text="${#temporals.format(job.createdAt, 'dd/MM/yyyy')}">01/01/2024</span>
+                                    <span th:text="#{job.description.postedOn}">Đăng ngày</span> <span
+                                    th:text="${#temporals.format(job.createdAt, 'dd/MM/yyyy')}">01/01/2024</span>
                                 </span>
                             </div>
                         </div>
@@ -132,10 +154,11 @@
                                         <span th:text="#{jobDesc.saveJob}">Lưu việc làm</span>
                                     </button>
                                 </div>
-                                
-                                <!-- Hiển thị thông báo nếu đã apply -->
-                                <div th:if="${hasApplied}" class="already-applied-message">
-                                    <div class="alert alert-info" style="
+                            </div>
+
+                            <!-- Hiển thị thông báo nếu đã apply -->
+                            <div th:if="${hasApplied}" class="already-applied-message">
+                                <div class="alert alert-info" style="
                                         background-color: #d1ecf1; 
                                         color: #0c5460; 
                                         border: 1px solid #bee5eb; 
@@ -146,170 +169,189 @@
                                         align-items: center;
                                         font-weight: 500;
                                     ">
-                                        <i class="fas fa-check-circle" style="color: #28a745; margin-right: 10px; font-size: 18px;"></i>
-                                        <span th:text="#{apply.alreadyApplied}">Bạn đã ứng tuyển vào công việc này rồi!</span>
-                                    </div>
-                                    <button class="btn-save-large" style="margin-top: 7px">
-                                        <i class="far fa-heart"></i>
-                                        <span th:text="#{jobDesc.saveJob}">Lưu việc làm</span>
-                                    </button>
+                                    <i class="fas fa-check-circle"
+                                       style="color: #28a745; margin-right: 10px; font-size: 18px;"></i>
+                                    <span th:text="#{apply.alreadyApplied}">Bạn đã ứng tuyển vào công việc này rồi!</span>
+                                </div>
+
+                                <!-- Favorite Heart Form - Chỉ cho Student -->
+                                <!--  <div sec:authorize="isAuthenticated() and hasRole('student')">-->
+                                <div>
+                                    <form method="post" th:action="@{/favorites/toggle-form}" style="display: inline;">
+                                        <input type="hidden" name="jobPostId" th:value="${job.jobPostId}">
+                                        <input type="hidden" name="redirectUrl"
+                                               th:value="@{/JobDescription/JobPost(id=${job.jobPostId})}">
+                                        <button type="submit" class="favorite-heart-btn btn-save-large"
+                                                th:classappend="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'favorited' : ''">
+                                            <i th:class="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'fas fa-heart' : 'far fa-heart'"
+                                               th:style="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'color: #ff6987;' : ''"></i>
+                                            <span>Lưu việc làm</span>
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
 
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Main Content -->
-    <section class="job-detail-content">
-        <div class="container">
-            <div class="content-wrapper" th:each="job : ${jobPosts}">
-                <div class="main-content">
-                    <!-- Job Quick Details -->
-                    <div class="job-quick-details">
-                        <h2 th:text="#{job.description.generalInfo}">Thông tin chung</h2>
-                        <div class="details-grid">
-                            <div class="detail-item">
-                                <div class="detail-icon">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                </div>
-                                <div class="detail-content">
-                                    <span class="detail-label" th:text="#{job.description.location}">Địa điểm</span>
-                                    <span class="detail-value" th:text="${job.jobLocation}">Hà Nội</span>
-                                </div>
+<!-- Main Content -->
+<section class="job-detail-content">
+    <div class="container">
+        <div class="content-wrapper" th:each="job : ${jobPosts}">
+            <div class="main-content">
+                <!-- Job Quick Details -->
+                <div class="job-quick-details">
+                    <h2 th:text="#{job.description.generalInfo}">Thông tin chung</h2>
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-map-marker-alt"></i>
                             </div>
-                            <div class="detail-item">
-                                <div class="detail-icon">
-                                    <i class="fas fa-money-bill-wave"></i>
-                                </div>
-                                <div class="detail-content">
-                                    <span class="detail-label" th:text="#{job.description.salary}">Mức lương</span>
-                                    <span class="detail-value" th:if="${job.jobSalary != null}">
+                            <div class="detail-content">
+                                <span class="detail-label" th:text="#{job.description.location}">Địa điểm</span>
+                                <span class="detail-value" th:text="${job.jobLocation}">Hà Nội</span>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <div class="detail-content">
+                                <span class="detail-label" th:text="#{job.description.salary}">Mức lương</span>
+                                <span class="detail-value" th:if="${job.jobSalary != null}">
                                         <span th:text="${#numbers.formatInteger(job.jobSalary, 1, 'COMMA') + ' VND'}"></span>
                                     </span>
-                                    <span class="detail-value" th:if="${job.jobSalary == null}" th:text="#{job.common.negotiable}">Thỏa thuận</span>
-                                </div>
+                                <span class="detail-value" th:if="${job.jobSalary == null}">Thỏa thuận</span>
                             </div>
-                            <div class="detail-item">
-                                <div class="detail-icon">
-                                    <i class="fas fa-briefcase"></i>
-                                </div>
-                                <div class="detail-content">
-                                    <span class="detail-label" th:text="#{job.description.jobType}">Loại công việc</span>
-                                    <span class="detail-value">
-                                        <span th:if="${job.jobType?.name() == 'FULL_TIME'}" th:text="#{job.description.fullTime}">Toàn thời gian</span>
-                                        <span th:if="${job.jobType?.name() == 'PART_TIME'}" th:text="#{job.description.partTime}">Bán thời gian</span>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-briefcase"></i>
+                            </div>
+                            <div class="detail-content">
+                                <span class="detail-label" th:text="#{job.description.jobType}">Loại công việc</span>
+                                <span class="detail-value">
+                                        <span th:if="${job.jobType?.name() == 'FULL_TIME'}"
+                                              th:text="#{job.description.fullTime}">Toàn thời gian</span>
+                                        <span th:if="${job.jobType?.name() == 'PART_TIME'}"
+                                              th:text="#{job.description.partTime}">Bán thời gian</span>
                                     </span>
-                                </div>
                             </div>
-                            <div class="detail-item">
-                                <div class="detail-icon">
-                                    <i class="fas fa-layer-group"></i>
-                                </div>
-                                <div class="detail-content">
-                                    <span class="detail-label" th:text="#{job.description.field}">Lĩnh vực</span>
-                                    <span class="detail-value" th:text="${job.jobField.jobFieldName}">Công nghệ thông tin</span>
-                                </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-layer-group"></i>
+                            </div>
+                            <div class="detail-content">
+                                <span class="detail-label" th:text="#{job.description.field}">Lĩnh vực</span>
+                                <span class="detail-value"
+                                      th:text="${job.jobField.jobFieldName}">Công nghệ thông tin</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Navigation -->
+                <div class="tab-navigation">
+                    <button class="tab-button active" onclick="openTab('description')">
+                        <i class="fas fa-file-alt"></i>
+                        <span th:utext="#{job.description.tabs.description}">Mô tả công việc</span>
+                    </button>
+                    <button class="tab-button" onclick="openTab('requirements')">
+                        <i class="fas fa-list-check"></i>
+                        <span th:utext="#{job.description.tabs.requirements}">Yêu cầu công việc</span>
+                    </button>
+                    <button class="tab-button" onclick="openTab('company')">
+                        <i class="fas fa-building"></i>
+                        <span th:text="#{job.description.tabs.company}">Thông tin công ty</span>
+                    </button>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="tab-contents">
+                    <div id="description-tab" class="tab-content active">
+                        <div class="content-section">
+                            <h3 th:text="#{job.description.tabs.description}">Mô tả công việc</h3>
+                            <div class="job-description-content"
+                                 th:utext="${#strings.replace(job.jobDescription,'\n','<br />')}">
+                                Mô tả công việc sẽ hiển thị ở đây...
                             </div>
                         </div>
                     </div>
 
-                    <!-- Tab Navigation -->
-                    <div class="tab-navigation">
-                        <button class="tab-button active" onclick="openTab('description')">
-                            <i class="fas fa-file-alt"></i>
-                            <span th:utext="#{job.description.tabs.description}">Mô tả công việc</span>
-                        </button>
-                        <button class="tab-button" onclick="openTab('requirements')">
-                            <i class="fas fa-list-check"></i>
-                            <span th:utext="#{job.description.tabs.requirements}">Yêu cầu công việc</span>
-                        </button>
-                        <button class="tab-button" onclick="openTab('company')">
-                            <i class="fas fa-building"></i>
-                            <span th:text="#{job.description.tabs.company}">Thông tin công ty</span>
-                        </button>
+                    <div id="requirements-tab" class="tab-content">
+                        <div class="content-section">
+                            <h3 th:text="#{job.description.tabs.requirements}">Yêu cầu công việc</h3>
+                            <div class="job-requirements-content"
+                                 th:utext="${#strings.replace(job.jobRequirements,'\n','<br />')}">
+                                Yêu cầu công việc sẽ hiển thị ở đây...
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Tab Content -->
-                    <div class="tab-contents">
-                        <div id="description-tab" class="tab-content active">
-                            <div class="content-section">
-                                <h3 th:text="#{job.description.tabs.description}">Mô tả công việc</h3>
-                                <div class="job-description-content" th:utext="${#strings.replace(job.jobDescription,'\n','<br />')}">
-                                    Mô tả công việc sẽ hiển thị ở đây...
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="requirements-tab" class="tab-content">
-                            <div class="content-section">
-                                <h3 th:text="#{job.description.tabs.requirements}">Yêu cầu công việc</h3>
-                                <div class="job-requirements-content" th:utext="${#strings.replace(job.jobRequirements,'\n','<br />')}">
-                                    Yêu cầu công việc sẽ hiển thị ở đây...
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="company-tab" class="tab-content">
-                            <div class="content-section">
-                                <h3 th:text="#{job.description.companyIntro}">Giới thiệu công ty</h3>
-                                <div class="company-info">
-                                    <div class="company-basic-info">
-                                        <div class="company-logo-info">
-                                            <img
+                    <div id="company-tab" class="tab-content">
+                        <div class="content-section">
+                            <h3 th:text="#{job.description.companyIntro}">Giới thiệu công ty</h3>
+                            <div class="company-info">
+                                <div class="company-basic-info">
+                                    <div class="company-logo-info">
+                                        <img
                                                 th:src="${job.employer.account.avatarUrl}"
                                                 th:alt="${job.employer.companyName}"
                                                 onerror="this.style.display='none'; this.parentElement.classList.add('default-logo'); this.parentElement.innerHTML='<span>' + this.alt.charAt(0).toUpperCase() + '</span>';"
-                                            />
-                                        </div>
-                                        <div class="company-details">
-                                            <h4 th:text="${job.employer.companyName}">Tên công ty</h4>
-                                            <p class="company-field" th:text="${job.jobField.jobFieldName}">Lĩnh vực hoạt động</p>
-                                        </div>
+                                        />
                                     </div>
-                                    <div class="company-description" th:utext="${#strings.replace(job.employer.companyDescription,'\n','<br />')}">
-                                        Mô tả công ty sẽ hiển thị ở đây...
+                                    <div class="company-details">
+                                        <h4 th:text="${job.employer.companyName}">Tên công ty</h4>
+                                        <p class="company-field" th:text="${job.jobField.jobFieldName}">Lĩnh vực hoạt
+                                            động</p>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sidebar -->
-                <div class="sidebar">
-                    <div class="sidebar-section company-info-sidebar">
-                        <h3 th:text="#{job.description.companyInfo}">Thông tin công ty</h3>
-                        <div class="company-sidebar-details">
-                            <div class="company-sidebar-logo">
-                                <img
-                                    th:src="${job.employer.account.avatarUrl}"
-                                    th:alt="${job.employer.companyName}"
-                                    onerror="this.style.display='none'; this.parentElement.classList.add('default-logo'); this.parentElement.innerHTML='<span>' + this.alt.charAt(0).toUpperCase() + '</span>';"
-                                />
-                            </div>
-                            <h4 th:text="${job.employer.companyName}">Tên công ty</h4>
-                            <div class="company-sidebar-info">
-                                <div class="info-item">
-                                    <i class="fas fa-industry"></i>
-                                    <span th:text="${job.jobField.jobFieldName}">Lĩnh vực</span>
-                                </div>
-                                <div class="info-item">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <span th:text="${job.jobLocation}">Địa điểm</span>
+                                <div class="company-description"
+                                     th:utext="${#strings.replace(job.employer.companyDescription,'\n','<br />')}">
+                                    Mô tả công ty sẽ hiển thị ở đây...
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Related Jobs Section (similar to other pages) -->
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="sidebar-section company-info-sidebar">
+                    <h3 th:text="#{job.description.companyInfo}">Thông tin công ty</h3>
+                    <div class="company-sidebar-details">
+                        <div class="company-sidebar-logo">
+                            <img
+                                    th:src="${job.employer.account.avatarUrl}"
+                                    th:alt="${job.employer.companyName}"
+                                    onerror="this.style.display='none'; this.parentElement.classList.add('default-logo'); this.parentElement.innerHTML='<span>' + this.alt.charAt(0).toUpperCase() + '</span>';"
+                            />
+                        </div>
+                        <h4 th:text="${job.employer.companyName}">Tên công ty</h4>
+                        <div class="company-sidebar-info">
+                            <div class="info-item">
+                                <i class="fas fa-industry"></i>
+                                <span th:text="${job.jobField.jobFieldName}">Lĩnh vực</span>
+                            </div>
+                            <div class="info-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span th:text="${job.jobLocation}">Địa điểm</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Jobs Section (similar to other pages) -->
 <div th:replace="fragments/why-choose-us :: why-choose-us-section"></div>
 
 
@@ -326,7 +368,8 @@
         </div>
 
         <!-- Error Messages -->
-        <div th:if="${error}" class="alert alert-danger" style="margin: 10px; padding: 10px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px;">
+        <div th:if="${error}" class="alert alert-danger"
+             style="margin: 10px; padding: 10px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px;">
             <span th:text="${error}"></span>
         </div>
 
@@ -338,7 +381,7 @@
               id="jobApplicationForm">
             <div th:each="job : ${jobPosts}">
                 <!-- studentId lấy từ principal, jobPostId lấy từ RequestParam -->
-                <input type="hidden" name="jobPostId" th:value="${job.jobPostId}" />
+                <input type="hidden" name="jobPostId" th:value="${job.jobPostId}"/>
             </div>
 
             <div class="form-group">
@@ -347,11 +390,9 @@
                     <span style="color:red">*</span>
                 </label>
                 <input type="text" id="fullName" th:field="*{fullname}" readonly
-                       style="background-color: #f8f9fa; cursor: not-allowed;" 
-                       title="Họ và tên được tự động điền từ thông tin tài khoản" />
-                <small class="text-muted" style="font-size: 11px; margin-top: 3px; display: block;">
-<!--                    <i class="fas fa-info-circle"></i> Thông tin được tự động điền từ tài khoản của bạn-->
-                </small>
+                       style="background-color: #f8f9fa; cursor: not-allowed;"
+                       title="Họ và tên được tự động điền từ thông tin tài khoản"/>
+                <small class="text-muted" style="font-size: 11px; margin-top: 3px; display: block;"></small>
             </div>
 
             <div class="form-group">
@@ -361,9 +402,9 @@
                 </label>
                 <input type="email" id="email" th:field="*{email}" readonly
                        style="background-color: #f8f9fa; cursor: not-allowed;"
-                       title="Email được tự động điền từ thông tin tài khoản" />
+                       title="Email được tự động điền từ thông tin tài khoản"/>
                 <small class="text-muted" style="font-size: 11px; margin-top: 3px; display: block;">
-<!--                    <i class="fas fa-info-circle"></i> Thông tin được tự động điền từ tài khoản của bạn-->
+                    <!--                    <i class="fas fa-info-circle"></i> Thông tin được tự động điền từ tài khoản của bạn-->
                 </small>
             </div>
 
@@ -373,9 +414,11 @@
                     <span style="color:red">*</span>
                 </label>
                 <input type="text" id="phone" th:field="*{phoneNumber}" required pattern="^(\+84|0)[3|5|7|8|9][0-9]{8}$"
-                       maxlength="15" title="Số điện thoại phải bắt đầu bằng +84 hoặc 0, tiếp theo là 3,5,7,8,9 và 8 chữ số" />
+                       maxlength="15"
+                       title="Số điện thoại phải bắt đầu bằng +84 hoặc 0, tiếp theo là 3,5,7,8,9 và 8 chữ số"/>
                 <div class="error-message" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></div>
-                <div class="error-message" id="phoneError" style="display: none; color: red; font-size: 12px; margin-top: 5px;"></div>
+                <div class="error-message" id="phoneError"
+                     style="display: none; color: red; font-size: 12px; margin-top: 5px;"></div>
             </div>
 
             <div class="form-group">
@@ -384,9 +427,11 @@
                     <span style="color:red">*</span>
                 </label>
                 <textarea id="content" th:field="*{description}"
-                          th:placeholder="#{apply.form.content.placeholder}" required minlength="10" maxlength="1000"></textarea>
+                          th:placeholder="#{apply.form.content.placeholder}" required minlength="10"
+                          maxlength="1000"></textarea>
                 <div class="error-message" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
-                <div class="error-message" id="descriptionError" style="display: none; color: red; font-size: 12px; margin-top: 5px;"></div>
+                <div class="error-message" id="descriptionError"
+                     style="display: none; color: red; font-size: 12px; margin-top: 5px;"></div>
                 <div class="char-count" style="text-align: right; font-size: 12px; color: #666; margin-top: 5px;">
                     <span id="charCount">0</span>/1000
                 </div>
@@ -396,10 +441,14 @@
                 <label for="cv" th:text="#{apply.form.cv}">Hồ sơ ứng viên (CV)</label>
                 <input type="file" id="cv" name="cvFile"
                        accept=".pdf,.png,.jpg,.jpeg,.gif" onchange="validateCVFile(this)"/>
-                <p class="file-info" th:text="#{apply.form.cv.info}">Hỗ trợ định dạng PDF và ảnh (png, jpg, jpeg, gif) nhỏ hơn 2048KB</p>
-                <p class="cv-tip" th:text="#{apply.form.cv.tip}">Gửi kèm hồ sơ (CV) giúp bạn tăng cơ hội được tuyển dụng</p>
-                <div id="cv-error-modal" class="file-error" style="display: none; color: red; font-size: 12px; margin-top: 5px;"></div>
-                <div th:if="${cvError}" class="file-error" style="color: red; font-size: 12px; margin-top: 5px;" th:text="${cvError}"></div>
+                <p class="file-info" th:text="#{apply.form.cv.info}">Hỗ trợ định dạng PDF và ảnh (png, jpg, jpeg, gif)
+                    nhỏ hơn 2048KB</p>
+                <p class="cv-tip" th:text="#{apply.form.cv.tip}">Gửi kèm hồ sơ (CV) giúp bạn tăng cơ hội được tuyển
+                    dụng</p>
+                <div id="cv-error-modal" class="file-error"
+                     style="display: none; color: red; font-size: 12px; margin-top: 5px;"></div>
+                <div th:if="${cvError}" class="file-error" style="color: red; font-size: 12px; margin-top: 5px;"
+                     th:text="${cvError}"></div>
             </div>
 
             <div class="button-group">
@@ -410,356 +459,359 @@
                         <span th:text="#{apply.form.submitting}">Đang gửi...</span>
                     </span>
                 </button>
-                <button type="button" class="cancel-btn" onclick="closeApplyForm()" th:text="#{apply.form.close}">Đóng</button>
+                <button type="button" class="cancel-btn" onclick="closeApplyForm()" th:text="#{apply.form.close}">Đóng
+                </button>
             </div>
         </form>
     </div>
 </div>
 
-    <script>
-        // CV File Validation Function
-        function validateCVFile(input) {
-            const errorDiv = document.getElementById('cv-error-modal');
-            const allowedTypes = ['application/pdf', 'image/png', 'image/jpg', 'image/jpeg', 'image/gif'];
-            const maxSize = 2048 * 1024; // 2048KB in bytes
-            
-            // Clear previous errors
-            errorDiv.style.display = 'none';
-            errorDiv.textContent = '';
-            input.setCustomValidity('');
-            
-            if (input.files.length === 0) {
-                return true; // No file selected is okay
-            }
-            
-            const file = input.files[0];
-            
-            // Check file type
-            if (!allowedTypes.includes(file.type)) {
-                const errorMessage = 'Chỉ chấp nhận file PDF và ảnh (PNG, JPG, JPEG, GIF)';
-                showFileError(errorDiv, errorMessage);
-                input.setCustomValidity(errorMessage);
-                input.value = ''; // Clear the input
-                return false;
-            }
-            
-            // Check file size
-            if (file.size > maxSize) {
-                const errorMessage = 'Kích thước file không được vượt quá 2048KB';
-                showFileError(errorDiv, errorMessage);
-                input.setCustomValidity(errorMessage);
-                input.value = ''; // Clear the input
-                return false;
-            }
-            
-            return true;
-        }
-        
-        function showFileError(errorDiv, message) {
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
+<script>
+    // CV File Validation Function
+    function validateCVFile(input) {
+        const errorDiv = document.getElementById('cv-error-modal');
+        const allowedTypes = ['application/pdf', 'image/png', 'image/jpg', 'image/jpeg', 'image/gif'];
+        const maxSize = 2048 * 1024; // 2048KB in bytes
+
+        // Clear previous errors
+        errorDiv.style.display = 'none';
+        errorDiv.textContent = '';
+        input.setCustomValidity('');
+
+        if (input.files.length === 0) {
+            return true; // No file selected is okay
         }
 
-        // Real-time validation functions
-        function validateFullName() {
-            const fullName = document.getElementById('fullName');
-            const errorDiv = document.getElementById('fullNameError');
-            const value = fullName.value.trim();
+        const file = input.files[0];
 
-            if (value.length === 0) {
-                showFieldError(errorDiv, 'Họ và tên không được để trống');
-                return false;
-            }
-
-            if (value.length < 2) {
-                showFieldError(errorDiv, 'Họ và tên phải có ít nhất 2 ký tự');
-                return false;
-            }
-
-            if (value.length > 100) {
-                showFieldError(errorDiv, 'Họ và tên không được quá 100 ký tự');
-                return false;
-            }
-
-            const namePattern = /^[\p{L}\s]+$/u;
-            if (!namePattern.test(value)) {
-                showFieldError(errorDiv, 'Họ và tên chỉ được chứa chữ cái và khoảng trắng');
-                return false;
-            }
-
-            hideFieldError(errorDiv);
-            return true;
+        // Check file type
+        if (!allowedTypes.includes(file.type)) {
+            const errorMessage = 'Chỉ chấp nhận file PDF và ảnh (PNG, JPG, JPEG, GIF)';
+            showFileError(errorDiv, errorMessage);
+            input.setCustomValidity(errorMessage);
+            input.value = ''; // Clear the input
+            return false;
         }
 
-        function validateEmail() {
-            const email = document.getElementById('email');
-            const errorDiv = document.getElementById('emailError');
-            const value = email.value.trim();
-
-            if (value.length === 0) {
-                showFieldError(errorDiv, 'Email không được để trống');
-                return false;
-            }
-
-            if (value.length > 255) {
-                showFieldError(errorDiv, 'Email không được quá 255 ký tự');
-                return false;
-            }
-
-            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailPattern.test(value)) {
-                showFieldError(errorDiv, 'Email không đúng định dạng');
-                return false;
-            }
-
-            hideFieldError(errorDiv);
-            return true;
+        // Check file size
+        if (file.size > maxSize) {
+            const errorMessage = 'Kích thước file không được vượt quá 2048KB';
+            showFileError(errorDiv, errorMessage);
+            input.setCustomValidity(errorMessage);
+            input.value = ''; // Clear the input
+            return false;
         }
 
-        function validatePhone() {
-            const phone = document.getElementById('phone');
-            const errorDiv = document.getElementById('phoneError');
-            const value = phone.value.trim();
+        return true;
+    }
 
-            if (value.length === 0) {
-                showFieldError(errorDiv, 'Số điện thoại không được để trống');
-                return false;
-            }
+    function showFileError(errorDiv, message) {
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+    }
 
-            if (value.length > 15) {
-                showFieldError(errorDiv, 'Số điện thoại không được quá 15 ký tự');
-                return false;
-            }
+    // Real-time validation functions
+    function validateFullName() {
+        const fullName = document.getElementById('fullName');
+        const errorDiv = document.getElementById('fullNameError');
+        const value = fullName.value.trim();
 
-            const phonePattern = /^(\+84|0)[3|5|7|8|9][0-9]{8}$/;
-            if (!phonePattern.test(value)) {
-                showFieldError(errorDiv, 'Số điện thoại không đúng định dạng');
-                return false;
-            }
-
-            hideFieldError(errorDiv);
-            return true;
+        if (value.length === 0) {
+            showFieldError(errorDiv, 'Họ và tên không được để trống');
+            return false;
         }
 
-        function validateDescription() {
-            const description = document.getElementById('content');
-            const errorDiv = document.getElementById('descriptionError');
-            const value = description.value.trim();
-
-            if (value.length === 0) {
-                showFieldError(errorDiv, 'Nội dung ứng tuyển không được để trống');
-                return false;
-            }
-
-            if (value.length < 10) {
-                showFieldError(errorDiv, 'Nội dung phải có ít nhất 10 ký tự');
-                return false;
-            }
-
-            if (value.length > 1000) {
-                showFieldError(errorDiv, 'Nội dung không được quá 1000 ký tự');
-                return false;
-            }
-
-            hideFieldError(errorDiv);
-            return true;
+        if (value.length < 2) {
+            showFieldError(errorDiv, 'Họ và tên phải có ít nhất 2 ký tự');
+            return false;
         }
 
-        function showFieldError(errorDiv, message) {
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
+        if (value.length > 100) {
+            showFieldError(errorDiv, 'Họ và tên không được quá 100 ký tự');
+            return false;
         }
 
-        function hideFieldError(errorDiv) {
-            errorDiv.style.display = 'none';
+        const namePattern = /^[\p{L}\s]+$/u;
+        if (!namePattern.test(value)) {
+            showFieldError(errorDiv, 'Họ và tên chỉ được chứa chữ cái và khoảng trắng');
+            return false;
         }
 
-        function updateCharCount() {
-            const textarea = document.getElementById('content');
-            const charCount = document.getElementById('charCount');
-            const count = textarea.value.length;
-            charCount.textContent = count;
+        hideFieldError(errorDiv);
+        return true;
+    }
 
-            if (count > 1000) {
-                charCount.style.color = 'red';
-            } else {
-                charCount.style.color = '#666';
-            }
+    function validateEmail() {
+        const email = document.getElementById('email');
+        const errorDiv = document.getElementById('emailError');
+        const value = email.value.trim();
+
+        if (value.length === 0) {
+            showFieldError(errorDiv, 'Email không được để trống');
+            return false;
         }
 
-        // Modal Functions
-        function showApplyForm() {
-            const modal = document.getElementById('applyModal');
-            if (modal) {
-                modal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-            }
+        if (value.length > 255) {
+            showFieldError(errorDiv, 'Email không được quá 255 ký tự');
+            return false;
         }
 
-        function closeApplyForm() {
-            const modal = document.getElementById('applyModal');
-            if (modal) {
-                modal.classList.add('hidden');
-                document.body.style.overflow = 'auto';
-                // Reset form and loading state when closing
-                resetFormState();
-            }
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(value)) {
+            showFieldError(errorDiv, 'Email không đúng định dạng');
+            return false;
         }
 
-        // Tab Navigation
-        function openTab(tabName) {
-            const tabContents = document.getElementsByClassName('tab-content');
-            const tabButtons = document.getElementsByClassName('tab-button');
+        hideFieldError(errorDiv);
+        return true;
+    }
 
-            for (let i = 0; i < tabContents.length; i++) {
-                tabContents[i].classList.remove('active');
-                tabButtons[i].classList.remove('active');
-            }
+    function validatePhone() {
+        const phone = document.getElementById('phone');
+        const errorDiv = document.getElementById('phoneError');
+        const value = phone.value.trim();
 
-            const targetTab = document.getElementById(tabName + '-tab');
-            if (targetTab && event.target) {
-                targetTab.classList.add('active');
-                event.target.classList.add('active');
-            }
+        if (value.length === 0) {
+            showFieldError(errorDiv, 'Số điện thoại không được để trống');
+            return false;
         }
 
-        // Enhanced interaction effects
-        document.addEventListener('DOMContentLoaded', function() {
-            // Add event listeners for real-time validation (chỉ cho các field có thể chỉnh sửa)
-            const phoneInput = document.getElementById('phone');
-            const descriptionInput = document.getElementById('content');
+        if (value.length > 15) {
+            showFieldError(errorDiv, 'Số điện thoại không được quá 15 ký tự');
+            return false;
+        }
 
-            if (phoneInput) {
-                phoneInput.addEventListener('blur', validatePhone);
-                phoneInput.addEventListener('input', function() {
-                    if (this.value.trim().length > 0) {
-                        validatePhone();
+        const phonePattern = /^(\+84|0)[3|5|7|8|9][0-9]{8}$/;
+        if (!phonePattern.test(value)) {
+            showFieldError(errorDiv, 'Số điện thoại không đúng định dạng');
+            return false;
+        }
+
+        hideFieldError(errorDiv);
+        return true;
+    }
+
+    function validateDescription() {
+        const description = document.getElementById('content');
+        const errorDiv = document.getElementById('descriptionError');
+        const value = description.value.trim();
+
+        if (value.length === 0) {
+            showFieldError(errorDiv, 'Nội dung ứng tuyển không được để trống');
+            return false;
+        }
+
+        if (value.length < 10) {
+            showFieldError(errorDiv, 'Nội dung phải có ít nhất 10 ký tự');
+            return false;
+        }
+
+        if (value.length > 1000) {
+            showFieldError(errorDiv, 'Nội dung không được quá 1000 ký tự');
+            return false;
+        }
+
+        hideFieldError(errorDiv);
+        return true;
+    }
+
+    function showFieldError(errorDiv, message) {
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+    }
+
+    function hideFieldError(errorDiv) {
+        errorDiv.style.display = 'none';
+    }
+
+    function updateCharCount() {
+        const textarea = document.getElementById('content');
+        const charCount = document.getElementById('charCount');
+        const count = textarea.value.length;
+        charCount.textContent = count;
+
+        if (count > 1000) {
+            charCount.style.color = 'red';
+        } else {
+            charCount.style.color = '#666';
+        }
+    }
+
+    // Modal Functions
+    function showApplyForm() {
+        const modal = document.getElementById('applyModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    function closeApplyForm() {
+        const modal = document.getElementById('applyModal');
+        if (modal) {
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            // Reset form and loading state when closing
+            resetFormState();
+        }
+    }
+
+    // Tab Navigation
+    function openTab(tabName) {
+        const tabContents = document.getElementsByClassName('tab-content');
+        const tabButtons = document.getElementsByClassName('tab-button');
+
+        for (let i = 0; i < tabContents.length; i++) {
+            tabContents[i].classList.remove('active');
+            tabButtons[i].classList.remove('active');
+        }
+
+        const targetTab = document.getElementById(tabName + '-tab');
+        if (targetTab && event.target) {
+            targetTab.classList.add('active');
+            event.target.classList.add('active');
+        }
+    }
+
+    // Enhanced interaction effects
+    document.addEventListener('DOMContentLoaded', function () {
+        // Add event listeners for real-time validation (chỉ cho các field có thể chỉnh sửa)
+        const phoneInput = document.getElementById('phone');
+        const descriptionInput = document.getElementById('content');
+
+        if (phoneInput) {
+            phoneInput.addEventListener('blur', validatePhone);
+            phoneInput.addEventListener('input', function () {
+                if (this.value.trim().length > 0) {
+                    validatePhone();
+                }
+            });
+        }
+
+        if (descriptionInput) {
+            descriptionInput.addEventListener('blur', validateDescription);
+            descriptionInput.addEventListener('input', updateCharCount);
+        }
+
+        // Form submission validation
+        const form = document.getElementById('jobApplicationForm');
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                let isValid = true;
+
+                // Validate các fields còn lại (bỏ qua fullName và email vì đã readonly)
+                if (!validatePhone()) isValid = false;
+                if (!validateDescription()) isValid = false;
+
+                // Validate CV file
+                const cvInput = document.getElementById('cv');
+                if (cvInput && cvInput.files.length > 0) {
+                    if (!validateCVFile(cvInput)) {
+                        isValid = false;
                     }
-                });
-            }
+                }
 
-            if (descriptionInput) {
-                descriptionInput.addEventListener('blur', validateDescription);
-                descriptionInput.addEventListener('input', updateCharCount);
-            }
+                if (!isValid) {
+                    e.preventDefault();
+                    return false;
+                }
 
-            // Form submission validation
+                // Show loading spinner
+                showSubmitLoading();
+            });
+        }
+
+        // Function to show loading state
+        function showSubmitLoading() {
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnSpinner = submitBtn.querySelector('.btn-spinner');
+
+            btnText.style.display = 'none';
+            btnSpinner.style.display = 'inline-flex';
+            submitBtn.disabled = true;
+        }
+
+        // Function to hide loading state
+        function hideSubmitLoading() {
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = submitBtn.querySelector('.btn-text');
+            const btnSpinner = submitBtn.querySelector('.btn-spinner');
+
+            btnText.style.display = 'inline';
+            btnSpinner.style.display = 'none';
+            submitBtn.disabled = false;
+        }
+
+        // Reset loading state when modal is closed
+        function resetFormState() {
+            hideSubmitLoading();
+
+            // Reset chỉ các field có thể chỉnh sửa, giữ nguyên fullName và email
             const form = document.getElementById('jobApplicationForm');
-            if (form) {
-                form.addEventListener('submit', function(e) {
-                    let isValid = true;
+            const fullNameValue = document.getElementById('fullName').value;
+            const emailValue = document.getElementById('email').value;
 
-                    // Validate các fields còn lại (bỏ qua fullName và email vì đã readonly)
-                    if (!validatePhone()) isValid = false;
-                    if (!validateDescription()) isValid = false;
+            form.reset();
 
-                    // Validate CV file
-                    const cvInput = document.getElementById('cv');
-                    if (cvInput && cvInput.files.length > 0) {
-                        if (!validateCVFile(cvInput)) {
-                            isValid = false;
-                        }
-                    }
+            // Khôi phục lại fullName và email
+            document.getElementById('fullName').value = fullNameValue;
+            document.getElementById('email').value = emailValue;
 
-                    if (!isValid) {
-                        e.preventDefault();
-                        return false;
-                    }
+            // Clear all error messages
+            document.querySelectorAll('.error-message[id$="Error"]').forEach(el => {
+                el.style.display = 'none';
+            });
+            document.getElementById('charCount').textContent = '0';
+        }
 
-                    // Show loading spinner
-                    showSubmitLoading();
-                });
-            }
-
-            // Function to show loading state
-            function showSubmitLoading() {
-                const submitBtn = document.getElementById('submitBtn');
-                const btnText = submitBtn.querySelector('.btn-text');
-                const btnSpinner = submitBtn.querySelector('.btn-spinner');
-                
-                btnText.style.display = 'none';
-                btnSpinner.style.display = 'inline-flex';
-                submitBtn.disabled = true;
-            }
-
-            // Function to hide loading state
-            function hideSubmitLoading() {
-                const submitBtn = document.getElementById('submitBtn');
-                const btnText = submitBtn.querySelector('.btn-text');
-                const btnSpinner = submitBtn.querySelector('.btn-spinner');
-                
-                btnText.style.display = 'inline';
-                btnSpinner.style.display = 'none';
-                submitBtn.disabled = false;
-            }
-
-            // Reset loading state when modal is closed
-            function resetFormState() {
-                hideSubmitLoading();
-                
-                // Reset chỉ các field có thể chỉnh sửa, giữ nguyên fullName và email
-                const form = document.getElementById('jobApplicationForm');
-                const fullNameValue = document.getElementById('fullName').value;
-                const emailValue = document.getElementById('email').value;
-                
-                form.reset();
-                
-                // Khôi phục lại fullName và email
-                document.getElementById('fullName').value = fullNameValue;
-                document.getElementById('email').value = emailValue;
-                
-                // Clear all error messages
-                document.querySelectorAll('.error-message[id$="Error"]').forEach(el => {
-                    el.style.display = 'none';
-                });
-                document.getElementById('charCount').textContent = '0';
-            }
-
-            // Modal event listeners
-            const modal = document.getElementById('applyModal');
-            if (modal) {
-                modal.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        closeApplyForm();
-                    }
-                });
-            }
-
-            // Close modal with ESC key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && !document.getElementById('applyModal').classList.contains('hidden')) {
+        // Modal event listeners
+        const modal = document.getElementById('applyModal');
+        if (modal) {
+            modal.addEventListener('click', function (e) {
+                if (e.target === this) {
                     closeApplyForm();
                 }
             });
+        }
 
-            // Add smooth scrolling for anchor links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                });
-            });
+        // Close modal with ESC key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && !document.getElementById('applyModal').classList.contains('hidden')) {
+                closeApplyForm();
+            }
+        });
 
-            // Add hover effects for interactive elements
-            const interactiveElements = document.querySelectorAll('.btn-primary-large, .btn-save-large, .tab-button');
-            interactiveElements.forEach(element => {
-                element.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-2px)';
-                });
-
-                element.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0)';
-                });
+        // Add smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
             });
         });
-    </script>
-    <script th:src="@{/js/validation.js}"></script>
+
+        // Add hover effects for interactive elements
+        const interactiveElements = document.querySelectorAll('.btn-primary-large, .btn-save-large, .tab-button');
+        interactiveElements.forEach(element => {
+            element.addEventListener('mouseenter', function () {
+                this.style.transform = 'translateY(-2px)';
+            });
+
+            element.addEventListener('mouseleave', function () {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    });
+
+
+</script>
+<script th:src="@{/js/validation.js}"></script>
 
 <!-- Add notification bell -->
 <div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
