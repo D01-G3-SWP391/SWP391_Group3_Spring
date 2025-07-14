@@ -196,7 +196,7 @@
                                 </h3>
                                 <div class="event-company">
                                     <i class="bi bi-building"></i>
-                                    <span th:text="${event.employer != null ? event.employer.companyName : 'N/A'}"></span>
+                                    <span th:text="${event.employer.companyName}"></span>
                                 </div>
                                 <div class="event-location">
                                     <i class="bi bi-geo-alt"></i>
@@ -266,7 +266,7 @@
                                         <div class="event-meta">
                                             <span class="company">
                                                 <i class="fas fa-building"></i>
-                                                <span th:text="${event.employer != null ? event.employer.companyName : 'N/A'}">VNG Corporation</span>
+                                                <span th:text="${event.employer.companyName}">VNG Corporation</span>
                                             </span>
                                             <span class="location">
                                                 <i class="fas fa-map-marker-alt"></i>

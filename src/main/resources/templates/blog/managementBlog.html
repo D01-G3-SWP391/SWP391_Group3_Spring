@@ -9,12 +9,16 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}"/>
+    <link rel="stylesheet" th:href="@{/css/managementBlog.css}">
     <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
     <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
-    <link rel="stylesheet" th:href="@{/css/managementBlog.css}">
     <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
+    <link rel="stylesheet" th:href="@{/css/pagination.css}">
 </head>
-<body>
+<body class="management-blog-bg">
 <!-- Navbar cố định trên cùng -->
 <div th:replace="~{navbar/navbarAdmin :: navbarAdmin}"></div>
 
@@ -204,9 +208,6 @@
     </div>
     <div id="pagination" class="d-flex justify-content-center mt-3"></div>
 </div>
-
-<script th:src="@{/js/navbarAdmin.js}"></script>
-<script th:src="@{/js/languageSwitch.js}"></script>
 <script>
     function confirmStatusChange(selectElem) {
         const oldValue = selectElem.getAttribute('data-old-value');

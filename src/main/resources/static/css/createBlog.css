@@ -3,29 +3,10 @@ body {
     background-color: #f8f9fa; /* Light gray background, common for admin panels */
 }
 
-/* ===== MAIN LAYOUT FOR ADMIN SIDEBAR ===== */
+/* Main Content Wrapper */
 .main-content {
-    margin-top: 0 !important;
-    margin-left: 0 !important; /* Let body handle the margin */
-    padding: 2rem 2rem 2rem 1rem !important;
-    width: 100% !important; /* Full width */
-    max-width: none !important;
-    margin-right: 0 !important;
-    min-height: calc(100vh - 4rem) !important;
-    background: #f8f9fa !important;
-}
-
-/* Responsive adjustments for admin sidebar */
-@media (max-width: 1200px) {
-    .main-content {
-        padding: 1.5rem 1.5rem 1.5rem 1rem !important;
-    }
-}
-
-@media (max-width: 768px) {
-    .main-content {
-        padding: 1rem !important;
-    }
+    padding-top: 80px; /* Adjust if navbar height changes */
+    padding-bottom: 40px;
 }
 
 /* Header Section */

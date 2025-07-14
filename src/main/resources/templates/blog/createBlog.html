@@ -11,6 +11,9 @@
     <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
     <!-- Navbar & Common CSS -->
     <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}"/>
     <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
     <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
     <!-- Custom Create Blog CSS -->
@@ -228,7 +231,5 @@
     <!-- Chat Notification Fragment -->
     <div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
 
-<script th:src="@{/js/navbarAdmin.js}"></script>
-<script th:src="@{/js/languageSwitch.js}"></script>
 </body>
 </html> 
