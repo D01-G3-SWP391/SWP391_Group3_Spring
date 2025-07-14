@@ -61,11 +61,7 @@ public class FavoriteJobServiceImpl implements IFavoriteJobService {
         return favoriteJobRepository.findByStudentIdOrderByCreatedAtDesc(studentId);
     }
 
-    @Override
-    public List<FavoriteJob> getRecentFavoriteJobs(Integer studentId) {
-        // Lấy top 5 favorite jobs gần đây sử dụng Pageable
-        return favoriteJobRepository.findByStudentIdOrderByCreatedAtDesc(studentId, PageRequest.of(0, 5));
-    }
+
 
     @Override
     public List<JobPost> getFavoriteJobPostsByStudent(Integer studentId) {
@@ -86,37 +82,7 @@ public class FavoriteJobServiceImpl implements IFavoriteJobService {
         return favoriteJobRepository.countByStudentId(studentId);
     }
 
-    @Override
-    public boolean removeFavorite(Integer studentId, Integer jobPostId) {
-        Optional<FavoriteJob> favoriteJob = favoriteJobRepository.findByStudentIdAndJobPostId(studentId, jobPostId);
-        
-        if (favoriteJob.isPresent()) {
-            favoriteJobRepository.deleteByStudentIdAndJobPostId(studentId, jobPostId);
-            return true;
-        }
-        return false;
-    }
 
-    @Override
-    public FavoriteJob addFavorite(Integer studentId, Integer jobPostId) {
-        try {
-            // Kiểm tra xem đã favorite chưa
-            if (favoriteJobRepository.existsByStudentIdAndJobPostId(studentId, jobPostId)) {
-                // Nếu đã favorite rồi thì return favorite hiện tại
-                return favoriteJobRepository.findByStudentIdAndJobPostId(studentId, jobPostId).orElse(null);
-            }
-            
-            // Tạo favorite job mới
-            FavoriteJob favoriteJob = new FavoriteJob(studentId, jobPostId);
-            return favoriteJobRepository.save(favoriteJob);
-        } catch (Exception e) {
-            // Xử lý lỗi duplicate key
-            if (e.getMessage().contains("Duplicate entry") || e.getMessage().contains("duplicate key")) {
-                // Nếu là lỗi duplicate, return record hiện tại
-                return favoriteJobRepository.findByStudentIdAndJobPostId(studentId, jobPostId).orElse(null);
-            }
-            // Re-throw exception khác
-            throw e;
-        }
-    }
+
+
 } 

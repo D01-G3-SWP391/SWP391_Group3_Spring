@@ -1,7 +1,6 @@
 package com.example.swp391_d01_g3.repository;
 
 import com.example.swp391_d01_g3.model.FavoriteJob;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,9 +20,6 @@ public interface FavoriteJobRepository extends JpaRepository<FavoriteJob, Intege
 
     // Lấy tất cả favorite jobs của một student
     List<FavoriteJob> findByStudentIdOrderByCreatedAtDesc(Integer studentId);
-
-    // Lấy favorite jobs gần đây của student (top 5) - sử dụng Pageable
-    List<FavoriteJob> findByStudentIdOrderByCreatedAtDesc(Integer studentId, Pageable pageable);
 
     // Xóa favorite job theo studentId và jobPostId
     void deleteByStudentIdAndJobPostId(Integer studentId, Integer jobPostId);

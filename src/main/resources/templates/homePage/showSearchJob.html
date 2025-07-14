@@ -268,7 +268,7 @@
                                 
                                 <!-- Favorite Heart Form - Chỉ cho Student -->
                                 <div sec:authorize="isAuthenticated() and hasRole('student')">
-                                    <form method="get" th:action="@{/favorites/toggle-form}" style="display: inline;">
+                                    <form method="post" th:action="@{/favorites/toggle-form}" style="display: inline;">
                                         <input type="hidden" name="jobPostId" th:value="${job.jobPostId}">
                                         <input type="hidden" name="redirectUrl" th:value="@{/HomePage/search(keyword=${searchKeyword}, location=${searchLocation}, jobType=${searchJobType}, fieldId=${searchFieldId}, salaryRange=${searchSalary}, companyName=${searchCompanyName})}">
                                         <button type="submit" class="favorite-heart-btn save-btn"
@@ -277,22 +277,6 @@
                                                th:style="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'color: #ff6987;' : 'color: #6c757d;'"></i>
                                         </button>
                                     </form>
-                                </div>
-                                
-                                <!-- Thông báo cho Guest -->
-                                <div sec:authorize="!isAuthenticated()">
-                                    <a href="/Login" class="favorite-heart-btn save-btn" style="text-decoration: none; color: #6c757d;" 
-                                       title="Đăng nhập để sử dụng tính năng yêu thích">
-                                        <i class="far fa-heart"></i>
-                                    </a>
-                                </div>
-                                
-                                <!-- Thông báo cho Admin/Employer -->
-                                <div sec:authorize="isAuthenticated() and (hasRole('admin') or hasRole('employer'))">
-                                    <button type="button" class="favorite-heart-btn save-btn" disabled 
-                                            style="opacity: 0.5;" title="Tính năng yêu thích chỉ dành cho sinh viên">
-                                        <i class="far fa-heart" style="color: #ccc;"></i>
-                                    </button>
                                 </div>
                             </div>
                         </div>

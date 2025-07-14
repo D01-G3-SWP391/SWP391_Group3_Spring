@@ -41,7 +41,7 @@ public class HomePageFeatures {
         return "redirect:/";
     }
 
-    @PostMapping("/search")
+    @RequestMapping(value = "/search", method = {RequestMethod.GET, RequestMethod.POST})
     public String searchJobs(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String location,

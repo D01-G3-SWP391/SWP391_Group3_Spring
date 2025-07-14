@@ -30,12 +30,7 @@ public interface IFavoriteJobService {
      */
     List<FavoriteJob> getFavoriteJobsByStudent(Integer studentId);
 
-    /**
-     * Lấy favorite jobs gần đây của student (top 5)
-     * @param studentId ID của student
-     * @return List<FavoriteJob> danh sách favorite jobs gần đây
-     */
-    List<FavoriteJob> getRecentFavoriteJobs(Integer studentId);
+
 
     /**
      * Lấy danh sách JobPost từ favorite jobs của student
@@ -51,19 +46,7 @@ public interface IFavoriteJobService {
      */
     long getFavoriteCount(Integer studentId);
 
-    /**
-     * Xóa favorite job
-     * @param studentId ID của student
-     * @param jobPostId ID của job post
-     * @return true nếu xóa thành công, false nếu không tìm thấy
-     */
-    boolean removeFavorite(Integer studentId, Integer jobPostId);
 
-    /**
-     * Thêm job vào favorite
-     * @param studentId ID của student
-     * @param jobPostId ID của job post
-     * @return FavoriteJob đã tạo
-     */
-    FavoriteJob addFavorite(Integer studentId, Integer jobPostId);
+
+
 } 

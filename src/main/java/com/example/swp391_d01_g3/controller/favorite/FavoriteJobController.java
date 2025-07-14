@@ -100,186 +100,47 @@ public class FavoriteJobController {
         }
     }
 
-    /**
-     * Kiểm tra favorite status của một job post
-     * GET /favorites/check/{jobPostId}
-     */
-    @GetMapping("/check/{jobPostId}")
-    public ResponseEntity<Map<String, Object>> checkFavorite(@PathVariable Integer jobPostId) {
-        
-        Map<String, Object> response = new HashMap<>();
-        
-        try {
-            Integer studentId = getStudentIdFromAuthentication();
-            
-            if (studentId == null) {
-                response.put("isFavorited", false);
-                return ResponseEntity.ok(response);
-            }
-            
-            boolean isFavorited = favoriteJobService.isFavorited(studentId, jobPostId);
-            response.put("isFavorited", isFavorited);
-            
-            return ResponseEntity.ok(response);
-            
-        } catch (Exception e) {
-            response.put("isFavorited", false);
-            return ResponseEntity.ok(response);
-        }
-    }
-
-    /**
-     * Lấy danh sách favorite jobs gần đây (cho dropdown)
-     * GET /favorites/recent
-     */
-    @GetMapping("/recent")
-    public ResponseEntity<Map<String, Object>> getRecentFavorites() {
-        
-        Map<String, Object> response = new HashMap<>();
-        
-        try {
-            Integer studentId = getStudentIdFromAuthentication();
-            
-            if (studentId == null) {
-                response.put("success", false);
-                response.put("message", "Vui lòng đăng nhập với tài khoản sinh viên");
-                return ResponseEntity.badRequest().body(response);
-            }
-            
-            // Lấy tất cả favorite jobs
-            List<FavoriteJob> allFavorites = favoriteJobService.getFavoriteJobsByStudent(studentId);
-            
-            // Lấy job posts
-            List<JobPost> favoriteJobPosts = favoriteJobService.getFavoriteJobPostsByStudent(studentId);
-            
-            // Lấy count
-            long favoriteCount = favoriteJobService.getFavoriteCount(studentId);
-            
-            response.put("success", true);
-            response.put("recentFavorites", allFavorites);
-            response.put("favoriteJobPosts", favoriteJobPosts);
-            response.put("totalCount", favoriteCount);
-            
-            return ResponseEntity.ok(response);
-            
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", "Có lỗi xảy ra: " + e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
-    }
-
-    /**
-     * Lấy tất cả favorite jobs của student
-     * GET /favorites/all
-     */
-    @GetMapping("/all")
-    public ResponseEntity<Map<String, Object>> getAllFavorites() {
-        
-        Map<String, Object> response = new HashMap<>();
-        
-        try {
-            Integer studentId = getStudentIdFromAuthentication();
-            
-            if (studentId == null) {
-                response.put("success", false);
-                response.put("message", "Vui lòng đăng nhập với tài khoản sinh viên");
-                return ResponseEntity.badRequest().body(response);
-            }
-            
-            List<FavoriteJob> allFavorites = favoriteJobService.getFavoriteJobsByStudent(studentId);
-            List<JobPost> favoriteJobPosts = favoriteJobService.getFavoriteJobPostsByStudent(studentId);
-            
-            response.put("success", true);
-            response.put("favorites", allFavorites);
-            response.put("jobPosts", favoriteJobPosts);
-            
-            return ResponseEntity.ok(response);
-            
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", "Có lỗi xảy ra: " + e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
-    }
-
-    /**
-     * Xóa favorite job
-     * DELETE /favorites/remove/{jobPostId}
-     */
-    @DeleteMapping("/remove/{jobPostId}")
-    public ResponseEntity<Map<String, Object>> removeFavorite(@PathVariable Integer jobPostId) {
-        
-        Map<String, Object> response = new HashMap<>();
-        
-        try {
-            Integer studentId = getStudentIdFromAuthentication();
-            
-            if (studentId == null) {
-                response.put("success", false);
-                response.put("message", "Vui lòng đăng nhập với tài khoản sinh viên");
-                return ResponseEntity.badRequest().body(response);
-            }
-            
-            boolean removed = favoriteJobService.removeFavorite(studentId, jobPostId);
-            
-            if (removed) {
-                response.put("success", true);
-                response.put("message", "Đã xóa khỏi danh sách yêu thích");
-            } else {
-                response.put("success", false);
-                response.put("message", "Không tìm thấy job trong danh sách yêu thích");
-            }
-            
-            return ResponseEntity.ok(response);
-            
-        } catch (Exception e) {
-            response.put("success", false);
-            response.put("message", "Có lỗi xảy ra: " + e.getMessage());
-            return ResponseEntity.badRequest().body(response);
-        }
-    }
-
-
 
     /**
      * Handle GET requests to /favorites/toggle-form (Method Not Allowed prevention)
      * GET /favorites/toggle-form
      */
-    @GetMapping("/toggle-form")
-    public String handleGetToggleFavorite(@RequestParam(required = false) Integer jobPostId,
-                                        @RequestParam(required = false) String redirectUrl,
-                                        RedirectAttributes redirectAttributes) {
-        
-        String email = AuthenticationHelper.getCurrentUserEmail();
-        
-        if (email == null) {
-            // Guest user
-            redirectAttributes.addFlashAttribute("error", "Vui lòng đăng nhập để sử dụng tính năng yêu thích");
-            return "redirect:/Login";
-        }
-        
-        Account account = accountService.findByEmail(email);
-        if (account == null) {
-            redirectAttributes.addFlashAttribute("error", "Vui lòng đăng nhập để sử dụng tính năng yêu thích");
-            return "redirect:/Login";
-        }
-        
-        // Check role
-        if (account.getRole() == Account.Role.admin || account.getRole() == Account.Role.employer) {
-            redirectAttributes.addFlashAttribute("error", "Tính năng yêu thích chỉ dành cho sinh viên");
-            return "redirect:" + (redirectUrl != null ? redirectUrl : "/");
-        }
-        
-        if (account.getRole() != Account.Role.student) {
-            redirectAttributes.addFlashAttribute("error", "Vui lòng đăng nhập với tài khoản sinh viên để sử dụng tính năng này");
-            return "redirect:" + (redirectUrl != null ? redirectUrl : "/");
-        }
-        
-        // If student but somehow accessed via GET, redirect back
-        redirectAttributes.addFlashAttribute("info", "Vui lòng sử dụng nút yêu thích để thêm/xóa công việc");
-        return "redirect:" + (redirectUrl != null ? redirectUrl : "/");
-    }
+//    @GetMapping("/toggle-form")
+//    public String handleGetToggleFavorite(@RequestParam(required = false) Integer jobPostId,
+//                                        @RequestParam(required = false) String redirectUrl,
+//                                        RedirectAttributes redirectAttributes) {
+//
+//
+//
+//        String email = AuthenticationHelper.getCurrentUserEmail();
+//
+//        if (email == null) {
+//            // Guest user
+//            redirectAttributes.addFlashAttribute("error", "Vui lòng đăng nhập để sử dụng tính năng yêu thích");
+//            return "redirect:/Login";
+//        }
+//
+//        Account account = accountService.findByEmail(email);
+//        if (account == null) {
+//            redirectAttributes.addFlashAttribute("error", "Vui lòng đăng nhập để sử dụng tính năng yêu thích");
+//            return "redirect:/Login";
+//        }
+//
+//        // Check role
+//        if (account.getRole() == Account.Role.admin || account.getRole() == Account.Role.employer) {
+//            redirectAttributes.addFlashAttribute("error", "Tính năng yêu thích chỉ dành cho sinh viên");
+//            return "redirect:" + (redirectUrl != null ? redirectUrl : "/");
+//        }
+//
+//        if (account.getRole() != Account.Role.student) {
+//            redirectAttributes.addFlashAttribute("error", "Vui lòng đăng nhập với tài khoản sinh viên để sử dụng tính năng này");
+//            return "redirect:" + (redirectUrl != null ? redirectUrl : "/");
+//        }
+//
+//        // If student but somehow accessed via GET, redirect back
+//        redirectAttributes.addFlashAttribute("info", "Vui lòng sử dụng nút yêu thích để thêm/xóa công việc");
+//        return "redirect:" + (redirectUrl != null ? redirectUrl : "/");
+//    }
 
     /**
      * Toggle favorite job via form submission (redirect approach)
@@ -289,6 +150,8 @@ public class FavoriteJobController {
     public String toggleFavoriteForm(@RequestParam Integer jobPostId, 
                                    @RequestParam(required = false) String redirectUrl,
                                    RedirectAttributes redirectAttributes) {
+        
+
         
         String email = AuthenticationHelper.getCurrentUserEmail();
         
@@ -343,6 +206,9 @@ public class FavoriteJobController {
         }
         
         // Redirect back to the original page
-        return "redirect:" + (redirectUrl != null ? redirectUrl : "/");
+        String redirectPath = "redirect:" + (redirectUrl != null ? redirectUrl : "/");
+
+        return redirectPath;
     }
+
 } 
