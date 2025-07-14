@@ -126,10 +126,13 @@ public class HomePageFeatures {
                 }
             }
 
-            if (jobPosts != null && !jobPosts.isEmpty()) {
-                model.addAttribute("success", "Tìm thấy " + jobPosts.size() + " việc làm phù hợp");
-            } else {
-                model.addAttribute("info", "Không tìm thấy việc làm phù hợp với tiêu chí tìm kiếm");
+            // Chỉ hiển thị thông báo search khi không có flash message từ favorite action
+            if (!model.containsAttribute("success") && !model.containsAttribute("error")) {
+                if (jobPosts != null && !jobPosts.isEmpty()) {
+                    model.addAttribute("success", "Tìm thấy " + jobPosts.size() + " việc làm phù hợp");
+                } else {
+                    model.addAttribute("info", "Không tìm thấy việc làm phù hợp với tiêu chí tìm kiếm");
+                }
             }
 
         } catch (Exception e) {

@@ -134,7 +134,8 @@
                     </a>
                     
                     <!-- Favorite Heart Form - Chỉ cho Student -->
-                    <div sec:authorize="isAuthenticated() and hasRole('student')">
+<!--                    <div sec:authorize="isAuthenticated() and hasRole('student')">-->
+                    <div>
                         <form method="post" th:action="@{/favorites/toggle-form}" style="display: inline;">
                             <input type="hidden" name="jobPostId" th:value="${job.jobPostId}">
                             <input type="hidden" name="redirectUrl" th:value="@{/top-jobs}">

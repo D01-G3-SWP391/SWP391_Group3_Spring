@@ -191,14 +191,14 @@ public class FavoriteJobController {
             // Toggle favorite
             boolean isFavorited = favoriteJobService.toggleFavorite(studentId, jobPostId);
             
-            String message = isFavorited ? "Đã thêm vào danh sách yêu thích" : "Đã xóa khỏi danh sách yêu thích";
+            String message = isFavorited ? "❤️ Đã thêm việc làm vào danh sách yêu thích!" : "💔 Đã xóa việc làm khỏi danh sách yêu thích!";
             redirectAttributes.addFlashAttribute("success", message);
             
         } catch (Exception e) {
             // Xử lý lỗi duplicate key gracefully
             if (e.getMessage() != null && (e.getMessage().contains("Duplicate entry") || e.getMessage().contains("duplicate key"))) {
                 boolean currentlyFavorited = favoriteJobService.isFavorited(studentId, jobPostId);
-                String message = currentlyFavorited ? "Đã có trong danh sách yêu thích" : "Đã xóa khỏi danh sách yêu thích";
+                String message = currentlyFavorited ? "❤️ Việc làm đã có trong danh sách yêu thích!" : "💔 Đã xóa việc làm khỏi danh sách yêu thích!";
                 redirectAttributes.addFlashAttribute("success", message);
             } else {
                 redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra: " + e.getMessage());

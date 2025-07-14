@@ -862,96 +862,33 @@
   text-decoration: none;
 }
 
-/* Search Results Jobs Container - High specificity to override navbarHome.css */
-.search-results-section .container .jobs-container {
-  display: grid !important;
-  grid-template-columns: repeat(3, 1fr) !important;
-  gap: 1.5rem !important;
-  max-width: none !important;
+/* Search Results - Only apply to search page specifically */
+.search-results-section .search-jobs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
   margin-bottom: 50px;
-  margin-top: 20px;
+  margin-top: 20px; /* Different from homepage */
 }
 
-/* Alternative approach - Create specific class for search results */
-.search-jobs-grid {
-  display: grid !important;
-  grid-template-columns: repeat(3, 1fr) !important;
-  gap: 1.5rem !important;
-  max-width: none !important;
-  margin-bottom: 50px;
+/* Homepage jobs-container - fix text overlap */
+.featured-jobs .jobs-container {
+  margin-top: 20px !important; /* Fix text being covered */
 }
 
-/* Force 3 columns on desktop */
-@media (min-width: 992px) {
-  .search-results-section .container .jobs-container,
-  .search-jobs-grid {
-    grid-template-columns: repeat(3, 1fr) !important;
-  }
-}
-
-/* 2 columns on tablet */
-@media (min-width: 768px) and (max-width: 991px) {
-  .search-results-section .container .jobs-container,
-  .search-jobs-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-}
-
-/* Responsive Design for Search Results */
 @media (max-width: 768px) {
-  .search-header-content h1 {
-    font-size: 2rem;
+  .search-results-section .search-jobs-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
   
-  .search-results-info {
-    font-size: 1rem;
-  }
-  
-  .results-info {
-    flex-direction: column;
-    text-align: center;
-  }
-  
-  .results-info h2 {
-    font-size: 1.5rem;
-  }
-  
-  .search-results-section .container .jobs-container,
-  .search-jobs-grid {
-    grid-template-columns: 1fr !important;
-    gap: 1rem !important;
-  }
-  
-  .no-results {
-    padding: 40px 20px;
-    margin: 0 1rem;
-  }
-  
-  .no-results-icon {
-    font-size: 3rem;
+  .featured-jobs .jobs-container {
+    margin-top: 20px !important; /* Responsive homepage spacing */
   }
 }
 
 @media (max-width: 480px) {
-  .search-header-section {
-    padding: 40px 0;
-  }
-  
-  .search-header-content h1 {
-    font-size: 1.5rem;
-  }
-  
-  .btn-back,
-  .btn-explore {
-    padding: 0.75rem 1rem;
-    font-size: 0.9rem;
-  }
-  
-  .search-results-section .container .jobs-container,
-  .search-jobs-grid {
-    grid-template-columns: 1fr !important;
-    gap: 0.75rem !important;
+  .search-results-section .search-jobs-grid {
+    gap: 15px;
   }
 }
-
-/* Remove duplicate tablet rules since we already have them above */
