@@ -27,6 +27,10 @@
             href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap"
             rel="stylesheet"
     />
+    <!-- Favorite Heart CSS -->
+    <link rel="stylesheet" th:href="@{/css/favoriteHeart.css}"/>
+    <!-- Favorite Jobs Dropdown CSS -->
+    <link rel="stylesheet" th:href="@{/css/favoriteJobsDropdown.css}"/>
 </head>
 <body>
     <!-- Navbar -->
@@ -38,7 +42,7 @@
             <div class="search-header-content">
                 <h1 th:text="#{search.results.header}">Kết quả tìm kiếm việc làm</h1>
                 <p class="search-results-info">
-                    <span th:if="${searchJob != null and !#lists.isEmpty(searchJob)}" 
+                    <span th:if="${searchJob != null and !#lists.isEmpty(searchJob)}"
                           th:with="jobCount=${#lists.size(searchJob)}"
                           th:utext="#{search.results.found(${jobCount})}">
                         Tìm thấy <strong th:text="${#lists.size(searchJob)}">0</strong> việc làm phù hợp với yêu cầu của bạn
@@ -47,7 +51,7 @@
                         Không tìm thấy việc làm nào phù hợp với tiêu chí tìm kiếm
                     </span>
                 </p>
-                
+
                 <!-- Refined Search Form -->
                 <div class="refined-search-container">
                     <div class="search-tabs">
@@ -58,7 +62,7 @@
                             Tìm ứng viên
                         </button>
                     </div>
-                    
+
                     <div class="search-forms">
                         <!-- Job Search Form -->
                         <form th:action="@{/HomePage/search}" method="post" class="search-form active" id="jobForm">
@@ -67,8 +71,8 @@
                                     <input
                                         type="text"
                                         name="keyword"
-                                        th:value="${param.keyword}"
-                                        th:placeholder="#{home.search.keyword.placeholder}" 
+                                        th:value="${searchKeyword ?: param.keyword}"
+                                        placeholder="eg. Graphic, Web Developer..."
                                         class="search-input"
                                     />
                                 </div>
@@ -91,7 +95,7 @@
                                         <option value="" selected disabled th:text="#{search.form.location.placeholder}">Chọn tỉnh/thành phố</option>
                                     </select>
                                 </div>
-                                
+
                                 <button type="submit" class="search-button" th:text="#{search.results.searchAgain}">
                                     Tìm lại
                                 </button>
@@ -118,7 +122,7 @@
                                         <option value=">50000000" th:selected="${searchSalary == '>50000000'}" th:text="#{search.form.salary.over50m}">Trên 50,000,000</option>
                                     </select>
                                 </div>
-                                
+
                                 <div class="search-field">
                                     <i class="fas fa-briefcase field-icon"></i>
                                     <select name="jobType" class="search-select">
@@ -127,7 +131,7 @@
                                         <option value="PART_TIME" th:selected="${searchJobType == 'PART_TIME'}" th:text="#{job.common.partTime}">Part Time</option>
                                     </select>
                                 </div>
-                                
+
                                 <div class="search-field">
                                     <input
                                             type="text"
@@ -137,7 +141,7 @@
                                             th:value="${searchCompanyName}"
                                     />
                                 </div>
-                                
+
                                 <button type="submit" class="search-button" th:text="#{search.results.searchAgain}">
                                     Tìm lại
                                 </button>
@@ -185,102 +189,157 @@
                 </div>
 
                 <!-- Job Listings -->
-                <div class="jobs-container search-jobs-grid" th:if="${searchJob != null and !#lists.isEmpty(searchJob)}">
+                <div class="jobs-container" th:if="${searchJob != null and !#lists.isEmpty(searchJob)}" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 1200px; margin: 0 auto;">
                     <div th:each="job : ${searchJob}" class="job-card">
-                            <div class="job-card-header">
-                                <div class="company-logo">
-                                    <img
-                                        th:src="${job.employer.account.avatarUrl}"
-                                        th:alt="${job.employer.companyName}"
-                                        onerror="this.style.display='none'; this.parentElement.classList.add('default-logo'); this.parentElement.innerHTML='<span>' + this.alt.charAt(0).toUpperCase() + '</span>';"
-                                    />
+                        <div class="job-card-header">
+                            <div class="company-logo">
+                                <img
+                                    th:src="${job.employer.account.avatarUrl}"
+                                    th:alt="${job.employer.companyName}"
+                                    onerror="this.style.display='none'; this.parentElement.classList.add('default-logo'); this.parentElement.innerHTML='<span>' + this.alt.charAt(0).toUpperCase() + '</span>';"
+                                />
+                            </div>
+                            <div class="job-info">
+                                <h3 class="job-title" th:text="${job.jobTitle}">
+                                    Tiêu đề công việc
+                                </h3>
+                                <p class="company-name" th:text="${job.employer.companyName}">
+                                    Tên công ty
+                                </p>
+                            </div>
+                            <div class="job-type">
+                                <span
+                                    class="job-type-badge full-time"
+                                    th:if="${job.jobType?.name() == 'FULL_TIME'}"
+                                    th:text="#{home.jobType.fullTime}"
+                                >
+                                    Full-time
+                                </span>
+                                <span
+                                    class="job-type-badge part-time"
+                                    th:unless="${job.jobType?.name() == 'FULL_TIME'}"
+                                    th:text="#{home.jobType.partTime}"
+                                >
+                                    Part-time
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="job-card-body">
+                            <div class="job-details">
+                                <div class="job-detail-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span th:text="${job.jobLocation}">Địa điểm</span>
                                 </div>
-                                <div class="job-info">
-                                    <h3 class="job-title" th:text="${job.jobTitle}">
-                                        Tiêu đề công việc
-                                    </h3>
-                                    <p class="company-name" th:text="${job.employer.companyName}">
-                                        Tên công ty
-                                    </p>
+
+                                <div class="job-detail-item">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                    <span th:if="${job.jobSalary != null}">
+                                        <span th:text="${#numbers.formatInteger(job.jobSalary, 1, 'COMMA') + ' VND'}"></span>
+                                    </span>
+                                    <span th:if="${job.jobSalary == null}" th:text="#{job.common.negotiable}">Thỏa thuận</span>
                                 </div>
-                                <div class="job-type">
-                                    <span
-                                        class="job-type-badge full-time"
-                                        th:if="${job.jobType?.name() == 'FULL_TIME'}"
-                                        th:text="#{job.common.fullTime}"
-                                    >
-                                        Loại việc làm
-                                    </span>
-                                    <span
-                                        class="job-type-badge part-time"
-                                        th:unless="${job.jobType?.name() == 'FULL_TIME'}"
-                                        th:text="#{job.common.partTime}"
-                                    >
-                                        Loại việc làm
-                                    </span>
+
+                                <div class="job-detail-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span th:text="${#temporals.format(job.createdAt, 'dd/MM/yyyy')}">Ngày đăng</span>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="job-card-body">
-                                <div class="job-details">
-                                    <div class="job-detail-item">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                        <span th:text="${job.jobLocation}">Địa điểm</span>
-                                    </div>
-                                    <div class="job-detail-item">
-                                        <i class="fas fa-money-bill-wave"></i>
-                                        <span th:if="${job.jobSalary != null}">
-                                            <span th:text="${#numbers.formatInteger(job.jobSalary, 1, 'COMMA') + ' VND'}"></span>
-                                        </span>
-                                        <span th:if="${job.jobSalary == null}" th:text="#{job.common.negotiable}">Thỏa thuận</span>
-                                    </div>
+                        <!--  Xem chi tiết của nghề-->
+                        <div class="job-card-footer">
+                            <form method="get" th:action="@{/JobDescription/JobPost}">
+                                <input type="hidden" name="id" th:value="${job.jobPostId}">
+                                <button class="apply-btn">
+                                    <i class="fas fa-paper-plane"></i>
+                                    <span th:text="#{home.viewDetails}">Xem chi tiết</span>
+                                </button>
+                            </form>
 
-                                    <div class="job-detail-item">
-                                        <i class="fas fa-clock"></i>
-                                        <span
-                                            th:text="${#temporals.format(job.createdAt, 'dd/MM/yyyy')}"
-                                        >Ngày đăng</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="job-card-footer">
-                                <form method="get" th:action="@{/JobDescription/JobPost}">
-                                    <input type="hidden" name="id" th:value="${job.jobPostId}">
-                                    <button class="apply-btn">
-                                        <i class="fas fa-paper-plane"></i>
-                                        <span th:text="#{job.common.viewDetails}">Xem chi tiết</span>
+                            <!-- Favorite Heart Form - Chỉ cho Student -->
+                            <div sec:authorize="isAuthenticated() and hasRole('student')">
+                                <form method="post" th:action="@{/favorites/toggle-form}" style="display: inline;">
+                                    <input type="hidden" name="jobPostId" th:value="${job.jobPostId}">
+                                    <input type="hidden" name="redirectUrl"
+                                           th:value="@{/HomePage/search(keyword=${searchKeyword}, location=${searchLocation}, jobType=${searchJobType}, fieldId=${searchFieldId}, salaryRange=${searchSalary}, companyName=${searchCompanyName})}">
+                                    <button type="submit" class="favorite-heart-btn save-btn"
+                                            th:classappend="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'favorited' : ''">
+                                        <i th:class="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'fas fa-heart' : 'far fa-heart'"
+                                           th:style="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'color: #ff6987;' : 'color: #6c757d;'"></i>
                                     </button>
                                 </form>
-                                <button class="save-btn">
+                            </div>
+
+                            <!-- Thông báo cho Guest -->
+                            <div sec:authorize="!isAuthenticated()">
+                                <a href="/Login" class="favorite-heart-btn save-btn" style="text-decoration: none; color: #6c757d;"
+                                   title="Đăng nhập để sử dụng tính năng yêu thích">
                                     <i class="far fa-heart"></i>
+                                </a>
+                            </div>
+
+                            <!-- Thông báo cho Admin/Employer -->
+                            <div sec:authorize="isAuthenticated() and (hasRole('admin') or hasRole('employer'))">
+                                <button type="button" class="favorite-heart-btn save-btn" disabled
+                                        style="opacity: 0.5;" title="Tính năng yêu thích chỉ dành cho sinh viên">
+                                    <i class="far fa-heart" style="color: #ccc;"></i>
                                 </button>
                             </div>
                         </div>
+                    </div>
                 </div>
+
+                <!-- Pagination -->
+                <nav th:if="${totalPages > 1}" aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination">
+                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/HomePage/search(keyword=${searchKeyword},location=${searchLocation},jobType=${searchJobType},fieldId=${searchFieldId},salaryRange=${searchSalary},companyName=${searchCompanyName},page=${currentPage - 1},size=${size})}">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+
+                        <li class="page-item"
+                            th:each="pageNum : ${#numbers.sequence(1, totalPages ?: 1)}"
+                            th:classappend="${pageNum == currentPage} ? 'active'">
+                            <a class="page-link"
+                               th:href="@{/HomePage/search(keyword=${searchKeyword},location=${searchLocation},jobType=${searchJobType},fieldId=${searchFieldId},salaryRange=${searchSalary},companyName=${searchCompanyName},page=${pageNum},size=${size})}"
+                               th:text="${pageNum}">
+                            </a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                            <a class="page-link"
+                               th:href="@{/HomePage/search(keyword=${searchKeyword},location=${searchLocation},jobType=${searchJobType},fieldId=${searchFieldId},salaryRange=${searchSalary},companyName=${searchCompanyName},page=${currentPage + 1},size=${size})}">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </section>
-        <div th:replace="fragments/why-choose-us :: why-choose-us-section"></div>
 
+        <div th:replace="fragments/why-choose-us :: why-choose-us-section"></div>
     </div>
 
-    <!-- Footer -->
-    <div th:replace="~{fragments/footer :: footer}"></div>
+<!-- Footer -->
+<div th:replace="~{fragments/footer :: footer}"></div>
 
 
-    <!-- jQuery phải load trước -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script th:src="@{/css/wow/wow.min.js}"></script>
-    <script th:src="@{/css/owlcarousel/owl.carousel.min.js}"></script>
-    <!-- Template Javascript -->
-    <script th:src="@{/js/main.js}"></script>
+<!-- jQuery phải load trước -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/css/wow/wow.min.js}"></script>
+<script th:src="@{/css/owlcarousel/owl.carousel.min.js}"></script>
+<!-- Template Javascript -->
+<script th:src="@{/js/main.js}"></script>
 
     <script th:inline="javascript">
         $(document).ready(function() {
             const locationSelect = $('#locationSelect');
             const selectedLocation = '[[${param.location}]]'; // Lấy giá trị location đã chọn
-            
+
             locationSelect.prop('disabled', true);
             locationSelect.append(new Option(/*[[#{js.loading}]]*/ 'Đang tải...', ''));
 
@@ -290,10 +349,10 @@
                 .then(data => {
                     locationSelect.empty(); // Clear loading option
                     locationSelect.append(new Option(/*[[#{js.selectLocation}]]*/ 'Chọn tỉnh/thành phố', '')); // Add default option
-                    
+
                     // Sort provinces alphabetically
                     data.sort((a, b) => a.name.localeCompare(b.name, 'vi'));
-                    
+
                     data.forEach(province => {
                         const option = new Option(province.name, province.name);
                         if(province.name === selectedLocation) {
@@ -320,19 +379,19 @@
                 form.classList.remove('active');
             });
 
-            // Add active class to selected tab and form
-            if (tabType === 'job') {
-                document.getElementById('jobTab').classList.add('active');
-                document.getElementById('jobForm').classList.add('active');
-            } else if (tabType === 'candidate') {
-                document.getElementById('candidateTab').classList.add('active');
-                document.getElementById('candidateForm').classList.add('active');
-            }
+        // Add active class to selected tab and form
+        if (tabType === 'job') {
+            document.getElementById('jobTab').classList.add('active');
+            document.getElementById('jobForm').classList.add('active');
+        } else if (tabType === 'candidate') {
+            document.getElementById('candidateTab').classList.add('active');
+            document.getElementById('candidateForm').classList.add('active');
         }
-    </script>
+    }
+</script>
 
 <!-- Add notification bell -->
-    <div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
+<div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
 
     <!-- Chat Notification Fragment -->
     <div th:replace="~{fragments/chat-notification :: chat-notification}"></div>

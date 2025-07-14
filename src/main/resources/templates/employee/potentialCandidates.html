@@ -134,7 +134,10 @@
                 <td>
                     <div class="student-name" th:text="${student.account != null ? student.account.fullName : 'N/A'}"></div>
                     <div class="contact-info">
-                        <span th:if="${student.jobField != null}" th:text="#{employer.candidates.field.label} + ' ' + ${student.jobField.jobFieldName}"></span>
+                        <span th:if="${student.jobField != null}">
+                            <span th:text="#{employer.candidates.field.label}">Field:</span>
+                            <span th:text="${student.jobField.jobFieldName}"></span>
+                        </span>
                     </div>
                 </td>
                 <td>
