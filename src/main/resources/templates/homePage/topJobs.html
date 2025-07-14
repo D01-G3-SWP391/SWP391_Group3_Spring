@@ -90,7 +90,8 @@
                         <span th:if="${job.jobSalary == null}" th:text="#{job.common.negotiable}">Thỏa thuận</span>
                     </div>
                     <div class="detail-item">
-                        <span class="job-type-badge" th:text="${job.jobType == 'FULL_TIME' ? #{job.common.fullTime} : #{job.common.partTime}}">Job Type</span>
+                        <span class="job-type-badge" th:if="${job.jobType == 'FULL_TIME'}" th:text="#{job.common.fullTime}">Full Time</span>
+                        <span class="job-type-badge" th:unless="${job.jobType == 'FULL_TIME'}" th:text="#{job.common.partTime}">Part Time</span>
                     </div>
                     <div class="detail-item">
                         <i class="fas fa-calendar-alt"></i>

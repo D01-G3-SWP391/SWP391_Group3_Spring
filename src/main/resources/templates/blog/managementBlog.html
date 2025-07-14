@@ -112,9 +112,10 @@
                     <td>
                         <span th:if="${blog.resource != null}" class="resource-badge">
                             <i class="bi bi-link-45deg"></i>
-                            <span th:text="${blog.resource.resourceType.name() == 'interview_guide'} ? #{blog.admin.resource.type.interview_guide} : 
-                                           (${blog.resource.resourceType.name() == 'application_tips'} ? #{blog.admin.resource.type.application_tips} : 
-                                           (${blog.resource.resourceType.name() == 'quotes'} ? #{blog.admin.resource.type.quotes} : ${blog.resource.resourceType.name()}))"></span>
+                            <span th:if="${blog.resource.resourceType.name() == 'interview_guide'}" th:text="#{blog.admin.resource.type.interview_guide}">Interview Guide</span>
+                            <span th:if="${blog.resource.resourceType.name() == 'application_tips'}" th:text="#{blog.admin.resource.type.application_tips}">Application Tips</span>
+                            <span th:if="${blog.resource.resourceType.name() == 'quotes'}" th:text="#{blog.admin.resource.type.quotes}">Quotes</span>
+                            <span th:unless="${blog.resource.resourceType.name() == 'interview_guide' || blog.resource.resourceType.name() == 'application_tips' || blog.resource.resourceType.name() == 'quotes'}" th:text="${blog.resource.resourceType.name()}">Other</span>
                         </span>
                         <span th:if="${blog.resource == null}" class="text-muted">
                             <i class="bi bi-x-circle"></i> <span th:text="#{blog.admin.management.no.resource}">Không có tài nguyên</span>
