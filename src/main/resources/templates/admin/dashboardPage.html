@@ -185,13 +185,16 @@
                         <div class="card-icon job-gradient mx-auto">
                             <i class="fas fa-briefcase"></i>
                         </div>
-                        <h3 class="stat-number">1,247</h3>
+                        <h3 class="stat-number" th:text="${totalJobPosts ?: 0}">0</h3>
                         <p class="stat-label mb-3">Job Posts</p>
                         <div class="progress progress-custom mb-2">
-                            <div class="progress-bar progress-bar-custom job-gradient" style="width: 85%"></div>
+                            <div class="progress-bar progress-bar-custom job-gradient" 
+                                 th:style="'width: ' + (${activeJobPosts ?: 0} * 100 / (${totalJobPosts ?: 1})) + '%'">
+                            </div>
                         </div>
                         <small class="text-muted">
-                            1,156 active • 91 pending
+                            <span th:text="${activeJobPosts ?: 0}">0</span> active • 
+                            <span th:text="${pendingJobPosts ?: 0}">0</span> pending
                         </small>
                     </div>
                 </div>
@@ -204,13 +207,16 @@
                         <div class="card-icon event-gradient mx-auto">
                             <i class="fas fa-calendar-alt"></i>
                         </div>
-                        <h3 class="stat-number">48</h3>
+                        <h3 class="stat-number" th:text="${totalEvents ?: 0}">0</h3>
                         <p class="stat-label mb-3">Career Events</p>
                         <div class="progress progress-custom mb-2">
-                            <div class="progress-bar progress-bar-custom event-gradient" style="width: 72%"></div>
+                            <div class="progress-bar progress-bar-custom event-gradient" 
+                                 th:style="'width: ' + (${upcomingEvents ?: 0} * 100 / (${totalEvents ?: 1})) + '%'">
+                            </div>
                         </div>
                         <small class="text-muted">
-                            35 upcoming • 13 past
+                            <span th:text="${upcomingEvents ?: 0}">0</span> upcoming • 
+                            <span th:text="${pastEvents ?: 0}">0</span> past
                         </small>
                     </div>
                 </div>
@@ -267,7 +273,7 @@
                                 </a>
                             </div>
                             <div class="col-md-4">
-                                <a href="/Admin/allJobPosts" class="quick-action-btn">
+                                <a href="/Admin/AllJobPosts" class="quick-action-btn">
                                     <div class="text-center">
                                         <i class="fas fa-briefcase fs-3 mb-2 text-warning"></i>
                                         <div class="fw-semibold">Job Posts</div>
@@ -276,7 +282,7 @@
                                 </a>
                             </div>
                             <div class="col-md-4">
-                                <a href="/Admin/allEvents" class="quick-action-btn">
+                                <a href="/Admin/Events" class="quick-action-btn">
                                     <div class="text-center">
                                         <i class="fas fa-calendar fs-3 mb-2 text-purple"></i>
                                         <div class="fw-semibold">Events</div>
