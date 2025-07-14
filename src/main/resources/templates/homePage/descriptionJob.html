@@ -123,46 +123,36 @@
                                     <span th:text="#{job.description.postedOn}">Đăng ngày</span> <span
                                     th:text="${#temporals.format(job.createdAt, 'dd/MM/yyyy')}">01/01/2024</span>
                                 </span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="job-hero-right">
-                    <div class="job-actions">
-                        <!-- Hiển thị nút đăng nhập cho người dùng chưa xác thực -->
-                        <div sec:authorize="isAnonymous()">
-                            <a th:href="@{/Login}" class="btn-primary-large">
-                                <i class="fas fa-sign-in-alt"></i>
-                                <span>Đăng nhập để ứng tuyển</span>
-                            </a>
-                        </div>
-                        <div sec:authorize="isAuthenticated() and !hasRole('student')">
-                            <!--                                <a readonly="" class="btn-primary-large">-->
-                            <!--                                    <i class="fas fa-sign-in-alt"></i>-->
-                            <!--                                    <span>Ko co quyen ung tuyen</span>-->
-                            <!--                                </a>-->
-                        </div>
-                        <!-- Hiển thị nút ứng tuyển cho người dùng đã xác thực -->
-                        <div sec:authorize="isAuthenticated() and hasRole('student')">
-                            <!-- Kiểm tra nếu student chưa apply thì hiển thị nút apply -->
-                            <div th:if="${!hasApplied}">
-                                <button class="btn-primary-large" onclick="showApplyForm()">
-                                    <i class="fas fa-paper-plane"></i>
-                                    <span>Ứng tuyển ngay</span>
-                                </button>
-
-                                <!-- Favorite Heart Form - Chỉ cho Student -->
-                                <div sec:authorize="isAuthenticated() and hasRole('student')">
-                                    <form method="post" th:action="@{/favorites/toggle-form}" style="display: inline;">
-                                        <input type="hidden" name="jobPostId" th:value="${job.jobPostId}">
-                                        <input type="hidden" name="redirectUrl"
-                                               th:value="@{/JobDescription/JobPost(id=${job.jobPostId})}">
-                                        <button type="submit" class="favorite-heart-btn btn-save-large"
-                                                th:classappend="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'favorited' : ''">
-                                            <i th:class="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'fas fa-heart' : 'far fa-heart'"
-                                               th:style="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'color: #ff6987;' : ''"></i>
-                                            <span>Lưu việc làm</span>
-                                        </button>
-                                    </form>
+                    <div class="job-hero-right">
+                        <div class="job-actions">
+                            <!-- Hiển thị nút đăng nhập cho người dùng chưa xác thực -->
+                            <div sec:authorize="isAnonymous()">
+                                <a th:href="@{/Login}" class="btn-primary-large">
+                                    <i class="fas fa-sign-in-alt"></i>
+                                    <span th:text="#{jobDesc.loginToApply}">Đăng nhập để ứng tuyển</span>
+                                </a>
+                            </div>
+                            <div sec:authorize="isAuthenticated() and !hasRole('student')">
+<!--                                <a readonly="" class="btn-primary-large">-->
+<!--                                    <i class="fas fa-sign-in-alt"></i>-->
+<!--                                    <span>Ko co quyen ung tuyen</span>-->
+<!--                                </a>-->
+                            </div>
+                            <!-- Hiển thị nút ứng tuyển cho người dùng đã xác thực -->
+                            <div sec:authorize="isAuthenticated() and hasRole('student')">
+                                <!-- Kiểm tra nếu student chưa apply thì hiển thị nút apply -->
+                                <div th:if="${!hasApplied}">
+                                    <button class="btn-primary-large" onclick="showApplyForm()">
+                                        <i class="fas fa-paper-plane"></i>
+                                        <span th:text="#{jobDesc.applyNow}">Ứng tuyển ngay</span>
+                                    </button>
+                                    <button class="btn-save-large" style="margin-top: 7px">
+                                        <i class="far fa-heart"></i>
+                                        <span th:text="#{jobDesc.saveJob}">Lưu việc làm</span>
+                                    </button>
                                 </div>
                             </div>
 
@@ -200,7 +190,6 @@
                                     </form>
                                 </div>
                             </div>
-                        </div>
 
                     </div>
                 </div>
@@ -828,8 +817,12 @@
 <div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
 
 <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
-<script th:src="@{/js/languageSwitch.js}"></script>
+    <script th:src="@{/js/languageSwitch.js}"></script>
+<!-- AI Chatbox Fragment -->
+<div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
 
+<!-- Chat Notification Fragment -->
+<div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
 
 </body>
 </html>

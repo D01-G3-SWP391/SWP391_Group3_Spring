@@ -140,14 +140,37 @@
                 const isVisible = modal.style.display === 'block';
                 
                 if (!isVisible) {
-                    // Close notification bell if open
-                    const notificationDropdown = document.getElementById('notificationDropdown');
-                    if (notificationDropdown && notificationDropdown.style.display === 'block') {
-                        notificationDropdown.style.display = 'none';
+                    // Close chat notification using global function
+                    if (window.closeChatNotifications) {
+                        window.closeChatNotifications();
+                    } else {
+                        // Fallback to direct DOM manipulation
+                        const chatNotificationDropdown = document.getElementById('chatNotificationDropdown');
+                        if (chatNotificationDropdown && chatNotificationDropdown.style.display === 'block') {
+                            chatNotificationDropdown.style.display = 'none';
+                        }
                     }
                     
-                    modal.style.display = 'block';
-                    document.getElementById('aiChatInput').focus();
+                    // Close chat modal if open
+                    if (window.closeChat) {
+                        window.closeChat();
+                    } else {
+                        // Fallback to direct DOM manipulation
+                        const chatOverlay = document.getElementById('chatOverlay');
+                        if (chatOverlay && chatOverlay.classList.contains('show')) {
+                            chatOverlay.classList.remove('show');
+                            const chatOffcanvas = document.getElementById('chatOffcanvas');
+                            if (chatOffcanvas) {
+                                chatOffcanvas.classList.remove('show');
+                            }
+                        }
+                    }
+                    
+                    // Use setTimeout to ensure other components are closed first
+                    setTimeout(() => {
+                        modal.style.display = 'block';
+                        document.getElementById('aiChatInput').focus();
+                    }, 50);
                 } else {
                     modal.style.display = 'none';
                 }
@@ -160,6 +183,14 @@
 
             // Global function to close AI chat (can be called from other components)
             window.closeAIChat = closeAIChat;
+            
+            // Global function to close all AI chat components
+            window.closeAIChatbox = function() {
+                const modal = document.getElementById('aiChatModal');
+                if (modal) {
+                    modal.style.display = 'none';
+                }
+            };
 
             // Close when clicking outside
             document.addEventListener('click', function(event) {
@@ -215,18 +246,18 @@
                         if (data.response) {
                             addMessageToChat('ai', data.response);
                         } else {
-                            addMessageToChat('ai', 'Tôi đã xử lý yêu cầu của bạn thành công.');
+                            addMessageToChat('ai', /*[[#{ai.chat.success.default}]]*/ 'Tôi đã xử lý yêu cầu của bạn thành công.');
                         }
                     } else {
                         if (data.response) {
                             addMessageToChat('ai', data.response);
                         } else {
-                            addMessageToChat('ai', `Xin lỗi, tôi không thể hiểu câu hỏi của bạn. Hãy thử hỏi một cách khác.`);
+                            addMessageToChat('ai', /*[[#{ai.chat.error.understand}]]*/ 'Xin lỗi, tôi không thể hiểu câu hỏi của bạn. Hãy thử hỏi một cách khác.');
                         }
                     }
                 } catch (error) {
                     console.error('Error:', error);
-                    addMessageToChat('ai', '**Lỗi:** Không thể kết nối đến AI service.');
+                    addMessageToChat('ai', /*[[#{ai.chat.error.connection}]]*/ '**Lỗi:** Không thể kết nối đến AI service.');
                 } finally {
                     showLoading(false);
                 }
@@ -296,7 +327,8 @@
                     html += '</tbody></table>';
                     
                     if (results.length > 10) {
-                        html += `<p class="ai-results-more">... và ${results.length - 10} dòng khác</p>`;
+                        const remainingRows = results.length - 10;
+                        html += `<p class="ai-results-more">... và ${remainingRows} dòng khác</p>`;
                     }
                 } else {
                     // Simple list format

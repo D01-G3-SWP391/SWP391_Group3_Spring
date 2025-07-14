@@ -41,6 +41,9 @@ public class AdminBanController {
             @RequestParam String userType, 
             @RequestParam String userName,
             @RequestParam String userEmail,
+            @RequestParam(required = false) String currentPage,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String status,
             Model model) {
         
         try {
@@ -55,6 +58,11 @@ public class AdminBanController {
             model.addAttribute("userType", userType);
             model.addAttribute("userName", userName);
             model.addAttribute("userEmail", userEmail);
+            
+            // Add current state parameters
+            model.addAttribute("currentPage", currentPage);
+            model.addAttribute("keyword", keyword);
+            model.addAttribute("status", status);
             
             return "admin/banForm";
             
@@ -77,6 +85,9 @@ public class AdminBanController {
             @RequestParam(required = false) String banDescription,
             @RequestParam String banDurationType,
             @RequestParam(required = false) String banDurationDays,
+            @RequestParam(required = false) String currentPage,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String status,
             Model model,
             RedirectAttributes redirectAttributes) {
         
@@ -131,12 +142,30 @@ public class AdminBanController {
                 redirectAttributes.addFlashAttribute("error", "Loại user không hợp lệ");
             }
             
-            // 6. Redirect with flash message (no JSON response)
+            // 6. Redirect with flash message and preserve current state
+            StringBuilder redirectUrl = new StringBuilder();
             if ("student".equalsIgnoreCase(userType)) {
-                return "redirect:/Admin/ListStudent";
+                redirectUrl.append("/Admin/ListStudent");
             } else {
-                return "redirect:/Admin/ListEmployer";
+                redirectUrl.append("/Admin/ListEmployer");
             }
+            
+            // Add query parameters to preserve current state
+            boolean hasParams = false;
+            if (currentPage != null && !currentPage.isEmpty()) {
+                redirectUrl.append(hasParams ? "&" : "?").append("page=").append(currentPage);
+                hasParams = true;
+            }
+            if (keyword != null && !keyword.isEmpty()) {
+                redirectUrl.append(hasParams ? "&" : "?").append("keyword=").append(keyword);
+                hasParams = true;
+            }
+            if (status != null && !status.isEmpty()) {
+                redirectUrl.append(hasParams ? "&" : "?").append("status=").append(status);
+                hasParams = true;
+            }
+            
+            return "redirect:" + redirectUrl.toString();
             
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra: " + e.getMessage());
@@ -153,6 +182,9 @@ public class AdminBanController {
     public String processUnban(
             @RequestParam String userId,
             @RequestParam String userType,
+            @RequestParam(required = false) String currentPage,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String status,
             RedirectAttributes redirectAttributes) {
         
         try {
@@ -189,12 +221,30 @@ public class AdminBanController {
                 redirectAttributes.addFlashAttribute("error", "Loại user không hợp lệ");
             }
             
-            // 4. Redirect with flash message
+            // 4. Redirect with flash message and preserve current state
+            StringBuilder redirectUrl = new StringBuilder();
             if ("student".equalsIgnoreCase(userType)) {
-                return "redirect:/Admin/ListStudent";
+                redirectUrl.append("/Admin/ListStudent");
             } else {
-                return "redirect:/Admin/ListEmployer";
+                redirectUrl.append("/Admin/ListEmployer");
             }
+            
+            // Add query parameters to preserve current state
+            boolean hasParams = false;
+            if (currentPage != null && !currentPage.isEmpty()) {
+                redirectUrl.append(hasParams ? "&" : "?").append("page=").append(currentPage);
+                hasParams = true;
+            }
+            if (keyword != null && !keyword.isEmpty()) {
+                redirectUrl.append(hasParams ? "&" : "?").append("keyword=").append(keyword);
+                hasParams = true;
+            }
+            if (status != null && !status.isEmpty()) {
+                redirectUrl.append(hasParams ? "&" : "?").append("status=").append(status);
+                hasParams = true;
+            }
+            
+            return "redirect:" + redirectUrl.toString();
             
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Có lỗi xảy ra: " + e.getMessage());

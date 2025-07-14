@@ -6,6 +6,7 @@
   <title th:text="#{admin.employer.details.title} + ' - Admin'">Employer Details - Admin</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
   <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
   <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
   <link rel="stylesheet" th:href="@{/css/adminDetails.css}">
@@ -104,14 +105,14 @@
             <span class="info-label">
               <i class="bi bi-building me-2"></i><span th:text="#{admin.employer.details.company.name}">Company Name</span>
             </span>
-            <span class="info-value" th:text="${employer.companyName ?: #{admin.employer.details.not.provided}}"></span>
+            <span class="info-value" th:text="${employer.companyName} ?: #{admin.employer.details.not.provided}"></span>
           </div>
 
           <div class="info-row">
             <span class="info-label">
               <i class="bi bi-geo-alt me-2"></i><span th:text="#{admin.employer.details.company.address}">Company Address</span>
             </span>
-            <span class="info-value" th:text="${employer.companyAddress ?: #{admin.employer.details.not.provided}}"></span>
+            <span class="info-value" th:text="${employer.companyAddress} ?: #{admin.employer.details.not.provided}"></span>
           </div>
 
           <div class="info-row">
@@ -119,7 +120,7 @@
               <i class="bi bi-tag me-2"></i><span th:text="#{admin.employer.details.job.field}">Job Field</span>
             </span>
             <!-- SỬA: Đổi từ .name thành .jobFieldName -->
-            <span class="info-value" th:text="${employer.jobField != null ? employer.jobField.jobFieldName : #{admin.employer.details.not.specified}}"></span>
+            <span class="info-value" th:text="${employer.jobField?.jobFieldName} ?: #{admin.employer.details.not.specified}"></span>
           </div>
         </div>
       </div>

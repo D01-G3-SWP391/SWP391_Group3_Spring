@@ -219,8 +219,12 @@ public class EventController {
 //            System.out.println("Max participants: " + event.getMaxParticipants());
             
             if (!event.canRegister()) {
-                System.out.println("Event cannot be registered");
-                return "error:Sự kiện này không thể đăng ký";
+                System.out.println("Event cannot be registered. Details:");
+                System.out.println("- Approval Status: " + event.getApprovalStatus());
+                System.out.println("- Event Status: " + event.getEventStatus());
+                System.out.println("- Current/Max Participants: " + event.getCurrentParticipants() + "/" + event.getMaxParticipants());
+                System.out.println("- Registration Deadline: " + event.getRegistrationDeadline());
+                return "error:Sự kiện này không thể đăng ký. Vui lòng liên hệ admin.";
             }
 
             // Kiểm tra email đã đăng ký chưa

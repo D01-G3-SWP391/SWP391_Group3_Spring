@@ -15,13 +15,28 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem 1rem;
-    margin-left: 280px; /* Account for sidebar width */
     transition: margin-left 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* When sidebar is collapsed */
 body.sidebar-collapsed .container {
     margin-left: 80px;
+}
+
+/* Container responsive adjustments */
+@media (max-width: 1024px) {
+    .container {
+        margin-left: 0 !important;
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding: 1rem 0.5rem;
+    }
 }
 
 /* Page Header */
@@ -59,6 +74,7 @@ body.sidebar-collapsed .container {
     display: flex;
     gap: 1.5rem;
     flex-wrap: wrap;
+    justify-content: flex-end;
 }
 
 .stat-card {
@@ -146,7 +162,7 @@ body.sidebar-collapsed .container {
 
 .nav-tabs .nav-link.active {
     color: white;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
     border-bottom: 2px solid #667eea;
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
@@ -183,8 +199,8 @@ body.sidebar-collapsed .container {
 /* Invitations Grid */
 .invitations-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    gap: 2rem;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
     margin-top: 2rem;
 }
 
@@ -504,12 +520,22 @@ body.sidebar-collapsed .container {
         margin-left: 0 !important; /* Override sidebar margin on mobile */
     }
     
+    .page-header .d-flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
     .page-header h1 {
         font-size: 2rem;
     }
     
     .stats-cards {
-        gap: 1rem;
+        align-self: stretch;
+        justify-content: center;
+        flex-direction: row;
+        gap: 0.75rem;
+        width: 100%;
     }
     
     .stat-card {
@@ -520,43 +546,6 @@ body.sidebar-collapsed .container {
     .invitations-grid {
         grid-template-columns: 1fr;
         gap: 1rem;
-    }
-    
-    .action-buttons {
-        flex-direction: column;
-    }
-    
-    .action-buttons .btn {
-        width: 100%;
-    }
-    
-    .modal-dialog {
-        margin: 1rem;
-    }
-    
-    .modal-body {
-        padding: 1.5rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .container {
-        margin-left: 0 !important;
-        padding: 0.5rem;
-    }
-    
-    .page-header .d-flex {
-        flex-direction: column;
-        gap: 1rem;
-    }
-    
-    .stats-cards {
-        justify-content: center;
-    }
-    
-    .nav-tabs .nav-link {
-        padding: 0.75rem 1rem;
-        font-size: 0.9rem;
     }
     
     .card-header {
@@ -571,8 +560,35 @@ body.sidebar-collapsed .container {
     }
     
     .candidate-avatar {
-        margin-right: 0;
-        margin-bottom: 1rem;
+        margin: 0 auto 0.75rem auto;
+    }
+    
+    .job-details {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .action-buttons .btn {
+        width: 100%;
+        min-width: auto;
+    }
+    
+    .modal-dialog {
+        margin: 1rem;
+    }
+    
+    .modal-body {
+        padding: 1.5rem;
+    }
+}
+
+@media (min-width: 769px) {
+    .invitations-grid {
+        grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
     }
 }
 

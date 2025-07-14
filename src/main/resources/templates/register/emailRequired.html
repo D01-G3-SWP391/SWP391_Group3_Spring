@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const submitBtn = verifyForm.querySelector('button[type="submit"]');
         verifyForm.addEventListener('submit', function(e) {
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner"></span>Đang chuyển hướng...';
+            submitBtn.innerHTML = '<span class="spinner"></span>' + /*[[#{emailRequired.js.redirecting}]]*/ 'Redirecting...';
             this.classList.add('loading');
         });
     }

@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Candidates</title>
+    <title th:text="#{employer.candidates.title}">Search Candidates</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
     <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}"/>
     <link rel="stylesheet" th:href="@{/css/navbarEmployer.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarViewJobPost.css}" />
     <link rel="stylesheet" th:href="@{/css/potentialCandidates.css}"/>
@@ -21,7 +24,7 @@
     <!-- PAGE HEADER -->
     <div class="page-header">
         <div class="page-title-section">
-            <h1>Search Candidates</h1>
+            <h1 th:text="#{employer.candidates.title}">Search Candidates</h1>
         </div>
     </div>
 
@@ -36,10 +39,10 @@
     <div class="search-mode-toggle" style="display: flex; justify-content: center; margin-bottom: 1rem;">
         <div class="btn-group" role="group">
             <button type="button" class="btn btn-switch" id="traditional-search-btn" onclick="switchSearchMode('traditional')">
-                <i class="bi bi-filter"></i> Traditional Search
+                <i class="bi bi-filter"></i> <span th:text="#{employer.candidates.search.traditional}">Traditional Search</span>
             </button>
             <button type="button" class="btn btn-switch" id="ai-search-btn" onclick="switchSearchMode('ai')">
-                <i class="bi bi-robot"></i> AI Search
+                <i class="bi bi-robot"></i> <span th:text="#{employer.candidates.search.advanced}">Advanced search</span>
             </button>
         </div>
     </div>
@@ -48,20 +51,22 @@
     <div class="search-form" id="traditional-search-form">
         <form class="row g-3 align-items-end" method="get" th:action="@{/Employer/SearchCandidate}">
             <div class="col-md-3">
-                <label for="address" class="form-label">Preferred Address</label>
-                <input type="text" class="form-control" id="address" name="address" th:value="${address}" placeholder="Province/City">
+                <label for="address" class="form-label" th:text="#{employer.candidates.search.address}">Preferred Address</label>
+                <select class="form-select" id="address" name="address">
+                    <option value="" th:text="#{employer.candidates.search.address.placeholder}">Chọn Tỉnh/Thành phố</option>
+                </select>
             </div>
             <div class="col-md-3">
-                <label for="university" class="form-label">University</label>
-                <input type="text" class="form-control" id="university" name="university" th:value="${university}" placeholder="University name">
+                <label for="university" class="form-label" th:text="#{employer.candidates.search.university}">University</label>
+                <input type="text" class="form-control" id="university" name="university" th:value="${university}" th:placeholder="#{employer.candidates.search.university.placeholder}">
             </div>
             <div class="col-md-3">
-                <label for="experience" class="form-label">Experience</label>
-                <input type="text" class="form-control" id="experience" name="experience" th:value="${experience}" placeholder="Work experience">
+                <label for="experience" class="form-label" th:text="#{employer.candidates.search.experience}">Experience</label>
+                <input type="text" class="form-control" id="experience" name="experience" th:value="${experience}" th:placeholder="#{employer.candidates.search.experience.placeholder}">
             </div>
             <div class="col-md-2">
-                <label for="jobFieldName" class="form-label">Field of Work</label>
-                <input type="text" class="form-control" id="jobFieldName" name="jobFieldName" th:value="${jobFieldName}" placeholder="Field of interest">
+                <label for="jobFieldName" class="form-label" th:text="#{employer.candidates.search.field}">Field of Work</label>
+                <input type="text" class="form-control" id="jobFieldName" name="jobFieldName" th:value="${jobFieldName}" th:placeholder="#{employer.candidates.search.field.placeholder}">
             </div>
             <div class="col-md-1">
                 <button type="submit" class="btn search-btn">
@@ -77,13 +82,13 @@
             <div class="row">
                 <div class="col-md-10">
                     <label for="ai-search-input" class="form-label">
-                        <i class="bi bi-robot"></i> AI Search - Describe what kind of candidates you're looking for
+                        <i class="bi bi-robot"></i> <span th:text="#{employer.candidates.search.ai.label}">AI Search - Describe what kind of candidates you're looking for</span>
                     </label>
                     <input type="text" class="form-control" id="ai-search-input" 
-                           placeholder="Example: 'Find Java developers with 3+ years experience in Hanoi' or 'Fresh graduates from IT universities'"
+                           th:placeholder="#{employer.candidates.search.ai.placeholder}"
                            style="font-size: 1.1rem; padding: 0.75rem 1rem; height: 50px;">
                     <div class="form-text">
-                        <small>💡 Examples: "Ứng viên Java có 3 năm kinh nghiệm ở Hà Nội" • "Sinh viên IT mới ra trường" • "Lập trình viên Python ở TP.HCM"</small>
+                        <small th:text="#{employer.candidates.search.ai.examples}">💡 Examples: "Ứng viên Java có 3 năm kinh nghiệm ở Hà Nội" • "Sinh viên IT mới ra trường" • "Lập trình viên Python ở TP.HCM"</small>
                     </div>
                 </div>
                 <div class="col-md-2 d-flex align-items-center" style="padding-top: 10px;">
@@ -108,19 +113,19 @@
     <div class="table-container" id="traditional-results-container">
         <div th:if="${studentsPage == null or studentsPage.content.isEmpty()}" class="empty-state">
             <i class="bi bi-person-x"></i>
-            <h3>No candidates found</h3>
-            <p>No candidates match your search criteria.</p>
+            <h3 th:text="#{employer.candidates.empty.title}">No candidates found</h3>
+            <p th:text="#{employer.candidates.empty.message}">No candidates match your search criteria.</p>
         </div>
 
         <table th:if="${studentsPage != null and !studentsPage.content.isEmpty()}">
             <thead>
             <tr>
-                <th>No.</th>
-                <th>Candidate Information</th>
-                <th>Contact</th>
-                <th>Preferred Address</th>
-                <th>University</th>
-                <th>Actions</th>
+                <th th:text="#{employer.candidates.table.no}">No.</th>
+                <th th:text="#{employer.candidates.table.info}">Candidate Information</th>
+                <th th:text="#{employer.candidates.table.contact}">Contact</th>
+                <th th:text="#{employer.candidates.table.address}">Preferred Address</th>
+                <th th:text="#{employer.candidates.table.university}">University</th>
+                <th th:text="#{employer.candidates.table.actions}">Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -129,7 +134,10 @@
                 <td>
                     <div class="student-name" th:text="${student.account != null ? student.account.fullName : 'N/A'}"></div>
                     <div class="contact-info">
-                        <span th:if="${student.jobField != null}" th:text="'Field: ' + ${student.jobField.jobFieldName}"></span>
+                        <span th:if="${student.jobField != null}">
+                            <span th:text="#{employer.candidates.field.label}">Field:</span>
+                            <span th:text="${student.jobField.jobFieldName}"></span>
+                        </span>
                     </div>
                 </td>
                 <td>
@@ -138,12 +146,12 @@
                         <span th:text="${student.account != null ? student.account.phone : 'N/A'}"></span>
                     </div>
                 </td>
-                <td th:text="${student.preferredJobAddress ?: 'Not updated'}"></td>
-                <td th:text="${student.university ?: 'Not updated'}"></td>
+                <td th:text="${student.preferredJobAddress} ?: #{employer.candidates.not.updated}"></td>
+                <td th:text="${student.university} ?: #{employer.candidates.not.updated}"></td>
                 <td>
                     <a th:href="@{'/Employer/CandidateDetail/' + ${student.studentId}}" class="btn-info">
                         <i class="bi bi-eye"></i>
-                        View Details
+                        <span th:text="#{employer.candidates.view.details}">View Details</span>
                     </a>
                 </td>
             </tr>
@@ -156,8 +164,8 @@
         <!-- Empty State -->
         <div id="ai-empty-state" class="empty-state d-none">
             <i class="bi bi-robot"></i>
-            <h3>No AI search performed yet</h3>
-            <p>Use the AI search above to find candidates with natural language.</p>
+            <h3 th:text="#{employer.candidates.ai.empty.title}">No AI search performed yet</h3>
+            <p th:text="#{employer.candidates.ai.empty.message}">Use the AI search above to find candidates with natural language.</p>
         </div>
 
         <!-- AI Results Content -->
@@ -166,17 +174,17 @@
             <div class="ai-results-header">
                 <h2 class="ai-results-title">
                     <i class="bi bi-robot"></i>
-                    AI Search Results
+                    <span th:text="#{employer.candidates.ai.results.title}">AI Search Results</span>
                 </h2>
                 <div class="results-count-badge" id="results-count-badge">
                     <i class="bi bi-person-check"></i>
-                    <span id="candidates-count">0 candidates found</span>
+                    <span id="candidates-count">0 <span th:text="#{employer.candidates.ai.results.count}">candidates found</span></span>
                 </div>
             </div>
 
             <!-- AI Insight Message -->
             <div class="ai-insight-message" id="ai-insight-message">
-                <div class="message-content" id="ai-insight-text">
+                <div class="message-content" id="ai-insight-text" th:text="#{employer.candidates.ai.analyzing}">
                     AI is analyzing your search...
                 </div>
             </div>
@@ -186,12 +194,12 @@
                 <table id="ai-results-table">
                     <thead>
                         <tr>
-                            <th>No.</th>
-                            <th>Candidate Information</th>
-                            <th>Contact</th>
-                            <th>Preferred Address</th>
-                            <th>University</th>
-                            <th>Actions</th>
+                            <th th:text="#{employer.candidates.table.no}">No.</th>
+                            <th th:text="#{employer.candidates.table.info}">Candidate Information</th>
+                            <th th:text="#{employer.candidates.table.contact}">Contact</th>
+                            <th th:text="#{employer.candidates.table.address}">Preferred Address</th>
+                            <th th:text="#{employer.candidates.table.university}">University</th>
+                            <th th:text="#{employer.candidates.table.actions}">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="ai-results-table-body">
@@ -210,11 +218,11 @@
                th:href="@{/Employer/SearchCandidate(page=${studentsPage.number - 1}, address=${address}, university=${university}, experience=${experience}, jobFieldName=${jobFieldName})}"
                class="pagination-btn prev-btn">
                 <i class="bi bi-chevron-left"></i>
-                <span>Previous Page</span>
+                <span th:text="#{employer.candidates.pagination.previous}">Previous Page</span>
             </a>
             <span th:unless="${studentsPage.hasPrevious()}" class="pagination-btn prev-btn disabled">
                 <i class="bi bi-chevron-left"></i>
-                <span>Previous Page</span>
+                <span th:text="#{employer.candidates.pagination.previous}">Previous Page</span>
             </span>
 
             <div class="page-numbers">
@@ -233,11 +241,11 @@
             <a th:if="${studentsPage.hasNext()}"
                th:href="@{/Employer/SearchCandidate(page=${studentsPage.number + 1}, address=${address}, university=${university}, experience=${experience}, jobFieldName=${jobFieldName})}"
                class="pagination-btn next-btn">
-                <span>Next Page</span>
+                <span th:text="#{employer.candidates.pagination.next}">Next Page</span>
                 <i class="bi bi-chevron-right"></i>
             </a>
             <span th:unless="${studentsPage.hasNext()}" class="pagination-btn next-btn disabled">
-                <span>Next Page</span>
+                <span th:text="#{employer.candidates.pagination.next}">Next Page</span>
                 <i class="bi bi-chevron-right"></i>
             </span>
         </div>
@@ -303,14 +311,14 @@
         const query = searchInput.value.trim();
         
         if (!query) {
-            showMessage('warning', 'Vui lòng nhập từ khóa tìm kiếm.');
+            showMessage('warning', /*[[#{employer.candidates.ai.search.empty}]]*/ 'Vui lòng nhập từ khóa tìm kiếm.');
             return;
         }
 
         // Show loading state
         searchButton.disabled = true;
         spinner.classList.remove('d-none');
-        showMessage('info', 'Đang tìm kiếm ứng viên với AI...');
+        showMessage('info', /*[[#{employer.candidates.ai.searching}]]*/ 'Đang tìm kiếm ứng viên với AI...');
         
         try {
             const response = await fetch('/api/query/search-candidates', {
@@ -326,7 +334,7 @@
             if (result.success) {
                 displayAIResults(result.results, result.message);
             } else {
-                showMessage('danger', result.message || 'Có lỗi xảy ra khi tìm kiếm.');
+                showMessage('danger', result.message || /*[[#{employer.candidates.ai.error}]]*/ 'Có lỗi xảy ra khi tìm kiếm.');
                 const emptyState = document.getElementById('ai-empty-state');
                 const resultsContent = document.getElementById('ai-results-content');
                 emptyState.classList.remove('d-none');
@@ -334,7 +342,7 @@
             }
 
         } catch (error) {
-            showMessage('danger', 'Không thể kết nối đến hệ thống AI. Vui lòng thử lại sau.');
+            showMessage('danger', /*[[#{employer.candidates.ai.connection.error}]]*/ 'Không thể kết nối đến hệ thống AI. Vui lòng thử lại sau.');
             const emptyState = document.getElementById('ai-empty-state');
             const resultsContent = document.getElementById('ai-results-content');
             emptyState.classList.remove('d-none');
@@ -355,20 +363,20 @@
         const aiInsightText = document.getElementById('ai-insight-text');
 
         if (!results || results.length === 0) {
-            emptyState.querySelector('h3').textContent = 'No candidates found';
-            emptyState.querySelector('p').textContent = 'No candidates match your AI search criteria. Try a different query.';
+            emptyState.querySelector('h3').textContent = /*[[#{employer.candidates.ai.empty.search.title}]]*/ 'No candidates found';
+            emptyState.querySelector('p').textContent = /*[[#{employer.candidates.ai.empty.search.message}]]*/ 'No candidates match your AI search criteria. Try a different query.';
             emptyState.classList.remove('d-none');
             resultsContent.classList.add('d-none');
-            showMessage('warning', 'Không tìm thấy ứng viên phù hợp. Thử lại với từ khóa khác.');
+            showMessage('warning', /*[[#{employer.candidates.ai.no.results}]]*/ 'Không tìm thấy ứng viên phù hợp. Thử lại với từ khóa khác.');
             return;
         }
 
         // Update header
         const count = results.length;
-        candidatesCountSpan.textContent = `${count} candidate${count > 1 ? 's' : ''} found`;
+        candidatesCountSpan.textContent = `${count} ` + /*[[#{employer.candidates.ai.results.count}]]*/ 'candidates found';
         
         // Set AI insight message
-        aiInsightText.textContent = message || 'AI has found matching candidates for your search.';
+        aiInsightText.textContent = message || /*[[#{employer.candidates.ai.found.default}]]*/ 'AI has found matching candidates for your search.';
 
         // Clear previous results
         candidatesContainer.innerHTML = '';
@@ -384,7 +392,7 @@
                 <td>
                     <div class="student-name">${fullName || 'N/A'}</div>
                     <div class="contact-info">
-                        <span>${jobFieldName ? 'Field: ' + jobFieldName : ''}</span>
+                        <span>${jobFieldName ? /*[[#{employer.candidates.field.label}]]*/ 'Field: ' + jobFieldName : ''}</span>
                     </div>
                 </td>
                 <td>
@@ -393,12 +401,12 @@
                         <span>${phone || 'N/A'}</span>
                     </div>
                 </td>
-                <td>${address || 'Not updated'}</td>
-                <td>${university || 'Not updated'}</td>
+                <td>${address || /*[[#{employer.candidates.not.updated}]]*/ 'Not updated'}</td>
+                <td>${university || /*[[#{employer.candidates.not.updated}]]*/ 'Not updated'}</td>
                 <td>
                     <a href="/Employer/CandidateDetail/${studentId}" class="btn-info">
                         <i class="bi bi-eye"></i>
-                        View Details
+                        /*[[#{employer.candidates.view.details}]]*/ View Details
                     </a>
                 </td>
             `;
@@ -438,8 +446,35 @@
             performAISearch();
         }
     });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const addressSelect = document.getElementById('address');
+    // Lấy giá trị đã chọn từ Thymeleaf (nếu có)
+    const selectedValue = /*[[${address}]]*/ '';
+
+    fetch('https://provinces.open-api.vn/api/p/')
+        .then(res => res.json())
+        .then(provinces => {
+            provinces.sort((a, b) => new Intl.Collator('vi').compare(a.name, b.name));
+            provinces.forEach(p => {
+                const option = document.createElement('option');
+                option.value = p.name;
+                option.textContent = p.name;
+                if (selectedValue && selectedValue === p.name) {
+                    option.selected = true;
+                }
+                addressSelect.appendChild(option);
+            });
+        });
+});
 </script>
 
+
+<!-- AI Chatbox Fragment -->
+<div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
+
+<!-- Chat Notification Fragment -->
+<div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
 
 </body>
 </html>

@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đơn ứng tuyển của tôi - JOB4YOU</title>
+    <title th:text="#{student.applications.title}">Đơn ứng tuyển của tôi - JOB4YOU</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarStudent.css}"/>
     <link rel="stylesheet" th:href="@{/css/my-applications.css}"/>
     <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
@@ -262,15 +263,11 @@
                     <i class="bi bi-briefcase-fill"></i>
                 </div>
                 <div style="margin-left: 15px;">
-                    <h1>Đơn ứng tuyển của tôi</h1>
-                    <p>Theo dõi trạng thái các đơn ứng tuyển</p>
+                    <h1 th:text="#{student.applications.heading}">Đơn ứng tuyển của tôi</h1>
+                    <p th:text="#{student.applications.subtitle}">Theo dõi trạng thái các đơn ứng tuyển</p>
                 </div>
             </div>
-            <!-- 💬 Chat Rooms Button -->
-            <button class="btn btn-primary" onclick="showAllChatRooms()" title="Xem tất cả cuộc trò chuyện" style="display: flex; align-items: center; gap: 8px;">
-                <i class="bi bi-chat-text"></i>
-                <span>Tin nhắn</span>
-            </button>
+        
         </div>
     </div>
 
@@ -279,27 +276,27 @@
         <div class="table-header">
             <div class="header-cell job-title-col">
                 <i class="bi bi-briefcase"></i>
-                <span>CÔNG VIỆC</span>
+                <span th:text="#{student.applications.table.job}">CÔNG VIỆC</span>
             </div>
             <div class="header-cell company-col">
                 <i class="bi bi-building"></i>
-                <span>CÔNG TY</span>
+                <span th:text="#{student.applications.table.company}">CÔNG TY</span>
             </div>
             <div class="header-cell location-col">
                 <i class="bi bi-geo-alt"></i>
-                <span>ĐỊA ĐIỂM</span>
+                <span th:text="#{student.applications.table.location}">ĐỊA ĐIỂM</span>
             </div>
             <div class="header-cell date-col">
                 <i class="bi bi-calendar-check"></i>
-                <span>NGÀY ỨNG TUYỂN</span>
+                <span th:text="#{student.applications.table.date}">NGÀY ỨNG TUYỂN</span>
             </div>
             <div class="header-cell status-col">
                 <i class="bi bi-flag"></i>
-                <span>TRẠNG THÁI</span>
+                <span th:text="#{student.applications.table.status}">TRẠNG THÁI</span>
             </div>
             <div class="header-cell action-col">
                 <i class="bi bi-gear"></i>
-                <span>THAO TÁC</span>
+                <span th:text="#{student.applications.table.actions}">THAO TÁC</span>
             </div>
         </div>
 
@@ -389,7 +386,7 @@
                                 <h4><i class="bi bi-briefcase-fill"></i> Thông tin công việc</h4>
                                 <div class="detail-items">
                                     <div class="detail-item">
-                                        <span class="label"><i class="bi bi-clock"></i> Thời gian ứng tuyển:</span>
+                                        <span class="label"><i class="bi bi-clock"></i> <span th:text="#{student.applications.time.label}">Thời gian ứng tuyển:</span></span>
                                         <span class="value" th:text="${jobApp.appliedAt != null ? #temporals.format(jobApp.appliedAt, 'dd/MM/yyyy HH:mm') : 'N/A'}"></span>
                                     </div>
                                     <div class="detail-item">
@@ -402,7 +399,7 @@
 
                         <!-- Application Description -->
                         <div class="application-description" th:if="${jobApp.description != null and !#strings.isEmpty(jobApp.description)}">
-                            <h4><i class="bi bi-chat-text-fill"></i> Nội dung ứng tuyển</h4>
+                            <h4><i class="bi bi-chat-text-fill"></i> <span th:text="#{student.applications.content.title}">Nội dung ứng tuyển</span></h4>
                             <div class="description-content">
                                 <p th:text="${jobApp.description}"></p>
                             </div>
@@ -447,8 +444,8 @@
         <div class="empty-illustration">
             <i class="bi bi-briefcase-x"></i>
         </div>
-        <h3>Chưa có đơn ứng tuyển nào</h3>
-        <p>Hãy tìm kiếm và ứng tuyển các công việc phù hợp với bạn</p>
+        <h3 th:text="#{student.applications.empty.title}">Chưa có đơn ứng tuyển nào</h3>
+        <p th:text="#{student.applications.empty.description}">Hãy tìm kiếm và ứng tuyển các công việc phù hợp với bạn</p>
     </div>
 </div>
 
@@ -1314,12 +1311,12 @@
         if (detailsRow.classList.contains('show')) {
             detailsRow.classList.remove('show');
             icon.className = 'bi bi-chevron-down';
-            text.textContent = 'View Details';
+            text.textContent = 'Xem chi tiết';
             button.classList.remove('expanded');
         } else {
             detailsRow.classList.add('show');
             icon.className = 'bi bi-chevron-up';
-            text.textContent = 'Hide Details';
+            text.textContent = 'Ẩn chi tiết';
             button.classList.add('expanded');
         }
     }
@@ -1329,6 +1326,12 @@
         initializePagination();
     });
 </script>
+
+<!-- AI Chatbox Fragment -->
+<div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
+
+<!-- Chat Notification Fragment -->
+<div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
 
 <!-- Add notification bell -->
 <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>

@@ -68,10 +68,14 @@ public class EmployerEventController {
     // Show create event form
     @GetMapping("/Create")
     public String showCreateForm(Principal principal, Model model) {
+        EventCreateDTO eventCreateDTO = new EventCreateDTO();
         if (principal != null) {
+            String email = principal.getName();
+            eventCreateDTO.setContactEmail(email);
+            model.addAttribute("currentEmail", email);
             model.addAttribute("account", accountService.findByEmail(principal.getName()));
         }
-        model.addAttribute("event", new EventCreateDTO());
+        model.addAttribute("event", eventCreateDTO);
         return "employee/createEvent";
     }
 

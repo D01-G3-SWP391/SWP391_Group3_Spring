@@ -56,6 +56,13 @@
             </div>
         </div>
 
+        <!-- WebSocket Dependencies -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+        
+        <!-- Notification WebSocket Client -->
+        <script th:src="@{/js/notification-websocket.js}"></script>
+        
         <!-- Add Lottie Library -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.6/lottie.min.js"></script>
         <script th:inline="javascript">
@@ -80,9 +87,8 @@
                     animation.stop();
                 });
 
-                // Update notifications initially and every 30 seconds
-                // Skip initial update since Thymeleaf already rendered data
-                setInterval(updateNotifications, 30000);
+                // WebSocket notifications are now handled by notification-websocket.js
+                // No more polling needed!
                 
                 // Add ESC key listener to close modals
                 document.addEventListener('keydown', function(event) {
@@ -133,54 +139,7 @@
                 }
             };
 
-            // Update notifications (for real-time updates)
-            function updateNotifications() {
-                fetch('/notifications/latest')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        const notificationList = document.getElementById('notificationList');
-                        notificationList.innerHTML = '';
-
-                        if (data.length === 0) {
-                            notificationList.innerHTML = `
-                                <div class="notification-bell-empty">
-                                    <i class="bi bi-bell-slash"></i>
-                                    <p>[[#{notifications.empty}]]</p>
-                                </div>
-                            `;
-                        } else {
-                            data.forEach(notification => {
-                                const notificationItem = document.createElement('div');
-                                notificationItem.className = `notification-bell-item${notification.read ? '' : ' unread'}`;
-                                notificationItem.dataset.id = notification.id;
-                                
-                                notificationItem.innerHTML = `
-                                    <div class="notification-bell-content" onclick="markAsRead(${notification.id})">
-                                        <div class="notification-bell-title">${escapeHtml(notification.title)}</div>
-                                        <div class="notification-bell-message">${escapeHtml(notification.message)}</div>
-                                        <div class="notification-bell-time">${formatDate(notification.createdAt)}</div>
-                                    </div>
-                                    <div class="notification-bell-delete" onclick="deleteNotification(event, ${notification.id})">
-                                        <i class="bi bi-trash"></i>
-                                    </div>
-                                `;
-                                
-                                notificationList.appendChild(notificationItem);
-                            });
-                        }
-
-                        // Update badge count
-                        updateNotificationCount();
-                    })
-                    .catch(error => {
-                        console.error('Error updating notifications:', error);
-                    });
-            }
+            // updateNotifications function removed - now using WebSocket for real-time updates
 
             // Escape HTML to prevent XSS
             function escapeHtml(text) {
@@ -203,124 +162,151 @@
                 });
             }
 
-            // Mark single notification as read
+            // Mark single notification as read via WebSocket
             function markAsRead(id) {
-                fetch(`/notifications/${id}/mark-read`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to mark as read');
-                    }
-                    return response.json();
-                })
-                .then(() => {
-                    const item = document.querySelector(`.notification-bell-item[data-id="${id}"]`);
-                    if (item) {
-                        item.classList.remove('unread');
-                    }
-                    updateNotificationCount();
-                })
-                .catch(error => {
-                    console.error('Error marking notification as read:', error);
-                });
-            }
-
-            // Delete single notification
-            function deleteNotification(event, id) {
-                event.stopPropagation(); // Prevent triggering markAsRead
-                if (confirm('[[#{notifications.confirmDelete}]]')) {
-                    fetch(`/notifications/${id}`, {
-                        method: 'DELETE',
+                if (window.notificationWebSocketClient && window.notificationWebSocketClient.isConnected) {
+                    window.notificationWebSocketClient.markAsRead(id);
+                } else {
+                    console.warn('WebSocket client not available, falling back to REST API');
+                    // Fallback to REST API
+                    fetch(`/notifications/${id}/mark-read`, {
+                        method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         }
                     })
                     .then(response => {
                         if (!response.ok) {
-                            throw new Error('Failed to delete notification');
+                            throw new Error('Failed to mark as read');
                         }
                         return response.json();
                     })
-                    .then(data => {
-                        if (data.status === 'success') {
-                            const item = document.querySelector(`.notification-bell-item[data-id="${id}"]`);
-                            if (item) {
-                                item.remove();
-                            }
-                            updateNotificationCount();
-                            checkEmptyState();
+                    .then(() => {
+                        const item = document.querySelector(`.notification-bell-item[data-id="${id}"]`);
+                        if (item) {
+                            item.classList.remove('unread');
                         }
+                        updateNotificationCount();
                     })
                     .catch(error => {
-                        console.error('Error deleting notification:', error);
+                        console.error('Error marking notification as read:', error);
                     });
                 }
             }
 
-            // Delete all notifications
+            // Delete single notification via WebSocket
+            function deleteNotification(event, id) {
+                event.stopPropagation(); // Prevent triggering markAsRead
+                if (confirm(/*[[#{notifications.confirmDelete}]]*/ 'Are you sure you want to delete this notification?')) {
+                    if (window.notificationWebSocketClient && window.notificationWebSocketClient.isConnected) {
+                        window.notificationWebSocketClient.deleteNotification(id);
+                    } else {
+                        console.warn('WebSocket client not available, falling back to REST API');
+                        // Fallback to REST API
+                        fetch(`/notifications/${id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Failed to delete notification');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.status === 'success') {
+                                const item = document.querySelector(`.notification-bell-item[data-id="${id}"]`);
+                                if (item) {
+                                    item.remove();
+                                }
+                                updateNotificationCount();
+                                checkEmptyState();
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error deleting notification:', error);
+                        });
+                    }
+                }
+            }
+
+            // Delete all notifications via WebSocket
             function deleteAllNotifications(event) {
                 event.preventDefault();
                 event.stopPropagation();
                 if (confirm('[[#{notifications.confirmDeleteAll}]]')) {
-                    fetch('/notifications/delete-all', {
-                        method: 'DELETE',
+                    if (window.notificationWebSocketClient && window.notificationWebSocketClient.isConnected) {
+                        // Use WebSocket - send delete all message
+                        window.notificationWebSocketClient.stompClient.send('/app/notifications.deleteAll', {}, JSON.stringify({}));
+                    } else {
+                        console.warn('WebSocket client not available, falling back to REST API');
+                        // Fallback to REST API
+                        fetch('/notifications/delete-all', {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Failed to delete all notifications');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.status === 'success') {
+                                const notificationList = document.getElementById('notificationList');
+                                notificationList.innerHTML = `
+                                    <div class="notification-bell-empty">
+                                        <i class="bi bi-bell-slash"></i>
+                                        <p>[[#{notifications.empty}]]</p>
+                                    </div>
+                                `;
+                                updateNotificationCount();
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error deleting all notifications:', error);
+                        });
+                    }
+                }
+            }
+
+            // Mark all notifications as read via WebSocket
+            function markAllAsRead(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                
+                if (window.notificationWebSocketClient && window.notificationWebSocketClient.isConnected) {
+                    // Use WebSocket - send mark all read message
+                    window.notificationWebSocketClient.stompClient.send('/app/notifications.markAllAsRead', {}, JSON.stringify({}));
+                } else {
+                    console.warn('WebSocket client not available, falling back to REST API');
+                    // Fallback to REST API
+                    fetch('/notifications/mark-all-read', {
+                        method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         }
                     })
                     .then(response => {
                         if (!response.ok) {
-                            throw new Error('Failed to delete all notifications');
+                            throw new Error('Failed to mark all as read');
                         }
                         return response.json();
                     })
-                    .then(data => {
-                        if (data.status === 'success') {
-                            const notificationList = document.getElementById('notificationList');
-                            notificationList.innerHTML = `
-                                <div class="notification-bell-empty">
-                                    <i class="bi bi-bell-slash"></i>
-                                    <p>[[#{notifications.empty}]]</p>
-                                </div>
-                            `;
-                            updateNotificationCount();
-                        }
+                    .then(() => {
+                        document.querySelectorAll('.notification-bell-item.unread').forEach(item => {
+                            item.classList.remove('unread');
+                        });
+                        updateNotificationCount();
                     })
                     .catch(error => {
-                        console.error('Error deleting all notifications:', error);
+                        console.error('Error marking all notifications as read:', error);
                     });
                 }
-            }
-
-            // Mark all notifications as read
-            function markAllAsRead(event) {
-                event.preventDefault();
-                event.stopPropagation();
-                fetch('/notifications/mark-all-read', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to mark all as read');
-                    }
-                    return response.json();
-                })
-                .then(() => {
-                    document.querySelectorAll('.notification-bell-item.unread').forEach(item => {
-                        item.classList.remove('unread');
-                    });
-                    updateNotificationCount();
-                })
-                .catch(error => {
-                    console.error('Error marking all notifications as read:', error);
-                });
             }
 
             // Check if notifications list is empty
@@ -336,29 +322,33 @@
                 }
             }
 
-            // Update notification count in bell icon
+            // Update notification count in bell icon (fallback for REST API)
             function updateNotificationCount() {
-                fetch('/notifications/count')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to get notification count');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        const badge = document.querySelector('.notification-bell-badge');
-                        if (badge) {
-                            if (data.count > 0) {
-                                badge.style.display = 'flex';
-                                badge.textContent = data.count;
-                            } else {
-                                badge.style.display = 'none';
+                // Only use as fallback when WebSocket is not available
+                if (!window.notificationWebSocketClient || !window.notificationWebSocketClient.isConnected) {
+                    fetch('/notifications/count')
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Failed to get notification count');
                             }
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error updating notification count:', error);
-                    });
+                            return response.json();
+                        })
+                        .then(data => {
+                            const badge = document.querySelector('.notification-bell-badge');
+                            if (badge) {
+                                if (data.count > 0) {
+                                    badge.style.display = 'flex';
+                                    badge.textContent = data.count;
+                                } else {
+                                    badge.style.display = 'none';
+                                }
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error updating notification count:', error);
+                        });
+                }
+                // WebSocket client handles count updates automatically
             }
         </script>
     </div>

@@ -27,7 +27,17 @@ public class DataSeedingListener implements ApplicationListener<ContextRefreshed
                         Account.Status.active
                 );
                 iAccountService.save(admin);
-            } else {
+            }
+            if (iAccountService.findByEmail("employer@example.com") == null) {
+                Account employer = new Account(
+                        "Employer",
+                        "employer@example.com",
+                        EncryptPasswordUtils.EncryptPasswordUtils("123456"),
+                        "0123456789",
+                        Account.Role.employer,
+                        Account.Status.active
+                );
+                iAccountService.save(employer);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý báo cáo</title>
+    <title th:text="#{admin.reports.title} + ' - Admin'">Quản lý báo cáo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
     <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
     <link rel="stylesheet" th:href="@{/css/reportList.css}">
@@ -18,11 +20,11 @@
 
 <div class="main-content">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="bi bi-flag-fill text-danger"></i> Quản lý báo cáo</h2>
+        <h2><i class="bi bi-flag-fill text-danger"></i> <span th:text="#{admin.reports.title}">Report Management</span></h2>
         <!-- ✅ THÊM MỚI: Nút quản lý xóa báo cáo -->
         <div class="btn-group">
             <a th:href="@{/Admin/Deletable}" class="btn btn-outline-danger">
-                <i class="bi bi-trash"></i> Quản lý xóa báo cáo
+                <i class="bi bi-trash"></i> <span th:text="#{admin.reports.manage.delete}">Manage Report Deletion</span>
                 <span class="badge bg-danger ms-1" th:text="${deletableCount}">0</span>
             </a>
         </div>
@@ -31,25 +33,25 @@
     <!-- Statistics Cards -->
     <div class="stats-row">
         <div class="stat-card">
-            <div class="stat-number" th:text="${statistics.get(T(com.example.swp391_d01_g3.model.Report.ReportStatus).PENDING) ?: 0}">0</div>
-            <div class="stat-label">Chờ xử lý</div>
+            <div class="stat-number" th:text="${statistics.get(T(com.example.swp391_d01_g3.model.Report.ReportStatus).PENDING)} ?: 0">0</div>
+            <div class="stat-label" th:text="#{admin.reports.stats.pending}">Pending</div>
         </div>
         <div class="stat-card">
-            <div class="stat-number" th:text="${statistics.get(T(com.example.swp391_d01_g3.model.Report.ReportStatus).UNDER_REVIEW) ?: 0}">0</div>
-            <div class="stat-label">Đang xem xét</div>
+            <div class="stat-number" th:text="${statistics.get(T(com.example.swp391_d01_g3.model.Report.ReportStatus).UNDER_REVIEW)} ?: 0">0</div>
+            <div class="stat-label" th:text="#{admin.reports.stats.under.review}">Under Review</div>
         </div>
         <div class="stat-card">
-            <div class="stat-number" th:text="${statistics.get(T(com.example.swp391_d01_g3.model.Report.ReportStatus).RESOLVED) ?: 0}">0</div>
-            <div class="stat-label">Đã giải quyết</div>
+            <div class="stat-number" th:text="${statistics.get(T(com.example.swp391_d01_g3.model.Report.ReportStatus).RESOLVED)} ?: 0">0</div>
+            <div class="stat-label" th:text="#{admin.reports.stats.resolved}">Resolved</div>
         </div>
         <div class="stat-card">
-            <div class="stat-number" th:text="${statistics.get(T(com.example.swp391_d01_g3.model.Report.ReportStatus).REJECTED) ?: 0}">0</div>
-            <div class="stat-label">Từ chối</div>
+            <div class="stat-number" th:text="${statistics.get(T(com.example.swp391_d01_g3.model.Report.ReportStatus).REJECTED)} ?: 0">0</div>
+            <div class="stat-label" th:text="#{admin.reports.stats.rejected}">Rejected</div>
         </div>
         <!-- ✅ THÊM MỚI: Thống kê báo cáo có thể xóa -->
         <div class="stat-card">
-            <div class="stat-number text-danger" th:text="${deletableCount ?: 0}">0</div>
-            <div class="stat-label">Có thể xóa</div>
+            <div class="stat-number text-danger" th:text="${deletableCount} ?: 0">0</div>
+            <div class="stat-label" th:text="#{admin.reports.statistics.deletable.label}">Can Delete</div>
         </div>
     </div>
 
@@ -68,9 +70,9 @@
         <div class="card-body">
             <form method="get" class="row g-3">
                 <div class="col-md-4">
-                    <label class="form-label">Lọc theo trạng thái</label>
+                    <label class="form-label" th:text="#{admin.reports.filter.status}">Filter by Status</label>
                     <select name="status" class="form-select">
-                        <option value="">-- Tất cả trạng thái --</option>
+                        <option value="" th:text="#{admin.reports.filter.status.all}">-- All Status --</option>
                         <option th:each="statusOption : ${statuses}"
                                 th:value="${statusOption}"
                                 th:text="${statusOption}"
@@ -78,15 +80,15 @@
                     </select>
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label">Tìm kiếm</label>
+                    <label class="form-label" th:text="#{admin.reports.filter.search.placeholder}">Search</label>
                     <input type="text" name="search" class="form-control"
-                           placeholder="Tìm theo tiêu đề hoặc mô tả..."
+                           th:placeholder="#{admin.reports.filter.search.placeholder}"
                            th:value="${searchKeyword}">
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">&nbsp;</label>
                     <button type="submit" class="btn btn-primary d-block w-100">
-                        <i class="bi bi-search"></i> Lọc
+                        <i class="bi bi-search"></i> <span th:text="#{admin.reports.filter.search.button}">Search</span>
                     </button>
                 </div>
             </form>
@@ -99,8 +101,8 @@
         <div class="card-body">
             <div th:if="${reports == null or reports.content.isEmpty()}" class="text-center py-5">
                 <i class="bi bi-inbox display-1 text-muted"></i>
-                <h4 class="mt-3">Không có báo cáo nào</h4>
-                <p class="text-muted">Chưa có báo cáo nào phù hợp với bộ lọc hiện tại.</p>
+                <h4 class="mt-3" th:text="#{admin.reports.no.results}">No reports found</h4>
+                <p class="text-muted" th:text="#{admin.reports.no.results.desc}">No reports match the current filters.</p>
             </div>
 
             <div th:if="${reports != null and !reports.content.isEmpty()}">
@@ -109,13 +111,13 @@
                         <thead class="table-light">
                         <tr>
                             <!-- ✅ THAY ĐỔI: STT thay vì ID -->
-                            <th width="80">STT</th>
-                            <th>Tiêu đề</th>
-                            <th>Người báo cáo</th>
-                            <th>Loại</th>
-                            <th>Trạng thái</th>
-                            <th>Ngày tạo</th>
-                            <th>Hành động</th>
+                            <th width="80" th:text="#{admin.reports.table.id}">ID</th>
+                            <th th:text="#{admin.reports.table.reason.label}">Title</th>
+                            <th th:text="#{admin.reports.table.reporter.name}">Reporter</th>
+                            <th th:text="#{admin.reports.table.reported.user.name}">Type</th>
+                            <th th:text="#{admin.reports.table.status}">Status</th>
+                            <th th:text="#{admin.reports.table.report.date}">Date Created</th>
+                            <th th:text="#{admin.reports.table.actions}">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
