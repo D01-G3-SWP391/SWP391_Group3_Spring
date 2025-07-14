@@ -35,11 +35,10 @@
         
         <!-- Article Header -->
         <header class="article-header">
-            <span class="article-category" 
-                  th:text="${blogPost.resource.resourceType == 'application_tips'} ? #{blog.detail.category.application_tips} : 
-                            (${blogPost.resource.resourceType == 'interview_guide'} ? #{blog.detail.category.interview_guide} : 
-                            (${blogPost.resource.resourceType == 'quotes'} ? #{blog.detail.category.quotes} : ${blogPost.resource.resourceType}))">
-            </span>
+            <span class="article-category" th:if="${blogPost.resource.resourceType == 'application_tips'}" th:text="#{blog.detail.category.application_tips}">Application Tips</span>
+            <span class="article-category" th:if="${blogPost.resource.resourceType == 'interview_guide'}" th:text="#{blog.detail.category.interview_guide}">Interview Guide</span>
+            <span class="article-category" th:if="${blogPost.resource.resourceType == 'quotes'}" th:text="#{blog.detail.category.quotes}">Quotes</span>
+            <span class="article-category" th:unless="${blogPost.resource.resourceType == 'application_tips' || blogPost.resource.resourceType == 'interview_guide' || blogPost.resource.resourceType == 'quotes'}" th:text="${blogPost.resource.resourceType}">Other</span>
             <h1 class="article-title" th:text="${blogPost.title}"></h1>
             <p class="article-summary" th:text="${blogPost.summary}"></p>
             
