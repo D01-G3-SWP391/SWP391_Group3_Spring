@@ -38,17 +38,18 @@
         <div class="nav-section">
             <div class="nav-section-title" th:text="#{nav.main}">Main</div>
             <div class="nav-item">
+                <a th:href="@{/Admin}" class="nav-link" data-path="/Admin">
+                    <i class="bi bi-speedometer2 nav-icon"></i>
+                    <span>Dashboard</span>
+                </a>
+            </div>
+            <div class="nav-item">
                 <a th:href="@{/}" class="nav-link" data-path="/">
                     <i class="bi bi-house-door nav-icon"></i>
                     <span th:text="#{nav.home}">Home</span>
                 </a>
             </div>
-            <div class="nav-item">
-                <a th:href="@{/Admin}" class="nav-link" data-path="/Admin">
-                    <i class="bi bi-speedometer2 nav-icon"></i>
-                    <span th:text="#{nav.dashboard}">Dashboard</span>
-                </a>
-            </div>
+
         </div>
 
         <!-- User Management -->

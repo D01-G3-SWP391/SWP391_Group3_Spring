@@ -383,7 +383,7 @@
             <div class="hero-meta justify-content-center">
                 <div class="meta-item"><i class="bi bi-calendar-event"></i> <span th:text="#{event.detail.meta.date}">Date</span>: <span th:text="${#temporals.format(event.eventDate, 'dd/MM/yyyy')}"></span></div>
                 <div class="meta-item"><i class="bi bi-geo-alt-fill"></i> <span th:text="#{event.detail.meta.location}">Location</span>: <span th:text="${event.eventLocation}"></span></div>
-                <div class="meta-item"><i class="bi bi-building"></i> <span th:text="#{event.detail.meta.company}">Company</span>: <span th:text="${event.employer.companyName}"></span></div>
+                <div class="meta-item"><i class="bi bi-building"></i> <span th:text="#{event.detail.meta.company}">Company</span>: <span th:text="${event.employer != null ? event.employer.companyName : 'N/A'}"></span></div>
                 <div class="meta-item"><i class="bi bi-people-fill"></i> <span th:text="#{event.detail.meta.participants}">Participants</span>: <span th:text="${event.currentParticipants} + '/' + ${event.maxParticipants}"></span></div>
             </div>
             

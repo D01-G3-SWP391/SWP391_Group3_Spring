@@ -46,8 +46,59 @@ public class Dashboard {
     @Autowired
     private CloudinaryService cloudinaryService;
 
+    @Autowired
+    private com.example.swp391_d01_g3.service.admin.IAdminJobPostService adminJobPostService;
+    @Autowired
+    private com.example.swp391_d01_g3.service.admin.IAdminEventService adminEventService;
+
     @GetMapping("")
-    public String showDashboard() {
+    public String showDashboard(Model model) {
+        // Dashboard statistics
+        try {
+            // Get user counts
+            long totalStudents = adminStudentService.countAllStudents();
+            long activeStudents = adminStudentService.countStudentsByStatus("active");
+            long bannedStudents = adminStudentService.countStudentsByStatus("inactive");
+            
+            long totalEmployers = adminEmployerService.countAllEmployers();
+            long activeEmployers = adminEmployerService.countEmployersByStatus("active");
+            long bannedEmployers = adminEmployerService.countEmployersByStatus("inactive");
+            
+            // Add to model
+            model.addAttribute("totalStudents", totalStudents);
+            model.addAttribute("activeStudents", activeStudents);
+            model.addAttribute("bannedStudents", bannedStudents);
+            
+            model.addAttribute("totalEmployers", totalEmployers);
+            model.addAttribute("activeEmployers", activeEmployers);
+            model.addAttribute("bannedEmployers", bannedEmployers);
+            
+            // Calculate percentages
+            model.addAttribute("studentActivePercentage", totalStudents > 0 ? (activeStudents * 100 / totalStudents) : 0);
+            model.addAttribute("employerActivePercentage", totalEmployers > 0 ? (activeEmployers * 100 / totalEmployers) : 0);
+
+            // Job Post statistics
+            long totalJobPosts = adminJobPostService.getTotalJobPostsCount();
+            long activeJobPosts = adminJobPostService.getApprovedCount();
+            long pendingJobPosts = adminJobPostService.getPendingCount();
+            model.addAttribute("totalJobPosts", totalJobPosts);
+            model.addAttribute("activeJobPosts", activeJobPosts);
+            model.addAttribute("pendingJobPosts", pendingJobPosts);
+
+            // Event statistics
+            long totalEvents = adminEventService.getTotalEventsCount();
+            // Upcoming: event_date >= NOW()
+            long upcomingEvents = adminEventService.getAllEvents(0, Integer.MAX_VALUE).getContent().stream().filter(e -> e.getEventDate() != null && e.getEventDate().isAfter(java.time.LocalDateTime.now())).count();
+            // Past: event_date < NOW()
+            long pastEvents = adminEventService.getAllEvents(0, Integer.MAX_VALUE).getContent().stream().filter(e -> e.getEventDate() != null && e.getEventDate().isBefore(java.time.LocalDateTime.now())).count();
+            model.addAttribute("totalEvents", totalEvents);
+            model.addAttribute("upcomingEvents", upcomingEvents);
+            model.addAttribute("pastEvents", pastEvents);
+
+        } catch (Exception e) {
+            logger.error("Error loading dashboard statistics: ", e);
+        }
+        
         return "admin/dashboardPage";
     }
 
@@ -212,7 +263,7 @@ public class Dashboard {
     @GetMapping("/blogs/{id}")
     public String blogDetail(@PathVariable Long id, Model model) {
         BlogPost blog = blogService.getBlogPostById(id).orElse(null);
-        if (blog == null) return "redirect:/admin/blogs";
+        if (blog == null) return "redirect:/Admin/blogs";
 //        List<BlogImage> images = blogService.getImagesForBlog(id);
         model.addAttribute("blog", blog);
 //        model.addAttribute("images", images);
