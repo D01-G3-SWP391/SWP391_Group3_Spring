@@ -126,7 +126,7 @@ public class JobPostImpl implements IJobpostService {
             return 0;
         }
 
-        // ✅ Convert String to JobPost.ApprovalStatus enum
+        // Convert String to JobPost.ApprovalStatus enum
         JobPost.ApprovalStatus approvalStatus;
         try {
             approvalStatus = JobPost.ApprovalStatus.valueOf(status.toUpperCase().trim());

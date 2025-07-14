@@ -38,7 +38,9 @@ public interface IJobPostRepository extends JpaRepository<JobPost, Integer> {
     @Query("SELECT jp FROM JobPost jp " +
             "JOIN jp.employer e " +
             "JOIN e.jobField jf " +
-            "WHERE (:keyword IS NULL OR jp.jobTitle LIKE CONCAT('%', :keyword, '%')) " +
+            "WHERE jp.approvalStatus = 'APPROVED' " +
+            "AND jp.displayStatus = 'ACTIVE' " +
+            "AND (:keyword IS NULL OR jp.jobTitle LIKE CONCAT('%', :keyword, '%')) " +
             "AND (:location IS NULL OR jp.jobLocation LIKE CONCAT('%', :location, '%')) " +
             "AND (:minSalary IS NULL OR jp.jobSalary >= :minSalary) " +
             "AND (:maxSalary IS NULL OR jp.jobSalary <= :maxSalary) " +
@@ -113,7 +115,7 @@ public interface IJobPostRepository extends JpaRepository<JobPost, Integer> {
                                         Pageable pageable);
 //    phan trang jobPost
     Page<JobPost> findByEmployerOrderByCreatedAtDesc(Employer employer, Pageable pageable);
-//    pendding
+////    pendding
     long countByEmployer(Employer employer);
     long countByEmployerAndApprovalStatus(Employer employer, JobPost.ApprovalStatus approvalStatus);
 
