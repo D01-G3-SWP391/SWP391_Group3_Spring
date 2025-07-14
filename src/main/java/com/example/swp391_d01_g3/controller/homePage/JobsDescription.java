@@ -56,9 +56,10 @@ public class JobsDescription {
             model.addAttribute("account", userAccount);
 
             if (userAccount != null) {
-                // Auto-fill họ tên và email từ database vào JobApplicationDTO
+                // Auto-fill họ tên, email và phone từ database vào JobApplicationDTO
                 jobApplicationDTO.setFullname(userAccount.getFullName());
                 jobApplicationDTO.setEmail(userAccount.getEmail());
+                jobApplicationDTO.setPhoneNumber(userAccount.getPhone());
                 
                 // Chỉ lấy thông tin student nếu user có role student
                 Student studentDetails = iStudentService.findByAccountUserId(userAccount.getUserId());
