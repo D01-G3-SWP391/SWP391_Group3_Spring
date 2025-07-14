@@ -149,6 +149,40 @@ public class JobPostImpl implements IJobpostService {
         return iJobPostRepository.findByEmployerOrderByCreatedAtDesc(employer, pageable); // Lọc JobPost theo employer đó
     }
 
+    // Implementation for hide/show feature
+    @Override
+    public Page<JobPost> findActiveJobPostsByEmployerEmail(String email, Pageable pageable) {
+        Employer employer = iEmployerService.findByEmail(email);
+        if (employer == null) {
+            return Page.empty(pageable);
+        }
+        return iJobPostRepository.findByEmployerAndDisplayStatusOrderByCreatedAtDesc(
+                employer, JobPost.DisplayStatus.ACTIVE, pageable);
+    }
+
+    @Override
+    public Page<JobPost> findByEmployerAndDisplayStatusOrderByCreatedAtDesc(Employer employer, JobPost.DisplayStatus displayStatus, Pageable pageable) {
+        return iJobPostRepository.findByEmployerAndDisplayStatusOrderByCreatedAtDesc(employer, displayStatus, pageable);
+    }
+
+    @Override
+    public long countActiveJobPostsByEmployerEmail(String employerEmail) {
+        Employer employer = iEmployerService.findByEmail(employerEmail);
+        if (employer == null) {
+            return 0;
+        }
+        return iJobPostRepository.countByEmployerAndDisplayStatus(employer, JobPost.DisplayStatus.ACTIVE);
+    }
+
+    @Override
+    public long countHiddenJobPostsByEmployerEmail(String employerEmail) {
+        Employer employer = iEmployerService.findByEmail(employerEmail);
+        if (employer == null) {
+            return 0;
+        }
+        return iJobPostRepository.countByEmployerAndDisplayStatus(employer, JobPost.DisplayStatus.INACTIVE);
+    }
+
 
 
 }
