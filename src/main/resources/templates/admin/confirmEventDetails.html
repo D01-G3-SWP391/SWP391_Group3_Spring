@@ -57,7 +57,7 @@
           <span class="info-label">
             <i class="bi bi-building me-2"></i>Employer
           </span>
-          <span class="info-value" th:text="${event.employer.companyName}"></span>
+          <span class="info-value" th:text="${event.employer != null ? event.employer.companyName : 'N/A'}"></span>
         </div>
 
         <div class="info-row">

@@ -95,9 +95,9 @@
             <span th:if="${event.maxParticipants != null}">
               / <span th:text="${event.maxParticipants}"></span>
             </span>
-            <span th:if="${event.maxParticipants == null}" th:text="' (' + #{admin.events.unlimited} + ')'"> (Unlimited)</span>
+            <span th:if="${event.maxParticipants == null}" th:text="' (Unlimited)'"> (Unlimited)</span>
           </td>
-          <td th:text="${event.employer != null ? event.employer.companyName : #{admin.events.not.applicable}}"></td>
+          <td th:text="${event.employer != null ? event.employer.companyName : 'N/A'}"></td>
           <td>
             <!-- THÊM: Clickable Status Badges -->
             <a th:href="@{/Admin/Events(status=${event.approvalStatus.name()}, keyword=${keyword})}"
@@ -126,35 +126,35 @@
                     <!-- Approval Status Options -->
                     <li><h6 class="dropdown-header" th:text="#{admin.events.approval.status}">Approval Status</h6></li>
                     <li>
-                      <form th:action="@{/Admin/ToggleApprovalStatus/{id}(id=${event.eventId})}"
+                      <form th:action="@{/Admin/ChangeEventStatus/{id}(id=${event.eventId})}"
                             method="post" style="display: inline;">
-                        <input type="hidden" name="newApprovalStatus" value="APPROVED">
+                        <input type="hidden" name="status" value="APPROVED">
                         <button type="submit" class="dropdown-item text-success"
                                 th:disabled="${event.approvalStatus.name() == 'APPROVED'}"
-                                th:onclick="'return confirm(\'' + #{admin.events.approve.confirm} + '\')'">
-                          <i class="bi bi-check-square me-2"></i><span th:text="#{admin.events.approve}">Approve</span>
+                                th:onclick="'return confirm(\'Bạn có chắc chắn muốn approve event này?\')'">
+                          <i class="bi bi-check-square me-2"></i><span th:text="'Approve'">Approve</span>
                         </button>
                       </form>
                     </li>
                     <li>
-                      <form th:action="@{/Admin/ToggleApprovalStatus/{id}(id=${event.eventId})}"
+                      <form th:action="@{/Admin/ChangeEventStatus/{id}(id=${event.eventId})}"
                             method="post" style="display: inline;">
-                        <input type="hidden" name="newApprovalStatus" value="REJECTED">
+                        <input type="hidden" name="status" value="REJECTED">
                         <button type="submit" class="dropdown-item text-danger"
                                 th:disabled="${event.approvalStatus.name() == 'REJECTED'}"
-                                th:onclick="'return confirm(\'' + #{admin.events.reject.confirm} + '\')'">
-                          <i class="bi bi-x-square me-2"></i><span th:text="#{admin.events.reject}">Reject</span>
+                                th:onclick="'return confirm(\'Bạn có chắc chắn muốn reject event này?\')'">
+                          <i class="bi bi-x-square me-2"></i><span th:text="'Reject'">Reject</span>
                         </button>
                       </form>
                     </li>
                     <li>
-                      <form th:action="@{/Admin/ToggleApprovalStatus/{id}(id=${event.eventId})}"
+                      <form th:action="@{/Admin/ChangeEventStatus/{id}(id=${event.eventId})}"
                             method="post" style="display: inline;">
-                        <input type="hidden" name="newApprovalStatus" value="PENDING">
+                        <input type="hidden" name="status" value="PENDING">
                         <button type="submit" class="dropdown-item text-warning"
                                 th:disabled="${event.approvalStatus.name() == 'PENDING'}"
-                                th:onclick="'return confirm(\'' + #{admin.events.set.pending.confirm} + '\')'">
-                          <i class="bi bi-clock me-2"></i><span th:text="#{admin.events.set.pending}">Set Pending</span>
+                                th:onclick="'return confirm(\'Bạn có chắc chắn muốn set pending event này?\')'">
+                          <i class="bi bi-clock me-2"></i><span th:text="'Set Pending'">Set Pending</span>
                         </button>
                       </form>
                     </li>

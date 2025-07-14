@@ -151,13 +151,46 @@ public class AdminEventServiceImpl implements IAdminEventService {
                 throw new RuntimeException("Event not found with ID: " + eventId);
             }
 
-            existingEvent.setEventTitle(eventDetails.getEventTitle());
-            existingEvent.setEventDescription(eventDetails.getEventDescription());
-            existingEvent.setEventDate(eventDetails.getEventDate());
-            existingEvent.setEventLocation(eventDetails.getEventLocation());
-            existingEvent.setRegistrationDeadline(eventDetails.getRegistrationDeadline());
-            existingEvent.setMaxParticipants(eventDetails.getMaxParticipants());
-            existingEvent.setContactEmail(eventDetails.getContactEmail());
+            // Update basic fields if provided
+            if (eventDetails.getEventTitle() != null) {
+                existingEvent.setEventTitle(eventDetails.getEventTitle());
+            }
+            if (eventDetails.getEventDescription() != null) {
+                existingEvent.setEventDescription(eventDetails.getEventDescription());
+            }
+            if (eventDetails.getEventDate() != null) {
+                existingEvent.setEventDate(eventDetails.getEventDate());
+            }
+            if (eventDetails.getEventLocation() != null) {
+                existingEvent.setEventLocation(eventDetails.getEventLocation());
+            }
+            if (eventDetails.getRegistrationDeadline() != null) {
+                existingEvent.setRegistrationDeadline(eventDetails.getRegistrationDeadline());
+            }
+            if (eventDetails.getMaxParticipants() != null) {
+                existingEvent.setMaxParticipants(eventDetails.getMaxParticipants());
+            }
+            if (eventDetails.getContactEmail() != null) {
+                existingEvent.setContactEmail(eventDetails.getContactEmail());
+            }
+            
+            // Update approval status if provided
+            if (eventDetails.getApprovalStatus() != null) {
+                existingEvent.setApprovalStatus(eventDetails.getApprovalStatus());
+            }
+            
+            // Update approval info if provided
+            if (eventDetails.getApprovedAt() != null) {
+                existingEvent.setApprovedAt(eventDetails.getApprovedAt());
+            } else if (eventDetails.getApprovalStatus() == Event.ApprovalStatus.PENDING) {
+                // Clear approval info when setting to pending
+                existingEvent.setApprovedAt(null);
+                existingEvent.setApprovedBy(null);
+            }
+            
+            if (eventDetails.getApprovedBy() != null) {
+                existingEvent.setApprovedBy(eventDetails.getApprovedBy());
+            }
 
             Event updatedEvent = eventService.save(existingEvent);
             logger.info("Successfully updated event with ID: {}", eventId);

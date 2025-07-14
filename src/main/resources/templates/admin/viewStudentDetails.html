@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title th:text="#{admin.student.details.title} + ' - Admin'">Student Details - Admin</title>
+  <title th:text="'Student Details - Admin'">Student Details - Admin</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
@@ -58,14 +58,14 @@
                         <span class="info-label">
                             <i class="bi bi-telephone me-2"></i><span th:text="#{admin.student.details.phone}">Phone</span>
                         </span>
-            <span class="info-value" th:text="${student.account.phone ?: #{admin.student.details.not.provided}}"></span>
+            <span class="info-value" th:text="${student.account.phone != null ? student.account.phone : 'Not provided'}"></span>
           </div>
 
           <div class="info-row">
                         <span class="info-label">
                             <i class="bi bi-geo-alt me-2"></i><span th:text="#{admin.student.details.address}">Address</span>
                         </span>
-            <span class="info-value" th:text="${student.address ?: #{admin.student.details.not.provided}}"></span>
+            <span class="info-value" th:text="${student.address != null ? student.address : 'Not provided'}"></span>
           </div>
 
           <div class="info-row">
@@ -73,7 +73,7 @@
                             <i class="bi bi-mortarboard me-2"></i><span th:text="#{admin.student.details.role}">Role</span>
                         </span>
             <span class="info-value">
-                            <span class="badge bg-success" th:text="#{admin.student.details.role.student}">Student</span>
+                            <span class="badge bg-success" th:text="'Student'">Student</span>
                         </span>
           </div>
 
@@ -82,10 +82,8 @@
                             <i class="bi bi-shield-check me-2"></i><span th:text="#{admin.student.details.status}">Status</span>
                         </span>
             <span class="info-value">
-                                      <th:block th:with="activeText=#{admin.student.details.active}, bannedText=#{admin.student.details.banned}">
               <span th:class="${student.account.status.name() == 'active' ? 'status-active' : 'status-banned'}"
-                    th:text="${student.account.status.name() == 'active' ? activeText : bannedText}"></span>
-          </th:block>
+                    th:text="${student.account.status.name() == 'active' ? 'Active' : 'Banned'}"></span>
                         </span>
           </div>
         </div>
@@ -103,14 +101,14 @@
                         <span class="info-label">
                             <i class="bi bi-building me-2"></i><span th:text="#{admin.student.details.university}">University</span>
                         </span>
-            <span class="info-value" th:text="${student.university ?: #{admin.student.details.not.specified}}"></span>
+            <span class="info-value" th:text="${student.university != null ? student.university : 'Not specified'}"></span>
           </div>
 
           <div class="info-row">
                         <span class="info-label">
                             <i class="bi bi-tag me-2"></i><span th:text="#{admin.student.details.job.field}">Job Field Interest</span>
                         </span>
-            <span class="info-value" th:text="${student.jobField != null ? student.jobField.jobFieldName : #{admin.student.details.not.specified}}"></span>
+            <span class="info-value" th:text="${student.jobField != null ? student.jobField.jobFieldName : 'Not specified'}"></span>
           </div>
         </div>
         <div class="col-md-6">
@@ -118,7 +116,7 @@
                         <span class="info-label">
                             <i class="bi bi-geo-alt me-2"></i><span th:text="#{admin.student.details.preferred.location}">Preferred Job Location :</span>
                         </span>
-            <span class="info-value" th:text="${student.preferredJobAddress ?: #{admin.student.details.not.specified}}"></span>
+            <span class="info-value" th:text="${student.preferredJobAddress != null ? student.preferredJobAddress : 'Not specified'}"></span>
           </div>
         </div>
       </div>

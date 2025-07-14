@@ -47,7 +47,35 @@ public class Dashboard {
     private CloudinaryService cloudinaryService;
 
     @GetMapping("")
-    public String showDashboard() {
+    public String showDashboard(Model model) {
+        // Dashboard statistics
+        try {
+            // Get user counts
+            long totalStudents = adminStudentService.countAllStudents();
+            long activeStudents = adminStudentService.countStudentsByStatus("active");
+            long bannedStudents = adminStudentService.countStudentsByStatus("inactive");
+            
+            long totalEmployers = adminEmployerService.countAllEmployers();
+            long activeEmployers = adminEmployerService.countEmployersByStatus("active");
+            long bannedEmployers = adminEmployerService.countEmployersByStatus("inactive");
+            
+            // Add to model
+            model.addAttribute("totalStudents", totalStudents);
+            model.addAttribute("activeStudents", activeStudents);
+            model.addAttribute("bannedStudents", bannedStudents);
+            
+            model.addAttribute("totalEmployers", totalEmployers);
+            model.addAttribute("activeEmployers", activeEmployers);
+            model.addAttribute("bannedEmployers", bannedEmployers);
+            
+            // Calculate percentages
+            model.addAttribute("studentActivePercentage", totalStudents > 0 ? (activeStudents * 100 / totalStudents) : 0);
+            model.addAttribute("employerActivePercentage", totalEmployers > 0 ? (activeEmployers * 100 / totalEmployers) : 0);
+            
+        } catch (Exception e) {
+            logger.error("Error loading dashboard statistics: ", e);
+        }
+        
         return "admin/dashboardPage";
     }
 
@@ -212,7 +240,7 @@ public class Dashboard {
     @GetMapping("/blogs/{id}")
     public String blogDetail(@PathVariable Long id, Model model) {
         BlogPost blog = blogService.getBlogPostById(id).orElse(null);
-        if (blog == null) return "redirect:/admin/blogs";
+        if (blog == null) return "redirect:/Admin/blogs";
 //        List<BlogImage> images = blogService.getImagesForBlog(id);
         model.addAttribute("blog", blog);
 //        model.addAttribute("images", images);

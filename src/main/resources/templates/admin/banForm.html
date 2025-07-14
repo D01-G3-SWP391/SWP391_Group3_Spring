@@ -1,184 +1,244 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ban User - Admin Panel</title>
+    <meta name="_csrf" th:content="${_csrf?.token}" th:if="${_csrf}"/>
+    <meta name="_csrf_header" th:content="${_csrf?.headerName}" th:if="${_csrf}"/>
+    <title>Ban User - Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link th:href="@{/css/adminCommon.css}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
+    <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
+    <style>
+        .ban-container {
+            background: linear-gradient(135deg, #dc3545, #a71e2a);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+        .ban-card {
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(220, 53, 69, 0.3);
+            overflow: hidden;
+        }
+        .ban-header {
+            background: #dc3545;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .ban-body {
+            padding: 30px;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        .required {
+            color: #dc3545;
+        }
+        .quick-buttons .btn {
+            margin: 2px;
+            font-size: 0.875rem;
+        }
+        .alert-danger {
+            border-left: 4px solid #dc3545;
+        }
+        .btn-ban {
+            background: #dc3545;
+            border-color: #dc3545;
+            padding: 12px 30px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-ban:hover {
+            background: #a71e2a;
+            border-color: #a71e2a;
+        }
+        .user-info-card {
+            background: #f8f9fa;
+            border-left: 4px solid #dc3545;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
+<div th:replace="~{navbar/navbarAdmin :: navbarAdmin}"></div>
 
-<!-- Include Navbar -->
-<div th:replace="~{navbar/navbarAdmin}"></div>
-
-<div class="container-fluid">
-    <div class="row">
-        <!-- Main Content -->
-        <div class="col-md-12">
-            <!-- Page Header -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h2><i class="fas fa-ban text-danger me-2"></i>Ban User Account</h2>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item">
-                                <a th:href="@{/Admin}" class="text-decoration-none">
-                                    <i class="bi bi-house-door"></i> Admin Dashboard
-                                </a>
-                            </li>
-                            <li class="breadcrumb-item active">Ban User</li>
-                        </ol>
-                    </nav>
-                </div>
-                <a th:href="@{/Admin}" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left"></i> Back to Dashboard
-                </a>
-            </div>
-
-            <!-- Flash Messages -->
-            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="bi bi-exclamation-triangle me-2"></i>
-                <span th:text="${error}"></span>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-
-            <!-- Ban Form -->
-            <div class="row justify-content-center">
-                <div class="col-md-8 col-lg-6">
-                    <div class="card border-danger">
-                        <div class="card-header bg-danger text-white">
-                            <h5 class="card-title mb-0">
-                                <i class="fas fa-ban me-2"></i>
-                                Ban <span th:text="${userType}"></span> Account
-                            </h5>
+<div class="ban-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="ban-card">
+                    <div class="ban-header">
+                        <h2 class="mb-0">
+                            <i class="fas fa-ban me-2"></i>
+                            Ban User Account
+                        </h2>
+                        <p class="mb-0 mt-2 opacity-75">Take administrative action against user violation</p>
+                    </div>
+                    
+                    <div class="ban-body">
+                        <!-- Error Messages -->
+                        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <span th:text="${error}"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
-                        
-                        <div class="card-body">
-                            <!-- User Info -->
-                            <div class="alert alert-warning">
-                                <h6><i class="fas fa-user me-2"></i>Thông tin người dùng</h6>
-                                <p class="mb-1"><strong>Tên:</strong> <span th:text="${userName}"></span></p>
-                                <p class="mb-1"><strong>Email:</strong> <span th:text="${userEmail}"></span></p>
-                                <p class="mb-0"><strong>Loại:</strong> <span th:text="${userType}"></span></p>
+
+                        <!-- User Information Card -->
+                        <div class="user-info-card">
+                            <h5 class="mb-3">
+                                <i class="fas fa-user me-2 text-danger"></i>User Information
+                            </h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Name:</strong> <span th:text="${userName}" class="text-primary"></span></p>
+                                    <p><strong>Email:</strong> <span th:text="${userEmail}" class="text-info"></span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>User Type:</strong> 
+                                        <span th:if="${userType == 'student'}" class="badge bg-primary">
+                                            <i class="fas fa-graduation-cap me-1"></i>Student
+                                        </span>
+                                        <span th:if="${userType == 'employer'}" class="badge bg-warning text-dark">
+                                            <i class="fas fa-building me-1"></i>Employer
+                                        </span>
+                                    </p>
+                                    <p><strong>User ID:</strong> <span th:text="${userId}" class="text-muted"></span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ban Form -->
+                        <form th:action="@{/Admin/processBan}" method="post" id="banForm">
+                            <!-- Hidden Fields -->
+                            <input type="hidden" name="userId" th:value="${userId}">
+                            <input type="hidden" name="userType" th:value="${userType}">
+                            <input type="hidden" name="currentPage" th:value="${currentPage}">
+                            <input type="hidden" name="keyword" th:value="${keyword}">
+                            <input type="hidden" name="status" th:value="${status}">
+                            
+                            <!-- Ban Reason -->
+                            <div class="mb-4">
+                                <label class="form-label">
+                                    <i class="fas fa-exclamation-triangle text-danger me-2"></i>
+                                    Lý do ban <span class="required">*</span>
+                                </label>
+                                <select class="form-select form-select-lg" name="banReason" required>
+                                    <option value="">-- Chọn lý do ban --</option>
+                                    <option value="SPAM">📢 Spam nội dung</option>
+                                    <option value="INAPPROPRIATE_CONTENT">🚫 Nội dung không phù hợp</option>
+                                    <option value="FAKE_INFORMATION">🥸 Thông tin giả mạo</option>
+                                    <option value="HARASSMENT">😠 Quấy rối người khác</option>
+                                    <option value="FRAUD">💰 Lừa đảo</option>
+                                    <option value="MULTIPLE_ACCOUNTS">👥 Tạo nhiều tài khoản</option>
+                                    <option value="VIOLATION_TERMS">📋 Vi phạm điều khoản sử dụng</option>
+                                    <option value="SYSTEM_ABUSE">🔧 Lạm dụng hệ thống</option>
+                                    <option value="OTHER">❓ Lý do khác</option>
+                                </select>
                             </div>
 
-                            <!-- Ban Form -->
-                            <form th:action="@{/Admin/processBan}" method="post">
-                                <!-- Hidden Fields -->
-                                <input type="hidden" name="userId" th:value="${userId}">
-                                <input type="hidden" name="userType" th:value="${userType}">
-                                
-                                <!-- Ban Reason -->
-                                <div class="mb-3">
-                                    <label class="form-label">
-                                        <i class="fas fa-exclamation-circle text-danger me-1"></i>
-                                        Lý do ban <span class="text-danger">*</span>
-                                    </label>
-                                    <select class="form-select" name="banReason" required>
-                                        <option value="">-- Chọn lý do ban --</option>
-                                        <option value="SPAM">Spam nội dung</option>
-                                        <option value="INAPPROPRIATE_CONTENT">Nội dung không phù hợp</option>
-                                        <option value="FAKE_INFORMATION">Thông tin giả mạo</option>
-                                        <option value="HARASSMENT">Quấy rối người khác</option>
-                                        <option value="FRAUD">Lừa đảo</option>
-                                        <option value="MULTIPLE_ACCOUNTS">Tạo nhiều tài khoản</option>
-                                        <option value="VIOLATION_TERMS">Vi phạm điều khoản sử dụng</option>
-                                        <option value="SYSTEM_ABUSE">Lạm dụng hệ thống</option>
-                                        <option value="OTHER">Lý do khác</option>
-                                    </select>
-                                </div>
-                                
-                                <!-- Ban Description -->
-                                <div class="mb-3">
-                                    <label class="form-label">
-                                        <i class="fas fa-edit me-1"></i>
-                                        Mô tả chi tiết (tùy chọn)
-                                    </label>
-                                    <textarea class="form-control" name="banDescription" rows="3" 
-                                              maxlength="1000" placeholder="Mô tả chi tiết lý do ban..."></textarea>
-                                    <div class="form-text">Tối đa 1000 ký tự</div>
-                                </div>
-                                
-                                <!-- Ban Duration Type -->
-                                <div class="mb-3">
-                                    <label class="form-label">
-                                        <i class="fas fa-clock text-warning me-1"></i>
-                                        Loại thời gian ban <span class="text-danger">*</span>
-                                    </label>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="banDurationType" 
-                                                       value="TEMPORARY" id="temporary" required 
-                                                       onchange="toggleDurationInput()">
-                                                <label class="form-check-label" for="temporary">
-                                                    <i class="fas fa-calendar-alt me-1"></i>Tạm thời
-                                                </label>
-                                            </div>
+                            <!-- Ban Description -->
+                            <div class="mb-4">
+                                <label class="form-label">
+                                    <i class="fas fa-comment me-2"></i>Mô tả chi tiết (tùy chọn)
+                                </label>
+                                <textarea class="form-control" name="banDescription" 
+                                        rows="4" placeholder="Mô tả chi tiết lý do ban..." maxlength="1000"></textarea>
+                                <div class="form-text">Tối đa 1000 ký tự. Thông tin này sẽ được gửi trong email thông báo.</div>
+                            </div>
+
+                            <!-- Ban Duration Type -->
+                            <div class="mb-4">
+                                <label class="form-label">
+                                    <i class="fas fa-clock text-warning me-2"></i>
+                                    Loại thời gian ban <span class="required">*</span>
+                                </label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check form-check-lg">
+                                            <input class="form-check-input" type="radio" name="banDurationType" 
+                                                   value="TEMPORARY" id="temporary" checked>
+                                            <label class="form-check-label fw-bold" for="temporary">
+                                                <i class="fas fa-hourglass-half me-1 text-info"></i>Tạm thời
+                                            </label>
+                                            <div class="form-text">Ban có thời hạn, tự động unban khi hết hạn</div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="banDurationType" 
-                                                       value="PERMANENT" id="permanent" required
-                                                       onchange="toggleDurationInput()">
-                                                <label class="form-check-label" for="permanent">
-                                                    <i class="fas fa-ban me-1"></i>Vĩnh viễn
-                                                </label>
-                                            </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check form-check-lg">
+                                            <input class="form-check-input" type="radio" name="banDurationType" 
+                                                   value="PERMANENT" id="permanent">
+                                            <label class="form-check-label fw-bold" for="permanent">
+                                                <i class="fas fa-ban me-1 text-danger"></i>Vĩnh viễn
+                                            </label>
+                                            <div class="form-text">Ban vĩnh viễn, chỉ admin có thể unban</div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+
+                            <!-- Ban Duration Days -->
+                            <div class="mb-4">
+                                <label class="form-label">
+                                    <i class="fas fa-calendar-alt me-2"></i>Số ngày ban (chỉ áp dụng cho ban tạm thời)
+                                </label>
                                 
-                                <!-- Ban Duration Days -->
-                                <div class="mb-3" id="durationGroup" style="display: none;">
-                                    <label class="form-label">
-                                        <i class="fas fa-calendar-day me-1"></i>
-                                        Số ngày ban (1-365)
-                                    </label>
-                                    <div class="row">
-                                        <div class="col-md-8">
-                                            <input type="number" class="form-control" name="banDurationDays" 
-                                                   min="1" max="365" placeholder="Nhập số ngày (1-365)" id="durationInput">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <select class="form-select" onchange="setQuickDuration(this.value)">
-                                                <option value="">Chọn nhanh</option>
-                                                <option value="1">1 ngày</option>
-                                                <option value="3">3 ngày</option>
-                                                <option value="7">1 tuần</option>
-                                                <option value="14">2 tuần</option>
-                                                <option value="30">1 tháng</option>
-                                                <option value="90">3 tháng</option>
-                                                <option value="180">6 tháng</option>
-                                            </select>
-                                        </div>
-                                    </div>
+                                <input type="number" class="form-control form-control-lg" name="banDurationDays"
+                                       min="1" max="365" th:value="${userType == 'student'} ? 14 : 30" 
+                                       placeholder="Nhập số ngày ban (để trống nếu ban vĩnh viễn)">
+                                <div class="form-text" th:if="${userType == 'student'}">
+                                    • Để trống nếu chọn ban vĩnh viễn<br>
+                                    • Từ 1 đến 365 ngày cho ban tạm thời<br>
+                                    • Gợi ý: 3 ngày, 7 ngày, 14 ngày, 30 ngày, 60 ngày, 90 ngày
                                 </div>
-                                
-                                <!-- Warning -->
-                                <div class="alert alert-danger">
-                                    <h6><i class="fas fa-exclamation-triangle me-2"></i>Cảnh báo</h6>
-                                    <ul class="mb-0">
-                                        <li>Hành động này sẽ khóa tài khoản người dùng ngay lập tức</li>
-                                        <li>User sẽ nhận email thông báo chi tiết về việc bị ban</li>
-                                        <li>Thao tác này không thể hoàn tác dễ dàng</li>
-                                    </ul>
+                                <div class="form-text" th:if="${userType == 'employer'}">
+                                    • Để trống nếu chọn ban vĩnh viễn<br>
+                                    • Từ 1 đến 365 ngày cho ban tạm thời<br>
+                                    • Gợi ý: 7 ngày, 14 ngày, 30 ngày, 60 ngày, 90 ngày, 180 ngày
                                 </div>
-                                
-                                <!-- Form Actions -->
-                                <div class="d-flex justify-content-between">
-                                    <a th:href="@{/Admin}" class="btn btn-outline-secondary">
-                                        <i class="fas fa-times me-1"></i>Hủy
+                            </div>
+
+                            <!-- Warning Alert -->
+                            <div class="alert alert-danger mb-4">
+                                <h6 class="alert-heading">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>Cảnh báo quan trọng
+                                </h6>
+                                <ul class="mb-0">
+                                    <li th:if="${userType == 'student'}">Hành động này sẽ khóa tài khoản student ngay lập tức</li>
+                                    <li th:if="${userType == 'employer'}">Hành động này sẽ khóa tài khoản employer ngay lập tức</li>
+                                    <li th:if="${userType == 'employer'}">Tất cả tin tuyển dụng của employer sẽ bị ẩn</li>
+                                    <li>User sẽ nhận email thông báo chi tiết về việc bị ban</li>
+                                    <li>Thao tác này không thể hoàn tác dễ dàng</li>
+                                    <li>Hãy đảm bảo lý do ban là chính xác và có căn cứ</li>
+                                </ul>
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <a th:if="${userType == 'student'}" th:href="@{/Admin/ListStudent(page=${currentPage}, keyword=${keyword}, status=${status})}" 
+                                       class="btn btn-outline-secondary btn-lg w-100">
+                                        <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách Student
                                     </a>
-                                    <button type="submit" class="btn btn-danger">
-                                        <i class="fas fa-ban me-1"></i>Xác nhận Ban User
+                                    <a th:if="${userType == 'employer'}" th:href="@{/Admin/ListEmployer(page=${currentPage}, keyword=${keyword}, status=${status})}" 
+                                       class="btn btn-outline-secondary btn-lg w-100">
+                                        <i class="fas fa-arrow-left me-2"></i>Quay lại danh sách Employer
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-ban btn-lg w-100 text-white">
+                                        <i class="fas fa-ban me-2"></i>Xác nhận Ban User
                                     </button>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -187,31 +247,6 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script th:src="@{/js/language-dropdown.js}"></script>
-
-<!-- Minimal JavaScript - Only for UI helpers -->
-<script>
-function toggleDurationInput() {
-    const temporary = document.getElementById('temporary');
-    const durationGroup = document.getElementById('durationGroup');
-    const durationInput = document.getElementById('durationInput');
-    
-    if (temporary.checked) {
-        durationGroup.style.display = 'block';
-        durationInput.required = true;
-    } else {
-        durationGroup.style.display = 'none';
-        durationInput.required = false;
-        durationInput.value = '';
-    }
-}
-
-function setQuickDuration(value) {
-    if (value) {
-        document.getElementById('durationInput').value = value;
-    }
-}
-</script>
 
 </body>
 </html> 
