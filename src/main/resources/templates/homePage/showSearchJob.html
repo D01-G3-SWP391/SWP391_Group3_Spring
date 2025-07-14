@@ -68,7 +68,7 @@
                                         type="text"
                                         name="keyword"
                                         th:value="${param.keyword}"
-                                        placeholder="eg. Graphic, Web Developer..." 
+                                        th:placeholder="#{home.search.keyword.placeholder}" 
                                         class="search-input"
                                     />
                                 </div>
@@ -333,6 +333,9 @@
 
 <!-- Add notification bell -->
     <div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
+
+    <!-- Chat Notification Fragment -->
+    <div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
 
     <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
 </body>

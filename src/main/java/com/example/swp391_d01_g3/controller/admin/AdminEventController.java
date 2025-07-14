@@ -179,6 +179,15 @@ public class AdminEventController {
                 adminEventService.confirmEvent(eventId);
             } else if (newStatus == Event.ApprovalStatus.REJECTED) {
                 adminEventService.rejectEvent(eventId, "Status changed by admin");
+            } else if (newStatus == Event.ApprovalStatus.PENDING) {
+                // Set event back to pending status
+                Event event = adminEventService.getEventById(eventId);
+                if (event != null) {
+                    event.setApprovalStatus(Event.ApprovalStatus.PENDING);
+                    event.setApprovedAt(null);
+                    event.setApprovedBy(null);
+                    adminEventService.updateEvent(eventId, event);
+                }
             }
 
             String message = String.format("Event status changed to %s successfully", newStatus);

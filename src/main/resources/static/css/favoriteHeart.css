@@ -1,0 +1,318 @@
+/* ==========================================
+   💖 FAVORITE HEART BUTTON STYLING
+   ========================================== */
+
+.favorite-heart-btn {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.favorite-heart-btn:hover {
+    background-color: rgba(255, 105, 135, 0.1);
+    transform: scale(1.1);
+}
+
+.favorite-heart-btn:active {
+    transform: scale(0.95);
+}
+
+/* Heart icon styling */
+.favorite-heart-btn i {
+    font-size: 18px;
+    transition: all 0.3s ease;
+    color: #6c757d;
+}
+
+/* Favorited state */
+.favorite-heart-btn.favorited i {
+    color: #ff6987;
+    animation: heartBeat 0.6s ease;
+}
+
+.favorite-heart-btn.favorited:hover i {
+    color: #ff4c73;
+}
+
+/* Heart beat animation */
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    25% { transform: scale(1.3); }
+    50% { transform: scale(1.1); }
+    75% { transform: scale(1.25); }
+    100% { transform: scale(1); }
+}
+
+/* Loading state */
+.favorite-heart-btn.loading {
+    pointer-events: none;
+}
+
+.favorite-heart-btn.loading i {
+    animation: spin 1s linear infinite;
+}
+
+/* Disabled and processing state */
+.favorite-heart-btn:disabled,
+.favorite-heart-btn.processing {
+    pointer-events: none;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.favorite-heart-btn:disabled:hover,
+.favorite-heart-btn.processing:hover {
+    transform: none;
+    background-color: transparent;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ==========================================
+   DIFFERENT SIZES
+   ========================================== */
+
+/* Small heart button */
+.favorite-heart-btn.btn-sm {
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+}
+
+.favorite-heart-btn.btn-sm i {
+    font-size: 14px;
+}
+
+/* Large heart button */
+.favorite-heart-btn.btn-lg {
+    width: 48px;
+    height: 48px;
+    padding: 10px;
+}
+
+.favorite-heart-btn.btn-lg i {
+    font-size: 22px;
+}
+
+/* ==========================================
+   INTEGRATION WITH EXISTING BUTTONS
+   ========================================== */
+
+/* For job cards with existing save-btn class */
+.save-btn.favorite-heart-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.save-btn.favorite-heart-btn:hover {
+    background: rgba(255, 105, 135, 0.1);
+    border-color: #ff6987;
+}
+
+.save-btn.favorite-heart-btn.favorited {
+    background: rgba(255, 105, 135, 0.1);
+    border-color: #ff6987;
+}
+
+/* For job detail page large button */
+.btn-save-large.favorite-heart-btn {
+    background: linear-gradient(135deg, #ff6987, #ff8fa3);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: auto;
+    height: auto;
+}
+
+.btn-save-large.favorite-heart-btn:hover {
+    background: linear-gradient(135deg, #ff4c73, #ff7690);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 105, 135, 0.3);
+}
+
+.btn-save-large.favorite-heart-btn.favorited {
+    background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+.btn-save-large.favorite-heart-btn.favorited:hover {
+    background: linear-gradient(135deg, #218838, #1eb8a6);
+}
+
+.btn-save-large.favorite-heart-btn i {
+    font-size: 16px;
+    color: white;
+}
+
+/* ==========================================
+   NOTIFICATION POPUP
+   ========================================== */
+
+.favorite-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    padding: 16px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    border-left: 4px solid #ff6987;
+    max-width: 300px;
+}
+
+.favorite-notification.show {
+    transform: translateX(0);
+}
+
+.favorite-notification.success {
+    border-left-color: #28a745;
+}
+
+.favorite-notification.error {
+    border-left-color: #dc3545;
+}
+
+.favorite-notification i {
+    font-size: 18px;
+    color: #ff6987;
+    flex-shrink: 0;
+}
+
+.favorite-notification.success i {
+    color: #28a745;
+}
+
+.favorite-notification.error i {
+    color: #dc3545;
+}
+
+.favorite-notification .message {
+    font-size: 14px;
+    color: #333;
+    line-height: 1.4;
+}
+
+/* ==========================================
+   RESPONSIVE DESIGN
+   ========================================== */
+
+@media (max-width: 768px) {
+    .favorite-heart-btn {
+        width: 36px;
+        height: 36px;
+        padding: 6px;
+    }
+    
+    .favorite-heart-btn i {
+        font-size: 16px;
+    }
+    
+    .btn-save-large.favorite-heart-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+    
+    .favorite-notification {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+        margin: 0 10px;
+    }
+}
+
+/* ==========================================
+   DROPDOWN NAVBAR STYLING
+   ========================================== */
+
+.favorite-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s ease;
+    text-decoration: none;
+    color: #333;
+}
+
+.favorite-dropdown-item:hover {
+    background-color: #f8f9fa;
+    text-decoration: none;
+    color: #333;
+}
+
+.favorite-dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.favorite-dropdown-item .job-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.favorite-dropdown-item .job-title {
+    font-weight: 500;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.favorite-dropdown-item .job-company {
+    font-size: 12px;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.favorite-dropdown-empty {
+    padding: 20px;
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+}
+
+.favorite-dropdown-footer {
+    padding: 12px 16px;
+    border-top: 1px solid #f0f0f0;
+    background-color: #f8f9fa;
+}
+
+.favorite-dropdown-footer a {
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.favorite-dropdown-footer a:hover {
+    text-decoration: underline;
+} 

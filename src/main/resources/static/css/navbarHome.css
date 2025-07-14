@@ -679,3 +679,95 @@ body {
         display: none;
     }
 }
+
+/* Favorite Jobs Badge Styling */
+.nav-link.user-greeting {
+    position: relative;
+}
+
+.badge-count {
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    position: absolute;
+    top: -8px;
+    right: -5px;
+    min-width: 18px;
+    text-align: center;
+    line-height: 1.2;
+    animation: pulse 2s infinite;
+    z-index: 10;
+}
+
+/* Favorite Jobs Dropdown Styling */
+#fav-jobs-dropdown {
+    min-width: 300px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.fav-job-item {
+    padding: 10px 15px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+
+.fav-job-item:hover {
+    background-color: #f8f9fa;
+    text-decoration: none;
+    color: inherit;
+}
+
+.fav-job-item:last-child {
+    border-bottom: none;
+}
+
+.fav-job-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #2c3e50;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.fav-job-company {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-bottom: 4px;
+}
+
+.fav-job-meta {
+    font-size: 0.75rem;
+    color: #868e96;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fav-job-date {
+    font-style: italic;
+}
+
+.fav-job-location {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
