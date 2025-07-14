@@ -12,6 +12,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/query")
+@CrossOrigin(origins = "*")
 public class QueryController {
     @Autowired
     private OpenAIService openAIService;
