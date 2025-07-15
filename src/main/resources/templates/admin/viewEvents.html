@@ -98,7 +98,8 @@
             </span>
             <span th:if="${event.maxParticipants == null}" th:text="' (' + #{admin.events.unlimited} + ')'"> (Unlimited)</span>
           </td>
-          <td th:text="${event.employer?.companyName} ?: #{admin.events.not.applicable}"></td>
+                          <td th:if="${event.employer != null and event.employer.companyName != null and !#strings.isEmpty(event.employer.companyName)}" th:text="${event.employer.companyName}"></td>
+                <td th:unless="${event.employer != null and event.employer.companyName != null and !#strings.isEmpty(event.employer.companyName)}" th:text="#{admin.events.not.applicable}"></td>
           <td>
             <!-- THÊM: Clickable Status Badges -->
             <a th:href="@{/Admin/Events(status=${event.approvalStatus.name()}, keyword=${keyword})}"
@@ -127,7 +128,7 @@
                     <!-- Approval Status Options -->
                     <li><h6 class="dropdown-header" th:text="#{admin.events.approval.status}">Approval Status</h6></li>
                     <li>
-                      <form th:action="@{/Admin/ToggleApprovalStatus/{id}(id=${event.eventId})}"
+                      <form th:action="@{/Admin/ChangeEventStatus/{id}(id=${event.eventId})}"
                             method="post" style="display: inline;">
                         <input type="hidden" name="newApprovalStatus" value="APPROVED">
                         <button type="submit" class="dropdown-item text-success"
@@ -138,7 +139,7 @@
                       </form>
                     </li>
                     <li>
-                      <form th:action="@{/Admin/ToggleApprovalStatus/{id}(id=${event.eventId})}"
+                      <form th:action="@{/Admin/ChangeEventStatus/{id}(id=${event.eventId})}"
                             method="post" style="display: inline;">
                         <input type="hidden" name="newApprovalStatus" value="REJECTED">
                         <button type="submit" class="dropdown-item text-danger"
@@ -149,7 +150,7 @@
                       </form>
                     </li>
                     <li>
-                      <form th:action="@{/Admin/ToggleApprovalStatus/{id}(id=${event.eventId})}"
+                      <form th:action="@{/Admin/ChangeEventStatus/{id}(id=${event.eventId})}"
                             method="post" style="display: inline;">
                         <input type="hidden" name="newApprovalStatus" value="PENDING">
                         <button type="submit" class="dropdown-item text-warning"

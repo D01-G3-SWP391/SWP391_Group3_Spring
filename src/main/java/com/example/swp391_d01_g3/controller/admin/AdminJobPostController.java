@@ -217,9 +217,15 @@ public class AdminJobPostController {
 
     @PostMapping("/ChangeJobPostStatus/{id}")
     public String changeJobPostStatus(@PathVariable("id") Integer jobPostId,
-                                      @RequestParam("status") String status,
+                                      @RequestParam(value = "status", required = false) String status,
                                       RedirectAttributes redirectAttributes) {
         try {
+            // Validate status parameter
+            if (status == null || status.trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Trạng thái không được để trống!");
+                return "redirect:/Admin/AllJobPosts";
+            }
+
             JobPost.ApprovalStatus newStatus = JobPost.ApprovalStatus.valueOf(status.toUpperCase());
             adminJobPostService.changeJobPostStatus(jobPostId, newStatus);
 

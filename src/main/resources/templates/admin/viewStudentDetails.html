@@ -59,14 +59,16 @@
                         <span class="info-label">
                             <i class="bi bi-telephone me-2"></i><span th:text="#{admin.student.details.phone}">Phone</span>
                         </span>
-            <span class="info-value" th:text="${student.account.phone} ?: #{admin.student.details.not.provided}"></span>
+            <span class="info-value" th:if="${student.account.phone != null and !#strings.isEmpty(student.account.phone)}" th:text="${student.account.phone}"></span>
+            <span class="info-value" th:unless="${student.account.phone != null and !#strings.isEmpty(student.account.phone)}" th:text="#{admin.student.details.not.provided}"></span>
           </div>
 
           <div class="info-row">
                         <span class="info-label">
                             <i class="bi bi-geo-alt me-2"></i><span th:text="#{admin.student.details.address}">Address</span>
                         </span>
-            <span class="info-value" th:text="${student.address} ?: #{admin.student.details.not.provided}"></span>
+            <span class="info-value" th:if="${student.address != null and !#strings.isEmpty(student.address)}" th:text="${student.address}"></span>
+            <span class="info-value" th:unless="${student.address != null and !#strings.isEmpty(student.address)}" th:text="#{admin.student.details.not.provided}"></span>
           </div>
 
           <div class="info-row">
@@ -104,14 +106,16 @@
                         <span class="info-label">
                             <i class="bi bi-building me-2"></i><span th:text="#{admin.student.details.university}">University</span>
                         </span>
-            <span class="info-value" th:text="${student.university} ?: #{admin.student.details.not.specified}"></span>
+            <span class="info-value" th:if="${student.university != null and !#strings.isEmpty(student.university)}" th:text="${student.university}"></span>
+            <span class="info-value" th:unless="${student.university != null and !#strings.isEmpty(student.university)}" th:text="#{admin.student.details.not.specified}"></span>
           </div>
 
           <div class="info-row">
                         <span class="info-label">
                             <i class="bi bi-tag me-2"></i><span th:text="#{admin.student.details.job.field}">Job Field Interest</span>
                         </span>
-            <span class="info-value" th:text="${student.jobField?.jobFieldName} ?: #{admin.student.details.not.specified}"></span>
+            <span class="info-value" th:if="${student.jobField != null and student.jobField.jobFieldName != null and !#strings.isEmpty(student.jobField.jobFieldName)}" th:text="${student.jobField.jobFieldName}"></span>
+            <span class="info-value" th:unless="${student.jobField != null and student.jobField.jobFieldName != null and !#strings.isEmpty(student.jobField.jobFieldName)}" th:text="#{admin.student.details.not.specified}"></span>
           </div>
         </div>
         <div class="col-md-6">
@@ -119,7 +123,8 @@
                         <span class="info-label">
                             <i class="bi bi-geo-alt me-2"></i><span th:text="#{admin.student.details.preferred.location}">Preferred Job Location :</span>
                         </span>
-            <span class="info-value" th:text="${student.preferredJobAddress} ?: #{admin.student.details.not.specified}"></span>
+            <span class="info-value" th:if="${student.preferredJobAddress != null and !#strings.isEmpty(student.preferredJobAddress)}" th:text="${student.preferredJobAddress}"></span>
+            <span class="info-value" th:unless="${student.preferredJobAddress != null and !#strings.isEmpty(student.preferredJobAddress)}" th:text="#{admin.student.details.not.specified}"></span>
           </div>
         </div>
       </div>

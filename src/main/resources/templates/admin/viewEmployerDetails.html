@@ -59,7 +59,8 @@
             <span class="info-label">
               <i class="bi bi-telephone me-2"></i><span th:text="#{admin.employer.details.phone}">Phone</span>
             </span>
-            <span class="info-value" th:text="${employer.account.phone != null ? employer.account.phone : #{admin.employer.details.not.provided}}"></span>
+            <span class="info-value" th:if="${employer.account.phone != null and !#strings.isEmpty(employer.account.phone)}" th:text="${employer.account.phone}"></span>
+            <span class="info-value" th:unless="${employer.account.phone != null and !#strings.isEmpty(employer.account.phone)}" th:text="#{admin.employer.details.not.provided}"></span>
           </div>
 
           <div class="info-row">
@@ -93,8 +94,10 @@
           <img class="avatar-large"
                                        th:src="${employer.account.avatarUrl != null ? employer.account.avatarUrl : '/images/default-company.png'}"
                th:alt="#{admin.employer.details.company.logo.alt}" />
-          <h4 class="mt-3 mb-2" th:text="${employer.companyName != null ? employer.companyName : #{admin.employer.details.not.set}}"></h4>
-          <span class="badge bg-info" th:text="${employer.jobField != null ? employer.jobField.jobFieldName : #{admin.employer.details.not.set}}"></span>
+          <h4 class="mt-3 mb-2" th:if="${employer.companyName != null and !#strings.isEmpty(employer.companyName)}" th:text="${employer.companyName}"></h4>
+        <h4 class="mt-3 mb-2" th:unless="${employer.companyName != null and !#strings.isEmpty(employer.companyName)}" th:text="#{admin.employer.details.not.set}"></h4>
+          <span class="badge bg-info" th:if="${employer.jobField != null and employer.jobField.jobFieldName != null and !#strings.isEmpty(employer.jobField.jobFieldName)}" th:text="${employer.jobField.jobFieldName}"></span>
+          <span class="badge bg-info" th:unless="${employer.jobField != null and employer.jobField.jobFieldName != null and !#strings.isEmpty(employer.jobField.jobFieldName)}" th:text="#{admin.employer.details.not.set}"></span>
         </div>
         <div class="col-md-8">
           <h5 class="mb-3">
@@ -105,14 +108,16 @@
             <span class="info-label">
               <i class="bi bi-building me-2"></i><span th:text="#{admin.employer.details.company.name}">Company Name</span>
             </span>
-            <span class="info-value" th:text="${employer.companyName != null ? employer.companyName : #{admin.employer.details.not.provided}}"></span>
+            <span class="info-value" th:if="${employer.companyName != null and !#strings.isEmpty(employer.companyName)}" th:text="${employer.companyName}"></span>
+            <span class="info-value" th:unless="${employer.companyName != null and !#strings.isEmpty(employer.companyName)}" th:text="#{admin.employer.details.not.provided}"></span>
           </div>
 
           <div class="info-row">
             <span class="info-label">
               <i class="bi bi-geo-alt me-2"></i><span th:text="#{admin.employer.details.company.address}">Company Address</span>
             </span>
-            <span class="info-value" th:text="${employer.companyAddress != null ? employer.companyAddress : #{admin.employer.details.not.provided}}"></span>
+            <span class="info-value" th:if="${employer.companyAddress != null and !#strings.isEmpty(employer.companyAddress)}" th:text="${employer.companyAddress}"></span>
+            <span class="info-value" th:unless="${employer.companyAddress != null and !#strings.isEmpty(employer.companyAddress)}" th:text="#{admin.employer.details.not.provided}"></span>
           </div>
 
           <div class="info-row">
@@ -120,7 +125,8 @@
               <i class="bi bi-tag me-2"></i><span th:text="#{admin.employer.details.job.field}">Job Field</span>
             </span>
             <!-- SỬA: Đổi từ .name thành .jobFieldName -->
-            <span class="info-value" th:text="${employer.jobField != null ? employer.jobField.jobFieldName : #{admin.employer.details.not.specified}}"></span>
+            <span class="info-value" th:if="${employer.jobField != null and employer.jobField.jobFieldName != null and !#strings.isEmpty(employer.jobField.jobFieldName)}" th:text="${employer.jobField.jobFieldName}"></span>
+            <span class="info-value" th:unless="${employer.jobField != null and employer.jobField.jobFieldName != null and !#strings.isEmpty(employer.jobField.jobFieldName)}" th:text="#{admin.employer.details.not.specified}"></span>
           </div>
         </div>
       </div>

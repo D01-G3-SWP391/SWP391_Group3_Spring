@@ -131,7 +131,7 @@
                     </a>
 
                     <!-- Favorite Heart Form - Chỉ cho Student -->
-<!--                    <div sec:authorize="isAuthenticated() and hasRole('student')">-->
+                    <!--                    <div sec:authorize="isAuthenticated() and hasRole('student')">-->
                     <div>
                         <form method="post" th:action="@{/favorites/toggle-form}" style="display: inline;">
                             <input type="hidden" name="jobPostId" th:value="${job.jobPostId}">
@@ -157,12 +157,12 @@
                     <i class="bi bi-chevron-left"></i>
                 </a>
             </li>
-            
+
             <!-- Current Page Only -->
             <li class="page-item active">
                 <a class="page-link" href="#" th:text="${topJobsPage.number + 1}">1</a>
             </li>
-            
+
             <!-- Next Button -->
             <li class="page-item" th:classappend="${topJobsPage.last} ? 'disabled'">
                 <a class="page-link" th:href="@{/top-jobs(page=${topJobsPage.number + 1})}">

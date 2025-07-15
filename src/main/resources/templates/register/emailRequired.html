@@ -24,7 +24,8 @@
         <h2 style="color: #333; margin-bottom: 20px;" th:text="#{emailRequired.heading}">⚠️ Cần xác thực email</h2>
         
         <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 20px; margin-bottom: 30px;">
-            <p style="margin: 0; color: #856404; font-size: 16px;" th:text="${message} ?: #{emailRequired.warning}">
+            <p style="margin: 0; color: #856404; font-size: 16px;" th:if="${message != null and !#strings.isEmpty(message)}" th:text="${message}"></p>
+            <p style="margin: 0; color: #856404; font-size: 16px;" th:unless="${message != null and !#strings.isEmpty(message)}" th:text="#{emailRequired.warning}">
                 Tài khoản của bạn chưa được kích hoạt. Vui lòng xác thực email để tiếp tục.
             </p>
         </div>

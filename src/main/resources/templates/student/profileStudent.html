@@ -31,11 +31,13 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label" th:text="#{profile.address} + ': '">Address: </label>
-                    <span style="margin-left: 22px !important;" th:text="${studentDetails != null and studentDetails.address != null and studentDetails.address != ''} ? ${studentDetails.address} : #{profile.notUpdated}" class="form-value"></span>
+                    <span style="margin-left: 22px !important;" th:if="${studentDetails != null and studentDetails.address != null and studentDetails.address != ''}" th:text="${studentDetails.address}" class="form-value"></span>
+                    <span style="margin-left: 22px !important;" th:unless="${studentDetails != null and studentDetails.address != null and studentDetails.address != ''}" th:text="#{profile.notUpdated}" class="form-value"></span>
                 </div>
                 <div class="form-group">
                     <label class="form-label" th:text="#{profile.university} + ': '">University: </label>
-                    <span th:text="${studentDetails != null and studentDetails.university != null and studentDetails.university != ''} ? ${studentDetails.university} : #{profile.notUpdated}" class="form-value"></span>
+                    <span th:if="${studentDetails != null and studentDetails.university != null and studentDetails.university != ''}" th:text="${studentDetails.university}" class="form-value"></span>
+                    <span th:unless="${studentDetails != null and studentDetails.university != null and studentDetails.university != ''}" th:text="#{profile.notUpdated}" class="form-value"></span>
                 </div>
                 <div class="form-group">
                     <label class="form-label" th:text="#{profile.desiredWorkAddress} + ': '">Desired work address: </label>

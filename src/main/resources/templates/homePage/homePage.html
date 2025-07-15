@@ -134,43 +134,43 @@
                     </button>
                 </div>
 
-            <!-- Search Forms -->
-            <div class="search-forms">
-              <!-- Find a Job Form -->
-              <form th:action="@{/HomePage/search}" method="post" class="search-form active" id="jobForm">
-                <div class="search-fields">
-                  <div class="search-field">
-                    <input
-                      type="text"
-                      name="keyword"
-                      th:placeholder="#{home.search.keyword.placeholder}"
-                      class="search-input"
-                    />
-                  </div>
+                <!-- Search Forms -->
+                <div class="search-forms">
+                    <!-- Find a Job Form -->
+                    <form th:action="@{/HomePage/search}" method="post" class="search-form active" id="jobForm">
+                        <div class="search-fields">
+                            <div class="search-field">
+                                <input
+                                        type="text"
+                                        name="keyword"
+                                        th:placeholder="#{home.search.keyword.placeholder}"
+                                        class="search-input"
+                                />
+                            </div>
 
-                  <div class="search-field">
-                    <i class="fas fa-list field-icon"></i>
-                    <select name="fieldId" class="search-select">
-                      <option value="" th:text="#{home.search.category}">Category</option>
-                      <option th:each="field : ${jobField}"
-                              th:value="${field.jobFieldId}"
-                              th:text="${field.jobFieldName}">
-                      </option>
-                    </select>
-                  </div>
+                            <div class="search-field">
+                                <i class="fas fa-list field-icon"></i>
+                                <select name="fieldId" class="search-select">
+                                    <option value="" th:text="#{home.search.category}">Category</option>
+                                    <option th:each="field : ${jobField}"
+                                            th:value="${field.jobFieldId}"
+                                            th:text="${field.jobFieldName}">
+                                    </option>
+                                </select>
+                            </div>
 
-                  <div class="search-field">
-                    <i class="fas fa-map-marker-alt field-icon"></i>
-                    <select name="location" class="search-select" id="locationSelect">
-                      <option value="" th:text="#{home.search.location.placeholder}">Location</option>
-                    </select>
-                  </div>
-                  
-                  <button type="submit" class="search-button">
-                    Search
-                  </button>
-                </div>
-              </form>
+                            <div class="search-field">
+                                <i class="fas fa-map-marker-alt field-icon"></i>
+                                <select name="location" class="search-select" id="locationSelect">
+                                    <option value="" th:text="#{home.search.location.placeholder}">Location</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="search-button">
+                                Search
+                            </button>
+                        </div>
+                    </form>
 
                     <!-- Find a Candidate Form -->
                     <!-- Find a Candidate Form -->
@@ -228,13 +228,13 @@
             <p th:text="#{home.featuredJobs.subtitle}">Những cơ hội việc làm tốt nhất dành cho bạn</p>
         </div>
 
-            <!-- Job Listings -->
-    <div class="jobs-container">
+        <!-- Job Listings -->
+        <div class="jobs-container">
             <div th:each="job : ${jobPostsPage}" class="job-card">
                 <div class="job-card-header">
                     <div class="company-logo">
                         <img
-                                                                            th:src="${job.employer.account.avatarUrl}"
+                                th:src="${job.employer.account.avatarUrl}"
                                 th:alt="${job.employer.companyName}"
                                 onerror="this.style.display='none'; this.parentElement.classList.add('default-logo'); this.parentElement.innerHTML='<span>' + this.alt.charAt(0).toUpperCase() + '</span>';"
                         />
@@ -340,11 +340,11 @@
                         <i class="bi bi-chevron-left"></i>
                     </a>
                 </li>
-                
-                <li class="page-item" 
+
+                <li class="page-item"
                     th:each="pageNum : ${#numbers.sequence(1, totalPages)}"
                     th:classappend="${pageNum == currentPage} ? 'active'">
-                    <a class="page-link" th:href="@{/(page=${pageNum}, size=${size})}" 
+                    <a class="page-link" th:href="@{/(page=${pageNum}, size=${size})}"
                        th:text="${pageNum}">
                     </a>
                 </li>
@@ -377,32 +377,32 @@
 <script th:src="@{/js/main.js}"></script>
 
 <script>
-$(document).ready(function() {
-    const locationSelect = $('#locationSelect');
-    locationSelect.prop('disabled', true);
-    locationSelect.append(new Option('Đang tải...', ''));
+    $(document).ready(function() {
+        const locationSelect = $('#locationSelect');
+        locationSelect.prop('disabled', true);
+        locationSelect.append(new Option('Đang tải...', ''));
 
-    // Fetch provinces from API
-    fetch('https://provinces.open-api.vn/api/p/')
-        .then(response => response.json())
-        .then(data => {
-            locationSelect.empty(); // Clear loading option
-            locationSelect.append(new Option('Chọn tỉnh/thành phố', '')); // Add default option
+        // Fetch provinces from API
+        fetch('https://provinces.open-api.vn/api/p/')
+            .then(response => response.json())
+            .then(data => {
+                locationSelect.empty(); // Clear loading option
+                locationSelect.append(new Option('Chọn tỉnh/thành phố', '')); // Add default option
 
-            // Sort provinces alphabetically
-            data.sort((a, b) => a.name.localeCompare(b.name, 'vi'));
+                // Sort provinces alphabetically
+                data.sort((a, b) => a.name.localeCompare(b.name, 'vi'));
 
-            data.forEach(province => {
-                locationSelect.append(new Option(province.name, province.name));
+                data.forEach(province => {
+                    locationSelect.append(new Option(province.name, province.name));
+                });
+                locationSelect.prop('disabled', false);
+            })
+            .catch(error => {
+                console.error('Error fetching provinces:', error);
+                locationSelect.empty();
+                locationSelect.append(new Option('Lỗi tải dữ liệu', ''));
             });
-            locationSelect.prop('disabled', false);
-        })
-        .catch(error => {
-            console.error('Error fetching provinces:', error);
-            locationSelect.empty();
-            locationSelect.append(new Option('Lỗi tải dữ liệu', ''));
-        });
-});
+    });
 </script>
 
 <!-- Debug script -->
@@ -438,7 +438,7 @@ $(document).ready(function() {
                 }
             }, 1000);
         }
-      });
+    });
 
     // Function to change jobs per page
     function changeJobsPerPage(newSize) {
@@ -446,7 +446,7 @@ $(document).ready(function() {
         urlParams.set('size', newSize);
         urlParams.set('page', '0'); // Reset to first page when changing size
         window.location.search = urlParams.toString();
-      }
+    }
 
     // Function to switch between search tabs
     function switchTab(tabType) {
