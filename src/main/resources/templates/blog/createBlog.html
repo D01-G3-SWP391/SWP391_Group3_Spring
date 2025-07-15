@@ -119,12 +119,20 @@
                                         </label>
                                         <select class="form-select" th:field="*{resourceId}">
                                             <option value="" th:text="#{blog.admin.create.resource.type.placeholder}">-- Chọn loại tài nguyên --</option>
-                                            <option th:each="resource : ${allResources}"
-                                                    th:value="${resource.resourceId}"
-                                                    th:text="${resource.resourceType.name() == 'interview_guide'} ? #{blog.admin.resource.type.interview_guide} : 
-                                                             (${resource.resourceType.name() == 'application_tips'} ? #{blog.admin.resource.type.application_tips} : 
-                                                             (${resource.resourceType.name() == 'quotes'} ? #{blog.admin.resource.type.quotes} : ${resource.resourceType.name()}))">
-                                            </option>
+                                            <th:block th:each="resource : ${allResources}">
+                                                <option th:if="${resource.resourceType.name() == 'interview_guide'}" 
+                                                        th:value="${resource.resourceId}" 
+                                                        th:text="#{blog.admin.resource.type.interview_guide}">Interview Guide</option>
+                                                <option th:if="${resource.resourceType.name() == 'application_tips'}" 
+                                                        th:value="${resource.resourceId}" 
+                                                        th:text="#{blog.admin.resource.type.application_tips}">Application Tips</option>
+                                                <option th:if="${resource.resourceType.name() == 'quotes'}" 
+                                                        th:value="${resource.resourceId}" 
+                                                        th:text="#{blog.admin.resource.type.quotes}">Quotes</option>
+                                                <option th:unless="${resource.resourceType.name() == 'interview_guide' || resource.resourceType.name() == 'application_tips' || resource.resourceType.name() == 'quotes'}" 
+                                                        th:value="${resource.resourceId}" 
+                                                        th:text="${resource.resourceType.name()}">Other</option>
+                                            </th:block>
                                         </select>
                                         <div class="form-text" th:text="#{blog.admin.create.resource.type.help}">Phân loại blog theo chủ đề</div>
                                     </div>

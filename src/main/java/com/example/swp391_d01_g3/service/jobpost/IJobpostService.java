@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import com.example.swp391_d01_g3.model.Employer;
 
 public interface IJobpostService  {
     List<JobPost> findAll();
@@ -42,5 +43,10 @@ public interface IJobpostService  {
     long countJobPostsByEmployerEmail(String employerEmail);
     long countJobPostsByEmployerEmailAndStatus(String employerEmail, String status);
 
+    // Methods for hide/show feature
+    Page<JobPost> findActiveJobPostsByEmployerEmail(String email, Pageable pageable);
+    Page<JobPost> findByEmployerAndDisplayStatusOrderByCreatedAtDesc(Employer employer, JobPost.DisplayStatus displayStatus, Pageable pageable);
+    long countActiveJobPostsByEmployerEmail(String employerEmail);
+    long countHiddenJobPostsByEmployerEmail(String employerEmail);
 
 }
