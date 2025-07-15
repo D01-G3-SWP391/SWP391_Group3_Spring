@@ -115,7 +115,7 @@ public class JobPostController {
         @GetMapping("/JobPosts")
         public String viewJobPosts(
                 @RequestParam(defaultValue = "0") int page,
-                @RequestParam(defaultValue = "1") int size,
+                @RequestParam(defaultValue = "5") int size,
                 @RequestParam(defaultValue = "active") String filter,
                 Model model,
                 Authentication authentication) {
