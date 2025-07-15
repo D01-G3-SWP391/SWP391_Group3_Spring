@@ -170,9 +170,15 @@ public class AdminEventController {
 
     @PostMapping("/ChangeEventStatus/{id}")
     public String changeEventStatus(@PathVariable("id") Integer eventId,
-                                    @RequestParam("status") String status,
+                                    @RequestParam(value = "status", required = false) String status,
                                     RedirectAttributes redirectAttributes) {
         try {
+            // Validate status parameter
+            if (status == null || status.trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Trạng thái không được để trống!");
+                return "redirect:/Admin/PendingEvents";
+            }
+
             Event.ApprovalStatus newStatus = Event.ApprovalStatus.valueOf(status.toUpperCase());
 
             if (newStatus == Event.ApprovalStatus.APPROVED) {

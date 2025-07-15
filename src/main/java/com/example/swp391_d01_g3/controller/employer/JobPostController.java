@@ -309,11 +309,17 @@ public class JobPostController {
     public String updateApplicationStatus(
             @PathVariable Integer jobPostId,
             @PathVariable Integer applicationId,
-            @RequestParam String status,
+            @RequestParam(value = "status", required = false) String status,
             RedirectAttributes redirectAttributes,
             Authentication authentication) {
 
         try {
+            // Validate status parameter
+            if (status == null || status.trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Trạng thái không được để trống!");
+                return "redirect:/Employer/JobPosts/" + jobPostId + "/applications";
+            }
+
             String employerEmail = authentication.getName();
             Employer employer = iEmployerService.findByEmail(employerEmail);
 
