@@ -10,6 +10,10 @@
   />
 
   <!-- NEW NAVBAR CSS - Load LAST to override old styles -->
+  <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+  <link rel="stylesheet" th:href="@{/css/navbarHome.css}"/>
+  <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+  <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}"/>
   <link rel="stylesheet" th:href="@{/css/navbarEmployer.css}" />
   <link rel="stylesheet" th:href="@{/css/dashboardEmployer.css}" />
   <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
@@ -40,6 +44,12 @@
 </div> <!-- Close main-content -->
 </body>
 </html>
+
+<!-- AI Chatbox Fragment -->
+<div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
+
+<!-- Chat Notification Fragment -->
+<div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
 
 <!-- Add notification bell -->
 <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>

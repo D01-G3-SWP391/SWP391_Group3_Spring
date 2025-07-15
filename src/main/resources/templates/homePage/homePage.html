@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -26,11 +26,26 @@
             th:href="@{/css/owlcarousel/assets/owl.carousel.min.css}"
     />
     <link rel="stylesheet" th:href="@{/css/animate/animate.min.css}"/>
+    <!-- Favorite Heart CSS -->
+    <link rel="stylesheet" th:href="@{/css/favoriteHeart.css}"/>
+    <!-- Favorite Jobs Dropdown CSS -->
+    <link rel="stylesheet" th:href="@{/css/favoriteJobsDropdown.css}"/>
 
 </head>
 <body>
 <!-- Navbar -->
 <div th:replace="~{navbar/navbarHome}"></div>
+
+<!-- Flash Messages -->
+<div class="container mt-3">
+
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+
 <!--Carousel-->
 <div class="container-fluid p-0">
     <div class="owl-carousel header-carousel position-relative">
@@ -145,12 +160,10 @@
                   </div>
 
                   <div class="search-field">
-                    <input
-                      type="text"
-                      name="location"
-                      th:placeholder="#{home.search.location.placeholder}"
-                      class="search-input"
-                    />
+                    <i class="fas fa-map-marker-alt field-icon"></i>
+                    <select name="location" class="search-select" id="locationSelect">
+                      <option value="" th:text="#{home.search.location.placeholder}">Location</option>
+                    </select>
                   </div>
                   
                   <button type="submit" class="search-button">
@@ -166,33 +179,33 @@
                             <div class="search-field">
                                 <i class="fas fa-money-bill-wave field-icon"></i>
                                 <select name="salaryRange" class="search-select">
-                                    <option value="">Tất cả mức lương</option>
-                                    <option value="0-2000000" th:selected="${searchSalary == '0-2000000'}">Dưới 2,000,000</option>
-                                    <option value="2000000-3000000" th:selected="${searchSalary == '2000000-3000000'}">2,000,000 - 3,000,000</option>
-                                    <option value="3000000-5000000" th:selected="${searchSalary == '3000000-5000000'}">3,000,000 - 5,000,000</option>
-                                    <option value="5000000-7000000" th:selected="${searchSalary == '5000000-7000000'}">5,000,000 - 7,000,000</option>
-                                    <option value="7000000-10000000" th:selected="${searchSalary == '7000000-10000000'}">7,000,000 - 10,000,000</option>
-                                    <option value="10000000-15000000" th:selected="${searchSalary == '10000000-15000000'}">10,000,000 - 15,000,000</option>
-                                    <option value="15000000-20000000" th:selected="${searchSalary == '15000000-20000000'}">15,000,000 - 20,000,000</option>
-                                    <option value="20000000-30000000" th:selected="${searchSalary == '20000000-30000000'}">20,000,000 - 30,000,000</option>
-                                    <option value="30000000-40000000" th:selected="${searchSalary == '30000000-40000000'}">30,000,000 - 40,000,000</option>
-                                    <option value="40000000-50000000" th:selected="${searchSalary == '40000000-50000000'}">40,000,000 - 50,000,000</option>
-                                    <option value=">50000000" th:selected="${searchSalary == '>50000000'}">Trên 50,000,000</option>
+                                    <option value="" th:text="#{search.form.allSalary}">Tất cả mức lương</option>
+                                    <option value="0-2000000" th:selected="${searchSalary == '0-2000000'}" th:text="#{search.form.salary.under2m}">Dưới 2,000,000</option>
+                                    <option value="2000000-3000000" th:selected="${searchSalary == '2000000-3000000'}" th:text="#{search.form.salary.2to3m}">2,000,000 - 3,000,000</option>
+                                    <option value="3000000-5000000" th:selected="${searchSalary == '3000000-5000000'}" th:text="#{search.form.salary.3to5m}">3,000,000 - 5,000,000</option>
+                                    <option value="5000000-7000000" th:selected="${searchSalary == '5000000-7000000'}" th:text="#{search.form.salary.5to7m}">5,000,000 - 7,000,000</option>
+                                    <option value="7000000-10000000" th:selected="${searchSalary == '7000000-10000000'}" th:text="#{search.form.salary.7to10m}">7,000,000 - 10,000,000</option>
+                                    <option value="10000000-15000000" th:selected="${searchSalary == '10000000-15000000'}" th:text="#{search.form.salary.10to15m}">10,000,000 - 15,000,000</option>
+                                    <option value="15000000-20000000" th:selected="${searchSalary == '15000000-20000000'}" th:text="#{search.form.salary.15to20m}">15,000,000 - 20,000,000</option>
+                                    <option value="20000000-30000000" th:selected="${searchSalary == '20000000-30000000'}" th:text="#{search.form.salary.20to30m}">20,000,000 - 30,000,000</option>
+                                    <option value="30000000-40000000" th:selected="${searchSalary == '30000000-40000000'}" th:text="#{search.form.salary.30to40m}">30,000,000 - 40,000,000</option>
+                                    <option value="40000000-50000000" th:selected="${searchSalary == '40000000-50000000'}" th:text="#{search.form.salary.40to50m}">40,000,000 - 50,000,000</option>
+                                    <option value=">50000000" th:selected="${searchSalary == '>50000000'}" th:text="#{search.form.salary.over50m}">Trên 50,000,000</option>
                                 </select>
                             </div>
                             <div class="search-field">
                                 <i class="fas fa-briefcase field-icon"></i>
                                 <select name="jobType" class="search-select">
-                                    <option value="">Tất cả loại việc</option>
-                                    <option value="FULL_TIME" th:selected="${searchJobType == 'FULL_TIME'}">Full Time</option>
-                                    <option value="PART_TIME" th:selected="${searchJobType == 'PART_TIME'}">Part Time</option>
+                                    <option value="" th:text="#{search.form.allJobTypes}">Tất cả loại việc</option>
+                                    <option value="FULL_TIME" th:selected="${searchJobType == 'FULL_TIME'}" th:text="#{job.common.fullTime}">Full Time</option>
+                                    <option value="PART_TIME" th:selected="${searchJobType == 'PART_TIME'}" th:text="#{job.common.partTime}">Part Time</option>
                                 </select>
                             </div>
                             <div class="search-field">
                                 <input
                                         type="text"
                                         name="companyName"
-                                        placeholder="Tên công ty..."
+                                        th:placeholder="#{search.form.companyName.placeholder}"
                                         class="search-input"
                                         th:value="${searchCompanyName}"
                                 />
@@ -215,10 +228,8 @@
             <p th:text="#{home.featuredJobs.subtitle}">Những cơ hội việc làm tốt nhất dành cho bạn</p>
         </div>
 
-        <!-- Job Listings -->
-        <div class="jobs-container">
-            <p th:text="${error}"></p>
-            <p th:text="${success}"></p>
+            <!-- Job Listings -->
+    <div class="jobs-container">
             <div th:each="job : ${jobPostsPage}" class="job-card">
                 <div class="job-card-header">
                     <div class="company-logo">
@@ -266,7 +277,7 @@
                             <span th:if="${job.jobSalary != null}">
                                 <span th:text="${#numbers.formatInteger(job.jobSalary, 1, 'COMMA') + ' VND'}"></span>
                             </span>
-                            <span th:if="${job.jobSalary == null}">Thỏa thuận</span>
+                            <span th:if="${job.jobSalary == null}" th:text="#{job.common.negotiable}">Thỏa thuận</span>
                         </div>
 
 
@@ -288,9 +299,35 @@
                             <span th:text="#{home.viewDetails}">Xem chi tiết</span>
                         </button>
                     </form>
-                    <button class="save-btn">
-                        <i class="far fa-heart"></i>
-                    </button>
+
+                    <!-- Favorite Heart Form - Chỉ cho Student -->
+                    <div sec:authorize="isAuthenticated() and hasRole('student')">
+                        <form method="post" th:action="@{/favorites/toggle-form}" style="display: inline;">
+                            <input type="hidden" name="jobPostId" th:value="${job.jobPostId}">
+                            <input type="hidden" name="redirectUrl" th:value="@{/}">
+                            <button type="submit" class="favorite-heart-btn save-btn"
+                                    th:classappend="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'favorited' : ''">
+                                <i th:class="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'fas fa-heart' : 'far fa-heart'"
+                                   th:style="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'color: #ff6987;' : 'color: #6c757d;'"></i>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Thông báo cho Guest -->
+                    <div sec:authorize="!isAuthenticated()">
+                        <a href="/Login" class="favorite-heart-btn save-btn" style="text-decoration: none; color: #6c757d;"
+                           title="Đăng nhập để sử dụng tính năng yêu thích">
+                            <i class="far fa-heart"></i>
+                        </a>
+                    </div>
+
+                    <!-- Thông báo cho Admin/Employer -->
+                    <div sec:authorize="isAuthenticated() and (hasRole('admin') or hasRole('employer'))">
+                        <button type="button" class="favorite-heart-btn save-btn" disabled
+                                style="opacity: 0.5;" title="Tính năng yêu thích chỉ dành cho sinh viên">
+                            <i class="far fa-heart" style="color: #ccc;"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -338,6 +375,35 @@
 <script th:src="@{/css/owlcarousel/owl.carousel.min.js}"></script>
 <!-- Template Javascript -->
 <script th:src="@{/js/main.js}"></script>
+
+<script>
+$(document).ready(function() {
+    const locationSelect = $('#locationSelect');
+    locationSelect.prop('disabled', true);
+    locationSelect.append(new Option('Đang tải...', ''));
+
+    // Fetch provinces from API
+    fetch('https://provinces.open-api.vn/api/p/')
+        .then(response => response.json())
+        .then(data => {
+            locationSelect.empty(); // Clear loading option
+            locationSelect.append(new Option('Chọn tỉnh/thành phố', '')); // Add default option
+
+            // Sort provinces alphabetically
+            data.sort((a, b) => a.name.localeCompare(b.name, 'vi'));
+
+            data.forEach(province => {
+                locationSelect.append(new Option(province.name, province.name));
+            });
+            locationSelect.prop('disabled', false);
+        })
+        .catch(error => {
+            console.error('Error fetching provinces:', error);
+            locationSelect.empty();
+            locationSelect.append(new Option('Lỗi tải dữ liệu', ''));
+        });
+});
+</script>
 
 <!-- Debug script -->
 <script>
@@ -401,7 +467,17 @@
             document.getElementById('candidateForm').classList.add('active');
         }
     }
+
+
 </script>
+
+
+
+<!-- AI Chatbox Fragment -->
+<div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
+
+<!-- Chat Notification Fragment -->
+<div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
 
 </body>
 </html>

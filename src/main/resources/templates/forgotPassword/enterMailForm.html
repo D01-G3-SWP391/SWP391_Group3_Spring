@@ -27,8 +27,8 @@
             <!-- Left Panel - Illustration -->
             <div class="illustration-panel">
                 <div class="welcome-text">
-                    <h1>Forgot Password?<br><span class="highlight">JOB4YOU</span></h1>
-                    <p>Don't worry, we'll help you reset it</p>
+                    <h1 th:text="#{forgotPassword.email.title}">Forgot Password?<br><span class="highlight">JOB4YOU</span></h1>
+                    <p th:text="#{forgotPassword.email.description}">Don't worry, we'll help you reset it</p>
                 </div>
                 
                 <div class="illustration-graphics">
@@ -86,7 +86,7 @@
                 </form>
                 
                 <div class="back-to-login">
-                    <p>Remember your password? <a th:href="@{/Login}">Back to Login</a></p>
+                    <p><span th:text="#{forgotPassword.remember}">Remember your password?</span> <a th:href="@{/Login}" th:text="#{forgotPassword.backToLogin}">Back to Login</a></p>
                 </div>
             </div>
         </div>
@@ -100,11 +100,12 @@
         form.addEventListener('submit', function(e) {
             // Show loading state
             submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner"></span>Processing...';
+            submitBtn.innerHTML = '<span class="spinner"></span>' + /*[[#{forgotPassword.processing}]]*/ 'Processing...';
             form.classList.add('loading');
         });
     });
     </script>
     <script th:src="@{/js/languageSwitch.js}"></script>
+
 </body>
 </html>

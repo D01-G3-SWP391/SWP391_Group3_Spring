@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title th:text="'Event Details - Admin'">Event Details - Admin</title>
+  <title th:text="#{admin.event.details.title} + ' - Admin'">Event Details - Admin</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
   <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
   <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
   <link rel="stylesheet" th:href="@{/css/adminDetails.css}">
@@ -85,7 +86,7 @@
                   <span class="info-label">
                     <i class="bi bi-clock me-2"></i><span th:text="#{admin.event.details.deadline}">Registration Deadline</span>
                   </span>
-                  <span class="info-value" th:text="${event.registrationDeadline != null ? #temporals.format(event.registrationDeadline, 'dd/MM/yyyy HH:mm') : 'No deadline'}"></span>
+                  <span class="info-value" th:text="${event.registrationDeadline != null ? #temporals.format(event.registrationDeadline, 'dd/MM/yyyy HH:mm') : ''} ?: #{admin.event.details.no.deadline}"></span>
                 </div>
 
                 <div class="info-row">
@@ -97,7 +98,7 @@
                     <span th:if="${event.maxParticipants != null}">
                       / <span th:text="${event.maxParticipants}"></span>
                     </span>
-                    <span th:if="${event.maxParticipants == null}" th:text="' (Unlimited)'"></span>
+                    <span th:if="${event.maxParticipants == null}" th:text="'(' + #{admin.event.details.unlimited} + ')'"></span>
                   </span>
                 </div>
 
@@ -105,14 +106,14 @@
                   <span class="info-label">
                     <i class="bi bi-envelope me-2"></i><span th:text="#{admin.event.details.contact.email}">Contact Email</span>
                   </span>
-                  <span class="info-value" th:text="${event.contactEmail != null ? event.contactEmail : 'N/A'}"></span>
+                  <span class="info-value" th:text="${event.contactEmail} ?: #{admin.event.details.not.applicable}"></span>
                 </div>
 
                 <div class="info-row">
                   <span class="info-label">
                     <i class="bi bi-calendar-plus me-2"></i><span th:text="#{admin.event.details.created.date}">Created Date</span>
                   </span>
-                  <span class="info-value" th:text="${event.createdAt != null ? #temporals.format(event.createdAt, 'dd/MM/yyyy HH:mm') : 'N/A'}"></span>
+                  <span class="info-value" th:text="${event.createdAt != null ? #temporals.format(event.createdAt, 'dd/MM/yyyy HH:mm') : ''} ?: #{admin.event.details.not.applicable}"></span>
                 </div>
               </div>
             </div>
@@ -150,7 +151,12 @@
                               (event.approvalStatus.name() == 'REJECTED' ? 'status-banned' : 'status-pending')}"
                     th:text="${event.approvalStatus.name()}"></span>
             </div>
-
+            <div class="mb-3">
+              <span class="status-badge"
+                    th:class="${event.eventStatus.name() == 'ACTIVE' ? 'status-active' :
+                              (event.eventStatus.name() == 'CANCELLED' ? 'status-banned' : 'badge bg-warning')}"
+                    th:text="${event.eventStatus.name()}"></span>
+            </div>
             <div th:if="${event.approvedAt != null}" class="text-muted small">
               <i class="bi bi-check-circle me-1"></i>
               <span th:text="#{admin.event.details.approved.on}">Approved on</span> <span th:text="${#temporals.format(event.approvedAt, 'dd/MM/yyyy')}"></span>
@@ -171,7 +177,7 @@
                 <span class="info-label">
                   <i class="bi bi-building me-2"></i><span th:text="#{admin.event.details.company}">Company</span>
                 </span>
-                <span class="info-value" th:text="${event.employer != null ? event.employer.companyName : 'N/A'}"></span>
+                <span class="info-value" th:text="${event.employer?.companyName} ?: #{admin.event.details.not.applicable}"></span>
               </div>
 
               <div class="info-row">
@@ -183,7 +189,7 @@
                     <a th:href="'mailto:' + ${event.employer.account.email}"
                        th:text="${event.employer.account.email}"></a>
                   </span>
-                  <span th:unless="${event.employer?.account?.email != null}" th:text="'N/A'">N/A</span>
+                  <span th:unless="${event.employer?.account?.email != null}" th:text="#{admin.event.details.not.applicable}">N/A</span>
                 </span>
               </div>
 
@@ -191,7 +197,7 @@
                 <span class="info-label">
                   <i class="bi bi-telephone me-2"></i><span th:text="#{admin.event.details.phone}">Phone</span>
                 </span>
-                <span class="info-value" th:text="'N/A'">N/A</span>
+                <span class="info-value" th:text="#{admin.event.details.not.applicable}">N/A</span>
               </div>
             </div>
           </div>

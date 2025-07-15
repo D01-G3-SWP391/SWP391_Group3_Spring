@@ -6,6 +6,7 @@ import com.example.swp391_d01_g3.model.JobApplication;
 import com.example.swp391_d01_g3.model.JobPost;
 import com.example.swp391_d01_g3.model.Student;
 import com.example.swp391_d01_g3.repository.IJobApplicationRepository;
+import com.example.swp391_d01_g3.service.favorite.IFavoriteJobService;
 import com.example.swp391_d01_g3.service.jobapplication.IJobApplicationService;
 import com.example.swp391_d01_g3.service.jobfield.IJobfieldService;
 import com.example.swp391_d01_g3.service.jobpost.IJobpostService;
@@ -32,6 +33,8 @@ public class JobsDescription {
     private IAccountService iAccountService;
     @Autowired
     private IJobApplicationService jobApplicationService;
+    @Autowired
+    private IFavoriteJobService favoriteJobService;
 
     @GetMapping("/JobPost")
     public String showDescription(@RequestParam("id") Integer id, 
@@ -53,9 +56,10 @@ public class JobsDescription {
             model.addAttribute("account", userAccount);
 
             if (userAccount != null) {
-                // Auto-fill họ tên và email từ database vào JobApplicationDTO
+                // Auto-fill họ tên, email và phone từ database vào JobApplicationDTO
                 jobApplicationDTO.setFullname(userAccount.getFullName());
                 jobApplicationDTO.setEmail(userAccount.getEmail());
+                jobApplicationDTO.setPhoneNumber(userAccount.getPhone());
                 
                 // Chỉ lấy thông tin student nếu user có role student
                 Student studentDetails = iStudentService.findByAccountUserId(userAccount.getUserId());
@@ -65,6 +69,15 @@ public class JobsDescription {
                     // Kiểm tra xem student đã apply vào job này chưa
                     boolean hasApplied = jobApplicationService.hasStudentAppliedToJob(studentDetails.getStudentId(), id);
                     model.addAttribute("hasApplied", hasApplied);
+                    
+                    // Add favorite job checking for students
+                    model.addAttribute("studentId", studentDetails.getStudentId());
+                    // Add a utility object to check favorites in templates
+                    model.addAttribute("favoriteChecker", new FavoriteChecker(favoriteJobService, studentDetails.getStudentId()));
+                    // Add favorite jobs list for navbar dropdown
+                    List<JobPost> favoriteJobs = favoriteJobService.getFavoriteJobPostsByStudent(studentDetails.getStudentId());
+                    model.addAttribute("favoriteJobs", favoriteJobs);
+                    model.addAttribute("favoriteCount", favoriteJobs.size());
                 }
             } else {
                 return "redirect:/Login";
@@ -74,5 +87,20 @@ public class JobsDescription {
         
         model.addAttribute("jobApplicationDTO", jobApplicationDTO);
         return "homePage/descriptionJob";
+    }
+    
+    // Helper class for checking favorites in templates
+    public static class FavoriteChecker {
+        private final IFavoriteJobService favoriteJobService;
+        private final Integer studentId;
+        
+        public FavoriteChecker(IFavoriteJobService favoriteJobService, Integer studentId) {
+            this.favoriteJobService = favoriteJobService;
+            this.studentId = studentId;
+        }
+        
+        public boolean isFavorited(Integer jobPostId) {
+            return favoriteJobService.isFavorited(studentId, jobPostId);
+        }
     }
 }

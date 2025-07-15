@@ -3,9 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi tiết ứng viên</title>
+    <title th:text="#{employer.candidates.detail.title}">Chi tiết ứng viên</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
+    <link rel="stylesheet" th:href="@{/css/navbarHome.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
+    <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}"/>
     <link rel="stylesheet" th:href="@{/css/candidateDetail.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarEmployer.css}" />
     <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
@@ -16,9 +20,9 @@
 <div class="container">
     <!-- Header row (title + back button) matching viewListApplications -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Chi Tiết Ứng Viên</h1>
+        <h1 th:text="#{employer.candidates.detail.title}">Chi Tiết Ứng Viên</h1>
         <a th:href="@{/Employer/SearchCandidate}" class="btn btn-outline-primary">
-            <i class="bi bi-arrow-left"></i> Back to List
+            <i class="bi bi-arrow-left"></i> <span th:text="#{employer.action.back}">Back to List</span>
         </a>
     </div>
 
@@ -41,37 +45,37 @@
             <div class="col-md-8">
                 <div class="section-header">
                     <i class="bi bi-person-lines-fill"></i>
-                    Personal Information
+                    <span th:text="#{employer.candidates.detail.personal.info}">Personal Information</span>
                 </div>
                 <div class="section-content">
                     <div class="info-row">
                         <i class="bi bi-person info-icon"></i>
-                        <span class="info-label">Full Name</span>
+                        <span class="info-label" th:text="#{employer.candidates.detail.full.name}">Full Name</span>
                         <span class="info-value" th:text="${student.account.fullName}"></span>
                     </div>
                     <div class="info-row">
                         <i class="bi bi-envelope info-icon"></i>
-                        <span class="info-label">Email</span>
+                        <span class="info-label" th:text="#{employer.candidates.detail.email}">Email</span>
                         <span class="info-value" th:text="${student.account.email}"></span>
                     </div>
                     <div class="info-row">
                         <i class="bi bi-telephone info-icon"></i>
-                        <span class="info-label">Phone</span>
+                        <span class="info-label" th:text="#{employer.candidates.detail.phone}">Phone</span>
                         <span class="info-value" th:text="${student.account.phone}"></span>
                     </div>
                     <div class="info-row">
                         <i class="bi bi-geo-alt info-icon"></i>
-                        <span class="info-label">Address</span>
+                        <span class="info-label" th:text="#{employer.candidates.detail.address}">Address</span>
                         <span class="info-value" th:text="${student.address}"></span>
                     </div>
                     <div class="info-row">
                         <i class="bi bi-shield-check info-icon"></i>
-                        <span class="info-label">Role</span>
+                        <span class="info-label" th:text="#{employer.candidates.detail.role}">Role</span>
                         <span class="badge-custom badge-student" th:text="${student.account.role.name().toUpperCase()}">STUDENT</span>
                     </div>
                     <div class="info-row">
                         <i class="bi bi-check-circle info-icon"></i>
-                        <span class="info-label">Status</span>
+                        <span class="info-label" th:text="#{employer.candidates.detail.status}">Status</span>
                         <span class="badge-custom" th:text="${student.account.status.name().toUpperCase()}">ACTIVE</span>
                     </div>
                 </div>
@@ -84,22 +88,22 @@
         <div class="card">
             <div class="section-header">
                 <i class="bi bi-mortarboard"></i>
-                Academic Information
+                <span th:text="#{employer.candidates.detail.academic.info}">Academic Information</span>
             </div>
             <div class="section-content">
                 <div class="info-row">
                     <i class="bi bi-building info-icon"></i>
-                    <span class="info-label">University</span>
+                    <span class="info-label" th:text="#{employer.candidates.detail.university}">University</span>
                     <span class="info-value" th:text="${student.university}"></span>
                 </div>
                 <div class="info-row">
                     <i class="bi bi-briefcase info-icon"></i>
-                    <span class="info-label">Job Field Interest</span>
+                    <span class="info-label" th:text="#{employer.candidates.detail.job.field}">Job Field Interest</span>
                     <span class="info-value" th:text="${student.jobField != null ? student.jobField.jobFieldName : ''}"></span>
                 </div>
                 <div class="info-row">
                     <i class="bi bi-pin-map info-icon"></i>
-                    <span class="info-label">Preferred Job Location</span>
+                    <span class="info-label" th:text="#{employer.candidates.detail.preferred.location}">Preferred Job Location</span>
                     <span class="info-value" th:text="${student.preferredJobAddress}"></span>
                 </div>
             </div>
@@ -108,7 +112,7 @@
         <div class="card">
             <div class="section-header">
                 <i class="bi bi-file-person"></i>
-                Profile Description
+                <span th:text="#{employer.candidates.detail.profile.description}">Profile Description</span>
             </div>
             <div class="section-content">
                 <div class="description-text" th:text="${student.profileDescription}">
@@ -121,7 +125,7 @@
     <div class="card">
         <div class="section-header">
             <i class="bi bi-clock-history"></i>
-            Experience
+            <span th:text="#{employer.candidates.detail.experience}">Experience</span>
         </div>
         <div class="section-content">
             <div class="description-text" th:text="${student.experience}">
@@ -133,12 +137,12 @@
     <div class="card">
         <div class="section-header">
             <i class="bi bi-envelope-plus"></i>
-            Contact Actions
+            <span th:text="#{employer.candidates.detail.contact.actions}">Contact Actions</span>
         </div>
         <div class="section-content">
             <div class="contact-actions">
                 <button class="btn btn-primary me-2" onclick="openJobInvitationModal()">
-                    <i class="bi bi-briefcase-fill"></i> Gửi lời mời việc làm
+                    <i class="bi bi-briefcase-fill"></i> <span th:text="#{employer.candidates.detail.send.invitation}">Gửi lời mời việc làm</span>
                 </button>
             </div>
         </div>
@@ -151,7 +155,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="jobInvitationModalLabel">
-                    <i class="bi bi-briefcase-fill"></i> Gửi lời mời việc làm
+                    <i class="bi bi-briefcase-fill"></i> <span th:text="#{employer.candidates.detail.invitation.modal.title}">Gửi lời mời việc làm</span>
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -159,7 +163,7 @@
                 <form id="jobInvitationForm">
                     <div class="mb-3">
                         <label for="candidateInfo" class="form-label">
-                            <i class="bi bi-person"></i> Ứng viên
+                            <i class="bi bi-person"></i> <span th:text="#{employer.candidates.detail.invitation.candidate}">Ứng viên</span>
                         </label>
                         <div class="candidate-info-display">
                             <div class="candidate-avatar">
@@ -176,27 +180,28 @@
                     
                     <div class="mb-3">
                         <label for="jobPostSelect" class="form-label">
-                            <i class="bi bi-briefcase"></i> Chọn vị trí công việc
+                            <i class="bi bi-briefcase"></i> <span th:text="#{employer.candidates.detail.invitation.select.job}">Chọn vị trí công việc</span>
                         </label>
                         <select class="form-select" id="jobPostSelect" name="jobPostId" required>
-                            <option value="">-- Chọn vị trí công việc --</option>
+                            <option value="" th:text="#{employer.candidates.detail.invitation.select.job.placeholder}">-- Chọn vị trí công việc --</option>
                             <option th:each="job : ${employerJobPosts}" 
                                     th:value="${job.jobPostId}" 
                                     th:text="${job.jobTitle} + ' - ' + ${job.jobLocation}">
                                 Job Title - Location
                             </option>
                         </select>
-                        <div class="invalid-feedback">
+                        <div class="invalid-feedback" th:text="#{employer.candidates.detail.invitation.select.job.required}">
                             Vui lòng chọn vị trí công việc.
                         </div>
                     </div>
                     
                     <div class="mb-3">
                         <label for="invitationMessage" class="form-label">
-                            <i class="bi bi-chat-text"></i> Lời nhắn cá nhân
+                            <i class="bi bi-chat-text"></i> <span th:text="#{employer.candidates.detail.invitation.message}">Lời nhắn cá nhân</span>
                         </label>
                         <textarea class="form-control" id="invitationMessage" name="message" rows="4" 
-                                  placeholder="Viết lời nhắn cá nhân cho ứng viên...">Chúng tôi rất ấn tượng với profile của bạn và muốn mời bạn ứng tuyển vào vị trí này tại công ty chúng tôi. Chúng tôi tin rằng bạn sẽ là một ứng viên tiềm năng cho vị trí này.</textarea>
+                                  th:placeholder="#{employer.candidates.detail.invitation.message.placeholder}"
+                                  th:text="#{employer.candidates.detail.invitation.message.default}">Chúng tôi rất ấn tượng với profile của bạn và muốn mời bạn ứng tuyển vào vị trí này tại công ty chúng tôi. Chúng tôi tin rằng bạn sẽ là một ứng viên tiềm năng cho vị trí này.</textarea>
                     </div>
                     
                     <input type="hidden" id="studentId" name="studentId" th:value="${student.studentId}">
@@ -204,10 +209,10 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle"></i> Hủy
+                    <i class="bi bi-x-circle"></i> <span th:text="#{employer.candidates.detail.invitation.cancel}">Hủy</span>
                 </button>
                 <button type="button" class="btn btn-primary" onclick="sendJobInvitation()" id="sendInvitationBtn">
-                    <i class="bi bi-send"></i> Gửi lời mời
+                    <i class="bi bi-send"></i> <span th:text="#{employer.candidates.detail.invitation.send}">Gửi lời mời</span>
                 </button>
             </div>
         </div>
@@ -297,7 +302,7 @@ function sendJobInvitation() {
     // Show loading state
     sendBtn.classList.add('loading');
     sendBtn.disabled = true;
-    sendBtn.innerHTML = '<span>Đang gửi...</span>';
+    sendBtn.innerHTML = '<span>' + /*[[#{employer.candidates.detail.invitation.sending}]]*/ 'Đang gửi...' + '</span>';
     
     // Get form data
     const formData = new FormData();
@@ -332,7 +337,7 @@ function sendJobInvitation() {
     })
     .catch(error => {
         // Error
-        showAlert(error.message || 'Có lỗi xảy ra khi gửi lời mời', 'danger');
+        showAlert(error.message || /*[[#{employer.candidates.detail.invitation.error}]]*/ 'Có lỗi xảy ra khi gửi lời mời', 'danger');
     })
     .finally(() => {
         // Reset button state
@@ -348,7 +353,13 @@ document.getElementById('jobInvitationModal').addEventListener('hidden.bs.modal'
     document.getElementById('jobInvitationForm').reset();
     resetValidation();
 });
-</script>
+    </script>
+
+    <!-- AI Chatbox Fragment -->
+    <div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
+    
+    <!-- Chat Notification Fragment -->
+    <div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
 
 </body>
 </html>

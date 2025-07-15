@@ -11,7 +11,7 @@
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title">
-                    <i class="fas fa-ban"></i> Ban User Account
+                    <i class="fas fa-ban"></i> <span th:text="#{ban.modal.title}">Ban User Account</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
@@ -21,10 +21,10 @@
                 <div class="modal-body">
                     <!-- User Info -->
                     <div class="alert alert-warning">
-                        <h6><i class="fas fa-exclamation-triangle"></i> Thông tin người dùng</h6>
-                        <p><strong>Tên:</strong> <span id="displayUserName">-</span></p>
-                        <p><strong>Email:</strong> <span id="displayUserEmail">-</span></p>
-                        <p><strong>Role:</strong> <span id="displayUserRole">-</span></p>
+                        <h6><i class="fas fa-exclamation-triangle"></i> <span th:text="#{ban.modal.user.info}">Thông tin người dùng</span></h6>
+                        <p><strong th:text="#{ban.modal.user.name}">Tên:</strong> <span id="displayUserName">-</span></p>
+                        <p><strong th:text="#{ban.modal.user.email}">Email:</strong> <span id="displayUserEmail">-</span></p>
+                        <p><strong th:text="#{ban.modal.user.role}">Role:</strong> <span id="displayUserRole">-</span></p>
                     </div>
                     
                     <!-- Hidden Fields -->
@@ -35,37 +35,37 @@
                     <div class="mb-3">
                         <label class="form-label">
                             <i class="fas fa-exclamation-circle text-danger"></i> 
-                            Lý do ban <span class="text-danger">*</span>
+                            <span th:text="#{ban.modal.reason}">Lý do ban</span> <span class="text-danger" th:text="#{ban.modal.reason.required}">*</span>
                         </label>
                         <select class="form-select" name="banReason" required>
-                            <option value="">-- Chọn lý do ban --</option>
+                            <option value="" th:text="#{ban.modal.reason.select}">-- Chọn lý do ban --</option>
                             <!-- Ban reasons được hard-code - không cần API -->
-                            <option value="SPAM">Spam nội dung</option>
-                            <option value="INAPPROPRIATE_CONTENT">Nội dung không phù hợp</option>
-                            <option value="FAKE_INFORMATION">Thông tin giả mạo</option>
-                            <option value="HARASSMENT">Quấy rối người khác</option>
-                            <option value="FRAUD">Lừa đảo</option>
-                            <option value="MULTIPLE_ACCOUNTS">Tạo nhiều tài khoản</option>
-                            <option value="VIOLATION_TERMS">Vi phạm điều khoản sử dụng</option>
-                            <option value="SYSTEM_ABUSE">Lạm dụng hệ thống</option>
-                            <option value="OTHER">Lý do khác</option>
+                            <option value="SPAM" th:text="#{ban.modal.reason.spam}">Spam nội dung</option>
+                            <option value="INAPPROPRIATE_CONTENT" th:text="#{ban.modal.reason.inappropriate}">Nội dung không phù hợp</option>
+                            <option value="FAKE_INFORMATION" th:text="#{ban.modal.reason.fake}">Thông tin giả mạo</option>
+                            <option value="HARASSMENT" th:text="#{ban.modal.reason.harassment}">Quấy rối người khác</option>
+                            <option value="FRAUD" th:text="#{ban.modal.reason.fraud}">Lừa đảo</option>
+                            <option value="MULTIPLE_ACCOUNTS" th:text="#{ban.modal.reason.multiple}">Tạo nhiều tài khoản</option>
+                            <option value="VIOLATION_TERMS" th:text="#{ban.modal.reason.violation}">Vi phạm điều khoản sử dụng</option>
+                            <option value="SYSTEM_ABUSE" th:text="#{ban.modal.reason.abuse}">Lạm dụng hệ thống</option>
+                            <option value="OTHER" th:text="#{ban.modal.reason.other}">Lý do khác</option>
                         </select>
                     </div>
                     
                     <!-- Ban Description -->
                     <div class="mb-3">
                         <label class="form-label">
-                            <i class="fas fa-edit"></i> Mô tả chi tiết (tùy chọn)
+                            <i class="fas fa-edit"></i> <span th:text="#{ban.modal.description}">Mô tả chi tiết (tùy chọn)</span>
                         </label>
                         <textarea class="form-control" name="banDescription" rows="3" 
-                                  maxlength="1000" placeholder="Mô tả chi tiết lý do ban..."></textarea>
+                                  maxlength="1000" th:placeholder="#{ban.modal.description.placeholder}"></textarea>
                     </div>
                     
                     <!-- Ban Duration Type -->
                     <div class="mb-3">
                         <label class="form-label">
                             <i class="fas fa-clock text-warning"></i> 
-                            Loại thời gian ban <span class="text-danger">*</span>
+                            <span th:text="#{ban.modal.duration.type}">Loại thời gian ban</span> <span class="text-danger" th:text="#{ban.modal.reason.required}">*</span>
                         </label>
                         <div class="row">
                             <div class="col-md-6">
@@ -73,7 +73,7 @@
                                     <input class="form-check-input" type="radio" name="banDurationType" 
                                            value="TEMPORARY" required>
                                     <label class="form-check-label">
-                                        <i class="fas fa-calendar-alt"></i> Tạm thời
+                                        <i class="fas fa-calendar-alt"></i> <span th:text="#{ban.modal.duration.temporary}">Tạm thời</span>
                                     </label>
                                 </div>
                             </div>
@@ -82,7 +82,7 @@
                                     <input class="form-check-input" type="radio" name="banDurationType" 
                                            value="PERMANENT" required>
                                     <label class="form-check-label">
-                                        <i class="fas fa-ban"></i> Vĩnh viễn
+                                        <i class="fas fa-ban"></i> <span th:text="#{ban.modal.duration.permanent}">Vĩnh viễn</span>
                                     </label>
                                 </div>
                             </div>
@@ -93,23 +93,23 @@
                     <div class="mb-3">
                         <label class="form-label">
                             <i class="fas fa-calendar-day"></i> 
-                            Số ngày ban (chỉ cho ban tạm thời)
+                            <span th:text="#{ban.modal.duration.days}">Số ngày ban (chỉ cho ban tạm thời)</span>
                         </label>
                         <div class="row">
                             <div class="col-md-8">
                                 <input type="number" class="form-control" name="banDurationDays" 
-                                       min="1" max="365" placeholder="Nhập số ngày (1-365)">
+                                       min="1" max="365" th:placeholder="#{ban.modal.duration.days.placeholder}">
                             </div>
                             <div class="col-md-4">
                                 <select class="form-select" onchange="setDays(this.value)">
-                                    <option value="">Chọn nhanh</option>
-                                    <option value="1">1 ngày</option>
-                                    <option value="3">3 ngày</option>
-                                    <option value="7">1 tuần</option>
-                                    <option value="14">2 tuần</option>
-                                    <option value="30">1 tháng</option>
-                                    <option value="90">3 tháng</option>
-                                    <option value="180">6 tháng</option>
+                                    <option value="" th:text="#{ban.modal.duration.quick}">Chọn nhanh</option>
+                                    <option value="1" th:text="#{ban.modal.duration.1day}">1 ngày</option>
+                                    <option value="3" th:text="#{ban.modal.duration.3days}">3 ngày</option>
+                                    <option value="7" th:text="#{ban.modal.duration.1week}">1 tuần</option>
+                                    <option value="14" th:text="#{ban.modal.duration.2weeks}">2 tuần</option>
+                                    <option value="30" th:text="#{ban.modal.duration.1month}">1 tháng</option>
+                                    <option value="90" th:text="#{ban.modal.duration.3months}">3 tháng</option>
+                                    <option value="180" th:text="#{ban.modal.duration.6months}">6 tháng</option>
                                 </select>
                             </div>
                         </div>
@@ -117,21 +117,21 @@
                     
                     <!-- Warning -->
                     <div class="alert alert-danger">
-                        <h6><i class="fas fa-exclamation-triangle"></i> Cảnh báo</h6>
+                        <h6><i class="fas fa-exclamation-triangle"></i> <span th:text="#{ban.modal.warning.title}">Cảnh báo</span></h6>
                         <ul class="mb-0">
-                            <li>Hành động này sẽ khóa tài khoản người dùng ngay lập tức</li>
-                            <li>User sẽ nhận email thông báo chi tiết về việc bị ban</li>
-                            <li>Thao tác này không thể hoàn tác</li>
+                            <li th:text="#{ban.modal.warning.1}">Hành động này sẽ khóa tài khoản người dùng ngay lập tức</li>
+                            <li th:text="#{ban.modal.warning.2}">User sẽ nhận email thông báo chi tiết về việc bị ban</li>
+                            <li th:text="#{ban.modal.warning.3}">Thao tác này không thể hoàn tác</li>
                         </ul>
                     </div>
                 </div>
                 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times"></i> Hủy
+                        <i class="fas fa-times"></i> <span th:text="#{ban.modal.cancel}">Hủy</span>
                     </button>
                     <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-ban"></i> Xác nhận Ban User
+                        <i class="fas fa-ban"></i> <span th:text="#{ban.modal.confirm}">Xác nhận Ban User</span>
                     </button>
                 </div>
             </form>
@@ -145,7 +145,7 @@
         <div class="modal-content">
             <div class="modal-header bg-success text-white">
                 <h5 class="modal-title">
-                    <i class="fas fa-unlock"></i> Unban User Account
+                    <i class="fas fa-unlock"></i> <span th:text="#{unban.modal.title}">Unban User Account</span>
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
@@ -153,27 +153,27 @@
             <form th:action="@{/Admin/processUnban}" method="post">
                 <div class="modal-body">
                     <div class="alert alert-info">
-                        <h6><i class="fas fa-user"></i> Thông tin người dùng</h6>
-                        <p><strong>Tên:</strong> <span id="unbanDisplayUserName">-</span></p>
-                        <p><strong>Email:</strong> <span id="unbanDisplayUserEmail">-</span></p>
-                        <p><strong>Role:</strong> <span id="unbanDisplayUserRole">-</span></p>
+                        <h6><i class="fas fa-user"></i> <span th:text="#{unban.modal.user.info}">Thông tin người dùng</span></h6>
+                        <p><strong th:text="#{ban.modal.user.name}">Tên:</strong> <span id="unbanDisplayUserName">-</span></p>
+                        <p><strong th:text="#{ban.modal.user.email}">Email:</strong> <span id="unbanDisplayUserEmail">-</span></p>
+                        <p><strong th:text="#{ban.modal.user.role}">Role:</strong> <span id="unbanDisplayUserRole">-</span></p>
                     </div>
                     
                     <input type="hidden" name="userId" id="unbanFormUserId">
                     <input type="hidden" name="userType" id="unbanFormUserType">
                     
                     <div class="alert alert-success">
-                        <h6><i class="fas fa-check-circle"></i> Xác nhận unban</h6>
-                        <p class="mb-0">Tài khoản người dùng sẽ được kích hoạt lại và nhận email thông báo.</p>
+                        <h6><i class="fas fa-check-circle"></i> <span th:text="#{unban.modal.confirm.title}">Xác nhận unban</span></h6>
+                        <p class="mb-0" th:text="#{unban.modal.confirm.message}">Tài khoản người dùng sẽ được kích hoạt lại và nhận email thông báo.</p>
                     </div>
                 </div>
                 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="fas fa-times"></i> Hủy
+                        <i class="fas fa-times"></i> <span th:text="#{unban.modal.cancel}">Hủy</span>
                     </button>
                     <button type="submit" class="btn btn-success">
-                        <i class="fas fa-unlock"></i> Xác nhận Unban
+                        <i class="fas fa-unlock"></i> <span th:text="#{unban.modal.confirm}">Xác nhận Unban</span>
                     </button>
                 </div>
             </form>

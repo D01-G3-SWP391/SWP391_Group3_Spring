@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Việc Làm Nổi Bật - Job4You</title>
+    <title th:text="#{topJobs.title}">Việc Làm Nổi Bật - Job4You</title>
 
     <!-- Libs CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -16,6 +16,10 @@
     <link rel="stylesheet" th:href="@{/css/navbarEnhanced.css}"/>
     <link rel="stylesheet" th:href="@{/css/topJobs.css}">
     <link rel="stylesheet" th:href="@{/css/footer.css}" />
+    <!-- Favorite Heart CSS -->
+    <link rel="stylesheet" th:href="@{/css/favoriteHeart.css}"/>
+    <!-- Favorite Jobs Dropdown CSS -->
+    <link rel="stylesheet" th:href="@{/css/favoriteJobsDropdown.css}"/>
     <style>
         .pagination {
             display: flex;
@@ -49,11 +53,21 @@
 <!-- Navigation -->
 <div th:replace="~{navbar/navbarHome}"></div>
 
+<!-- Flash Messages -->
+<div class="container mt-3">
+
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div>
+
 <div class="container my-5">
     <!-- Header -->
     <div class="text-center mb-5">
-        <h1 class="top-jobs-main-title">Việc Làm Nổi Bật</h1>
-        <p class="top-jobs-subtitle text-muted">Những cơ hội việc làm được ứng tuyển nhiều nhất từ các công ty hàng đầu</p>
+        <h1 class="top-jobs-main-title" th:text="#{topJobs.header}">Việc Làm Nổi Bật</h1>
+        <p class="top-jobs-subtitle text-muted" th:text="#{topJobs.subtitle}">Những cơ hội việc làm được ứng tuyển nhiều nhất từ các công ty hàng đầu</p>
     </div>
 
     <!-- Jobs Grid -->
@@ -64,7 +78,7 @@
                 <!-- Card Header -->
                 <div class="card-header-section">
                     <div class="company-logo">
-                                                        <img th:src="${job.employer.account.avatarUrl}"
+                        <img th:src="${job.employer.account.avatarUrl}"
                              th:alt="${job.employer.companyName}"
                              class="logo-img"
                              onerror="this.style.display='none'; this.parentElement.querySelector('.logo-fallback').style.display='flex';">
@@ -87,10 +101,11 @@
                     <div class="detail-item">
                         <i class="fas fa-money-bill-wave"></i>
                         <span th:if="${job.jobSalary != null}" th:text="${#numbers.formatInteger(job.jobSalary, 1, 'COMMA') + ' VND'}">Salary</span>
-                        <span th:if="${job.jobSalary == null}">Thỏa thuận</span>
+                        <span th:if="${job.jobSalary == null}" th:text="#{job.common.negotiable}">Thỏa thuận</span>
                     </div>
                     <div class="detail-item">
-                        <span class="job-type-badge" th:text="${job.jobType == 'FULL_TIME' ? 'Toàn thời gian' : 'Bán thời gian'}">Job Type</span>
+                        <span class="job-type-badge" th:if="${job.jobType == 'FULL_TIME'}" th:text="#{job.common.fullTime}">Full Time</span>
+                        <span class="job-type-badge" th:unless="${job.jobType == 'FULL_TIME'}" th:text="#{job.common.partTime}">Part Time</span>
                     </div>
                     <div class="detail-item">
                         <i class="fas fa-calendar-alt"></i>
@@ -105,18 +120,29 @@
                     </div>
                     <div class="stats-text">
                         <div class="stats-number" th:text="${job.appliedQuality}">0</div>
-                        <div class="stats-label">Lượt ứng tuyển</div>
+                        <div class="stats-label" th:text="#{topJobs.applications}">Lượt ứng tuyển</div>
                     </div>
                 </div>
 
                 <!-- Action Buttons -->
                 <div class="card-action-section">
                     <a th:href="@{/JobDescription/JobPost(id=${job.jobPostId})}" class="btn btn-primary btn-sm flex-grow-1">
-                        <i class="fas fa-eye me-1"></i> Xem chi tiết
+                        <i class="fas fa-eye me-1"></i> <span th:text="#{topJobs.viewDetails}">Xem chi tiết</span>
                     </a>
-                    <button class="btn btn-outline-secondary btn-sm" title="Lưu việc làm">
-                        <i class="far fa-heart"></i>
-                    </button>
+
+                    <!-- Favorite Heart Form - Chỉ cho Student -->
+<!--                    <div sec:authorize="isAuthenticated() and hasRole('student')">-->
+                    <div>
+                        <form method="post" th:action="@{/favorites/toggle-form}" style="display: inline;">
+                            <input type="hidden" name="jobPostId" th:value="${job.jobPostId}">
+                            <input type="hidden" name="redirectUrl" th:value="@{/top-jobs}">
+                            <button type="submit" class="favorite-heart-btn btn-sm"
+                                    th:classappend="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'favorited' : ''">
+                                <i th:class="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'fas fa-heart' : 'far fa-heart'"
+                                   th:style="${favoriteChecker != null and favoriteChecker.isFavorited(job.jobPostId)} ? 'color: #ff6987;' : 'color: #6c757d;'"></i>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -150,10 +176,10 @@
     <div th:if="${topJobsPage == null or topJobsPage.empty}" class="text-center py-5">
         <div class="empty-state">
             <i class="fas fa-briefcase fa-4x text-muted mb-3"></i>
-            <h4 class="text-muted">Chưa có việc làm nổi bật</h4>
-            <p class="text-muted">Hiện tại chưa có công việc nào được ứng tuyển.</p>
+            <h4 class="text-muted" th:text="#{topJobs.noJobs}">Chưa có việc làm nổi bật</h4>
+            <p class="text-muted" th:text="#{topJobs.noJobsDesc}">Hiện tại chưa có công việc nào được ứng tuyển.</p>
             <a href="/" class="btn btn-primary mt-3">
-                <i class="fas fa-home me-2"></i> Về trang chủ
+                <i class="fas fa-home me-2"></i> <span th:text="#{topJobs.backHome}">Về trang chủ</span>
             </a>
         </div>
     </div>
@@ -172,5 +198,11 @@
 <!-- Libs JS -->
 <script th:src="@{/js/main.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- AI Chatbox Fragment -->
+<div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
+
+<!-- Chat Notification Fragment -->
+<div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
+
 </body>
 </html>

@@ -8,7 +8,7 @@
     <title th:text="#{admin.list.employers.title} + ' - Admin'">Employer Management - Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarAdmin.css}">
     <link rel="stylesheet" th:href="@{/css/adminCommon.css}">
     <link rel="stylesheet" th:href="@{/css/pagination.css}">
@@ -77,7 +77,7 @@
             <table class="table table-hover admin-table">
                 <thead>
                 <tr>
-                    <th><i class="bi bi-person-circle me-2"></i><span th:text="#{admin.list.employers.avatar}">Avatar</span></th>
+                    <th><i class="bi bi-person-circle me-2"></i><span  th:text="#{admin.list.employers.avatar}">Avatar</span></th>
                     <th><i class="bi bi-person me-2"></i><span th:text="#{admin.list.employers.name}">Name</span></th>
                     <th><i class="bi bi-envelope me-2"></i><span th:text="#{admin.list.employers.email}">Email</span></th>
                     <th><i class="bi bi-telephone me-2"></i><span th:text="#{admin.list.employers.phone}">Phone</span></th>
@@ -89,7 +89,7 @@
                 <tr th:each="employer : ${employerList}">
                     <td>
                         <img class="avatar"
-                             th:src="${employer.avatarUrl != null ? employer.avatarUrl : '/images/default-avatar.png'}"
+                             th:src="${employer.avatarUrl != null and employer.avatarUrl != '' ? employer.avatarUrl : '/images/employee.jpeg'}"
                              th:alt="${employer.fullName}" />
                     </td>
                     <td>
@@ -115,7 +115,7 @@
 
                                 <button th:if="${employer.status.name() == 'active'}"
                                    class="btn btn-sm btn-danger"
-                                   data-bs-toggle="modal" 
+                                   data-bs-toggle="modal"
                                    th:data-bs-target="'#banEmployerModal' + ${employer.userId}">
                                     <i class="bi bi-person-x"></i> Ban
                                 </button>
@@ -124,9 +124,6 @@
                                       th:action="@{/Admin/processUnban}" method="post" style="display: inline;">
                                     <input type="hidden" name="userId" th:value="${employer.userId}">
                                     <input type="hidden" name="userType" value="employer">
-                                    <input type="hidden" name="currentPage" th:value="${currentPage}">
-                                    <input type="hidden" name="keyword" th:value="${keyword}">
-                                    <input type="hidden" name="status" th:value="${selectedStatus}">
                                     <button type="submit" class="btn btn-sm btn-success"
                                             onclick="return confirm('Are you sure you want to unban this employer?')">
                                         <i class="bi bi-person-check"></i> Unban
@@ -165,7 +162,7 @@
                                     <h6><i class="fas fa-user me-2"></i>Thông tin người dùng</h6>
                                     <p><strong>Tên:</strong> <span th:text="${employer.fullName}"></span></p>
                                     <p><strong>Email:</strong> <span th:text="${employer.email}"></span></p>
-                                    <p class="mb-0"><strong>Loại:</strong> 
+                                    <p class="mb-0"><strong>Loại:</strong>
                                         <span class="badge bg-danger">
                                             <i class="fas fa-building me-1"></i>Employer
                                         </span>
@@ -197,8 +194,8 @@
                                     <label class="form-label" style="color: white; font-weight: bold;">
                                         <i class="fas fa-comment me-2"></i>Mô tả chi tiết (tùy chọn)
                                     </label>
-                                    <textarea class="form-control" name="banDescription" 
-                                            rows="3" placeholder="Mô tả chi tiết lý do ban..." maxlength="1000" 
+                                    <textarea class="form-control" name="banDescription"
+                                            rows="3" placeholder="Mô tả chi tiết lý do ban..." maxlength="1000"
                                             style="background-color: white; color: black; border: 2px solid #ffffff;"></textarea>
                                     <div class="form-text" style="color: #ffff99;">Tối đa 1000 ký tự</div>
                                 </div>
@@ -212,7 +209,7 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="banDurationType" 
+                                                <input class="form-check-input" type="radio" name="banDurationType"
                                                        value="TEMPORARY" checked>
                                                 <label class="form-check-label" style="color: white; font-weight: bold;">
                                                     <i class="fas fa-hourglass-half me-1"></i>Tạm thời
@@ -221,7 +218,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="banDurationType" 
+                                                <input class="form-check-input" type="radio" name="banDurationType"
                                                        value="PERMANENT">
                                                 <label class="form-check-label" style="color: white; font-weight: bold;">
                                                     <i class="fas fa-ban me-1"></i>Vĩnh viễn
@@ -236,7 +233,7 @@
                                     <label class="form-label" style="color: white; font-weight: bold;">
                                         <i class="fas fa-calendar-alt me-2"></i>Số ngày ban (chỉ áp dụng cho ban tạm thời)
                                     </label>
-                                    
+
                                     <input type="number" class="form-control" name="banDurationDays"
                                            min="1" max="365" value="30" placeholder="Nhập số ngày ban (để trống nếu ban vĩnh viễn)"
                                            style="background-color: white; color: black; border: 2px solid #ffffff;">
