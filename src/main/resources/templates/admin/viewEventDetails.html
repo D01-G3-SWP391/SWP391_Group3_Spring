@@ -86,7 +86,8 @@
                   <span class="info-label">
                     <i class="bi bi-clock me-2"></i><span th:text="#{admin.event.details.deadline}">Registration Deadline</span>
                   </span>
-                  <span class="info-value" th:text="${event.registrationDeadline != null ? #temporals.format(event.registrationDeadline, 'dd/MM/yyyy HH:mm') : ''} ?: #{admin.event.details.no.deadline}"></span>
+                  <span class="info-value" th:if="${event.registrationDeadline != null}" th:text="${#temporals.format(event.registrationDeadline, 'dd/MM/yyyy HH:mm')}"></span>
+                  <span class="info-value" th:unless="${event.registrationDeadline != null}" th:text="#{admin.event.details.no.deadline}"></span>
                 </div>
 
                 <div class="info-row">
@@ -106,14 +107,16 @@
                   <span class="info-label">
                     <i class="bi bi-envelope me-2"></i><span th:text="#{admin.event.details.contact.email}">Contact Email</span>
                   </span>
-                  <span class="info-value" th:text="${event.contactEmail} ?: #{admin.event.details.not.applicable}"></span>
+                  <span class="info-value" th:if="${event.contactEmail != null and !#strings.isEmpty(event.contactEmail)}" th:text="${event.contactEmail}"></span>
+                  <span class="info-value" th:unless="${event.contactEmail != null and !#strings.isEmpty(event.contactEmail)}" th:text="#{admin.event.details.not.applicable}"></span>
                 </div>
 
                 <div class="info-row">
                   <span class="info-label">
                     <i class="bi bi-calendar-plus me-2"></i><span th:text="#{admin.event.details.created.date}">Created Date</span>
                   </span>
-                  <span class="info-value" th:text="${event.createdAt != null ? #temporals.format(event.createdAt, 'dd/MM/yyyy HH:mm') : ''} ?: #{admin.event.details.not.applicable}"></span>
+                  <span class="info-value" th:if="${event.createdAt != null}" th:text="${#temporals.format(event.createdAt, 'dd/MM/yyyy HH:mm')}"></span>
+                  <span class="info-value" th:unless="${event.createdAt != null}" th:text="#{admin.event.details.not.applicable}"></span>
                 </div>
               </div>
             </div>
@@ -177,7 +180,8 @@
                 <span class="info-label">
                   <i class="bi bi-building me-2"></i><span th:text="#{admin.event.details.company}">Company</span>
                 </span>
-                <span class="info-value" th:text="${event.employer?.companyName} ?: #{admin.event.details.not.applicable}"></span>
+                <span class="info-value" th:if="${event.employer != null and event.employer.companyName != null and !#strings.isEmpty(event.employer.companyName)}" th:text="${event.employer.companyName}"></span>
+                <span class="info-value" th:unless="${event.employer != null and event.employer.companyName != null and !#strings.isEmpty(event.employer.companyName)}" th:text="#{admin.event.details.not.applicable}"></span>
               </div>
 
               <div class="info-row">

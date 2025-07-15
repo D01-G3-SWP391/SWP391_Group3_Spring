@@ -115,8 +115,23 @@ public interface IJobPostRepository extends JpaRepository<JobPost, Integer> {
                                         Pageable pageable);
 //    phan trang jobPost
     Page<JobPost> findByEmployerOrderByCreatedAtDesc(Employer employer, Pageable pageable);
+    
+    // Find job posts by employer with display status filter
+    @Query("SELECT jp FROM JobPost jp WHERE jp.employer = :employer AND jp.displayStatus = :displayStatus ORDER BY jp.createdAt DESC")
+    Page<JobPost> findByEmployerAndDisplayStatusOrderByCreatedAtDesc(@Param("employer") Employer employer, 
+                                                                     @Param("displayStatus") JobPost.DisplayStatus displayStatus, 
+                                                                     Pageable pageable);
+    
+    // Find all job posts by employer and display status (without pagination)
+    @Query("SELECT jp FROM JobPost jp WHERE jp.employer = :employer AND jp.displayStatus = :displayStatus ORDER BY jp.createdAt DESC")
+    List<JobPost> findByEmployerAndDisplayStatus(@Param("employer") Employer employer, 
+                                                 @Param("displayStatus") JobPost.DisplayStatus displayStatus);
+    
 ////    pendding
     long countByEmployer(Employer employer);
     long countByEmployerAndApprovalStatus(Employer employer, JobPost.ApprovalStatus approvalStatus);
+    
+    // Count job posts by employer and display status
+    long countByEmployerAndDisplayStatus(Employer employer, JobPost.DisplayStatus displayStatus);
 
 }

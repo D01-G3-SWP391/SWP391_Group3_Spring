@@ -104,7 +104,8 @@
                         <span th:if="${job.jobSalary == null}" th:text="#{job.common.negotiable}">Thỏa thuận</span>
                     </div>
                     <div class="detail-item">
-                        <span class="job-type-badge" th:text="${job.jobType == 'FULL_TIME' ? #{job.common.fullTime} : #{job.common.partTime}}">Job Type</span>
+                        <span class="job-type-badge" th:if="${job.jobType == 'FULL_TIME'}" th:text="#{job.common.fullTime}">Full Time</span>
+                        <span class="job-type-badge" th:unless="${job.jobType == 'FULL_TIME'}" th:text="#{job.common.partTime}">Part Time</span>
                     </div>
                     <div class="detail-item">
                         <i class="fas fa-calendar-alt"></i>
@@ -130,7 +131,7 @@
                     </a>
 
                     <!-- Favorite Heart Form - Chỉ cho Student -->
-<!--                    <div sec:authorize="isAuthenticated() and hasRole('student')">-->
+                    <!--                    <div sec:authorize="isAuthenticated() and hasRole('student')">-->
                     <div>
                         <form method="post" th:action="@{/favorites/toggle-form}" style="display: inline;">
                             <input type="hidden" name="jobPostId" th:value="${job.jobPostId}">
@@ -156,12 +157,12 @@
                     <i class="bi bi-chevron-left"></i>
                 </a>
             </li>
-            
+
             <!-- Current Page Only -->
             <li class="page-item active">
                 <a class="page-link" href="#" th:text="${topJobsPage.number + 1}">1</a>
             </li>
-            
+
             <!-- Next Button -->
             <li class="page-item" th:classappend="${topJobsPage.last} ? 'disabled'">
                 <a class="page-link" th:href="@{/top-jobs(page=${topJobsPage.number + 1})}">

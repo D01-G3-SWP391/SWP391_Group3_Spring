@@ -9,6 +9,7 @@
     <title th:text="#{employer.invitations.title}">Quản lý lời mời việc làm</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
     <link rel="stylesheet" th:href="@{/css/navbar.css}" />
@@ -393,6 +394,14 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script th:src="@{/js/language-dropdown.js}"></script>
+<div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
+<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
+
+<!-- AI Chatbox Fragment -->
+<div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
+
+<!-- Chat Notification Fragment -->
+<div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
 <!-- Simple JavaScript inline -->
 <script>
 // Simple modal handling
@@ -451,5 +460,6 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- Chat Notification Fragment -->
 <div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
 
+<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
 </body>
 </html> 

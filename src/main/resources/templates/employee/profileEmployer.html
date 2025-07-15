@@ -6,6 +6,7 @@
   <title th:text="#{employer.dashboard.title}">Employer Dashboard - JOB4YOU</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
 <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
 <link rel="stylesheet" th:href="@{/css/navbar.css}" />
@@ -59,7 +60,8 @@
               <i class="bi bi-telephone info-icon"></i>
               <div class="info-content">
                 <div class="info-label" th:text="#{employer.phone}">Phone number</div>
-                <div class="info-value" th:text="${currentAccount.phone} ?: #{employer.notUpdated}">Số điện thoại</div>
+                <div class="info-value" th:if="${currentAccount.phone != null and !#strings.isEmpty(currentAccount.phone)}" th:text="${currentAccount.phone}"></div>
+            <div class="info-value" th:unless="${currentAccount.phone != null and !#strings.isEmpty(currentAccount.phone)}" th:text="#{employer.notUpdated}"></div>
               </div>
             </div>
 
@@ -67,7 +69,8 @@
               <i class="bi bi-geo-alt info-icon"></i>
               <div class="info-content">
                 <div class="info-label" th:text="#{employer.address}">Address</div>
-                <div class="info-value" th:text="${employer.companyAddress} ?: #{employer.notUpdated}">Địa chỉ</div>
+                <div class="info-value" th:if="${employer.companyAddress != null and !#strings.isEmpty(employer.companyAddress)}" th:text="${employer.companyAddress}"></div>
+            <div class="info-value" th:unless="${employer.companyAddress != null and !#strings.isEmpty(employer.companyAddress)}" th:text="#{employer.notUpdated}"></div>
               </div>
             </div>
 
@@ -130,7 +133,6 @@
   </div>
 
   <!-- Add notification bell -->
-  <div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
   <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
 
   <!-- Bootstrap JS -->
