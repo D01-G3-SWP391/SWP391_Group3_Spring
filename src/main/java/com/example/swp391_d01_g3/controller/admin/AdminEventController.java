@@ -227,7 +227,7 @@ public class AdminEventController {
                                        RedirectAttributes redirectAttributes) {
         try {
             Event.ApprovalStatus approvalStatus = Event.ApprovalStatus.valueOf(newStatus.toUpperCase());
-            
+
             if (approvalStatus == Event.ApprovalStatus.APPROVED) {
                 adminEventService.confirmEvent(eventId);
             } else if (approvalStatus == Event.ApprovalStatus.REJECTED) {
@@ -252,4 +252,5 @@ public class AdminEventController {
         }
         return "redirect:/Admin/Events";
     }
+
 }
