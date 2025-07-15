@@ -79,14 +79,16 @@
           <span class="info-label">
             <i class="bi bi-people me-2"></i><span th:text="#{admin.events.confirm.max.participants}">Max Participants</span>
           </span>
-          <span class="info-value" th:text="${event.maxParticipants} ?: #{admin.events.confirm.max.participants.unlimited}"></span>
+          <span class="info-value" th:if="${event.maxParticipants != null}" th:text="${event.maxParticipants}"></span>
+          <span class="info-value" th:unless="${event.maxParticipants != null}" th:text="#{admin.events.confirm.max.participants.unlimited}"></span>
         </div>
 
         <div class="info-row">
           <span class="info-label">
             <i class="bi bi-envelope me-2"></i><span th:text="#{admin.events.create.form.contact.email}">Contact Email</span>
           </span>
-          <span class="info-value" th:text="${event.contactEmail} ?: #{admin.events.confirm.contact.email.na}"></span>
+          <span class="info-value" th:if="${event.contactEmail != null and !#strings.isEmpty(event.contactEmail)}" th:text="${event.contactEmail}"></span>
+          <span class="info-value" th:unless="${event.contactEmail != null and !#strings.isEmpty(event.contactEmail)}" th:text="#{admin.events.confirm.contact.email.na}"></span>
         </div>
 
         <div class="info-row">

@@ -66,7 +66,7 @@
                 <!-- Empty state -->
                 <div th:if="${favoriteJobs == null or favoriteJobs.isEmpty()}"
                      class="dropdown-item text-center text-muted">
-                  <i class="bi bi-heart"></i> <span th:text="#{nav.noFavoriteJobs}">Chưa có việc làm yêu thích</span>
+                  <i class="bi bi-heart"></i> Chưa có việc làm yêu thích
                 </div>
 
                 <!-- Favorite jobs list -->
@@ -81,7 +81,7 @@
                         </p>
                         <p class="fav-job-location">
                           <i class="bi bi-geo-alt"></i>
-                          <span th:text="${job.jobLocation != null ? job.jobLocation : #{nav.location.unknown}}">Location</span>
+                          <span th:text="${job.jobLocation != null ? job.jobLocation : 'Không rõ'}">Location</span>
                         </p>
                         <p th:if="${job.jobSalary != null}" class="fav-job-salary">
                           <i class="bi bi-cash"></i>
@@ -154,13 +154,13 @@
                 <span class="flag">
                   <img src="https://shairportlounge.com.vn/vnt_upload/lang/flag_vn.svg" alt="VN Flag">
                 </span>
-                <span class="lang-text" th:text="#{nav.language.vietnamese}">Tiếng Việt</span>
+                <span class="lang-text">Tiếng Việt</span>
               </a>
               <a href="?lang=en" class="language-option" th:classappend="${#locale.language == 'en'} ? 'active'">
                 <span class="flag">
                   <img src="https://shairportlounge.com.vn/vnt_upload/lang/flag_en.svg" alt="EN Flag">
                 </span>
-                <span class="lang-text" th:text="#{nav.language.english}">English</span>
+                <span class="lang-text">English</span>
               </a>
             </div>
           </div>

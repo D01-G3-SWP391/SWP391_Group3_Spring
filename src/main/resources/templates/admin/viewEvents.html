@@ -98,7 +98,8 @@
             </span>
             <span th:if="${event.maxParticipants == null}" th:text="' (' + #{admin.events.unlimited} + ')'"> (Unlimited)</span>
           </td>
-          <td th:text="${event.employer?.companyName} ?: #{admin.events.not.applicable}"></td>
+                          <td th:if="${event.employer != null and event.employer.companyName != null and !#strings.isEmpty(event.employer.companyName)}" th:text="${event.employer.companyName}"></td>
+                <td th:unless="${event.employer != null and event.employer.companyName != null and !#strings.isEmpty(event.employer.companyName)}" th:text="#{admin.events.not.applicable}"></td>
           <td>
             <!-- THÊM: Clickable Status Badges -->
             <a th:href="@{/Admin/Events(status=${event.approvalStatus.name()}, keyword=${keyword})}"
