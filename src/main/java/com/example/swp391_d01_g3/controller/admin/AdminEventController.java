@@ -220,4 +220,35 @@ public class AdminEventController {
             return "redirect:/Admin/Events";
         }
     }
+    @PostMapping("/ToggleApprovalStatus/{id}")
+    public String toggleApprovalStatus(@PathVariable("id") Integer eventId,
+                                       @RequestParam("newApprovalStatus") String newStatus,
+                                       RedirectAttributes redirectAttributes) {
+        try {
+            Event.ApprovalStatus approvalStatus = Event.ApprovalStatus.valueOf(newStatus.toUpperCase());
+
+            if (approvalStatus == Event.ApprovalStatus.APPROVED) {
+                adminEventService.confirmEvent(eventId);
+            } else if (approvalStatus == Event.ApprovalStatus.REJECTED) {
+                adminEventService.rejectEvent(eventId, "Status changed by admin");
+            } else if (approvalStatus == Event.ApprovalStatus.PENDING) {
+                // Set event back to pending status
+                Event event = adminEventService.getEventById(eventId);
+                if (event != null) {
+                    event.setApprovalStatus(Event.ApprovalStatus.PENDING);
+                    event.setApprovedAt(null);
+                    event.setApprovedBy(null);
+                    adminEventService.updateEvent(eventId, event);
+                }
+            }
+
+            String message = String.format("Event status changed to %s successfully", newStatus);
+            redirectAttributes.addFlashAttribute("success", message);
+
+        } catch (Exception e) {
+            logger.error("Error toggling approval status: ", e);
+            redirectAttributes.addFlashAttribute("error", "Error changing event status: " + e.getMessage());
+        }
+        return "redirect:/Admin/Events";
+    }
 }
