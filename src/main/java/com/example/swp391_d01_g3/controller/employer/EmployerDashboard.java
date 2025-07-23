@@ -19,6 +19,8 @@ import com.example.swp391_d01_g3.service.notification.INotificationService;
 import com.example.swp391_d01_g3.service.student.IStudentService;
 import com.example.swp391_d01_g3.service.jobinvitation.IJobInvitationService;
 import com.example.swp391_d01_g3.service.jobpost.IJobpostService;
+import com.example.swp391_d01_g3.service.employer.IDashboardService;
+import com.example.swp391_d01_g3.dto.EmployerDashboardDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -85,6 +87,9 @@ public class EmployerDashboard {
     @Autowired
     private IJobpostService jobPostService;
 
+    @Autowired
+    private IDashboardService dashboardService;
+
     @GetMapping("")
     public String showEmployeeDashboard(Model model, Principal principal) {
         if (principal != null) {
@@ -94,6 +99,12 @@ public class EmployerDashboard {
                 Employer employer = employerService.findByUserId(currentAccount.getUserId());
                 model.addAttribute("account", currentAccount);
                 model.addAttribute("employer", employer);
+                
+                // Get dashboard statistics
+                if (employer != null) {
+                    EmployerDashboardDTO dashboardData = dashboardService.getEmployerDashboard(employer.getEmployerId());
+                    model.addAttribute("dashboardData", dashboardData);
+                }
             }
         }
         return "employee/dashboardEmployee";
