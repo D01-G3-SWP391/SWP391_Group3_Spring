@@ -15,11 +15,21 @@ public class EmployerDashboardDTO {
     private Long activeJobPosts;
     private Long hiddenJobPosts;
     
+    // Event Statistics
+    private Long totalEvents;
+    private Long upcomingEvents;
+    private Long pastEvents;
+    private Long totalEventParticipants;
+    
     // Chart Data
     private List<JobPostStatsDTO> jobPostStats;
     private List<ApplicationTrendDTO> applicationTrends;
     private Map<String, Long> applicationStatusChart;
     private List<JobPostPopularityDTO> popularJobPosts;
+    
+    // Event Data
+    private List<EventStatsDTO> eventStats;
+    private List<RecentEventDTO> recentEvents;
     
     // Recent Activities
     private List<RecentApplicationDTO> recentApplications;
@@ -64,6 +74,25 @@ public class EmployerDashboardDTO {
     
     public Long getHiddenJobPosts() { return hiddenJobPosts; }
     public void setHiddenJobPosts(Long hiddenJobPosts) { this.hiddenJobPosts = hiddenJobPosts; }
+    
+    // Event getters and setters
+    public Long getTotalEvents() { return totalEvents; }
+    public void setTotalEvents(Long totalEvents) { this.totalEvents = totalEvents; }
+    
+    public Long getUpcomingEvents() { return upcomingEvents; }
+    public void setUpcomingEvents(Long upcomingEvents) { this.upcomingEvents = upcomingEvents; }
+    
+    public Long getPastEvents() { return pastEvents; }
+    public void setPastEvents(Long pastEvents) { this.pastEvents = pastEvents; }
+    
+    public Long getTotalEventParticipants() { return totalEventParticipants; }
+    public void setTotalEventParticipants(Long totalEventParticipants) { this.totalEventParticipants = totalEventParticipants; }
+    
+    public List<EventStatsDTO> getEventStats() { return eventStats; }
+    public void setEventStats(List<EventStatsDTO> eventStats) { this.eventStats = eventStats; }
+    
+    public List<RecentEventDTO> getRecentEvents() { return recentEvents; }
+    public void setRecentEvents(List<RecentEventDTO> recentEvents) { this.recentEvents = recentEvents; }
     
     public List<JobPostStatsDTO> getJobPostStats() { return jobPostStats; }
     public void setJobPostStats(List<JobPostStatsDTO> jobPostStats) { this.jobPostStats = jobPostStats; }
