@@ -58,15 +58,9 @@ function extractDataFromThymeleaf() {
         });
     }
     
-    // Create mock data for demonstration
-    const mockData = {
-        jobPostStats: jobPostData.length > 0 ? jobPostData : [
-            { jobTitle: 'Software Engineer', applicationCount: 25 },
-            { jobTitle: 'Product Manager', applicationCount: 18 },
-            { jobTitle: 'UI/UX Designer', applicationCount: 12 },
-            { jobTitle: 'Data Analyst', applicationCount: 8 },
-            { jobTitle: 'Marketing Specialist', applicationCount: 15 }
-        ],
+    // Use actual data only, no mock data
+    const dashboardData = {
+        jobPostStats: jobPostData,
         applicationStatusChart: {
             'PENDING': stats.pendingApplications,
             'INTERVIEW': stats.interviewApplications,
@@ -74,27 +68,28 @@ function extractDataFromThymeleaf() {
             'REJECTED': Math.max(0, stats.totalApplications - stats.pendingApplications - stats.interviewApplications - stats.acceptedApplications)
         },
         applicationTrends: window.backendDashboardData && window.backendDashboardData.applicationTrends && window.backendDashboardData.applicationTrends.length > 0 ? 
-            window.backendDashboardData.applicationTrends : generateMockTrends()
+            window.backendDashboardData.applicationTrends : []
     };
     
     // Set global data and initialize charts
-    window.dashboardData = mockData;
+    window.dashboardData = dashboardData;
     initializeDashboardCharts();
 }
 
-function generateMockTrends() {
-    const trends = [];
-    const today = new Date();
-    for (let i = 29; i >= 0; i--) {
-        const date = new Date(today);
-        date.setDate(date.getDate() - i);
-        trends.push({
-            date: date.toISOString().split('T')[0],
-            applicationCount: Math.floor(Math.random() * 10) + 1
-        });
-    }
-    return trends;
-}
+// Remove mock trends generation function
+// function generateMockTrends() {
+//     const trends = [];
+//     const today = new Date();
+//     for (let i = 29; i >= 0; i--) {
+//         const date = new Date(today);
+//         date.setDate(date.getDate() - i);
+//         trends.push({
+//             date: date.toISOString().split('T')[0],
+//             applicationCount: Math.floor(Math.random() * 10) + 1
+//         });
+//     }
+//     return trends;
+// }
 
 function initializeDashboardCharts() {
     const data = window.dashboardData;
@@ -110,8 +105,11 @@ function createJobPostChart(jobPostStats) {
     const ctx = document.getElementById('jobPostChart');
     if (!ctx) return;
     
-    const labels = jobPostStats.map(item => item.jobTitle);
-    const data = jobPostStats.map(item => item.applicationCount);
+    // Use empty data array if no data is available
+    const labels = jobPostStats && jobPostStats.length > 0 ? 
+        jobPostStats.map(item => item.jobTitle) : [];
+    const data = jobPostStats && jobPostStats.length > 0 ? 
+        jobPostStats.map(item => item.applicationCount) : [];
     
     new Chart(ctx, {
         type: 'bar',
@@ -222,21 +220,15 @@ function createStatusChart(applicationStatusChart) {
         colors.push('rgba(220, 53, 69, 0.8)');
     }
     
-    // If no data, show placeholder
-    if (data.length === 0) {
-        labels.push('No Applications');
-        data.push(1);
-        colors.push('rgba(108, 117, 125, 0.3)');
-    }
-    
+    // Always create chart even with no data
     new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: labels,
+            labels: labels.length > 0 ? labels : ['No Data'],
             datasets: [{
-                data: data,
-                backgroundColor: colors,
-                borderColor: colors.map(color => color.replace('0.8', '1')),
+                data: data.length > 0 ? data : [1],
+                backgroundColor: colors.length > 0 ? colors : ['rgba(200, 200, 200, 0.2)'],
+                borderColor: colors.length > 0 ? colors.map(color => color.replace('0.8', '1')) : ['rgba(200, 200, 200, 0.5)'],
                 borderWidth: 2,
                 hoverOffset: 4
             }]
@@ -254,6 +246,7 @@ function createStatusChart(applicationStatusChart) {
                     }
                 },
                 tooltip: {
+                    enabled: data.length > 0,
                     backgroundColor: 'rgba(0, 0, 0, 0.8)',
                     titleColor: 'white',
                     bodyColor: 'white',
@@ -262,6 +255,7 @@ function createStatusChart(applicationStatusChart) {
                     cornerRadius: 8,
                     callbacks: {
                         label: function(context) {
+                            if (data.length === 0) return '';
                             const total = context.dataset.data.reduce((a, b) => a + b, 0);
                             const percentage = ((context.parsed * 100) / total).toFixed(1);
                             return context.label + ': ' + context.parsed + ' (' + percentage + '%)';
@@ -283,20 +277,38 @@ function createTrendsChart(applicationTrends) {
     const ctx = document.getElementById('trendsChart');
     if (!ctx) return;
     
-    const labels = applicationTrends.map(item => {
-        // Handle both backend date format and mock date format
-        let date;
-        if (typeof item.date === 'string') {
-            date = new Date(item.date);
-        } else if (item.date && item.date.year && item.date.month && item.date.day) {
-            // Backend LocalDate format: {year: 2024, month: 1, day: 15}
-            date = new Date(item.date.year, item.date.month - 1, item.date.day);
-        } else {
-            date = new Date(item.date);
+    // Use empty arrays if no data
+    const hasData = applicationTrends && applicationTrends.length > 0;
+    
+    // Generate labels for the past 30 days if no data
+    let labels = [];
+    let data = [];
+    
+    if (hasData) {
+        labels = applicationTrends.map(item => {
+            // Handle both backend date format and mock date format
+            let date;
+            if (typeof item.date === 'string') {
+                date = new Date(item.date);
+            } else if (item.date && item.date.year && item.date.month && item.date.day) {
+                // Backend LocalDate format: {year: 2024, month: 1, day: 15}
+                date = new Date(item.date.year, item.date.month - 1, item.date.day);
+            } else {
+                date = new Date(item.date);
+            }
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        });
+        data = applicationTrends.map(item => item.applicationCount);
+    } else {
+        // Generate empty labels for the past 30 days
+        const today = new Date();
+        for (let i = 29; i >= 0; i--) {
+            const date = new Date(today);
+            date.setDate(date.getDate() - i);
+            labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+            data.push(0); // All zeros for no data
         }
-        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    });
-    const data = applicationTrends.map(item => item.applicationCount);
+    }
     
     new Chart(ctx, {
         type: 'line',
