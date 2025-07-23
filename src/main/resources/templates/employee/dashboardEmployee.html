@@ -8,8 +8,10 @@
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
           rel="stylesheet"
   />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-  <!-- NEW NAVBAR CSS - Load LAST to override old styles -->
+
+    <!-- NEW NAVBAR CSS - Load LAST to override old styles -->
   <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
   <link rel="stylesheet" th:href="@{/css/navbarHome.css}"/>
   <link rel="stylesheet" th:href="@{/css/navbar.css}"/>
@@ -24,17 +26,196 @@
 
 <!-- Main Content Area -->
 <div class="main-content">
-<p th:text="#{employer.dashboard.welcome}">Welcome to the THCLT JOBS Employer Dashboard.</p>
+    <div class="dashboard-container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Dashboard</h1>
+            <p class="dashboard-subtitle">Overview of your job posts and applications</p>
+        </div>
 
-<!-- Dashboard Cards Section -->
-<!---->
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <!-- Total Job Posts -->
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="bi bi-briefcase"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-number" th:text="${dashboardData.totalJobPosts}">0</h3>
+                    <p class="stat-label">Total Job Posts</p>
+                </div>
+            </div>
 
-<script th:src="@{/js/navbarAdmin.js}"></script>
-<script th:src="@{/js/languageSwitch.js}"></script>
-<script th:src="@{/js/language-dropdown.js}"></script>
+            <!-- Total Applications -->
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="bi bi-people"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-number" th:text="${dashboardData.totalApplications}">0</h3>
+                    <p class="stat-label">Total Applications</p>
+                </div>
+            </div>
 
-<!-- Add notification bell -->
-<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
+            <!-- Pending Applications -->
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="bi bi-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-number" th:text="${dashboardData.pendingApplications}">0</h3>
+                    <p class="stat-label">Submitted Applications</p>
+                </div>
+            </div>
+
+            <!-- Interview Applications -->
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="bi bi-person-video"></i>
+                </div>
+                <div class="stat-content">
+                    <h3 class="stat-number" th:text="${dashboardData.interviewApplications}">0</h3>
+                    <p class="stat-label">Interview Applications</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-section">
+            <div class="charts-row">
+                <!-- Job Post Applications Chart -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Applications per Job Post</h3>
+                        <p>Number of applications received for each job post</p>
+                    </div>
+                    <div class="chart-content">
+                        <canvas id="jobPostChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Application Status Chart -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Application Status Distribution</h3>
+                        <p>Status breakdown of all applications</p>
+                    </div>
+                    <div class="chart-content">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Application Trends Chart -->
+            <div class="chart-container full-width">
+                <div class="chart-header">
+                    <h3>Application Trends (Last 30 Days)</h3>
+                    <p>Daily application trends over the past month</p>
+                </div>
+                <div class="chart-content">
+                    <canvas id="trendsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tables Section -->
+        <div class="tables-section">
+            <div class="tables-row">
+                <!-- Popular Job Posts -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Most Popular Job Posts</h3>
+                        <p>Top job posts by application count</p>
+                    </div>
+                    <div class="table-content">
+                        <table class="dashboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Job Title</th>
+                                    <th>Applications</th>
+                                    <th>Posted Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="job : ${dashboardData.popularJobPosts}">
+                                    <td class="job-title" th:text="${job.jobTitle}">Job Title</td>
+                                    <td class="application-count" th:text="${job.applicationCount}">0</td>
+                                    <td class="posted-date" th:text="${job.createdAt}">Date</td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(dashboardData.popularJobPosts)}">
+                                    <td colspan="3" class="no-data">No data available</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Recent Applications -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Recent Applications</h3>
+                        <p>Latest applications received</p>
+                    </div>
+                    <div class="table-content">
+                        <table class="dashboard-table">
+                            <thead>
+                                <tr>
+                                    <th>Candidate Name</th>
+                                    <th>Job Title</th>
+                                    <th>Applied Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="app : ${dashboardData.recentApplications}">
+                                    <td class="candidate-name" th:text="${app.candidateName}">Candidate Name</td>
+                                    <td class="job-title" th:text="${app.jobTitle}">Job Title</td>
+                                    <td class="applied-date" th:text="${app.appliedAt}">Date</td>
+                                    <td class="status">
+                                        <span class="status-badge" th:classappend="${app.status.toLowerCase()}" th:text="${app.status}">Status</span>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(dashboardData.recentApplications)}">
+                                    <td colspan="4" class="no-data">No recent applications</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Pass backend data to JavaScript -->
+    <script th:inline="javascript">
+        window.backendDashboardData = {
+            stats: {
+                totalJobPosts: /*[[${dashboardData.totalJobPosts}]]*/ 0,
+                totalApplications: /*[[${dashboardData.totalApplications}]]*/ 0,
+                pendingApplications: /*[[${dashboardData.pendingApplications}]]*/ 0,
+                interviewApplications: /*[[${dashboardData.interviewApplications}]]*/ 0,
+                acceptedApplications: /*[[${dashboardData.acceptedApplications}]]*/ 0,
+                rejectedApplications: /*[[${dashboardData.rejectedApplications}]]*/ 0
+            },
+            jobPostStats: /*[[${dashboardData.jobPostStats}]]*/ [],
+            applicationTrends: /*[[${dashboardData.applicationTrends}]]*/ [],
+            applicationStatusChart: /*[[${dashboardData.applicationStatusChart}]]*/ {},
+            popularJobPosts: /*[[${dashboardData.popularJobPosts}]]*/ [],
+            recentApplications: /*[[${dashboardData.recentApplications}]]*/ []
+        };
+    </script>
+    
+    <script th:src="@{/js/dashboard-charts.js}"></script>
+    <script th:src="@{/js/navbarAdmin.js}"></script>
+    <script th:src="@{/js/languageSwitch.js}"></script>
+    <script th:src="@{/js/language-dropdown.js}"></script>
+
+    <!-- Add notification bell -->
+    <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
 </div> <!-- Close main-content -->
 </body>
 </html>

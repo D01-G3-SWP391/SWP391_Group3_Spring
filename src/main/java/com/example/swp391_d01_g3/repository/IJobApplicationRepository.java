@@ -68,4 +68,67 @@ public interface IJobApplicationRepository extends JpaRepository<JobApplication,
                                                                  @Param("keyword") String keyword,
                                                                  Pageable pageable);
 
+    // Dashboard Statistics Queries
+    
+    // Count total applications for employer
+    @Query("SELECT COUNT(ja) FROM JobApplication ja " +
+           "JOIN ja.jobPost jp " +
+           "WHERE jp.employer.employerId = :employerId")
+    Long countApplicationsByEmployerId(@Param("employerId") Integer employerId);
+    
+    // Count applications by status for employer
+    @Query("SELECT COUNT(ja) FROM JobApplication ja " +
+           "JOIN ja.jobPost jp " +
+           "WHERE jp.employer.employerId = :employerId " +
+           "AND ja.status = :status")
+    Long countApplicationsByEmployerIdAndStatus(@Param("employerId") Integer employerId, 
+                                               @Param("status") JobApplication.ApplicationStatus status);
+    
+    // Get application count per job post for employer
+    @Query("SELECT jp.jobTitle, COUNT(ja) " +
+           "FROM JobApplication ja " +
+           "JOIN ja.jobPost jp " +
+           "WHERE jp.employer.employerId = :employerId " +
+           "GROUP BY jp.jobPostId, jp.jobTitle " +
+           "ORDER BY COUNT(ja) DESC")
+    List<Object[]> getApplicationCountByJobPost(@Param("employerId") Integer employerId);
+    
+    // Get application trends by date for employer (last 30 days)
+    @Query("SELECT DATE(ja.appliedAt), COUNT(ja) " +
+           "FROM JobApplication ja " +
+           "JOIN ja.jobPost jp " +
+           "WHERE jp.employer.employerId = :employerId " +
+           "AND ja.appliedAt >= :startDate " +
+           "GROUP BY DATE(ja.appliedAt) " +
+           "ORDER BY DATE(ja.appliedAt)")
+    List<Object[]> getApplicationTrendsByEmployerId(@Param("employerId") Integer employerId,
+                                                   @Param("startDate") java.time.LocalDateTime startDate);
+    
+    // Get application status distribution for employer
+    @Query("SELECT ja.status, COUNT(ja) " +
+           "FROM JobApplication ja " +
+           "JOIN ja.jobPost jp " +
+           "WHERE jp.employer.employerId = :employerId " +
+           "GROUP BY ja.status")
+    List<Object[]> getApplicationStatusDistribution(@Param("employerId") Integer employerId);
+    
+    // Get top job posts by application count for employer
+    @Query("SELECT jp.jobTitle, COUNT(ja), DATE(jp.createdAt) " +
+           "FROM JobApplication ja " +
+           "JOIN ja.jobPost jp " +
+           "WHERE jp.employer.employerId = :employerId " +
+           "GROUP BY jp.jobPostId, jp.jobTitle, jp.createdAt " +
+           "ORDER BY COUNT(ja) DESC")
+    List<Object[]> getTopJobPostsByApplicationCount(@Param("employerId") Integer employerId, 
+                                                   Pageable pageable);
+    
+    // Get recent applications for employer
+    @Query("SELECT ja.fullName, jp.jobTitle, ja.appliedAt, ja.status " +
+           "FROM JobApplication ja " +
+           "JOIN ja.jobPost jp " +
+           "WHERE jp.employer.employerId = :employerId " +
+           "ORDER BY ja.appliedAt DESC")
+    List<Object[]> getRecentApplicationsByEmployerId(@Param("employerId") Integer employerId,
+                                                    Pageable pageable);
+
 }
