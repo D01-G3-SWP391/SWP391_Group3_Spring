@@ -370,27 +370,104 @@
     $(document).ready(function() {
         const locationSelect = $('#locationSelect');
         locationSelect.prop('disabled', true);
-        locationSelect.append(new Option('Đang tải...', ''));
+        locationSelect.append(new Option('Loading...', ''));
+
+        // Bảng ánh xạ tên tỉnh/thành phố sang tiếng Anh
+        const provinceNameMap = {
+            "Hà Nội": "Hanoi",
+            "Hồ Chí Minh": "Ho Chi Minh City",
+            "Đà Nẵng": "Da Nang",
+            "Hải Phòng": "Hai Phong",
+            "Cần Thơ": "Can Tho",
+            "An Giang": "An Giang",
+            "Bà Rịa - Vũng Tàu": "Ba Ria - Vung Tau",
+            "Bắc Giang": "Bac Giang",
+            "Bắc Kạn": "Bac Kan",
+            "Bạc Liêu": "Bac Lieu",
+            "Bắc Ninh": "Bac Ninh",
+            "Bến Tre": "Ben Tre",
+            "Bình Định": "Binh Dinh",
+            "Bình Dương": "Binh Duong",
+            "Bình Phước": "Binh Phuoc",
+            "Bình Thuận": "Binh Thuan",
+            "Cà Mau": "Ca Mau",
+            "Cao Bằng": "Cao Bang",
+            "Đắk Lắk": "Dak Lak",
+            "Đắk Nông": "Dak Nong",
+            "Điện Biên": "Dien Bien",
+            "Đồng Nai": "Dong Nai",
+            "Đồng Tháp": "Dong Thap",
+            "Gia Lai": "Gia Lai",
+            "Hà Giang": "Ha Giang",
+            "Hà Nam": "Ha Nam",
+            "Hà Tĩnh": "Ha Tinh",
+            "Hải Dương": "Hai Duong",
+            "Hậu Giang": "Hau Giang",
+            "Hòa Bình": "Hoa Binh",
+            "Hưng Yên": "Hung Yen",
+            "Khánh Hòa": "Khanh Hoa",
+            "Kiên Giang": "Kien Giang",
+            "Kon Tum": "Kon Tum",
+            "Lai Châu": "Lai Chau",
+            "Lâm Đồng": "Lam Dong",
+            "Lạng Sơn": "Lang Son",
+            "Lào Cai": "Lao Cai",
+            "Long An": "Long An",
+            "Nam Định": "Nam Dinh",
+            "Nghệ An": "Nghe An",
+            "Ninh Bình": "Ninh Binh",
+            "Ninh Thuận": "Ninh Thuan",
+            "Phú Thọ": "Phu Tho",
+            "Phú Yên": "Phu Yen",
+            "Quảng Bình": "Quang Binh",
+            "Quảng Nam": "Quang Nam",
+            "Quảng Ngãi": "Quang Ngai",
+            "Quảng Ninh": "Quang Ninh",
+            "Quảng Trị": "Quang Tri",
+            "Sóc Trăng": "Soc Trang",
+            "Sơn La": "Son La",
+            "Tây Ninh": "Tay Ninh",
+            "Thái Bình": "Thai Binh",
+            "Thái Nguyên": "Thai Nguyen",
+            "Thanh Hóa": "Thanh Hoa",
+            "Thừa Thiên Huế": "Thua Thien Hue",
+            "Tiền Giang": "Tien Giang",
+            "Trà Vinh": "Tra Vinh",
+            "Tuyên Quang": "Tuyen Quang",
+            "Vĩnh Long": "Vinh Long",
+            "Vĩnh Phúc": "Vinh Phuc",
+            "Yên Bái": "Yen Bai"
+        };
+
+        // Lấy ngôn ngữ hiện tại từ URL hoặc thẻ html
+        function getLangFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('lang') || document.documentElement.lang || 'vi';
+        }
+        const currentLang = getLangFromUrl();
 
         // Fetch provinces from API
         fetch('https://provinces.open-api.vn/api/p/')
             .then(response => response.json())
             .then(data => {
                 locationSelect.empty(); // Clear loading option
-                locationSelect.append(new Option('Chọn tỉnh/thành phố', '')); // Add default option
-
-                // Sort provinces alphabetically
+                locationSelect.append(new Option(currentLang === 'en' ? 'Select a province/city' : 'Chọn tỉnh/thành phố', ''));
                 data.sort((a, b) => a.name.localeCompare(b.name, 'vi'));
-
                 data.forEach(province => {
-                    locationSelect.append(new Option(province.name, province.name));
+                    let displayName = province.name;
+                    if (currentLang === 'en') {
+                        // Loại bỏ tiền tố 'Tỉnh ' hoặc 'Thành phố '
+                        let rawName = province.name.replace(/^Tỉnh |^Thành phố /, '');
+                        displayName = provinceNameMap[rawName] || province.name;
+                    }
+                    locationSelect.append(new Option(displayName, province.name));
                 });
                 locationSelect.prop('disabled', false);
             })
             .catch(error => {
                 console.error('Error fetching provinces:', error);
                 locationSelect.empty();
-                locationSelect.append(new Option('Lỗi tải dữ liệu', ''));
+                locationSelect.append(new Option(currentLang === 'en' ? 'Error loading data' : 'Lỗi tải dữ liệu', ''));
             });
     });
 </script>
