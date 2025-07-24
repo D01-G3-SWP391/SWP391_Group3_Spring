@@ -54,6 +54,9 @@ public class JobPost {
     @Column(name = "created_at", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "jobPost", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<FavoriteJob> favoriteJobs = new java.util.ArrayList<>();
+
     public enum JobType {
         PART_TIME,
         FULL_TIME
@@ -194,5 +197,13 @@ public class JobPost {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public java.util.List<FavoriteJob> getFavoriteJobs() {
+        return favoriteJobs;
+    }
+
+    public void setFavoriteJobs(java.util.List<FavoriteJob> favoriteJobs) {
+        this.favoriteJobs = favoriteJobs;
     }
 }

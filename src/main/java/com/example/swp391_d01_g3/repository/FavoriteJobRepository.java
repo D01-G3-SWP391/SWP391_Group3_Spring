@@ -13,21 +13,21 @@ import java.util.Optional;
 public interface FavoriteJobRepository extends JpaRepository<FavoriteJob, Integer> {
 
     // Kiểm tra xem student đã favorite job này chưa
-    boolean existsByStudentIdAndJobPostId(Integer studentId, Integer jobPostId);
+    boolean existsByStudentAndJobPost(com.example.swp391_d01_g3.model.Student student, com.example.swp391_d01_g3.model.JobPost jobPost);
 
     // Tìm favorite job theo studentId và jobPostId
-    Optional<FavoriteJob> findByStudentIdAndJobPostId(Integer studentId, Integer jobPostId);
+    Optional<FavoriteJob> findByStudentAndJobPost(com.example.swp391_d01_g3.model.Student student, com.example.swp391_d01_g3.model.JobPost jobPost);
 
     // Lấy tất cả favorite jobs của một student
-    List<FavoriteJob> findByStudentIdOrderByCreatedAtDesc(Integer studentId);
+    List<FavoriteJob> findByStudentOrderByCreatedAtDesc(com.example.swp391_d01_g3.model.Student student);
 
     // Xóa favorite job theo studentId và jobPostId
-    void deleteByStudentIdAndJobPostId(Integer studentId, Integer jobPostId);
+    void deleteByStudentAndJobPost(com.example.swp391_d01_g3.model.Student student, com.example.swp391_d01_g3.model.JobPost jobPost);
 
     // Đếm số lượng favorite jobs của student
-    long countByStudentId(Integer studentId);
+    long countByStudent(com.example.swp391_d01_g3.model.Student student);
 
-    // Lấy danh sách jobPostId của student
-    @Query("SELECT f.jobPostId FROM FavoriteJob f WHERE f.studentId = :studentId")
-    List<Integer> findJobPostIdsByStudentId(@Param("studentId") Integer studentId);
+    // Xóa method này vì không còn trường jobPostId và studentId
+    // @Query("SELECT f.jobPostId FROM FavoriteJob f WHERE f.studentId = :studentId")
+    // List<Integer> findJobPostIdsByStudentId(@Param("studentId") Integer studentId);
 } 
