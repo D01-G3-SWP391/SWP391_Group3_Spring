@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{employer.event.list.title}">Các Sự Kiện Của Bạn</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
     <link rel="stylesheet" th:href="@{/css/navbarHome.css}" />
     <link rel="stylesheet" th:href="@{/css/navbar.css}" />
@@ -711,13 +713,13 @@
 <script th:src="@{/js/language-dropdown.js}"></script>
 
 <!-- Add notification bell -->
-
-<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
 <!-- AI Chatbox Fragment -->
 <div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
 
 <!-- Chat Notification Fragment -->
 <div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
+<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
+
 
 </body>
 </html>

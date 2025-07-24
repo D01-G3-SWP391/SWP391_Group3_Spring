@@ -115,7 +115,8 @@ public class JobPostController {
         @GetMapping("/JobPosts")
         public String viewJobPosts(
                 @RequestParam(defaultValue = "0") int page,
-                @RequestParam(defaultValue = "1") int size,
+                @RequestParam(defaultValue = "5") int size,
+                @RequestParam(defaultValue = "active") String filter,
                 Model model,
                 Authentication authentication) {
 
@@ -123,21 +124,94 @@ public class JobPostController {
             Employer employer = iEmployerService.findByEmail(employerEmail);
 
             Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-            Page<JobPost> jobPostPage = iJobpostService.findJobPostsByEmployerEmail(employerEmail, pageable);
+            
+            Page<JobPost> jobPostPage;
+            long currentCount;
+            
+            // Filter based on the parameter
+            if ("hidden".equals(filter)) {
+                jobPostPage = iJobpostService.findByEmployerAndDisplayStatusOrderByCreatedAtDesc(
+                    employer, JobPost.DisplayStatus.INACTIVE, pageable);
+                currentCount = iJobpostService.countHiddenJobPostsByEmployerEmail(employerEmail);
+            } else {
+                // Default: show active jobs
+                jobPostPage = iJobpostService.findActiveJobPostsByEmployerEmail(employerEmail, pageable);
+                currentCount = iJobpostService.countActiveJobPostsByEmployerEmail(employerEmail);
+            }
 
-            long totalJobs = iJobpostService.countJobPostsByEmployerEmail(employerEmail);
-
+            long totalActiveJobs = iJobpostService.countActiveJobPostsByEmployerEmail(employerEmail);
+            long hiddenJobs = iJobpostService.countHiddenJobPostsByEmployerEmail(employerEmail);
             long pendingJobs = iJobpostService.countJobPostsByEmployerEmailAndStatus(employerEmail, "PENDING");
-
 
             // Thêm account cho navbar
             model.addAttribute("account", accountService.findByEmail(employerEmail));
             model.addAttribute("jobPostPage", jobPostPage);
             model.addAttribute("employerEmail", employerEmail);
-            model.addAttribute("totalJobs", totalJobs);
+            model.addAttribute("totalJobs", totalActiveJobs);
+            model.addAttribute("hiddenJobs", hiddenJobs);
             model.addAttribute("pendingJobs", pendingJobs);
+            model.addAttribute("currentFilter", filter);
+            model.addAttribute("currentCount", currentCount);
 
             return "employee/viewJobPost";
+        }
+
+        // Hide job post (set display status to INACTIVE)
+        @PostMapping("/JobPosts/Hide/{jobPostId}")
+        public String hideJobPost(@PathVariable Integer jobPostId, 
+                                 Authentication authentication,
+                                 RedirectAttributes redirectAttributes) {
+            try {
+                String employerEmail = authentication.getName();
+                Employer employer = iEmployerService.findByEmail(employerEmail);
+                
+                // Verify that this job post belongs to the current employer
+                JobPost jobPost = iJobpostService.findByJobPostId(jobPostId).orElse(null);
+                if (jobPost == null || !jobPost.getEmployer().getEmployerId().equals(employer.getEmployerId())) {
+                    redirectAttributes.addFlashAttribute("errorMsg", "Không tìm thấy công việc hoặc bạn không có quyền truy cập.");
+                    return "redirect:/Employer/JobPosts";
+                }
+                
+                // Set display status to INACTIVE
+                jobPost.setDisplayStatus(JobPost.DisplayStatus.INACTIVE);
+                iJobpostService.save(jobPost);
+                
+                redirectAttributes.addFlashAttribute("successMsg", "Đã ẩn công việc thành công!");
+                
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("errorMsg", "Có lỗi xảy ra khi ẩn công việc.");
+            }
+            
+            return "redirect:/Employer/JobPosts";
+        }
+
+        // Unhide job post (set display status to ACTIVE)
+        @PostMapping("/JobPosts/Unhide/{jobPostId}")
+        public String unhideJobPost(@PathVariable Integer jobPostId, 
+                                   Authentication authentication,
+                                   RedirectAttributes redirectAttributes) {
+            try {
+                String employerEmail = authentication.getName();
+                Employer employer = iEmployerService.findByEmail(employerEmail);
+                
+                // Verify that this job post belongs to the current employer
+                JobPost jobPost = iJobpostService.findByJobPostId(jobPostId).orElse(null);
+                if (jobPost == null || !jobPost.getEmployer().getEmployerId().equals(employer.getEmployerId())) {
+                    redirectAttributes.addFlashAttribute("errorMsg", "Không tìm thấy công việc hoặc bạn không có quyền truy cập.");
+                    return "redirect:/Employer/JobPosts";
+                }
+                
+                // Set display status to ACTIVE
+                jobPost.setDisplayStatus(JobPost.DisplayStatus.ACTIVE);
+                iJobpostService.save(jobPost);
+                
+                redirectAttributes.addFlashAttribute("successMsg", "Đã hiện công việc thành công!");
+                
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("errorMsg", "Có lỗi xảy ra khi hiện công việc.");
+            }
+            
+            return "redirect:/Employer/JobPosts";
         }
 
 
@@ -235,11 +309,17 @@ public class JobPostController {
     public String updateApplicationStatus(
             @PathVariable Integer jobPostId,
             @PathVariable Integer applicationId,
-            @RequestParam String status,
+            @RequestParam(value = "status", required = false) String status,
             RedirectAttributes redirectAttributes,
             Authentication authentication) {
 
         try {
+            // Validate status parameter
+            if (status == null || status.trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Trạng thái không được để trống!");
+                return "redirect:/Employer/JobPosts/" + jobPostId + "/applications";
+            }
+
             String employerEmail = authentication.getName();
             Employer employer = iEmployerService.findByEmail(employerEmail);
 
