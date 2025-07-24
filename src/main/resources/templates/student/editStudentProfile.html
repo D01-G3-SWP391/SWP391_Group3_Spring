@@ -97,6 +97,15 @@
                 <input type="text" id="university" class="form-control" th:field="*{university}" th:placeholder="#{student.edit.enter.university}"/>
               </div>
               <div class="form-group">
+                <label for="jobFieldId" class="form-label" th:text="#{student.edit.job.field}">Job Field Interest</label>
+                <select id="jobFieldId" class="form-control" th:field="*{jobFieldId}">
+                  <option value="" th:text="#{student.edit.select.job.field}">Select job field</option>
+                  <option th:each="jobField : ${jobFields}" 
+                          th:value="${jobField.jobFieldId}" 
+                          th:text="${jobField.jobFieldName}">Job Field</option>
+                </select>
+              </div>
+              <div class="form-group">
                 <label for="address" class="form-label" th:text="#{student.edit.current.address}">Current Address</label>
                 <div class="row mb-2">
                     <!-- Tỉnh/Thành phố -->
