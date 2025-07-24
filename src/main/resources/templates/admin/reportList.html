@@ -69,7 +69,7 @@
     <div class="card mb-4">
         <div class="card-body">
             <form method="get" class="row g-3">
-                <div class="col-md-4">
+                <div class="col-md-10">
                     <label class="form-label" th:text="#{admin.reports.filter.status}">Filter by Status</label>
                     <select name="status" class="form-select">
                         <option value="" th:text="#{admin.reports.filter.status.all}">-- All Status --</option>
@@ -78,12 +78,6 @@
                                 th:text="${statusOption}"
                                 th:selected="${statusOption == selectedStatus}"></option>
                     </select>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label" th:text="#{admin.reports.filter.search.placeholder}">Search</label>
-                    <input type="text" name="search" class="form-control"
-                           th:placeholder="#{admin.reports.filter.search.placeholder}"
-                           th:value="${searchKeyword}">
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">&nbsp;</label>
