@@ -1,21 +1,21 @@
 .notification-bell-wrapper {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000;
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    z-index: 1000 !important;
 }
 
 .notification-bell-button {
-    cursor: pointer;
-    width: 48px;
-    height: 48px;
-    background: white;
-    border-radius: 50%;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px;
+    cursor: pointer !important;
+    width: 48px !important;
+    height: 48px !important;
+    background: white !important;
+    border-radius: 50% !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 8px !important;
 }
 
 .notification-bell-button:hover {
