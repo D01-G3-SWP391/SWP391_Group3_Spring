@@ -22,15 +22,15 @@
         <h2 th:text="#{admin.list.employers.title}">Employer Management</h2>
 
         <!-- Success/Error Messages -->
-        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert" style="font-size: 1.1rem; font-weight: 500;">
             <i class="bi bi-check-circle me-2"></i>
-            <span th:text="${success}"></span>
+            <span th:utext="${success}"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
-        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert" style="font-size: 1.1rem; font-weight: 500;">
             <i class="bi bi-exclamation-triangle me-2"></i>
-            <span th:text="${error}"></span>
+            <span th:utext="${error}"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
