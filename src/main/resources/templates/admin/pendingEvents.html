@@ -75,9 +75,9 @@
                 <tbody>
                 <tr th:each="event : ${eventList}">
                     <td>
-                        <strong th:text="${event.eventTitle}"></strong>
+                        <strong th:utext="${event.eventTitle}"></strong>
                         <br>
-                        <small class="text-muted" th:text="${#strings.abbreviate(event.eventDescription, 50)}"></small>
+                        <small class="text-muted" th:utext="${#strings.abbreviate(event.eventDescription, 50)}"></small>
                     </td>
                     <td>
                         <strong th:text="${event.employer != null ? event.employer.companyName : 'N/A'}"></strong>
