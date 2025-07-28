@@ -4,10 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title th:text="#{employer.dashboard.title}">Employee</title>
-  <link
-          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
-          rel="stylesheet"
-  />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
   <!-- NEW NAVBAR CSS - Load LAST to override old styles -->
   <link rel="stylesheet" th:href="@{/css/language-switcher.css}" />
@@ -17,6 +16,335 @@
   <link rel="stylesheet" th:href="@{/css/navbarEmployer.css}" />
   <link rel="stylesheet" th:href="@{/css/dashboardEmployer.css}" />
   <link rel="stylesheet" th:href="@{/css/language_sidebar.css}" />
+  
+  <style>
+    /* Modern Dashboard Styles */
+    .dashboard-container {
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    .dashboard-header {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+    
+    .dashboard-title {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 0.5rem;
+    }
+    
+    .dashboard-subtitle {
+      font-size: 1rem;
+      color: #7f8c8d;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    /* Enhanced Stat Card Base Style */
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      color: white;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 30px 60px rgba(102, 126, 234, 0.25);
+    }
+    
+    /* Card Header */
+    .card-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .card-title-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    
+    .card-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .card-icon {
+      width: 60px;
+      height: 60px;
+      min-width: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 16px;
+      margin-right: 1.2rem;
+      font-size: 1.6rem;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+    }
+    
+    .card-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin: 0;
+      color: white;
+    }
+    
+    .card-subtitle {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin: 0.3rem 0 0 0;
+    }
+    
+    /* Main Number Display */
+    .main-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: white;
+      margin: 0.5rem 0;
+      text-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Status Breakdown Grid */
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.2rem;
+    }
+    
+    .status-item {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      padding: 1.2rem;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+    
+    .status-item:hover {
+      transform: translateY(-3px);
+      background: rgba(255, 255, 255, 0.25);
+    }
+    
+    .status-number {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      color: white;
+    }
+    
+    .status-label {
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 500;
+    }
+    
+    /* Applications Card */
+    .application-card {
+      background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+      box-shadow: 0 20px 40px rgba(255, 154, 158, 0.15);
+    }
+    
+    .application-card:hover {
+      box-shadow: 0 30px 60px rgba(255, 154, 158, 0.25);
+    }
+    
+    /* Chart Container */
+    .chart-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .chart-container {
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      padding: 1.5rem;
+      transition: transform 0.3s ease;
+      height: 100%;
+      min-height: 320px;
+    }
+    
+    .chart-container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+    }
+    
+    .chart-header {
+      margin-bottom: 1rem;
+    }
+    
+    .chart-header h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 0.2rem;
+    }
+    
+    .chart-header p {
+      font-size: 0.8rem;
+      color: #718096;
+      margin: 0;
+    }
+    
+    .chart-content {
+      position: relative;
+      height: 250px;
+    }
+    
+    /* Tables */
+    .table-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .table-container {
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      padding: 1.5rem;
+      height: 100%;
+    }
+    
+    .table-header {
+      margin-bottom: 1rem;
+    }
+    
+    .table-header h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 0.2rem;
+    }
+    
+    .table-header p {
+      font-size: 0.8rem;
+      color: #718096;
+      margin: 0;
+    }
+    
+    .dashboard-table {
+      width: 100%;
+      font-size: 0.85rem;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    
+    .dashboard-table thead th {
+      background-color: #f7fafc;
+      color: #4a5568;
+      font-weight: 600;
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 2px solid #edf2f7;
+    }
+    
+    .dashboard-table tbody td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #edf2f7;
+      color: #4a5568;
+      vertical-align: middle;
+    }
+    
+    .dashboard-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .dashboard-table tbody tr:hover {
+      background-color: #f7fafc;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    
+    .status-badge.pending,
+    .status-badge.submitted {
+      background-color: #fef3c7;
+      color: #d97706;
+    }
+    
+    .status-badge.approved {
+      background-color: #dcfce7;
+      color: #16a34a;
+    }
+    
+    .status-badge.rejected {
+      background-color: #fee2e2;
+      color: #dc2626;
+    }
+    
+    .status-badge.active {
+      background-color: #dbeafe;
+      color: #2563eb;
+    }
+    
+    .status-badge.inactive {
+      background-color: #f3f4f6;
+      color: #6b7280;
+    }
+    
+    .status-badge.interview {
+      background-color: #e0f2fe;
+      color: #0369a1;
+    }
+    
+    .status-badge.accepted {
+      background-color: #dcfce7;
+      color: #16a34a;
+    }
+    
+    .no-data {
+      text-align: center;
+      padding: 2rem !important;
+      color: #a0aec0;
+      font-style: italic;
+    }
+    
+    @media (max-width: 768px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .status-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .table-section, .chart-section {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -24,33 +352,242 @@
 
 <!-- Main Content Area -->
 <div class="main-content">
-<p th:text="#{employer.dashboard.welcome}">Welcome to the THCLT JOBS Employer Dashboard.</p>
+  <div class="dashboard-container">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+      <h1 class="dashboard-title">Dashboard</h1>
+      <p class="dashboard-subtitle">Overview of your recruitment activities</p>
+    </div>
 
-<!-- Dashboard Cards Section -->
-<!---->
+    <!-- Main Stats Overview -->
+    <div class="stats-grid">
+      <!-- Job Posts Card -->
+      <div class="stat-card">
+        <div class="card-header">
+          <div class="card-icon">
+            <i class="bi bi-briefcase"></i>
+          </div>
+          <div class="card-title-section">
+            <h3 class="card-title">Job Posts</h3>
+            <div class="main-number" th:text="${dashboardData.totalJobPosts}">0</div>
+          </div>
+        </div>
+        
+        <div class="status-grid">
+          <div class="status-item">
+            <div class="status-number" th:text="${dashboardData.pendingJobPosts ?: 0}">0</div>
+            <div class="status-label">Pending</div>
+          </div>
+          <div class="status-item">
+            <div class="status-number" th:text="${dashboardData.approvedJobPosts ?: 0}">0</div>
+            <div class="status-label">Approved</div>
+          </div>
+          <div class="status-item">
+            <div class="status-number" th:text="${dashboardData.rejectedJobPosts ?: 0}">0</div>
+            <div class="status-label">Rejected</div>
+          </div>
+          <div class="status-item">
+            <div class="status-number" th:text="${dashboardData.inactiveJobPosts ?: 0}">0</div>
+            <div class="status-label">InActive</div>
+          </div>
+        </div>
+      </div>
 
-<script th:src="@{/js/navbarAdmin.js}"></script>
-<script th:src="@{/js/languageSwitch.js}"></script>
-<script th:src="@{/js/language-dropdown.js}"></script>
+      <!-- Applications Card -->
+      <div class="stat-card application-card">
+        <div class="card-header">
+          <div class="card-icon">
+            <i class="bi bi-people"></i>
+          </div>
+          <div class="card-title-section">
+            <h3 class="card-title">Applications</h3>
+            <div class="main-number" th:text="${dashboardData.totalApplications}">0</div>
+          </div>
+        </div>
+        
+        <div class="status-grid">
+          <div class="status-item">
+            <div class="status-number" th:text="${dashboardData.pendingApplications}">0</div>
+            <div class="status-label">Pending</div>
+          </div>
+          <div class="status-item">
+            <div class="status-number" th:text="${dashboardData.interviewApplications}">0</div>
+            <div class="status-label">Interview</div>
+          </div>
+          <div class="status-item">
+            <div class="status-number" th:text="${dashboardData.acceptedApplications}">0</div>
+            <div class="status-label">Accepted</div>
+          </div>
+          <div class="status-item">
+            <div class="status-number" th:text="${dashboardData.rejectedApplications}">0</div>
+            <div class="status-label">Rejected</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Jobs Charts -->
+    <div class="chart-section">
+      <!-- Job Post Applications Chart -->
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3>Applications per Job Post</h3>
+          <p>Number of applications received for each job post</p>
+        </div>
+        <div class="chart-content">
+          <canvas id="jobPostChart"></canvas>
+        </div>
+      </div>
 
-<!-- Add notification bell -->
-<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
-</div> <!-- Close main-content -->
-</body>
-</html>
+      <!-- Application Status Chart -->
+      <div class="chart-container">
+        <div class="chart-header">
+          <h3>Application Status Distribution</h3>
+          <p>Status breakdown of all applications</p>
+        </div>
+        <div class="chart-content">
+          <canvas id="statusChart"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Job Post Status Chart -->
+    <div class="chart-section">
+      <div class="chart-container" style="grid-column: 1 / -1;">
+        <div class="chart-header">
+          <h3>Job Post Status Overview</h3>
+          <p>Approval and display status of job posts</p>
+        </div>
+        <div class="chart-content">
+          <canvas id="jobPostStatusChart"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Application Trends Chart -->
+    <div class="chart-section">
+      <div class="chart-container" style="grid-column: 1 / -1;">
+        <div class="chart-header">
+          <h3>Application Trends (Last 30 Days)</h3>
+          <p>Daily application trends over the past month</p>
+        </div>
+        <div class="chart-content">
+          <canvas id="trendsChart"></canvas>
+        </div>
+      </div>
+    </div>
 
-</div> <!-- Close main-content -->
-</body>
-</html>
+    <!-- Jobs Tables -->
+    <div class="table-section">
+      <!-- Popular Job Posts -->
+      <div class="table-container">
+        <div class="table-header">
+          <h3>Most Popular Job Posts</h3>
+          <p>Top job posts by application count</p>
+        </div>
+        <div class="table-content">
+          <table class="dashboard-table">
+            <thead>
+              <tr>
+                <th>Job Title</th>
+                <th>Applications</th>
+                <th>Status</th>
+                <th>Posted Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="job : ${dashboardData.popularJobPosts}">
+                <td class="job-title" th:text="${job.jobTitle}">Job Title</td>
+                <td class="application-count" th:text="${job.applicationCount}">0</td>
+                <td class="status">
+                  <span class="status-badge" th:classappend="${job.approvalStatus.toLowerCase()}" th:text="${job.approvalStatus}">Status</span>
+                </td>
+                <td class="posted-date" th:text="${job.createdAt}">Date</td>
+              </tr>
+              <tr th:if="${#lists.isEmpty(dashboardData.popularJobPosts)}">
+                <td colspan="4" class="no-data">No data available</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-<!-- AI Chatbox Fragment -->
-<div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
+      <!-- Recent Applications -->
+      <div class="table-container">
+        <div class="table-header">
+          <h3>Recent Applications</h3>
+          <p>Latest applications received</p>
+        </div>
+        <div class="table-content">
+          <table class="dashboard-table">
+            <thead>
+              <tr>
+                <th>Candidate Name</th>
+                <th>Job Title</th>
+                <th>Applied Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="app : ${dashboardData.recentApplications}">
+                <td class="candidate-name" th:text="${app.candidateName}">Candidate Name</td>
+                <td class="job-title" th:text="${app.jobTitle}">Job Title</td>
+                <td class="applied-date" th:text="${app.appliedAt}">Date</td>
+                <td class="status">
+                  <span class="status-badge" th:classappend="${app.status.toLowerCase()}" th:text="${app.status}">Status</span>
+                </td>
+              </tr>
+              <tr th:if="${#lists.isEmpty(dashboardData.recentApplications)}">
+                <td colspan="4" class="no-data">No recent applications</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<!-- Chat Notification Fragment -->
-<div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
+  <!-- Include Chart.js and Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Pass backend data to JavaScript -->
+  <script th:inline="javascript">
+    window.backendDashboardData = {
+      stats: {
+        totalJobPosts: /*[[${dashboardData.totalJobPosts}]]*/ 0,
+        totalApplications: /*[[${dashboardData.totalApplications}]]*/ 0,
+        pendingApplications: /*[[${dashboardData.pendingApplications}]]*/ 0,
+        interviewApplications: /*[[${dashboardData.interviewApplications}]]*/ 0,
+        acceptedApplications: /*[[${dashboardData.acceptedApplications}]]*/ 0,
+        rejectedApplications: /*[[${dashboardData.rejectedApplications}]]*/ 0,
+        pendingJobPosts: /*[[${dashboardData.pendingJobPosts}]]*/ 0,
+        approvedJobPosts: /*[[${dashboardData.approvedJobPosts}]]*/ 0,
+        rejectedJobPosts: /*[[${dashboardData.rejectedJobPosts}]]*/ 0,
+        inactiveJobPosts: /*[[${dashboardData.inactiveJobPosts}]]*/ 0
+      },
+      jobPostStats: /*[[${dashboardData.jobPostStats}]]*/ [],
+      applicationTrends: /*[[${dashboardData.applicationTrends}]]*/ [],
+      applicationStatusChart: /*[[${dashboardData.applicationStatusChart}]]*/ {},
+      jobPostStatusChart: /*[[${dashboardData.jobPostStatusChart}]]*/ {},
+      popularJobPosts: /*[[${dashboardData.popularJobPosts}]]*/ [],
+      recentApplications: /*[[${dashboardData.recentApplications}]]*/ []
+    };
+  </script>
+  
+  <script th:src="@{/js/dashboard-charts.js}"></script>
+  <script th:src="@{/js/navbarAdmin.js}"></script>
+  <script th:src="@{/js/languageSwitch.js}"></script>
+  <script th:src="@{/js/language-dropdown.js}"></script>
 
-<!-- Add notification bell -->
-<div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
+  <!-- AI Chatbox Fragment -->
+  <div th:replace="~{fragments/ai-chatbox :: ai-chatbox}"></div>
+
+  <!-- Chat Notification Fragment -->
+  <div th:replace="~{fragments/chat-notification :: chat-notification}"></div>
+
+  <!-- Add notification bell -->
+  <div th:replace="~{fragments/notification-bell :: notification-bell}"></div>
 </div> <!-- Close main-content -->
 </body>
 </html>
