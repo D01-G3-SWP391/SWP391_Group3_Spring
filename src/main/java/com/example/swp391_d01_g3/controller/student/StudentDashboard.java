@@ -5,9 +5,11 @@ import com.example.swp391_d01_g3.model.Employer;
 import com.example.swp391_d01_g3.model.JobApplication;
 import com.example.swp391_d01_g3.model.JobInvitation;
 import com.example.swp391_d01_g3.model.Student;
+import com.example.swp391_d01_g3.model.JobField;
 import com.example.swp391_d01_g3.service.changePassword.ChangePassword;
 import com.example.swp391_d01_g3.service.jobapplication.IJobApplicationService;
 import com.example.swp391_d01_g3.service.jobinvitation.IJobInvitationService;
+import com.example.swp391_d01_g3.service.jobfield.IJobfieldService;
 import com.example.swp391_d01_g3.service.notification.INotificationService;
 import com.example.swp391_d01_g3.service.security.IAccountService;
 import com.example.swp391_d01_g3.service.security.IAccountServiceImpl;
@@ -63,6 +65,9 @@ public class StudentDashboard {
 
     @Autowired
     private IJobInvitationService jobInvitationService;
+
+    @Autowired
+    private IJobfieldService jobfieldService;
 
     @GetMapping("")
     public String showStudentDashboard(Model model, Principal principal) {
@@ -129,10 +134,14 @@ public class StudentDashboard {
                 studentProfileDTO.setPreferredJobAddress(studentDetails.getPreferredJobAddress());
                 studentProfileDTO.setProfileDescription(studentDetails.getProfileDescription());
                 studentProfileDTO.setExperience(studentDetails.getExperience());
+                if (studentDetails.getJobField() != null) {
+                    studentProfileDTO.setJobFieldId(studentDetails.getJobField().getJobFieldId());
+                }
             }
             model.addAttribute("studentProfileDTO", studentProfileDTO);
             model.addAttribute("email",studentAccount.getEmail());
             model.addAttribute("account", studentAccount);
+            model.addAttribute("jobFields", jobfieldService.findAll());
         }
         return "student/editStudentProfile";
     }
@@ -195,6 +204,15 @@ public class StudentDashboard {
         currentStudent.setPreferredJobAddress(studentProfileDTO.getPreferredJobAddress());
         currentStudent.setProfileDescription(studentProfileDTO.getProfileDescription());
         currentStudent.setExperience(studentProfileDTO.getExperience());
+        
+        // Update JobField if provided
+        if (studentProfileDTO.getJobFieldId() != null) {
+            JobField jobField = jobfieldService.findById(studentProfileDTO.getJobFieldId())
+                    .orElse(null);
+            currentStudent.setJobField(jobField);
+        } else {
+            currentStudent.setJobField(null);
+        }
 
         try {
             IAccountService.save(currentAccount);
