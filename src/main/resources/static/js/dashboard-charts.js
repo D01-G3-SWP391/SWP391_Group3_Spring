@@ -17,8 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (window.jobPostChart) window.jobPostChart.update();
                 if (window.statusChart) window.statusChart.update();
                 if (window.trendsChart) window.trendsChart.update();
-            } else if (event.target.id === 'events-tab') {
-                if (window.eventsChart) window.eventsChart.update();
             }
         });
     });
@@ -41,22 +39,16 @@ function extractDataFromThymeleaf() {
         pendingApplications: extractStatValue('#jobs-tab-pane .stats-grid .stat-card:nth-child(1) .stat-number'),
         interviewApplications: extractStatValue('#jobs-tab-pane .stats-grid .stat-card:nth-child(2) .stat-number'),
         acceptedApplications: extractStatValue('#jobs-tab-pane .stats-grid .stat-card:nth-child(3) .stat-number'),
-        rejectedApplications: extractStatValue('#jobs-tab-pane .stats-grid .stat-card:nth-child(4) .stat-number'),
-        totalEvents: extractStatValue('.event-card .stat-number'),
-        totalEventParticipants: extractStatValue('.participant-card .stat-number')
+        rejectedApplications: extractStatValue('#jobs-tab-pane .stats-grid .stat-card:nth-child(4) .stat-number')
     };
     
     // Extract job post data from table
     const jobPostData = extractTableData('#jobs-tab-pane .table-container:nth-child(1) table');
     
-    // Extract event data from table
-    const eventData = extractTableData('#events-tab-pane .table-container:nth-child(1) table');
-    
     // Use actual data only
     const dashboardData = {
         stats: stats,
         jobPostStats: jobPostData,
-        eventStats: eventData,
         applicationStatusChart: {
             'PENDING': stats.pendingApplications,
             'INTERVIEW': stats.interviewApplications,
@@ -100,7 +92,7 @@ function initializeDashboardCharts(data) {
     window.jobPostChart = createJobPostChart('jobPostChart', data.jobPostStats);
     window.statusChart = createStatusChart('statusChart', data.applicationStatusChart);
     window.trendsChart = createTrendsChart('trendsChart', data.applicationTrends);
-    window.eventsChart = createEventsChart('eventsChart', data.eventStats);
+    window.jobPostStatusChart = createJobPostStatusChart('jobPostStatusChart', data.jobPostStatusChart);
 }
 
 function createJobPostChart(canvasId, jobPostStats) {
@@ -463,66 +455,107 @@ function createTrendsChart(canvasId, applicationTrends) {
     });
 }
 
-function createEventsChart(canvasId, eventStats) {
+function createJobPostStatusChart(canvasId, jobPostStatusChart) {
     const ctx = document.getElementById(canvasId);
     if (!ctx) return null;
-
-    // Use empty data array if no data is available
-    const labels = eventStats && eventStats.length > 0 ? 
-        eventStats.map(item => item.eventTitle || item.title).slice(0, 7) : [];
     
-    // Đảm bảo mỗi giá trị đều ít nhất là 1 để có thể nhìn thấy
-    const data = eventStats && eventStats.length > 0 ? 
-        eventStats.map(item => {
-            const count = parseInt(item.participantCount || item.count) || 0;
-            // Nếu có nhãn nhưng giá trị là 0, hiển thị tối thiểu giá trị là 1
-            return count === 0 && labels.length > 0 ? 1 : count;
-        }).slice(0, 7) : [];
+    // Prepare the data
+    const labels = [];
+    const data = [];
+    const colors = [];
+    const hoverColors = [];
     
-    // Kiểm tra nếu không có dữ liệu
-    const hasData = labels.length > 0 && data.some(value => value > 0);
+    // Define beautiful colors for job post status
+    const statusColors = {
+        PENDING: {
+            bg: 'rgba(252, 211, 77, 0.8)',
+            hover: 'rgba(252, 211, 77, 1)'
+        },
+        APPROVED: {
+            bg: 'rgba(34, 197, 94, 0.8)',
+            hover: 'rgba(34, 197, 94, 1)'
+        },
+        REJECTED: {
+            bg: 'rgba(239, 68, 68, 0.8)',
+            hover: 'rgba(239, 68, 68, 1)'
+        },
+        ACTIVE: {
+            bg: 'rgba(59, 130, 246, 0.8)',
+            hover: 'rgba(59, 130, 246, 1)'
+        },
+        INACTIVE: {
+            bg: 'rgba(107, 114, 128, 0.8)',
+            hover: 'rgba(107, 114, 128, 1)'
+        }
+    };
     
-    // Debug để kiểm tra dữ liệu
-    console.log('Event Chart Data:', { labels, data, eventStats });
-    
-    // Create beautiful gradients
-    const gradient1 = ctx.getContext('2d').createLinearGradient(0, 0, 0, 350);
-    gradient1.addColorStop(0, 'rgba(72, 187, 120, 0.9)');
-    gradient1.addColorStop(1, 'rgba(56, 161, 105, 0.7)');
-    
-    const gradient2 = ctx.getContext('2d').createLinearGradient(0, 0, 0, 350);
-    gradient2.addColorStop(0, 'rgba(66, 153, 225, 0.9)');
-    gradient2.addColorStop(1, 'rgba(49, 130, 206, 0.7)');
-    
-    // Create array of gradients for each bar
-    const gradients = [];
-    for (let i = 0; i < data.length; i++) {
-        gradients.push(i % 2 === 0 ? gradient1 : gradient2);
+    // Add data if available
+    if (jobPostStatusChart && jobPostStatusChart.PENDING > 0) {
+        labels.push('Pending');
+        data.push(jobPostStatusChart.PENDING);
+        colors.push(statusColors.PENDING.bg);
+        hoverColors.push(statusColors.PENDING.hover);
+    }
+    if (jobPostStatusChart && jobPostStatusChart.APPROVED > 0) {
+        labels.push('Approved');
+        data.push(jobPostStatusChart.APPROVED);
+        colors.push(statusColors.APPROVED.bg);
+        hoverColors.push(statusColors.APPROVED.hover);
+    }
+    if (jobPostStatusChart && jobPostStatusChart.REJECTED > 0) {
+        labels.push('Rejected');
+        data.push(jobPostStatusChart.REJECTED);
+        colors.push(statusColors.REJECTED.bg);
+        hoverColors.push(statusColors.REJECTED.hover);
+    }
+    if (jobPostStatusChart && jobPostStatusChart.ACTIVE > 0) {
+        labels.push('Active');
+        data.push(jobPostStatusChart.ACTIVE);
+        colors.push(statusColors.ACTIVE.bg);
+        hoverColors.push(statusColors.ACTIVE.hover);
+    }
+    if (jobPostStatusChart && jobPostStatusChart.INACTIVE > 0) {
+        labels.push('Inactive');
+        data.push(jobPostStatusChart.INACTIVE);
+        colors.push(statusColors.INACTIVE.bg);
+        hoverColors.push(statusColors.INACTIVE.hover);
     }
     
-    // Create chart with beautiful styling
+    // Create the chart
     return new Chart(ctx, {
-        type: 'bar',
+        type: 'doughnut',
         data: {
-            labels: labels,
+            labels: labels.length > 0 ? labels : ['No Data'],
             datasets: [{
-                label: 'Participants',
-                data: data,
-                backgroundColor: gradients.length > 0 ? gradients : ['rgba(203, 213, 225, 0.3)'],
+                data: data.length > 0 ? data : [1],
+                backgroundColor: colors.length > 0 ? colors : ['rgba(203, 213, 225, 0.3)'],
+                hoverBackgroundColor: hoverColors.length > 0 ? hoverColors : ['rgba(203, 213, 225, 0.4)'],
                 borderWidth: 0,
-                borderRadius: 6,
-                borderSkipped: false,
-                maxBarThickness: 60
+                hoverOffset: 7,
+                spacing: 0,
+                circumference: 360,
+                rotation: 0
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            cutout: '70%',
             plugins: {
                 legend: {
-                    display: false
+                    position: 'bottom',
+                    labels: {
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        padding: 15,
+                        font: {
+                            size: 12
+                        },
+                        color: '#4a5568'
+                    }
                 },
                 tooltip: {
+                    enabled: data.length > 0,
                     backgroundColor: 'rgba(17, 24, 39, 0.9)',
                     titleColor: 'white',
                     bodyColor: 'white',
@@ -530,59 +563,26 @@ function createEventsChart(canvasId, eventStats) {
                     cornerRadius: 8,
                     displayColors: false,
                     callbacks: {
-                        title: function(tooltipItems) {
-                            return tooltipItems[0].label;
-                        },
                         label: function(context) {
-                            // Nếu giá trị hiển thị là 1 nhưng giá trị thật là 0
-                            const originalValue = eventStats[context.dataIndex] ? 
-                                (eventStats[context.dataIndex].participantCount || eventStats[context.dataIndex].count || 0) : 0;
-                            
-                            return `${originalValue} participants`;
+                            if (data.length === 0) return '';
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((context.parsed * 100) / total).toFixed(1);
+                            return `${context.parsed} job posts (${percentage}%)`;
                         }
                     }
                 }
             },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    suggestedMin: 1, // Đảm bảo trục Y bắt đầu từ 0 nhưng hiển thị tối thiểu đến 1
-                    suggestedMax: Math.max(...data, 5), // Đảm bảo có không gian hiển thị đủ
-                    grid: {
-                        color: 'rgba(160, 174, 192, 0.1)',
-                        drawBorder: false
-                    },
-                    ticks: {
-                        stepSize: 1,
-                        font: {
-                            size: 12
-                        },
-                        color: '#718096'
-                    }
-                },
-                x: {
-                    grid: {
-                        display: false,
-                        drawBorder: false
-                    },
-                    ticks: {
-                        font: {
-                            size: 12
-                        },
-                        color: '#718096',
-                        maxRotation: 45,
-                        minRotation: 0
-                    }
-                }
-            },
             animation: {
-                delay: (context) => context.dataIndex * 100,
-                duration: 1000,
-                easing: 'easeOutQuart'
+                animateRotate: true,
+                animateScale: true,
+                duration: 1200,
+                easing: 'easeOutCirc'
             }
         }
     });
 }
+
+
 
 // Utility function to format numbers
 function formatNumber(num) {

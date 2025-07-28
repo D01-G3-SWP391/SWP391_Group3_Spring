@@ -1,11 +1,8 @@
 package com.example.swp391_d01_g3.service.employer;
 
 import com.example.swp391_d01_g3.dto.*;
-import com.example.swp391_d01_g3.model.Event;
 import com.example.swp391_d01_g3.model.JobApplication;
 import com.example.swp391_d01_g3.model.JobPost;
-import com.example.swp391_d01_g3.repository.IEventFormRepository;
-import com.example.swp391_d01_g3.repository.IEventRepository;
 import com.example.swp391_d01_g3.repository.IJobApplicationRepository;
 import com.example.swp391_d01_g3.repository.IJobPostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +25,6 @@ public class DashboardServiceImpl implements IDashboardService {
 
     @Autowired
     private IJobPostRepository jobPostRepository;
-    
-    @Autowired
-    private IEventRepository eventRepository;
-    
-    @Autowired
-    private IEventFormRepository eventFormRepository;
 
     @Override
     public EmployerDashboardDTO getEmployerDashboard(Integer employerId) {
@@ -57,14 +48,7 @@ public class DashboardServiceImpl implements IDashboardService {
         // 6. Get recent applications
         setRecentApplications(dashboard, employerId);
         
-        // 7. Get event statistics
-        setEventStatistics(dashboard, employerId);
-        
-        // 8. Get event participant data
-        setEventParticipantStats(dashboard, employerId);
-        
-        // 9. Get recent events
-        setRecentEvents(dashboard, employerId);
+
         
         return dashboard;
     }
@@ -76,17 +60,34 @@ public class DashboardServiceImpl implements IDashboardService {
         dashboard.setTotalJobPosts(totalJobPosts != null ? totalJobPosts : 0L);
         
         // Job posts by approval status
+        Long pendingJobPosts = jobPostRepository.countJobPostsByEmployerIdAndApprovalStatus(
+                employerId, JobPost.ApprovalStatus.PENDING);
         Long approvedJobPosts = jobPostRepository.countJobPostsByEmployerIdAndApprovalStatus(
                 employerId, JobPost.ApprovalStatus.APPROVED);
+        Long rejectedJobPosts = jobPostRepository.countJobPostsByEmployerIdAndApprovalStatus(
+                employerId, JobPost.ApprovalStatus.REJECTED);
         
         // Job posts by display status
         Long activeJobPosts = jobPostRepository.countJobPostsByEmployerIdAndDisplayStatus(
                 employerId, JobPost.DisplayStatus.ACTIVE);
-        Long hiddenJobPosts = jobPostRepository.countJobPostsByEmployerIdAndDisplayStatus(
+        Long inactiveJobPosts = jobPostRepository.countJobPostsByEmployerIdAndDisplayStatus(
                 employerId, JobPost.DisplayStatus.INACTIVE);
         
+        // Set JobPost status statistics
+        dashboard.setPendingJobPosts(pendingJobPosts != null ? pendingJobPosts : 0L);
+        dashboard.setApprovedJobPosts(approvedJobPosts != null ? approvedJobPosts : 0L);
+        dashboard.setRejectedJobPosts(rejectedJobPosts != null ? rejectedJobPosts : 0L);
         dashboard.setActiveJobPosts(activeJobPosts != null ? activeJobPosts : 0L);
-        dashboard.setHiddenJobPosts(hiddenJobPosts != null ? hiddenJobPosts : 0L);
+        dashboard.setInactiveJobPosts(inactiveJobPosts != null ? inactiveJobPosts : 0L);
+        
+        // Set JobPost status chart data
+        Map<String, Long> jobPostStatusChart = new HashMap<>();
+        jobPostStatusChart.put("PENDING", pendingJobPosts != null ? pendingJobPosts : 0L);
+        jobPostStatusChart.put("APPROVED", approvedJobPosts != null ? approvedJobPosts : 0L);
+        jobPostStatusChart.put("REJECTED", rejectedJobPosts != null ? rejectedJobPosts : 0L);
+        jobPostStatusChart.put("ACTIVE", activeJobPosts != null ? activeJobPosts : 0L);
+        jobPostStatusChart.put("INACTIVE", inactiveJobPosts != null ? inactiveJobPosts : 0L);
+        dashboard.setJobPostStatusChart(jobPostStatusChart);
         
         // Application statistics
         Long totalApplications = jobApplicationRepository.countApplicationsByEmployerId(employerId);
@@ -174,7 +175,8 @@ public class DashboardServiceImpl implements IDashboardService {
                     Long applicationCount = (Long) row[1];
                     Date createdDate = (Date) row[2];
                     String formattedDate = createdDate.toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                    return new JobPostPopularityDTO(jobTitle, applicationCount, formattedDate);
+                    JobPost.ApprovalStatus approvalStatus = (JobPost.ApprovalStatus) row[3];
+                    return new JobPostPopularityDTO(jobTitle, applicationCount, formattedDate, approvalStatus.name());
                 })
                 .collect(Collectors.toList());
         
@@ -200,109 +202,5 @@ public class DashboardServiceImpl implements IDashboardService {
         dashboard.setRecentApplications(recentAppsList);
     }
     
-    private void setEventStatistics(EmployerDashboardDTO dashboard, Integer employerId) {
-        // Lấy tất cả sự kiện của employer
-        List<Event> allEvents = eventRepository.findByEmployer_EmployerIdOrderByEventDateDesc(employerId);
-        
-        // Lọc ra chỉ những sự kiện ACTIVE
-        List<Event> activeEvents = allEvents.stream()
-                .filter(event -> event.getEventStatus() == Event.EventStatus.ACTIVE)
-                .collect(Collectors.toList());
-        
-        // Đếm tổng số sự kiện ACTIVE
-        Long totalEvents = (long) activeEvents.size();
-        dashboard.setTotalEvents(totalEvents);
-        
-        // Đếm số sự kiện sắp diễn ra (ACTIVE và chưa diễn ra)
-        LocalDateTime now = LocalDateTime.now();
-        Long upcomingEvents = activeEvents.stream()
-                .filter(event -> event.getEventDate().isAfter(now))
-                .count();
-        dashboard.setUpcomingEvents(upcomingEvents);
-        
-        // Đếm số sự kiện đã qua (ACTIVE và đã diễn ra)
-        Long pastEvents = activeEvents.stream()
-                .filter(event -> event.getEventDate().isBefore(now))
-                .count();
-        dashboard.setPastEvents(pastEvents);
-        
-        // Đếm tổng số người tham gia (chỉ đếm cho sự kiện ACTIVE)
-        Long totalParticipants = 0L;
-        for (Event event : activeEvents) {
-            Long participantsCount = eventFormRepository.countByEventEventId(event.getEventId());
-            totalParticipants += participantsCount;
-        }
-        dashboard.setTotalEventParticipants(totalParticipants);
-    }
-    
-    private void setEventParticipantStats(EmployerDashboardDTO dashboard, Integer employerId) {
-        // Lấy tất cả sự kiện của employer
-        List<Event> allEvents = eventRepository.findByEmployer_EmployerIdOrderByEventDateDesc(employerId);
-        
-        // Lọc ra chỉ những sự kiện ACTIVE
-        List<Event> activeEvents = allEvents.stream()
-                .filter(event -> event.getEventStatus() == Event.EventStatus.ACTIVE)
-                .collect(Collectors.toList());
-            
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        
-        List<EventStatsDTO> eventStatsList = new ArrayList<>();
-        
-        // Lấy tối đa 5 sự kiện ACTIVE có nhiều người tham gia nhất
-        activeEvents.stream()
-                .sorted((e1, e2) -> {
-                    Long count1 = eventFormRepository.countByEventEventId(e1.getEventId());
-                    Long count2 = eventFormRepository.countByEventEventId(e2.getEventId());
-                    return count2.compareTo(count1); // Sắp xếp giảm dần
-                })
-                .limit(5)
-                .forEach(event -> {
-                    Long participantCount = eventFormRepository.countByEventEventId(event.getEventId());
-                    String status = event.getEventDate().isAfter(now) ? "UPCOMING" : "PAST";
-                    String eventDate = event.getEventDate().format(formatter);
-                    
-                    eventStatsList.add(new EventStatsDTO(
-                            event.getEventTitle(),
-                            participantCount,
-                            status,
-                            eventDate
-                    ));
-                });
-        
-        dashboard.setEventStats(eventStatsList);
-    }
-    
-    private void setRecentEvents(EmployerDashboardDTO dashboard, Integer employerId) {
-        // Lấy tất cả sự kiện của employer
-        List<Event> allEvents = eventRepository.findByEmployer_EmployerIdOrderByEventDateDesc(employerId);
-        
-        // Lọc ra chỉ những sự kiện ACTIVE
-        List<Event> activeEvents = allEvents.stream()
-                .filter(event -> event.getEventStatus() == Event.EventStatus.ACTIVE)
-                .collect(Collectors.toList());
-            
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        
-        List<RecentEventDTO> recentEventsList = activeEvents.stream()
-                .sorted(Comparator.comparing(Event::getEventDate).reversed()) // Sắp xếp theo ngày gần đây nhất
-                .limit(5) // Lấy tối đa 5 sự kiện
-                .map(event -> {
-                    Long participantCount = eventFormRepository.countByEventEventId(event.getEventId());
-                    String status = event.getEventDate().isAfter(now) ? "UPCOMING" : "PAST";
-                    String eventDate = event.getEventDate().format(formatter);
-                    
-                    return new RecentEventDTO(
-                            event.getEventTitle(),
-                            eventDate,
-                            event.getEventLocation(),
-                            participantCount,
-                            status
-                    );
-                })
-                .collect(Collectors.toList());
-        
-        dashboard.setRecentEvents(recentEventsList);
-    }
+
 } 

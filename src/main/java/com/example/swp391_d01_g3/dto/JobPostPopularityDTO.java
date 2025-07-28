@@ -4,6 +4,7 @@ public class JobPostPopularityDTO {
     private String jobTitle;
     private Long applicationCount;
     private String createdAt;
+    private String approvalStatus;
     
     public JobPostPopularityDTO() {}
     
@@ -11,6 +12,13 @@ public class JobPostPopularityDTO {
         this.jobTitle = jobTitle;
         this.applicationCount = applicationCount;
         this.createdAt = createdAt;
+    }
+    
+    public JobPostPopularityDTO(String jobTitle, Long applicationCount, String createdAt, String approvalStatus) {
+        this.jobTitle = jobTitle;
+        this.applicationCount = applicationCount;
+        this.createdAt = createdAt;
+        this.approvalStatus = approvalStatus;
     }
     
     public String getJobTitle() { return jobTitle; }
@@ -21,4 +29,7 @@ public class JobPostPopularityDTO {
     
     public String getCreatedAt() { return createdAt; }
     public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
+    
+    public String getApprovalStatus() { return approvalStatus; }
+    public void setApprovalStatus(String approvalStatus) { this.approvalStatus = approvalStatus; }
 } 

@@ -113,11 +113,11 @@ public interface IJobApplicationRepository extends JpaRepository<JobApplication,
     List<Object[]> getApplicationStatusDistribution(@Param("employerId") Integer employerId);
     
     // Get top job posts by application count for employer
-    @Query("SELECT jp.jobTitle, COUNT(ja), DATE(jp.createdAt) " +
+    @Query("SELECT jp.jobTitle, COUNT(ja), DATE(jp.createdAt), jp.approvalStatus " +
            "FROM JobApplication ja " +
            "JOIN ja.jobPost jp " +
            "WHERE jp.employer.employerId = :employerId " +
-           "GROUP BY jp.jobPostId, jp.jobTitle, jp.createdAt " +
+           "GROUP BY jp.jobPostId, jp.jobTitle, jp.createdAt, jp.approvalStatus " +
            "ORDER BY COUNT(ja) DESC")
     List<Object[]> getTopJobPostsByApplicationCount(@Param("employerId") Integer employerId, 
                                                    Pageable pageable);
