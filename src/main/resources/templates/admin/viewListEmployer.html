@@ -235,10 +235,10 @@
                                     </label>
 
                                     <input type="number" class="form-control" name="banDurationDays"
-                                           min="1" max="365" value="30" placeholder="Nhập số ngày ban (để trống nếu ban vĩnh viễn)"
+                                           min="0" max="365" value="30" placeholder="Nhập số ngày ban (nhập 0 nếu ban vĩnh viễn)"
                                            style="background-color: white; color: black; border: 2px solid #ffffff;">
                                     <div class="form-text" style="color: #ffff99;">
-                                        • Để trống nếu chọn ban vĩnh viễn<br>
+                                        • Nhập <strong>0</strong> nếu chọn ban vĩnh viễn<br>
                                         • Từ 1 đến 365 ngày cho ban tạm thời<br>
                                         • Gợi ý: 7 ngày, 14 ngày, 30 ngày, 60 ngày, 90 ngày, 180 ngày
                                     </div>
@@ -280,6 +280,69 @@
             <strong th:text="${currentPage * 6 + #lists.size(employerList)}"></strong>
             <span th:text="#{admin.list.employers.of}">of</span> <strong th:text="${totalItems}"></strong> <span th:text="#{admin.list.employers.employers}">employers</span>
         </div>
+
+        <!-- JavaScript for Ban Form -->
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle permanent ban selection
+            const permanentRadio = document.querySelector('input[value="PERMANENT"]');
+            const temporaryRadio = document.querySelector('input[value="TEMPORARY"]');
+            const durationInput = document.querySelector('input[name="banDurationDays"]');
+            
+            if (permanentRadio && temporaryRadio && durationInput) {
+                // When permanent is selected, set duration to 0
+                permanentRadio.addEventListener('change', function() {
+                    if (this.checked) {
+                        durationInput.value = '0';
+                        durationInput.disabled = true;
+                        durationInput.style.backgroundColor = '#f8f9fa';
+                        durationInput.style.color = '#6c757d';
+                    }
+                });
+                
+                // When temporary is selected, enable duration input
+                temporaryRadio.addEventListener('change', function() {
+                    if (this.checked) {
+                        durationInput.disabled = false;
+                        durationInput.style.backgroundColor = 'white';
+                        durationInput.style.color = 'black';
+                        if (durationInput.value === '0') {
+                            durationInput.value = '30'; // Default value
+                        }
+                    }
+                });
+                
+                // Initial state check
+                if (permanentRadio.checked) {
+                    durationInput.value = '0';
+                    durationInput.disabled = true;
+                    durationInput.style.backgroundColor = '#f8f9fa';
+                    durationInput.style.color = '#6c757d';
+                }
+            }
+            
+            // Form validation
+            const banForm = document.querySelector('form[action*="ban"]');
+            if (banForm) {
+                banForm.addEventListener('submit', function(e) {
+                    const selectedType = document.querySelector('input[name="banDurationType"]:checked');
+                    const duration = parseInt(durationInput.value);
+                    
+                    if (selectedType.value === 'PERMANENT' && duration !== 0) {
+                        e.preventDefault();
+                        alert('⚠️ Ban vĩnh viễn phải có số ngày = 0');
+                        return false;
+                    }
+                    
+                    if (selectedType.value === 'TEMPORARY' && (duration < 1 || duration > 365)) {
+                        e.preventDefault();
+                        alert('⚠️ Ban tạm thời phải có số ngày từ 1-365');
+                        return false;
+                    }
+                });
+            }
+        });
+        </script>
 
         <!-- Pagination -->
         <nav aria-label="Page navigation" th:if="${totalPages != null and totalPages > 1}">

@@ -5,50 +5,85 @@
 ### 1. **Ban vĩnh viễn không hoạt động**
 - ✅ **FIXED**: Validation logic trong `BanRequestDTO.java`
 - ✅ **FIXED**: Controller xử lý `banDurationDays` cho permanent ban
-- ✅ **FIXED**: Form template cho phép nhập 0 cho permanent ban
+- ✅ **FIXED**: Form template cho phép nhập 0 cho permanent ban (Student & Employer)
 
 ### 2. **Không hiển thị thông báo ban**
 - ✅ **FIXED**: Cải thiện flash message với thông tin chi tiết
-- ✅ **FIXED**: Template sử dụng `th:utext` để hiển thị emoji
+- ✅ **FIXED**: Template sử dụng `th:utext` để hiển thị emoji (Student & Employer)
 - ✅ **FIXED**: CSS styling cho alert messages
 
 ### 3. **Email không gửi**
 - ✅ **FIXED**: Sử dụng `CompletableFuture` cho async email sending
 - ✅ **FIXED**: Better error handling và logging
 
+### 4. **JavaScript Form Handling**
+- ✅ **FIXED**: Tự động xử lý form khi chọn ban vĩnh viễn (Student & Employer)
+- ✅ **FIXED**: Validation client-side trước khi submit
+- ✅ **FIXED**: UI/UX improvements cho form ban
+
 ---
 
 ## 🧪 Cách test:
 
-### **Test 1: Ban tạm thời**
+### **Test 1: Ban tạm thời Student**
 1. Đăng nhập admin
-2. Vào **Student Management** hoặc **Employer Management**
-3. Click nút **"Ban"** trên user active
+2. Vào **Student Management**
+3. Click nút **"Ban"** trên student active
 4. Chọn:
    - **Lý do**: Spam nội dung
    - **Loại ban**: Tạm thời
    - **Số ngày**: 7
    - **Mô tả**: Test ban tạm thời
-5. Click **"Xác nhận Ban User"**
+5. Click **"Xác nhận Ban Student"**
 6. **Kết quả mong đợi**:
    - ✅ Hiển thị thông báo: "✅ Đã ban student thành công với lý do: Spam nội dung (Thời gian: 7 ngày). Email thông báo đã được gửi."
-   - ✅ User status chuyển thành "inactive"
-   - ✅ Email được gửi đến user
+   - ✅ Student status chuyển thành "inactive"
+   - ✅ Email được gửi đến student
 
-### **Test 2: Ban vĩnh viễn**
-1. Click nút **"Ban"** trên user active khác
+### **Test 2: Ban vĩnh viễn Student**
+1. Click nút **"Ban"** trên student active khác
 2. Chọn:
    - **Lý do**: Lừa đảo
    - **Loại ban**: Vĩnh viễn
-   - **Số ngày**: (để trống hoặc nhập 0)
+   - **Số ngày**: (tự động chuyển thành 0)
    - **Mô tả**: Test ban vĩnh viễn
-3. Click **"Xác nhận Ban User"**
+3. Click **"Xác nhận Ban Student"**
 4. **Kết quả mong đợi**:
    - ✅ Hiển thị thông báo: "✅ Đã ban student thành công với lý do: Lừa đảo (Thời gian: vĩnh viễn). Email thông báo đã được gửi."
-   - ✅ User status chuyển thành "inactive"
-   - ✅ Email được gửi đến user
+   - ✅ Student status chuyển thành "inactive"
+   - ✅ Email được gửi đến student
 
-### **Test 3: JavaScript Form Handling**
+### **Test 3: Ban tạm thời Employer**
+1. Đăng nhập admin
+2. Vào **Employer Management**
+3. Click nút **"Ban"** trên employer active
+4. Chọn:
+   - **Lý do**: Vi phạm chính sách
+   - **Loại ban**: Tạm thời
+   - **Số ngày**: 14
+   - **Mô tả**: Test ban tạm thời employer
+5. Click **"Xác nhận Ban Employer"**
+6. **Kết quả mong đợi**:
+   - ✅ Hiển thị thông báo: "✅ Đã ban employer thành công với lý do: Vi phạm chính sách (Thời gian: 14 ngày). Email thông báo đã được gửi."
+   - ✅ Employer status chuyển thành "inactive"
+   - ✅ Email được gửi đến employer
+   - ✅ Tất cả tin tuyển dụng của employer bị ẩn
+
+### **Test 4: Ban vĩnh viễn Employer**
+1. Click nút **"Ban"** trên employer active khác
+2. Chọn:
+   - **Lý do**: Lừa đảo nghiêm trọng
+   - **Loại ban**: Vĩnh viễn
+   - **Số ngày**: (tự động chuyển thành 0)
+   - **Mô tả**: Test ban vĩnh viễn employer
+3. Click **"Xác nhận Ban Employer"**
+4. **Kết quả mong đợi**:
+   - ✅ Hiển thị thông báo: "✅ Đã ban employer thành công với lý do: Lừa đảo nghiêm trọng (Thời gian: vĩnh viễn). Email thông báo đã được gửi."
+   - ✅ Employer status chuyển thành "inactive"
+   - ✅ Email được gửi đến employer
+   - ✅ Tất cả tin tuyển dụng của employer bị ẩn
+
+### **Test 5: JavaScript Form Handling**
 1. Mở modal ban
 2. Chọn **"Vĩnh viễn"**
 3. **Kết quả mong đợi**:
@@ -60,7 +95,7 @@
    - ✅ Input có màu trắng
    - ✅ Giá trị mặc định là 14
 
-### **Test 4: Validation**
+### **Test 6: Validation**
 1. Thử ban với form không hợp lệ:
    - Không chọn lý do
    - Chọn tạm thời nhưng không nhập số ngày
@@ -69,7 +104,7 @@
    - ✅ Hiển thị thông báo lỗi cụ thể
    - ✅ Form không submit
 
-### **Test 5: Unban**
+### **Test 7: Unban**
 1. Click nút **"Unban"** trên user đã bị ban
 2. Confirm action
 3. **Kết quả mong đợi**:
