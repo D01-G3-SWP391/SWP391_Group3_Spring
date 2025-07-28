@@ -103,16 +103,34 @@ public class EventController {
             model.addAttribute("currentPage", page);
             model.addAttribute("totalPages", eventsPage.getTotalPages());
             
-            // Thêm: truyền registeredEventIds và thông tin student nếu đã đăng nhập
+            // Thêm: truyền registeredEventIds và thông tin student nếu đã đăng nhập với role STUDENT
             if (authentication != null && authentication.isAuthenticated()) {
                 String email = authentication.getName();
-                Student student = studentService.findByEmail(email);
-                if (student != null) {
-                    List<Integer> registeredEventIds = eventService.findRegisteredEventIdsByStudentId(student.getStudentId());
-                    model.addAttribute("registeredEventIds", registeredEventIds);
-                    
-                    // Truyền thông tin student để điền sẵn form
-                    model.addAttribute("currentStudent", student);
+                
+                // Kiểm tra role của user trước khi tìm student
+                boolean isStudent = authentication.getAuthorities().stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_student"));
+                
+                if (isStudent) {
+                    Student student = studentService.findByEmail(email);
+                    if (student != null) {
+                        List<Integer> registeredEventIds = eventService.findRegisteredEventIdsByStudentId(student.getStudentId());
+                        model.addAttribute("registeredEventIds", registeredEventIds);
+                        
+                        // Tạo một object đơn giản cho JavaScript để tránh circular reference
+                        java.util.Map<String, Object> studentInfo = new java.util.HashMap<>();
+                        if (student.getAccount() != null) {
+                            studentInfo.put("fullName", student.getAccount().getFullName());
+                            studentInfo.put("phone", student.getAccount().getPhone());
+                        }
+                        studentInfo.put("university", student.getUniversity());
+                        
+                        model.addAttribute("currentStudent", studentInfo);
+                    }
+                } else {
+                    // Đối với non-student users, set null để tránh lỗi JavaScript
+                    model.addAttribute("currentStudent", null);
+                    model.addAttribute("registeredEventIds", java.util.Collections.emptyList());
                 }
             }
             
@@ -155,11 +173,29 @@ public class EventController {
             boolean isRegistered = false;
             if (authentication != null && authentication.isAuthenticated()) {
                 String email = authentication.getName();
-                Student student = studentService.findByEmail(email);
-                if (student != null) {
-                    isRegistered = eventService.isStudentRegistered(eventId, student.getStudentId());
-                    // Truyền thông tin student để điền sẵn form
-                    model.addAttribute("currentStudent", student);
+                
+                // Kiểm tra role của user trước khi tìm student
+                boolean isStudent = authentication.getAuthorities().stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_student"));
+                
+                if (isStudent) {
+                    Student student = studentService.findByEmail(email);
+                    if (student != null) {
+                        isRegistered = eventService.isStudentRegistered(eventId, student.getStudentId());
+                        
+                        // Tạo một object đơn giản cho JavaScript để tránh circular reference
+                        java.util.Map<String, Object> studentInfo = new java.util.HashMap<>();
+                        if (student.getAccount() != null) {
+                            studentInfo.put("fullName", student.getAccount().getFullName());
+                            studentInfo.put("phone", student.getAccount().getPhone());
+                        }
+                        studentInfo.put("university", student.getUniversity());
+                        
+                        model.addAttribute("currentStudent", studentInfo);
+                    }
+                } else {
+                    // Đối với non-student users, set null để tránh lỗi JavaScript
+                    model.addAttribute("currentStudent", null);
                 }
             }
             

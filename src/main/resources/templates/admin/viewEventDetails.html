@@ -154,12 +154,7 @@
                               (event.approvalStatus.name() == 'REJECTED' ? 'status-banned' : 'status-pending')}"
                     th:text="${event.approvalStatus.name()}"></span>
             </div>
-            <div class="mb-3">
-              <span class="status-badge"
-                    th:class="${event.eventStatus.name() == 'ACTIVE' ? 'status-active' :
-                              (event.eventStatus.name() == 'CANCELLED' ? 'status-banned' : 'badge bg-warning')}"
-                    th:text="${event.eventStatus.name()}"></span>
-            </div>
+
             <div th:if="${event.approvedAt != null}" class="text-muted small">
               <i class="bi bi-check-circle me-1"></i>
               <span th:text="#{admin.event.details.approved.on}">Approved on</span> <span th:text="${#temporals.format(event.approvedAt, 'dd/MM/yyyy')}"></span>

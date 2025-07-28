@@ -220,6 +220,7 @@ public class AdminEventController {
             return "redirect:/Admin/Events";
         }
     }
+
     @PostMapping("/ToggleApprovalStatus/{id}")
     public String toggleApprovalStatus(@PathVariable("id") Integer eventId,
                                        @RequestParam("newApprovalStatus") String newStatus,
@@ -251,4 +252,5 @@ public class AdminEventController {
         }
         return "redirect:/Admin/Events";
     }
+
 }

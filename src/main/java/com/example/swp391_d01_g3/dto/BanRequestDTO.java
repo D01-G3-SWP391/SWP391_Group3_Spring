@@ -44,18 +44,18 @@ public class BanRequestDTO {
     
     /**
      * Số ngày ban (chỉ có khi ban tạm thời)
+     * Note: Validation được xử lý trong custom logic, không dùng annotations
      */
-    @Min(value = 1, message = "Số ngày ban phải lớn hơn 0")
-    @Max(value = 365, message = "Số ngày ban không được quá 365 ngày")
     private Integer banDurationDays;
     
     /**
      * Enhanced validation logic chuyển từ frontend về backend
+     * ✅ FIXED: Loại bỏ xung đột với Jakarta annotations
      */
     public boolean isValid() {
         // Nếu ban permanent thì không cần duration days
         if (banDurationType == BanRecord.BanDurationType.PERMANENT) {
-            return banDurationDays == null; // Không được có duration days
+            return banDurationDays == null || banDurationDays == 0; // ✅ Cho phép null hoặc 0
         }
         
         // Nếu ban temporary thì phải có duration days và > 0
@@ -112,7 +112,7 @@ public class BanRequestDTO {
             if (banDurationType == BanRecord.BanDurationType.TEMPORARY) {
                 return "Ban tạm thời phải có số ngày từ 1-365";
             } else {
-                return "Ban vĩnh viễn không được có số ngày";
+                return "Ban vĩnh viễn phải có số ngày = 0 hoặc để trống";
             }
         }
         return null;

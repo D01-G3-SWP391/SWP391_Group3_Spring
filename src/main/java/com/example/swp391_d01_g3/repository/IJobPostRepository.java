@@ -134,4 +134,30 @@ public interface IJobPostRepository extends JpaRepository<JobPost, Integer> {
     // Count job posts by employer and display status
     long countByEmployerAndDisplayStatus(Employer employer, JobPost.DisplayStatus displayStatus);
 
+    // Dashboard Statistics Queries
+    
+    // Count total job posts for employer
+    @Query("SELECT COUNT(jp) FROM JobPost jp WHERE jp.employer.employerId = :employerId")
+    Long countJobPostsByEmployerId(@Param("employerId") Integer employerId);
+    
+    // Count job posts by approval status for employer
+    @Query("SELECT COUNT(jp) FROM JobPost jp WHERE jp.employer.employerId = :employerId " +
+           "AND jp.approvalStatus = :status")
+    Long countJobPostsByEmployerIdAndApprovalStatus(@Param("employerId") Integer employerId,
+                                                   @Param("status") JobPost.ApprovalStatus status);
+    
+    // Count job posts by display status for employer
+    @Query("SELECT COUNT(jp) FROM JobPost jp WHERE jp.employer.employerId = :employerId " +
+           "AND jp.displayStatus = :status")
+    Long countJobPostsByEmployerIdAndDisplayStatus(@Param("employerId") Integer employerId,
+                                                  @Param("status") JobPost.DisplayStatus status);
+    
+    // Get job posts with application count for employer
+    @Query("SELECT jp.jobTitle, jp.approvalStatus, " +
+           "(SELECT COUNT(ja) FROM JobApplication ja WHERE ja.jobPost = jp) " +
+           "FROM JobPost jp " +
+           "WHERE jp.employer.employerId = :employerId " +
+           "ORDER BY jp.createdAt DESC")
+    List<Object[]> getJobPostsWithApplicationCount(@Param("employerId") Integer employerId);
+
 }

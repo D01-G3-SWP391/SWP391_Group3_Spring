@@ -97,9 +97,9 @@ public class CustomAuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 targetUrl.endsWith(".css") || targetUrl.endsWith(".js") || targetUrl.endsWith(".json") ||
                 targetUrl.startsWith("/notifications/") || targetUrl.startsWith("/api/")) {
             if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_admin"))) {
-                targetUrl = "/";
+                targetUrl = "/Admin";
             } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_employer"))) {
-                targetUrl = "/";
+                targetUrl = "/Employer";
             } else if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_student"))) {
                 targetUrl = "/";
             } else {

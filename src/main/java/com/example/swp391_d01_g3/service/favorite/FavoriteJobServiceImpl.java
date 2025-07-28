@@ -2,10 +2,10 @@ package com.example.swp391_d01_g3.service.favorite;
 
 import com.example.swp391_d01_g3.model.FavoriteJob;
 import com.example.swp391_d01_g3.model.JobPost;
+import com.example.swp391_d01_g3.model.Student;
 import com.example.swp391_d01_g3.repository.FavoriteJobRepository;
 import com.example.swp391_d01_g3.repository.IJobPostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,64 +22,60 @@ public class FavoriteJobServiceImpl implements IFavoriteJobService {
     @Autowired
     private IJobPostRepository jobPostRepository;
 
+    @Autowired
+    private com.example.swp391_d01_g3.repository.IStudentRepository studentRepository;
+
     @Override
     public boolean toggleFavorite(Integer studentId, Integer jobPostId) {
+        Student student = studentRepository.findById(studentId.longValue()).orElseThrow(() -> new RuntimeException("Student not found"));
+        JobPost jobPost = jobPostRepository.findById(jobPostId).orElseThrow(() -> new RuntimeException("JobPost not found"));
         try {
-            // Kiểm tra xem đã favorite chưa
-            Optional<FavoriteJob> existingFavorite = favoriteJobRepository.findByStudentIdAndJobPostId(studentId, jobPostId);
-            
+            Optional<FavoriteJob> existingFavorite = favoriteJobRepository.findByStudentAndJobPost(student, jobPost);
             if (existingFavorite.isPresent()) {
-                // Nếu đã favorite thì remove
-                favoriteJobRepository.deleteByStudentIdAndJobPostId(studentId, jobPostId);
-                return false; // Đã remove favorite
+                favoriteJobRepository.deleteByStudentAndJobPost(student, jobPost);
+                return false;
             } else {
-                // Nếu chưa favorite thì add
-                FavoriteJob favoriteJob = new FavoriteJob(studentId, jobPostId);
+                FavoriteJob favoriteJob = new FavoriteJob(student, jobPost);
                 favoriteJobRepository.save(favoriteJob);
-                return true; // Đã add favorite
+                return true;
             }
         } catch (Exception e) {
-            // Xử lý lỗi duplicate key hoặc các lỗi khác
             if (e.getMessage().contains("Duplicate entry") || e.getMessage().contains("duplicate key")) {
-                // Nếu là lỗi duplicate, có nghĩa là record đã tồn tại
-                // Kiểm tra lại trạng thái hiện tại và return cho phù hợp
-                boolean currentlyFavorited = favoriteJobRepository.existsByStudentIdAndJobPostId(studentId, jobPostId);
+                boolean currentlyFavorited = favoriteJobRepository.existsByStudentAndJobPost(student, jobPost);
                 return currentlyFavorited;
             }
-            // Re-throw exception khác
             throw e;
         }
     }
 
     @Override
     public boolean isFavorited(Integer studentId, Integer jobPostId) {
-        return favoriteJobRepository.existsByStudentIdAndJobPostId(studentId, jobPostId);
+        Student student = studentRepository.findById(studentId.longValue()).orElseThrow(() -> new RuntimeException("Student not found"));
+        JobPost jobPost = jobPostRepository.findById(jobPostId).orElseThrow(() -> new RuntimeException("JobPost not found"));
+        return favoriteJobRepository.existsByStudentAndJobPost(student, jobPost);
     }
 
     @Override
     public List<FavoriteJob> getFavoriteJobsByStudent(Integer studentId) {
-        return favoriteJobRepository.findByStudentIdOrderByCreatedAtDesc(studentId);
+        Student student = studentRepository.findById(studentId.longValue()).orElseThrow(() -> new RuntimeException("Student not found"));
+        return favoriteJobRepository.findByStudentOrderByCreatedAtDesc(student);
     }
-
-
 
     @Override
     public List<JobPost> getFavoriteJobPostsByStudent(Integer studentId) {
-        // Lấy danh sách jobPostId từ favorite jobs
-        List<Integer> jobPostIds = favoriteJobRepository.findJobPostIdsByStudentId(studentId);
-        
-        // Nếu không có favorite jobs thì return empty list
-        if (jobPostIds.isEmpty()) {
-            return List.of();
+        Student student = studentRepository.findById(studentId.longValue()).orElseThrow(() -> new RuntimeException("Student not found"));
+        List<FavoriteJob> favoriteJobs = favoriteJobRepository.findByStudentOrderByCreatedAtDesc(student);
+        List<JobPost> jobPosts = new java.util.ArrayList<>();
+        for (FavoriteJob favoriteJob : favoriteJobs) {
+            jobPosts.add(favoriteJob.getJobPost());
         }
-        
-        // Lấy job posts với employer details từ jobPostIds
-        return jobPostRepository.findByJobPostIdInWithEmployer(jobPostIds);
+        return jobPosts;
     }
 
     @Override
     public long getFavoriteCount(Integer studentId) {
-        return favoriteJobRepository.countByStudentId(studentId);
+        Student student = studentRepository.findById(studentId.longValue()).orElseThrow(() -> new RuntimeException("Student not found"));
+        return favoriteJobRepository.countByStudent(student);
     }
 
 

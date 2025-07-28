@@ -11,11 +11,13 @@ public class FavoriteJob {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer favoriteId;
 
-    @Column(name = "student_id", nullable = false)
-    private Integer studentId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id", nullable = false)
+    private Student student;
 
-    @Column(name = "job_post_id", nullable = false)
-    private Integer jobPostId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "job_post_id", nullable = false)
+    private JobPost jobPost;
 
     @Column(name = "created_at", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP", insertable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -23,16 +25,9 @@ public class FavoriteJob {
     // Constructors
     public FavoriteJob() {}
 
-    public FavoriteJob(Integer studentId, Integer jobPostId) {
-        this.studentId = studentId;
-        this.jobPostId = jobPostId;
-    }
-
-    public FavoriteJob(Integer favoriteId, Integer studentId, Integer jobPostId, LocalDateTime createdAt) {
-        this.favoriteId = favoriteId;
-        this.studentId = studentId;
-        this.jobPostId = jobPostId;
-        this.createdAt = createdAt;
+    public FavoriteJob(Student student, JobPost jobPost) {
+        this.student = student;
+        this.jobPost = jobPost;
     }
 
     // Getters and Setters
@@ -44,20 +39,20 @@ public class FavoriteJob {
         this.favoriteId = favoriteId;
     }
 
-    public Integer getStudentId() {
-        return studentId;
+    public Student getStudent() {
+        return student;
     }
 
-    public void setStudentId(Integer studentId) {
-        this.studentId = studentId;
+    public void setStudent(Student student) {
+        this.student = student;
     }
 
-    public Integer getJobPostId() {
-        return jobPostId;
+    public JobPost getJobPost() {
+        return jobPost;
     }
 
-    public void setJobPostId(Integer jobPostId) {
-        this.jobPostId = jobPostId;
+    public void setJobPost(JobPost jobPost) {
+        this.jobPost = jobPost;
     }
 
     public LocalDateTime getCreatedAt() {
