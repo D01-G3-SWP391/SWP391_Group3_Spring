@@ -4,8 +4,11 @@
 
 ### 1. **Ban vĩnh viễn không hoạt động**
 - ✅ **FIXED**: Validation logic trong `BanRequestDTO.java`
-- ✅ **FIXED**: Controller xử lý `banDurationDays` cho permanent ban
+- ✅ **FIXED**: Loại bỏ xung đột giữa Jakarta annotations và custom validation
+- ✅ **FIXED**: Controller xử lý `banDurationDays` cho permanent ban (ưu tiên PERMANENT type)
+- ✅ **FIXED**: JavaScript xử lý tất cả modals (không chỉ modal đầu tiên)
 - ✅ **FIXED**: Form template cho phép nhập 0 cho permanent ban (Student & Employer)
+- ✅ **FIXED**: Thêm debug logging chi tiết để dễ troubleshoot
 
 ### 2. **Không hiển thị thông báo ban**
 - ✅ **FIXED**: Cải thiện flash message với thông tin chi tiết
