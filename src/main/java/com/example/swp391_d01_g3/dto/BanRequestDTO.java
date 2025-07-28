@@ -55,7 +55,7 @@ public class BanRequestDTO {
     public boolean isValid() {
         // Nếu ban permanent thì không cần duration days
         if (banDurationType == BanRecord.BanDurationType.PERMANENT) {
-            return banDurationDays == null; // Không được có duration days
+            return banDurationDays == null || banDurationDays == 0; // ✅ FIXED: Cho phép null hoặc 0
         }
         
         // Nếu ban temporary thì phải có duration days và > 0
@@ -112,7 +112,7 @@ public class BanRequestDTO {
             if (banDurationType == BanRecord.BanDurationType.TEMPORARY) {
                 return "Ban tạm thời phải có số ngày từ 1-365";
             } else {
-                return "Ban vĩnh viễn không được có số ngày";
+                return "Ban vĩnh viễn không được có số ngày (để trống hoặc nhập 0)";
             }
         }
         return null;

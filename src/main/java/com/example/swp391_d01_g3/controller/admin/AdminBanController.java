@@ -99,8 +99,10 @@ public class AdminBanController {
             banRequest.setBanDescription(banDescription);
             banRequest.setBanDurationType(BanRecord.BanDurationType.valueOf(banDurationType));
             
-            if (banDurationDays != null && !banDurationDays.isEmpty()) {
+            if (banDurationDays != null && !banDurationDays.isEmpty() && !banDurationDays.equals("0")) {
                 banRequest.setBanDurationDays(Integer.parseInt(banDurationDays));
+            } else if (banDurationType.equals("PERMANENT")) {
+                banRequest.setBanDurationDays(null); // ✅ FIXED: Set null cho permanent ban
             }
             
             // 2. Server-side validation (không cần client validation)
@@ -134,10 +136,18 @@ public class AdminBanController {
             // 5. Execute ban (business logic)
             if ("student".equalsIgnoreCase(userType)) {
                 adminStudentService.banStudentWithReason(banRequest, adminId);
-                redirectAttributes.addFlashAttribute("success", "Đã ban student thành công. Email thông báo đã được gửi.");
+                String durationText = banRequest.getBanDurationType() == BanRecord.BanDurationType.PERMANENT ? 
+                    "vĩnh viễn" : banRequest.getBanDurationDays() + " ngày";
+                redirectAttributes.addFlashAttribute("success", 
+                    "✅ Đã ban student thành công với lý do: " + banRequest.getBanReason().getDescription() + 
+                    " (Thời gian: " + durationText + "). Email thông báo đã được gửi.");
             } else if ("employer".equalsIgnoreCase(userType)) {
                 adminEmployerService.banEmployerWithReason(banRequest, adminId);
-                redirectAttributes.addFlashAttribute("success", "Đã ban employer thành công. Email thông báo đã được gửi.");
+                String durationText = banRequest.getBanDurationType() == BanRecord.BanDurationType.PERMANENT ? 
+                    "vĩnh viễn" : banRequest.getBanDurationDays() + " ngày";
+                redirectAttributes.addFlashAttribute("success", 
+                    "✅ Đã ban employer thành công với lý do: " + banRequest.getBanReason().getDescription() + 
+                    " (Thời gian: " + durationText + "). Email thông báo đã được gửi.");
             } else {
                 redirectAttributes.addFlashAttribute("error", "Loại user không hợp lệ");
             }

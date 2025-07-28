@@ -638,11 +638,18 @@ public class EmailService {
             body.append("🏢 Đội ngũ JOB4YOU\n");
             body.append("🌐 Website: http://localhost:8080");
 
-            sendEmail(userEmail, subject, body.toString());
-            System.out.println("🚫 Ban notification email sent to: " + userEmail + " (Duration: " + banDurationType + ")");
+            // ✅ FIXED: Sử dụng CompletableFuture để gửi email async
+            CompletableFuture<Void> emailFuture = sendEmail(userEmail, subject, body.toString());
+            emailFuture.thenRun(() -> {
+                System.out.println("🚫 Ban notification email sent successfully to: " + userEmail + " (Duration: " + banDurationType + ")");
+            }).exceptionally(throwable -> {
+                System.err.println("❌ Failed to send ban notification email to: " + userEmail + " - Error: " + throwable.getMessage());
+                return null;
+            });
 
         } catch (Exception e) {
-            System.err.println("Failed to send ban notification email to: " + userEmail + " - Error: " + e.getMessage());
+            System.err.println("❌ Error in sendBanNotificationEmail for: " + userEmail + " - Error: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

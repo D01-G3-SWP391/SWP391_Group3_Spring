@@ -23,15 +23,15 @@
         <h2 th:text="#{admin.list.students.title}">Student Management</h2>
 
         <!-- Success/Error Messages -->
-        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert" style="font-size: 1.1rem; font-weight: 500;">
             <i class="bi bi-check-circle me-2"></i>
-            <span th:text="${success}"></span>
+            <span th:utext="${success}"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
-        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert" style="font-size: 1.1rem; font-weight: 500;">
             <i class="bi bi-exclamation-triangle me-2"></i>
-            <span th:text="${error}"></span>
+            <span th:utext="${error}"></span>
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
 
@@ -241,10 +241,10 @@
                                     </label>
                                     
                                     <input type="number" class="form-control" name="banDurationDays"
-                                           min="1" max="365" value="14" placeholder="Nhập số ngày ban (để trống nếu ban vĩnh viễn)"
+                                           min="0" max="365" value="14" placeholder="Nhập số ngày ban (nhập 0 hoặc để trống nếu ban vĩnh viễn)"
                                            style="background-color: white; color: black; border: 2px solid #ffffff;">
                                     <div class="form-text" style="color: #ffff99;">
-                                        • Để trống nếu chọn ban vĩnh viễn<br>
+                                        • Nhập 0 hoặc để trống nếu chọn ban vĩnh viễn<br>
                                         • Từ 1 đến 365 ngày cho ban tạm thời<br>
                                         • Gợi ý: 3 ngày, 7 ngày, 14 ngày, 30 ngày, 60 ngày, 90 ngày
                                     </div>
@@ -287,6 +287,45 @@
             <strong th:text="${currentPage * 6 + #lists.size(studentList)}"></strong>
             <span th:text="#{admin.list.students.of}">of</span> <strong th:text="${totalItems}"></strong> <span th:text="#{admin.list.students.students}">students</span>
         </div>
+
+        <!-- JavaScript for Ban Form -->
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle permanent ban selection
+            const permanentRadio = document.querySelector('input[value="PERMANENT"]');
+            const temporaryRadio = document.querySelector('input[value="TEMPORARY"]');
+            const durationInput = document.querySelector('input[name="banDurationDays"]');
+            
+            if (permanentRadio && temporaryRadio && durationInput) {
+                // When permanent is selected, clear duration
+                permanentRadio.addEventListener('change', function() {
+                    if (this.checked) {
+                        durationInput.value = '0';
+                        durationInput.disabled = true;
+                        durationInput.style.backgroundColor = '#f8f9fa';
+                    }
+                });
+                
+                // When temporary is selected, enable duration
+                temporaryRadio.addEventListener('change', function() {
+                    if (this.checked) {
+                        durationInput.disabled = false;
+                        durationInput.style.backgroundColor = 'white';
+                        if (durationInput.value === '0') {
+                            durationInput.value = '14';
+                        }
+                    }
+                });
+                
+                // Initial state
+                if (permanentRadio.checked) {
+                    durationInput.value = '0';
+                    durationInput.disabled = true;
+                    durationInput.style.backgroundColor = '#f8f9fa';
+                }
+            }
+        });
+        </script>
 
         <!-- Pagination -->
         <nav aria-label="Page navigation" th:if="${totalPages != null and totalPages > 1}">
