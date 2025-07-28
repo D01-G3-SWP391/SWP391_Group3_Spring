@@ -99,18 +99,33 @@ public class AdminBanController {
             banRequest.setBanDescription(banDescription);
             banRequest.setBanDurationType(BanRecord.BanDurationType.valueOf(banDurationType));
             
-            if (banDurationDays != null && !banDurationDays.isEmpty() && !banDurationDays.equals("0")) {
+            // ✅ FIXED: Logic xử lý banDurationDays cho permanent ban
+            System.out.println("🔍 DEBUG: Raw form data - banDurationType: " + banDurationType + ", banDurationDays: " + banDurationDays);
+            
+            if (banDurationType.equals("PERMANENT")) {
+                banRequest.setBanDurationDays(null); // Permanent ban luôn set null
+                System.out.println("🔍 DEBUG: Permanent ban detected - setting banDurationDays to null");
+            } else if (banDurationDays != null && !banDurationDays.isEmpty() && !banDurationDays.equals("0")) {
                 banRequest.setBanDurationDays(Integer.parseInt(banDurationDays));
-            } else if (banDurationType.equals("PERMANENT")) {
-                banRequest.setBanDurationDays(null); // ✅ FIXED: Set null cho permanent ban
+                System.out.println("🔍 DEBUG: Temporary ban - setting banDurationDays to " + banDurationDays);
+            } else {
+                System.out.println("🔍 DEBUG: No valid duration days provided");
             }
             
             // 2. Server-side validation (không cần client validation)
+            System.out.println("🔍 DEBUG: Ban request validation - userId: " + banRequest.getUserId() + 
+                             ", durationType: " + banRequest.getBanDurationType() + 
+                             ", durationDays: " + banRequest.getBanDurationDays() + 
+                             ", isValid: " + banRequest.isValid());
+            
             String validationError = banRequest.getValidationErrorMessage();
             if (validationError != null) {
+                System.out.println("❌ Validation failed: " + validationError);
                 redirectAttributes.addFlashAttribute("error", validationError);
                 return "redirect:/Admin"; 
             }
+            
+            System.out.println("✅ Validation passed");
             
             // 3. Security check (server-side only)
             if (!AuthenticationHelper.isCurrentUserAdmin()) {

@@ -284,49 +284,61 @@
         <!-- JavaScript for Ban Form -->
         <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Handle permanent ban selection
-            const permanentRadio = document.querySelector('input[value="PERMANENT"]');
-            const temporaryRadio = document.querySelector('input[value="TEMPORARY"]');
-            const durationInput = document.querySelector('input[name="banDurationDays"]');
+            // ✅ FIXED: Handle ALL ban modals (not just the first one)
+            const allModals = document.querySelectorAll('.modal');
             
-            if (permanentRadio && temporaryRadio && durationInput) {
-                // When permanent is selected, set duration to 0
-                permanentRadio.addEventListener('change', function() {
-                    if (this.checked) {
+            allModals.forEach(function(modal) {
+                const permanentRadio = modal.querySelector('input[value="PERMANENT"]');
+                const temporaryRadio = modal.querySelector('input[value="TEMPORARY"]');
+                const durationInput = modal.querySelector('input[name="banDurationDays"]');
+                
+                if (permanentRadio && temporaryRadio && durationInput) {
+                    console.log('🔍 DEBUG: Found employer ban form in modal');
+                    
+                    // When permanent is selected, set duration to 0
+                    permanentRadio.addEventListener('change', function() {
+                        if (this.checked) {
+                            durationInput.value = '0';
+                            durationInput.disabled = true;
+                            durationInput.style.backgroundColor = '#f8f9fa';
+                            durationInput.style.color = '#6c757d';
+                            console.log('🔍 DEBUG: Permanent ban selected - duration set to 0');
+                        }
+                    });
+                    
+                    // When temporary is selected, enable duration input
+                    temporaryRadio.addEventListener('change', function() {
+                        if (this.checked) {
+                            durationInput.disabled = false;
+                            durationInput.style.backgroundColor = 'white';
+                            durationInput.style.color = 'black';
+                            if (durationInput.value === '0') {
+                                durationInput.value = '30'; // Default value
+                            }
+                            console.log('🔍 DEBUG: Temporary ban selected - duration enabled');
+                        }
+                    });
+                    
+                    // Initial state check
+                    if (permanentRadio.checked) {
                         durationInput.value = '0';
                         durationInput.disabled = true;
                         durationInput.style.backgroundColor = '#f8f9fa';
                         durationInput.style.color = '#6c757d';
+                        console.log('🔍 DEBUG: Initial state - permanent ban selected');
                     }
-                });
-                
-                // When temporary is selected, enable duration input
-                temporaryRadio.addEventListener('change', function() {
-                    if (this.checked) {
-                        durationInput.disabled = false;
-                        durationInput.style.backgroundColor = 'white';
-                        durationInput.style.color = 'black';
-                        if (durationInput.value === '0') {
-                            durationInput.value = '30'; // Default value
-                        }
-                    }
-                });
-                
-                // Initial state check
-                if (permanentRadio.checked) {
-                    durationInput.value = '0';
-                    durationInput.disabled = true;
-                    durationInput.style.backgroundColor = '#f8f9fa';
-                    durationInput.style.color = '#6c757d';
                 }
-            }
+            });
             
-            // Form validation
-            const banForm = document.querySelector('form[action*="ban"]');
-            if (banForm) {
-                banForm.addEventListener('submit', function(e) {
-                    const selectedType = document.querySelector('input[name="banDurationType"]:checked');
-                    const duration = parseInt(durationInput.value);
+            // Form validation for all ban forms
+            const allBanForms = document.querySelectorAll('form[action*="ban"]');
+            allBanForms.forEach(function(form) {
+                form.addEventListener('submit', function(e) {
+                    const modal = form.closest('.modal');
+                    const selectedType = modal.querySelector('input[name="banDurationType"]:checked');
+                    const duration = parseInt(modal.querySelector('input[name="banDurationDays"]').value);
+                    
+                    console.log('🔍 DEBUG: Employer form submission - type: ' + selectedType.value + ', duration: ' + duration);
                     
                     if (selectedType.value === 'PERMANENT' && duration !== 0) {
                         e.preventDefault();
@@ -340,7 +352,7 @@
                         return false;
                     }
                 });
-            }
+            });
         });
         </script>
 

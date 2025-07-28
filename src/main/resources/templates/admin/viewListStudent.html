@@ -291,39 +291,75 @@
         <!-- JavaScript for Ban Form -->
         <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Handle permanent ban selection
-            const permanentRadio = document.querySelector('input[value="PERMANENT"]');
-            const temporaryRadio = document.querySelector('input[value="TEMPORARY"]');
-            const durationInput = document.querySelector('input[name="banDurationDays"]');
+            // ✅ FIXED: Handle ALL ban modals (not just the first one)
+            const allModals = document.querySelectorAll('.modal');
             
-            if (permanentRadio && temporaryRadio && durationInput) {
-                // When permanent is selected, clear duration
-                permanentRadio.addEventListener('change', function() {
-                    if (this.checked) {
+            allModals.forEach(function(modal) {
+                const permanentRadio = modal.querySelector('input[value="PERMANENT"]');
+                const temporaryRadio = modal.querySelector('input[value="TEMPORARY"]');
+                const durationInput = modal.querySelector('input[name="banDurationDays"]');
+                
+                if (permanentRadio && temporaryRadio && durationInput) {
+                    console.log('🔍 DEBUG: Found ban form in modal');
+                    
+                    // When permanent is selected, set duration to 0
+                    permanentRadio.addEventListener('change', function() {
+                        if (this.checked) {
+                            durationInput.value = '0';
+                            durationInput.disabled = true;
+                            durationInput.style.backgroundColor = '#f8f9fa';
+                            durationInput.style.color = '#6c757d';
+                            console.log('🔍 DEBUG: Permanent ban selected - duration set to 0');
+                        }
+                    });
+                    
+                    // When temporary is selected, enable duration input
+                    temporaryRadio.addEventListener('change', function() {
+                        if (this.checked) {
+                            durationInput.disabled = false;
+                            durationInput.style.backgroundColor = 'white';
+                            durationInput.style.color = 'black';
+                            if (durationInput.value === '0') {
+                                durationInput.value = '14'; // Default value
+                            }
+                            console.log('🔍 DEBUG: Temporary ban selected - duration enabled');
+                        }
+                    });
+                    
+                    // Initial state check
+                    if (permanentRadio.checked) {
                         durationInput.value = '0';
                         durationInput.disabled = true;
                         durationInput.style.backgroundColor = '#f8f9fa';
+                        durationInput.style.color = '#6c757d';
+                        console.log('🔍 DEBUG: Initial state - permanent ban selected');
                     }
-                });
-                
-                // When temporary is selected, enable duration
-                temporaryRadio.addEventListener('change', function() {
-                    if (this.checked) {
-                        durationInput.disabled = false;
-                        durationInput.style.backgroundColor = 'white';
-                        if (durationInput.value === '0') {
-                            durationInput.value = '14';
-                        }
-                    }
-                });
-                
-                // Initial state
-                if (permanentRadio.checked) {
-                    durationInput.value = '0';
-                    durationInput.disabled = true;
-                    durationInput.style.backgroundColor = '#f8f9fa';
                 }
-            }
+            });
+            
+            // Form validation for all ban forms
+            const allBanForms = document.querySelectorAll('form[action*="ban"]');
+            allBanForms.forEach(function(form) {
+                form.addEventListener('submit', function(e) {
+                    const modal = form.closest('.modal');
+                    const selectedType = modal.querySelector('input[name="banDurationType"]:checked');
+                    const duration = parseInt(modal.querySelector('input[name="banDurationDays"]').value);
+                    
+                    console.log('🔍 DEBUG: Form submission - type: ' + selectedType.value + ', duration: ' + duration);
+                    
+                    if (selectedType.value === 'PERMANENT' && duration !== 0) {
+                        e.preventDefault();
+                        alert('⚠️ Ban vĩnh viễn phải có số ngày = 0');
+                        return false;
+                    }
+                    
+                    if (selectedType.value === 'TEMPORARY' && (duration < 1 || duration > 365)) {
+                        e.preventDefault();
+                        alert('⚠️ Ban tạm thời phải có số ngày từ 1-365');
+                        return false;
+                    }
+                });
+            });
         });
         </script>
 
