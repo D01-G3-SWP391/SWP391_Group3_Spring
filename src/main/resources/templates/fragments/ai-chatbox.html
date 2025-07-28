@@ -7,7 +7,7 @@
 </head>
 <body>
     <!-- AI Chatbox fragment - shows for authenticated users -->
-    <div th:fragment="ai-chatbox" sec:authorize="hasRole('student') or hasRole('employer') or hasRole('admin')">
+    <div th:fragment="ai-chatbox" >
         <link rel="stylesheet" th:href="@{/css/ai-chatbox.css}" />
         
         <div class="ai-chatbox-wrapper" id="aiChatboxWrapper">

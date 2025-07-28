@@ -34,13 +34,8 @@ out/
 /.nb-gradle/
 
 ### VS Code ###
-.vscode/
 
 ### Environment Variables ###
-.env
-.env.local
-.env.production
-.env.development
 application-local.properties
 application-prod.properties
 
@@ -48,3 +43,9 @@ application-prod.properties
 *.key
 *.pem
 *.p12
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore
+config.bat
+node_modules

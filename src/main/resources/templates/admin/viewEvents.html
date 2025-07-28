@@ -87,7 +87,7 @@
         <tbody>
         <tr th:each="event : ${eventList}">
           <td>
-            <strong th:text="${event.eventTitle}"></strong>
+            <strong th:utext="${event.eventTitle}"></strong>
           </td>
           <td th:text="${event.eventLocation}"></td>
           <td th:text="${#temporals.format(event.eventDate, 'dd/MM/yyyy HH:mm')}"></td>

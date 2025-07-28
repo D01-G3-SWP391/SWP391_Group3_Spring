@@ -20,6 +20,58 @@
             rel="stylesheet"
     />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <style>
+/* Force company address to 2 columns, responsive */
+.right-column .form-group.company-address-group {
+    max-width: 600px;
+    margin: 0 auto;
+}
+.right-column .company-address-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+.right-column .company-address-col {
+    flex: 0 0 50%;
+    max-width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+@media (max-width: 768px) {
+    .right-column .company-address-col {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+.row.g-2 {
+  display: flex;
+  flex-wrap: wrap;
+}
+.col-12.col-md-6 {
+  max-width: 50%;
+  flex: 0 0 50%;
+}
+@media (max-width: 768px) {
+  .col-12.col-md-6 {
+    max-width: 100%;
+    flex: 0 0 100%;
+  }
+}
+.address-row {
+  display: flex;
+  gap: 0.75rem;
+}
+.address-row .form-control {
+  margin-bottom: 0 !important;
+}
+@media (max-width: 768px) {
+  .address-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+</style>
 
 </head>
 <body>
@@ -91,9 +143,31 @@
                         <div class="form-tooltip" th:text="#{register.employer.tooltip.companyName}">Tên chính thức của công ty</div>
                     </div>
                     
-                    <!-- Company Address -->
-                    <div class="form-group">
-                        <input type="text" id="companyAddress" name="company_address" th:placeholder="#{register.employer.companyAddress.placeholder}" th:field="*{companyAddress}" required>
+                    <!-- Company Address (2 hàng 2 cột, flexbox custom, spacing chuẩn) -->
+                    <div class="form-group mb-3" style="max-width: 600px; margin: 0 auto;">
+                        <div class="address-flex-row" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                            <div style="flex: 1;">
+                                <select id="province" class="form-control" required>
+                                    <option value="" th:text="#{register.employer.province.placeholder}">Province/City</option>
+                                </select>
+                            </div>
+                            <div style="flex: 1;">
+                                <select id="district" class="form-control" required>
+                                    <option value="" th:text="#{register.employer.district.placeholder}">District</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="address-flex-row" style="display: flex; gap: 1rem;">
+                            <div style="flex: 1;">
+                                <select id="ward" class="form-control">
+                                    <option value="" th:text="#{register.employer.ward.placeholder}">Ward</option>
+                                </select>
+                            </div>
+                            <div style="flex: 1;">
+                                <input type="text" id="street" class="form-control" th:placeholder="#{register.employer.street.placeholder}" required>
+                            </div>
+                        </div>
+                        <input type="hidden" id="companyAddress" name="companyAddress" th:field="*{companyAddress}" required />
                         <span class="error-message server-error" th:if="${#fields.hasErrors('companyAddress')}" th:errors="*{companyAddress}"></span>
                         <span class="error-message" id="companyAddressError"></span>
                         <div class="form-tooltip" th:text="#{register.employer.tooltip.companyAddress}">Địa chỉ trụ sở chính của công ty</div>
@@ -664,6 +738,158 @@ function togglePassword(fieldId) {
         toggleIcon.classList.add('bi-eye');
     }
 }
+
+// Địa chỉ động dùng open-api.vn (public, không cần token)
+document.addEventListener("DOMContentLoaded", function () {
+    const provinceSelect = document.getElementById("province");
+    const districtSelect = document.getElementById("district");
+    const wardSelect = document.getElementById("ward");
+    const streetInput = document.getElementById("street");
+    const addressInput = document.getElementById("companyAddress");
+
+    // Bảng ánh xạ tên tỉnh/thành phố sang tiếng Anh
+    const provinceNameMap = {
+        "Hà Nội": "Hanoi",
+        "Hồ Chí Minh": "Ho Chi Minh City",
+        "Đà Nẵng": "Da Nang",
+        "Hải Phòng": "Hai Phong",
+        "Cần Thơ": "Can Tho",
+        "An Giang": "An Giang",
+        "Bà Rịa - Vũng Tàu": "Ba Ria - Vung Tau",
+        "Bắc Giang": "Bac Giang",
+        "Bắc Kạn": "Bac Kan",
+        "Bạc Liêu": "Bac Lieu",
+        "Bắc Ninh": "Bac Ninh",
+        "Bến Tre": "Ben Tre",
+        "Bình Định": "Binh Dinh",
+        "Bình Dương": "Binh Duong",
+        "Bình Phước": "Binh Phuoc",
+        "Bình Thuận": "Binh Thuan",
+        "Cà Mau": "Ca Mau",
+        "Cao Bằng": "Cao Bang",
+        "Đắk Lắk": "Dak Lak",
+        "Đắk Nông": "Dak Nong",
+        "Điện Biên": "Dien Bien",
+        "Đồng Nai": "Dong Nai",
+        "Đồng Tháp": "Dong Thap",
+        "Gia Lai": "Gia Lai",
+        "Hà Giang": "Ha Giang",
+        "Hà Nam": "Ha Nam",
+        "Hà Tĩnh": "Ha Tinh",
+        "Hải Dương": "Hai Duong",
+        "Hậu Giang": "Hau Giang",
+        "Hòa Bình": "Hoa Binh",
+        "Hưng Yên": "Hung Yen",
+        "Khánh Hòa": "Khanh Hoa",
+        "Kiên Giang": "Kien Giang",
+        "Kon Tum": "Kon Tum",
+        "Lai Châu": "Lai Chau",
+        "Lâm Đồng": "Lam Dong",
+        "Lạng Sơn": "Lang Son",
+        "Lào Cai": "Lao Cai",
+        "Long An": "Long An",
+        "Nam Định": "Nam Dinh",
+        "Nghệ An": "Nghe An",
+        "Ninh Bình": "Ninh Binh",
+        "Ninh Thuận": "Ninh Thuan",
+        "Phú Thọ": "Phu Tho",
+        "Phú Yên": "Phu Yen",
+        "Quảng Bình": "Quang Binh",
+        "Quảng Nam": "Quang Nam",
+        "Quảng Ngãi": "Quang Ngai",
+        "Quảng Ninh": "Quang Ninh",
+        "Quảng Trị": "Quang Tri",
+        "Sóc Trăng": "Soc Trang",
+        "Sơn La": "Son La",
+        "Tây Ninh": "Tay Ninh",
+        "Thái Bình": "Thai Binh",
+        "Thái Nguyên": "Thai Nguyen",
+        "Thanh Hóa": "Thanh Hoa",
+        "Thừa Thiên Huế": "Thua Thien Hue",
+        "Tiền Giang": "Tien Giang",
+        "Trà Vinh": "Tra Vinh",
+        "Tuyên Quang": "Tuyen Quang",
+        "Vĩnh Long": "Vinh Long",
+        "Vĩnh Phúc": "Vinh Phuc",
+        "Yên Bái": "Yen Bai"
+    };
+    // Lấy ngôn ngữ hiện tại từ URL hoặc thẻ html
+    function getLangFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('lang') || document.documentElement.lang || 'vi';
+    }
+    const currentLang = getLangFromUrl();
+
+    // Load tỉnh/thành phố
+    fetch('https://provinces.open-api.vn/api/p/')
+        .then(res => res.json())
+        .then(provinces => {
+            provinces.sort((a, b) => new Intl.Collator('vi').compare(a.name, b.name));
+            provinces.forEach(p => {
+                let displayName = p.name;
+                if (currentLang === 'en') {
+                    let rawName = p.name.replace(/^Tỉnh |^Thành phố /, '');
+                    displayName = provinceNameMap[rawName] || p.name;
+                }
+                const option = document.createElement('option');
+                option.value = p.code;
+                option.textContent = displayName;
+                provinceSelect.appendChild(option);
+            });
+        });
+
+    provinceSelect.addEventListener('change', function() {
+        districtSelect.innerHTML = '<option value="">Quận/Huyện</option>';
+        wardSelect.innerHTML = '<option value="">Phường/Xã</option>';
+        if (!provinceSelect.value) return;
+        fetch(`https://provinces.open-api.vn/api/p/${provinceSelect.value}?depth=2`)
+            .then(res => res.json())
+            .then(data => {
+                data.districts.sort((a, b) => new Intl.Collator('vi').compare(a.name, b.name));
+                data.districts.forEach(d => {
+                    const option = document.createElement('option');
+                    option.value = d.code;
+                    option.textContent = d.name;
+                    districtSelect.appendChild(option);
+                });
+            });
+        updateFullAddress();
+    });
+
+    districtSelect.addEventListener('change', function() {
+        wardSelect.innerHTML = '<option value="">Phường/Xã</option>';
+        if (!districtSelect.value) return;
+        fetch(`https://provinces.open-api.vn/api/d/${districtSelect.value}?depth=2`)
+            .then(res => res.json())
+            .then(data => {
+                data.wards.sort((a, b) => new Intl.Collator('vi').compare(a.name, b.name));
+                data.wards.forEach(w => {
+                    const option = document.createElement('option');
+                    option.value = w.code;
+                    option.textContent = w.name;
+                    wardSelect.appendChild(option);
+                });
+            });
+        updateFullAddress();
+    });
+
+    wardSelect.addEventListener('change', updateFullAddress);
+    streetInput.addEventListener('input', updateFullAddress);
+
+    function updateFullAddress() {
+        // Lấy tên hiển thị đúng ngôn ngữ cho province
+        let provinceName = '';
+        if (provinceSelect.value) {
+            const selected = provinceSelect.options[provinceSelect.selectedIndex];
+            provinceName = selected.text;
+        }
+        const district = districtSelect.options[districtSelect.selectedIndex]?.text || '';
+        const ward = wardSelect.options[wardSelect.selectedIndex]?.text || '';
+        const street = streetInput.value.trim();
+        const addressParts = [street, ward, district, provinceName].filter(Boolean);
+        addressInput.value = addressParts.join(', ');
+    }
+});
 </script>
 <script th:src="@{/js/languageSwitch.js}"></script>
 
