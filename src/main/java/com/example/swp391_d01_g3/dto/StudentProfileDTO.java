@@ -16,12 +16,13 @@ public class StudentProfileDTO {
     private String profileDescription;
     private String experience;
     private String avatarUrl;
+    private Integer jobFieldId;
 
     // Constructors
     public StudentProfileDTO() {
     }
 
-    public StudentProfileDTO(String fullName, String phone,  String address, String university, String preferredJobAddress, String profileDescription, String experience, String avatarUrl) {
+    public StudentProfileDTO(String fullName, String phone,  String address, String university, String preferredJobAddress, String profileDescription, String experience, String avatarUrl, Integer jobFieldId) {
         this.fullName = fullName;
         this.phone = phone;
 
@@ -31,6 +32,7 @@ public class StudentProfileDTO {
         this.profileDescription = profileDescription;
         this.experience = experience;
         this.avatarUrl = avatarUrl;
+        this.jobFieldId = jobFieldId;
     }
 
     // Getters and Setters
@@ -96,5 +98,13 @@ public class StudentProfileDTO {
 
     public void setAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
+    }
+
+    public Integer getJobFieldId() {
+        return jobFieldId;
+    }
+
+    public void setJobFieldId(Integer jobFieldId) {
+        this.jobFieldId = jobFieldId;
     }
 } 

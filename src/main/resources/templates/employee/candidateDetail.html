@@ -117,7 +117,7 @@
                 <span th:text="#{employer.candidates.detail.profile.description}">Profile Description</span>
             </div>
             <div class="section-content">
-                <div class="description-text" th:text="${student.profileDescription}">
+                <div class="description-text" th:utext="${student.profileDescription}">
                 </div>
             </div>
         </div>
@@ -130,7 +130,7 @@
             <span th:text="#{employer.candidates.detail.experience}">Experience</span>
         </div>
         <div class="section-content">
-            <div class="description-text" th:text="${student.experience}">
+            <div class="description-text" th:utext="${student.experience}">
             </div>
         </div>
     </div>

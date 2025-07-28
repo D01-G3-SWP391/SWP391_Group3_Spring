@@ -377,8 +377,8 @@
                     <li class="breadcrumb-item active text-white" aria-current="page" th:text="#{event.detail.breadcrumb.detail}">Event Details</li>
                 </ol>
             </nav>
-            <h1 class="hero-title" th:text="${event.eventTitle}"></h1>
-            <p class="hero-description" th:text="${event.eventDescription}"></p>
+            <h1 class="hero-title" th:utext="${event.eventTitle}"></h1>
+            <p class="hero-description" th:utext="${event.eventDescription}"></p>
             
             <div class="hero-meta justify-content-center">
                 <div class="meta-item"><i class="bi bi-calendar-event"></i> <span th:text="#{event.detail.meta.date}">Date</span>: <span th:text="${#temporals.format(event.eventDate, 'dd/MM/yyyy')}"></span></div>
@@ -394,14 +394,24 @@
                 <i class="bi bi-check-circle-fill me-2"></i> <span th:text="#{event.detail.already.registered}">Already Registered</span>
             </button>
             
+            <!-- Thông báo đủ số lượng -->
+            <button th:if="${event.maxParticipants != null and event.currentParticipants >= event.maxParticipants}"
+                    class="btn btn-warning cta-button" disabled>
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <span th:text="#{events.full.capacity}">Full Capacity</span>
+            </button>
+            
             <!-- Nút đăng nhập cho user chưa xác thực -->
-            <a th:href="@{/Login}" sec:authorize="!isAuthenticated()" class="btn btn-primary cta-button">
+            <a th:href="@{/Login}" sec:authorize="!isAuthenticated()" 
+               th:if="${event.maxParticipants == null or event.currentParticipants < event.maxParticipants}"
+               class="btn btn-primary cta-button">
                 <i class="fas fa-sign-in-alt me-2"></i> <span th:text="#{event.detail.login.to.join}">Login to Join</span>
             </a>
             
             <!-- Nút đăng ký chỉ cho Student -->
             <button sec:authorize="hasRole('student')"
                     th:unless="${isRegistered}"
+                    th:if="${event.maxParticipants == null or event.currentParticipants < event.maxParticipants}"
                     th:onclick="'registerEvent(' + ${event.eventId} + ')'"
                     class="btn btn-primary cta-button">
                 <i class="bi bi-calendar-check-fill me-2"></i> <span th:text="#{event.detail.register.now}">Register Now</span>
@@ -504,14 +514,24 @@
                                 <i class="bi bi-check-circle-fill me-2"></i> <span th:text="#{event.detail.already.registered}">Already Registered</span>
                             </button>
                             
+                            <!-- Thông báo đủ số lượng -->
+                            <button th:if="${event.maxParticipants != null and event.currentParticipants >= event.maxParticipants}"
+                                    class="btn btn-warning w-100 mb-3" disabled>
+                                <i class="bi bi-exclamation-triangle me-2"></i>
+                                <span th:text="#{events.full.capacity}">Full Capacity</span>
+                            </button>
+                            
                             <!-- Nút đăng nhập cho user chưa xác thực -->
-                            <a th:href="@{/Login}" sec:authorize="!isAuthenticated()" class="btn btn-primary w-100 mb-3">
+                            <a th:href="@{/Login}" sec:authorize="!isAuthenticated()" 
+                               th:if="${event.maxParticipants == null or event.currentParticipants < event.maxParticipants}"
+                               class="btn btn-primary w-100 mb-3">
                                 <i class="fas fa-sign-in-alt me-2"></i> <span th:text="#{event.detail.login.to.join}">Login to Join</span>
                             </a>
                             
                             <!-- Nút đăng ký chỉ cho Student -->
                             <button sec:authorize="hasRole('student')"
                                     th:unless="${isRegistered}"
+                                    th:if="${event.maxParticipants == null or event.currentParticipants < event.maxParticipants}"
                                     th:onclick="'registerEvent(' + ${event.eventId} + ')'"
                                     class="btn btn-primary w-100 mb-3">
                                 <i class="bi bi-calendar-check-fill me-2"></i> <span th:text="#{event.detail.sidebar.register.button}">Register Now</span>
@@ -606,9 +626,9 @@
         var isStudent = /*[[${#authorization.expression('hasRole(''student'')')}]]*/ false;
         
         function fillFormWithStudentInfo() {
-            if (isStudent && currentStudentInfo && currentStudentInfo.account) {
-                document.getElementById('fullName').value = currentStudentInfo.account.fullName || '';
-                document.getElementById('phone').value = currentStudentInfo.account.phone || '';
+            if (isStudent && currentStudentInfo) {
+                document.getElementById('fullName').value = currentStudentInfo.fullName || '';
+                document.getElementById('phone').value = currentStudentInfo.phone || '';
                 document.getElementById('organization').value = currentStudentInfo.university || '';
             }
         }

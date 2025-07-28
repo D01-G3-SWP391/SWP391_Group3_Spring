@@ -4,6 +4,8 @@ import com.example.swp391_d01_g3.model.Account;
 import com.example.swp391_d01_g3.model.FavoriteJob;
 import com.example.swp391_d01_g3.model.JobPost;
 import com.example.swp391_d01_g3.model.Student;
+import com.example.swp391_d01_g3.repository.IJobPostRepository;
+import com.example.swp391_d01_g3.repository.IStudentRepository;
 import com.example.swp391_d01_g3.service.favorite.IFavoriteJobService;
 import com.example.swp391_d01_g3.service.security.IAccountService;
 import com.example.swp391_d01_g3.service.student.IStudentService;
@@ -31,6 +33,11 @@ public class FavoriteJobController {
     @Autowired
     private IStudentService studentService;
 
+    @Autowired
+    private IJobPostRepository jobPostRepository;
+    @Autowired
+    private IStudentRepository studentRepository;
+
     /**
      * Lấy student ID từ account
      */
@@ -55,6 +62,14 @@ public class FavoriteJobController {
         return student.getStudentId();
     }
 
+    private Student getStudentFromAuthentication() {
+        String email = AuthenticationHelper.getCurrentUserEmail();
+        if (email == null) return null;
+        Account account = accountService.findByEmail(email);
+        if (account == null || account.getRole() != Account.Role.student) return null;
+        return studentService.findByAccountUserId(account.getUserId());
+    }
+
     /**
      * Toggle favorite status của một job post
      * POST /favorites/toggle
@@ -63,19 +78,26 @@ public class FavoriteJobController {
     public ResponseEntity<Map<String, Object>> toggleFavorite(@RequestParam Integer jobPostId) {
         
         Map<String, Object> response = new HashMap<>();
-        Integer studentId = getStudentIdFromAuthentication();
+        Student student = getStudentFromAuthentication();
         try {
             // Lấy student ID từ account
 
             
-            if (studentId == null) {
+            if (student == null) {
                 response.put("success", false);
                 response.put("message", "Vui lòng đăng nhập với tài khoản sinh viên để sử dụng tính năng này");
                 return ResponseEntity.badRequest().body(response);
             }
             
+            JobPost jobPost = jobPostRepository.findById(jobPostId).orElse(null);
+            if (jobPost == null) {
+                response.put("success", false);
+                response.put("message", "Không tìm thấy công việc");
+                return ResponseEntity.badRequest().body(response);
+            }
+
             // Toggle favorite
-            boolean isFavorited = favoriteJobService.toggleFavorite(studentId, jobPostId);
+            boolean isFavorited = favoriteJobService.toggleFavorite(student.getStudentId(), jobPost.getJobPostId());
             
             response.put("success", true);
             response.put("isFavorited", isFavorited);
@@ -86,7 +108,7 @@ public class FavoriteJobController {
             // Xử lý lỗi duplicate key gracefully
             if (e.getMessage() != null && (e.getMessage().contains("Duplicate entry") || e.getMessage().contains("duplicate key"))) {
                 // Kiểm tra trạng thái hiện tại
-                boolean currentlyFavorited = favoriteJobService.isFavorited(studentId, jobPostId);
+                boolean currentlyFavorited = favoriteJobService.isFavorited(student.getStudentId(), jobPostId);
                 response.put("success", true);
                 response.put("isFavorited", currentlyFavorited);
                 return ResponseEntity.ok(response);
@@ -183,11 +205,15 @@ public class FavoriteJobController {
             return "redirect:" + (redirectUrl != null ? redirectUrl : "/");
         }
         
-        Integer studentId = student.getStudentId();
+        JobPost jobPost = jobPostRepository.findById(jobPostId).orElse(null);
+        if (jobPost == null) {
+            redirectAttributes.addFlashAttribute("error", "Không tìm thấy công việc");
+            return "redirect:" + (redirectUrl != null ? redirectUrl : "/");
+        }
         
         try {
             // Toggle favorite
-            boolean isFavorited = favoriteJobService.toggleFavorite(studentId, jobPostId);
+            boolean isFavorited = favoriteJobService.toggleFavorite(student.getStudentId(), jobPost.getJobPostId());
             
         } catch (Exception e) {
             // Xử lý lỗi duplicate key gracefully

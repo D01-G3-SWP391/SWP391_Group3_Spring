@@ -33,6 +33,8 @@ public class Student {
     @Column(columnDefinition = "TEXT")
     private String experience;
 
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<FavoriteJob> favoriteJobs = new java.util.ArrayList<>();
 
 
     public Student() {
@@ -101,6 +103,14 @@ public class Student {
 
     public void setExperience(String experience) {
         this.experience = experience;
+    }
+
+    public java.util.List<FavoriteJob> getFavoriteJobs() {
+        return favoriteJobs;
+    }
+
+    public void setFavoriteJobs(java.util.List<FavoriteJob> favoriteJobs) {
+        this.favoriteJobs = favoriteJobs;
     }
 
 

@@ -150,30 +150,7 @@
       </div>
     </div>
 
-    <!-- Action Buttons -->
-    <div class="detail-card">
-      <h5 class="mb-3">
-        <i class="bi bi-gear me-2"></i><span th:text="#{admin.student.details.actions}">Actions</span>
-      </h5>
-      <div class="d-flex gap-3">
-        <form th:if="${student.account.status.name() == 'active'}"
-              th:action="@{/Admin/banStudent/{id}(id=${student.account.userId})}"
-              method="post">
-          <button type="submit" class="btn btn-danger">
-            <i class="bi bi-person-x me-2"></i><span th:text="#{admin.student.details.ban}">Ban Student</span>
-          </button>
-        </form>
 
-        <form th:if="${student.account.status.name() == 'inactive'}"
-              th:action="@{/Admin/unbanStudent/{id}(id=${student.account.userId})}"
-              method="post">
-          <button type="submit" class="btn btn-success">
-            <i class="bi bi-person-check me-2"></i><span th:text="#{admin.student.details.unban}">Unban Student</span>
-          </button>
-        </form>
-
-      </div>
-    </div>
   </div>
 </div>
 
